@@ -50,7 +50,7 @@ public class NodeGroup {
 
 	// renvoie la valeur du tag si la clé exitste
 	public string GetTagValue(string key){
-		if (this.tags.ContainsKey (key)) {
+		if (this.tags.ContainsKey(key)) {
 			return this.tags [key].ToString ();
 		} else {
 			return key + "_unknown";

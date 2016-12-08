@@ -40,7 +40,7 @@ public class UIManager : MonoBehaviour {
 			main.mainNodes = nodes;
 		}
 
-		foreach( GameObject go in nodes){
+		foreach(GameObject go in nodes){
 			if (nodeActive) {
 				go.SetActive(false);
 			} 

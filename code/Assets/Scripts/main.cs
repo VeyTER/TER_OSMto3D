@@ -63,8 +63,7 @@ public class main : MonoBehaviour {
 		float lon = 0f;
 
 		// Read the file and display it line by line.
-		System.IO.StreamReader file = 
-			new System.IO.StreamReader(path + "Maps/" + nomMap +".osm");
+		System.IO.StreamReader file = new System.IO.StreamReader(path + "Maps/" + nomMap +".osm");
 
 		// on commence par repertorier toutes les nodes de la  carte
 		while((line = file.ReadLine()) != null)
@@ -223,7 +222,7 @@ public class main : MonoBehaviour {
 
 				//On créé les murs
 				float x, y, length,adj,angle;
-				int etages = 1;
+				int etages = 5;
 
 				for(int i=0;i<ngp.nodes.Count-1;i++){
 					//on recup les coordonées utiles
@@ -244,7 +243,7 @@ public class main : MonoBehaviour {
 					}
 					mur.transform.localScale = new Vector3(length+0.015f,0.1f*etages,0.02f);
 					mur.transform.position = new Vector3(x,-0.05f*etages, y);
-					mur.AddComponent("GetInfos");
+					mur.AddComponent<GetInfos>();
 					
 					// on modifie l'angle en fonction de l'ordre des points
 					
@@ -275,24 +274,24 @@ public class main : MonoBehaviour {
 		CamLat = (minlat + maxlat) / 2;
 		CamLon = (minlon + maxlon) / 2;
 		GameObject mainCam = new GameObject ();
-		mainCam.AddComponent ("Camera");
+		mainCam.AddComponent <Camera>();
 		Light mainLight = mainCam.AddComponent<Light>();
 		mainLight.range = 30;
 		mainLight.intensity = 0.5f;
 		mainCam.name = "MainCam";
 		mainCam.transform.position = new Vector3(CamLat,-5, CamLon);
 		mainCam.transform.localEulerAngles = new Vector3(-90,270,0);
-		mainCam.AddComponent ("CameraController");
+		mainCam.AddComponent <CameraController>();
 
 		GameObject background = GameObject.CreatePrimitive(PrimitiveType.Plane);
 		background.name = "Background";
 		background.transform.position = new Vector3(CamLat,0.5f, CamLon);
 		background.transform.localScale = new Vector3(10,10,10);
 		background.transform.localEulerAngles = new Vector3(0,0,180);
-		background.renderer.material.mainTexture = Resources.Load ("bg") as Texture;
-		background.renderer.material.name = "Texture_Background";
-		background.renderer.material.color = Color.gray;
-		background.renderer.material.mainTextureScale = new Vector2 (500,500);
+		background.GetComponent<Renderer>().material.mainTexture = Resources.Load ("bg") as Texture;
+		background.GetComponent<Renderer>().material.name = "Texture_Background";
+		background.GetComponent<Renderer>().material.color = Color.gray;
+		background.GetComponent<Renderer>().material.mainTextureScale = new Vector2 (500,500);
 	}
 
 
@@ -337,7 +336,7 @@ public class main : MonoBehaviour {
 	public void readSettingsFile(string nomFile){
 		string pathString = path + "MapsSettings/" + nomFile + "Settings.osm";
 		string line;
-		int etages = 1;
+		int etages = 5;
 		long id;
 		
 		//on lit le fichier de configuration

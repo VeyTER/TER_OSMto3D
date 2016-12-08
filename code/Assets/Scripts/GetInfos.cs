@@ -9,17 +9,17 @@ public class GetInfos : MonoBehaviour {
 
 		NodeGroup ngp = null;
 
-		foreach (NodeGroup ng in main.nodeGroups) {
+		foreach (NodeGroup ng in main.nodeGroups){
 
 			if(ng.id == id){
 				ngp = ng;
 			}
 		}
 
-		main.panel.SetActive (true);
-		Text nomBatiment = GameObject.Find ("NomBatiment").GetComponent<Text>();
-		Text temperature = GameObject.Find ("Temperature").GetComponent<Text>();
-		Text humidite = GameObject.Find ("Humidite").GetComponent<Text>();
+		main.panel.SetActive(true);
+		Text nomBatiment = GameObject.Find("NomBatiment").GetComponent<Text>();
+		Text temperature = GameObject.Find("Temperature").GetComponent<Text>();
+		Text humidite = GameObject.Find("Humidite").GetComponent<Text>();
 
 		nomBatiment.text = ngp.GetTagValue ("name");
 		temperature.text = "Temperature : " + ngp.GetTagValue ("temperature");
