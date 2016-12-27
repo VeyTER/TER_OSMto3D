@@ -21,12 +21,15 @@ public class main : MonoBehaviour {
 	public static GameObject[] mainNodes;
 	public static GameObject panel = null;
 
+    //test fonction de gestFile
+    public GestFile f = new GestFile();
+ 
 	// Fonction lancée à l'initialisation de la scene
 	void Start () {
 
 		SetUpUI ();
-		readFile (fileName);
-		createFile (fileName);
+		f.readFileOSM(fileName);
+		f.createResumeFile(fileName);
 		// si la carte n'a pas de fichier de parametre on le créé
 		if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
 			createSettingsFile (fileName);	
@@ -35,6 +38,8 @@ public class main : MonoBehaviour {
 			readSettingsFile (fileName);
 		}
 
+        //test//
+        /*
 		buildNodes ();
 		buildWalls ();
 		// recommandé respecter un ration de interv/taille = 5 avec 0.01 0.002 si pas beaucoup de batiments
@@ -44,6 +49,7 @@ public class main : MonoBehaviour {
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");
 		panel.SetActive(false);
+        */
 	}
 
 

@@ -10,7 +10,15 @@ public class NodeGroup {
 	public LinkedList <Node> list;
 	public Hashtable tags;
 	public float minLon, maxLon, minLat, maxLat;
-
+    public string country;
+    public string region;
+    public string town;
+    public string district;
+    public float temperature;
+    public int nbFloors;
+    public string name;
+    
+    //constructeur
 	public NodeGroup(long id){
 		this.id = id;
 		this.nodes = new ArrayList ();
@@ -21,10 +29,38 @@ public class NodeGroup {
 		this.maxLon = 0;
 		this.minLat = 0;
 		this.maxLat = 0;
+        this.country = "country";
+        this.region = "region";
+        this.town = "town";
+        this.district = "district";
+        this.temperature = 0;
+        this.nbFloors = 1;
+        this.name = "unknown";
 	}
 
-	// ajoute une node à l'ensemble 
-	public void addNode(Node n){
+    //Surcharge du constructeur
+    public NodeGroup(long id,string country, string region, string town, string district, string name)
+    {
+        this.id = id;
+        this.nodes = new ArrayList();
+        this.decomposition = new ArrayList();
+        this.tags = new Hashtable();
+        this.list = new LinkedList<Node>();
+        this.minLon = 0;
+        this.maxLon = 0;
+        this.minLat = 0;
+        this.maxLat = 0;
+        this.country = country;
+        this.region = region;
+        this.town = town;
+        this.district = district;
+        this.temperature = 0;
+        this.nbFloors = 1;
+        this.name = name;
+    }
+
+    // ajoute une node à l'ensemble 
+    public void addNode(Node n){
 		this.nodes.Add (n);
 	}
 
@@ -290,14 +326,76 @@ public class NodeGroup {
 	
 	}
 
+    // Accesseurs de l'atribut de country
+    public void setCountry(string country)
+    {
+        this.country = country;
+    }
+    public string getCountry()
+    {
+        return this.country;
+    }
 
+    // Accesseurs de l'atribut de region
+    public void setRegion(string region)
+    {
+        this.region = region;
+    }
+    public string getRegion()
+    {
+        return this.region;
+    }
 
+    // Accesseurs de l'atribut de town
+    public void setTown(string town)
+    {
+        this.town = town;
+    }
+    public string getTown()
+    {
+        return this.town;
+    }
 
+    // Accesseurs de l'atribut de district
+    public void setDistrict(string district)
+    {
+        this.district = district;
+    }
+    public string getDistrict()
+    {
+        return this.district;
 
+    }
 
+    // Accesseurs de l'atribut de temperature
+    public void setTemperature(float temperature)
+    {
+        this.temperature = temperature;
+    }
+    public float getTemperature()
+    {
+        return this.temperature;
+    }
 
+    // Accesseurs de l'atribut de nbFloors
+    public void setNbFloors(int nbFloors)
+    {
+        this.nbFloors = nbFloors;
+    }
+    public int getNbFloors()
+    {
+        return this.nbFloors;
+    }
 
+    // Accesseurs de l'atribut de name
+    public void setName(string name)
+    {
+        this.name = name;
+    }
+    public string getName()
+    {
+        return this.name;
 
-
+    }
 
 }

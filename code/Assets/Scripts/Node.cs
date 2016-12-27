@@ -18,8 +18,30 @@ public class Node {
 		this.longitude = lon;
 	}
 
+  
 	public string toString(){
 		return "Node ["+this.id+"] : ("+this.latitude+" ; "+this.longitude+")"; 
 	}
 
+    //Accesseurs de latitutde
+    public void setLatitude(float lat)
+    {
+        this.latitude = lat;
+    }
+
+    public float getLatitude()
+    {
+        return this.latitude;
+    }
+
+    //Accesseurs de longitude
+    public void setLongitude(float lon)
+    {
+        this.longitude = lon;
+    }
+
+    public float getLongitude()
+    {
+        return this.longitude;
+    }
 }
