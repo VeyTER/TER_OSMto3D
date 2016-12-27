@@ -33,8 +33,7 @@ public class GestFile
 
     //Constructeur
     public GestFile()
-    {
-        
+    {   
     }
 
     /// <summary>
@@ -100,7 +99,7 @@ public class GestFile
 
                         foreach (Node n in nodes)
                         {
-                            // on ajoute le node a la lsite de ceux qui compose le node groupe
+                            // on ajoute le node a la liste de ceux qui compose le node groupe
                             if (n.id == reference)
                             {
                                 current.addNode(n);

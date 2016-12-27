@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class main : MonoBehaviour {
 
-	// liste des nodes ( structure de donnée )
-	private ArrayList nodes = new ArrayList ();
+    // liste des nodes ( structure de donnée )
+	private ArrayList nodes = new ArrayList();
 	// liste des groupes de nodes ( structure de donnée )
 	public static ArrayList nodeGroups = new ArrayList ();
 	// compteur de nodes et groupe de nodes respectivement
