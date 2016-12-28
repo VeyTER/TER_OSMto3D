@@ -13,6 +13,8 @@ public class main : MonoBehaviour {
     private float minlat, maxlat, minlon, maxlon;
 	// chemin d'acces et nom du fichier
 	private string path = @"./Assets/";
+	// "map" est la valeur qu'on met par defaut dans fileName. 
+	// Mais celle-ci sera écrasée par la valeur qu'on met dans File Name dans ScriptGameObject (sur Unity)
 	public string fileName = "map";
 	// listes des gameObjects créés dans la scene
 	public static GameObject[] mainWalls;
@@ -41,7 +43,7 @@ public class main : MonoBehaviour {
 		buildNodes ();
 		buildWalls ();
 		// recommandé respecter un ration de interv/taille = 5 avec 0.01 0.002 si pas beaucoup de batiments
-		buildRoofs (0.03f,0.006f);
+		//buildRoofs (0.03f,0.006f); //probleme de format dans la fonction, à commenter pour le moment
 		buildMainCameraBG ();
 
 		// on recupere la reference du panneau et on le desactive
@@ -135,8 +137,8 @@ public class main : MonoBehaviour {
 		float CamLat, CamLon;
 
 		// On centre la camera 
-		CamLat = (minlat + maxlat) / 2;
-		CamLon = (minlon + maxlon) / 2;
+		CamLat = (f.minlat + f.maxlat) / 2;
+		CamLon = (f.minlon + f.maxlon) / 2;
 		GameObject mainCam = new GameObject ();
 		mainCam.AddComponent <Camera>();
 		Light mainLight = mainCam.AddComponent<Light>();

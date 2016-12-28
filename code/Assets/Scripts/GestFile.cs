@@ -102,7 +102,6 @@ public class GestFile
             // on recupere les batiments
             if (line.Contains("<way"))
             {
-
                 // on créé un nouveau groupement de nodes
                 NodeGroup current = new NodeGroup(long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" visible") - line.IndexOf("id=") - 4)));
 
