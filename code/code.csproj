@@ -78,11 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\CameraController.cs" />
-    <Compile Include="Assets\Scripts\TRGDelaunay.cs" />
     <Compile Include="Assets\Scripts\GestFile.cs" />
     <Compile Include="Assets\Scripts\GetInfos.cs" />
     <Compile Include="Assets\Scripts\Node.cs" />
     <Compile Include="Assets\Scripts\NodeGroup.cs" />
+    <Compile Include="Assets\Scripts\TRGDelaunay.cs" />
+    <Compile Include="Assets\Scripts\Triangle.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\main.cs" />
   </ItemGroup>
