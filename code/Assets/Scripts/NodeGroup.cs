@@ -17,6 +17,7 @@ public class NodeGroup {
     public float temperature;
     public int nbFloors;
     public string name;
+    public int nbNode;
     
     //constructeur
 	public NodeGroup(long id){
@@ -36,6 +37,7 @@ public class NodeGroup {
         this.temperature = 0;
         this.nbFloors = 1;
         this.name = "unknown";
+        this.nbNode = 0;
 	}
 
     //Surcharge du constructeur
@@ -62,11 +64,12 @@ public class NodeGroup {
     // ajoute une node à l'ensemble 
     public void addNode(Node n){
 		this.nodes.Add (n);
+        this.nbNode++;
 	}
 
 	// retourne la node demandée 
 	public Node getNode(int i){
-		return (Node)this.nodes [i];
+		return (Node)this.nodes[i];
 	}
 
 	// ajoute un tag au NodeGroup

@@ -28,10 +28,14 @@ public class main : MonoBehaviour {
 	void Start () {
 
 		SetUpUI ();
-		f.readFileOSM(fileName);
-		f.createResumeFile(fileName);
-		// si la carte n'a pas de fichier de parametre on le créé
-		if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
+        //f.readFileOSM(fileName);
+        //f.createResumeFile(fileName);
+
+        readFile(fileName);
+        createFile(fileName);
+
+        // si la carte n'a pas de fichier de parametre on le créé
+        if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
 			createSettingsFile (fileName);	
 		}
 		else{
@@ -39,7 +43,7 @@ public class main : MonoBehaviour {
 		}
 
         //test//
-        /*
+        
 		buildNodes ();
 		buildWalls ();
 		// recommandé respecter un ration de interv/taille = 5 avec 0.01 0.002 si pas beaucoup de batiments
@@ -49,7 +53,7 @@ public class main : MonoBehaviour {
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");
 		panel.SetActive(false);
-        */
+        
 	}
 
 
@@ -142,8 +146,11 @@ public class main : MonoBehaviour {
 
 	// créé un fichier propre ou les informations sont résumées
 	public void createFile(string nomFile){
-
-		string pathString = path + "MapsResumed/" + nomFile + "Resumed.osm";
+        foreach (NodeGroup ngp in nodeGroups)
+        {
+            modifPoint(ngp);
+        }
+        string pathString = path + "MapsResumed/" + nomFile + "Resumed.osm";
 		string buildingName;
 
 		//on créé le fichier et on va écrire dedans
@@ -160,6 +167,7 @@ public class main : MonoBehaviour {
 		// on réécrit la liste des batiments
 		file.WriteLine ("\t<buildingList number=\""+ buildingCounter +"\" >");
 		foreach (NodeGroup ngp in nodeGroups) {
+
 			if(ngp.isBuilding()){
 				//on récupère le nom du batiment
 				buildingName = "unknown";
@@ -208,6 +216,7 @@ public class main : MonoBehaviour {
 	// place les murs dans la scène
 	public void buildWalls(){
 		foreach (NodeGroup ngp in nodeGroups) {
+            modifPoint(ngp);
 			if(ngp.isBuilding()){
 
 
@@ -414,4 +423,22 @@ public class main : MonoBehaviour {
 		GameObject eventSystem = (GameObject) GameObject.Instantiate (Resources.Load("myEventSystem"));
  
 	}
+    public void modifPoint(NodeGroup ngp)
+    {
+        for (int i = 0; i < ngp.nbNode - 2; i++)
+        {
+            float nouvLat, nouvLon;
+            nouvLat = (-((ngp.getNode(i + 1).getLongitude() - ngp.getNode(i).getLongitude()) * (ngp.getNode(i + 2).getLongitude() - ngp.getNode(i + 1).getLongitude())) / (ngp.getNode(i + 1).getLatitude() - ngp.getNode(i).getLatitude()) + ngp.getNode(i + 1).getLatitude());
+            nouvLon = (-((ngp.getNode(i).getLatitude() - ngp.getNode(i + 1).getLatitude()) * (ngp.getNode(i + 2).getLatitude() - ngp.getNode(i + 1).getLatitude())) / (ngp.getNode(i).getLongitude() - ngp.getNode(i + 1).getLongitude()) + ngp.getNode(i + 1).getLongitude());
+
+            if ((nouvLat - ngp.getNode(i + 2).getLatitude()) < (nouvLon - ngp.getNode(i + 2).getLongitude()))
+            {
+                ngp.getNode(i + 2).setLatitude(nouvLat);
+            }
+            else
+            {
+                ngp.getNode(i + 2).setLongitude(nouvLon);
+            }
+        }
+    }
 }
