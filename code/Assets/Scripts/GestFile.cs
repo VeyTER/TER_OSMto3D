@@ -6,16 +6,16 @@ using System.Collections.Generic;
 public class GestFile
 {
 
-    // compteur de nodes et groupe de nodes respectivements
+	// compteurs de nodes et groupes de nodes (batiments puis routes) respectivement
     public int counter;
     public int buildingCounter;
-    // coordonnées min et max de la carte
-    public float minlat, maxlat, minlon, maxlon;
+	public int highwayCounter;
+	// coordonnées min et max de la carte
+    private float minlat, maxlat, minlon, maxlon;
    
-    // chemin d'acces et nom du fichier par deffaut
+    // chemin d'acces et nom du fichier par defaut
     private string path = @"./Assets/";
-    private string fileName = "map";
-
+    private string fileName;
 
     // Arraylist permettant de stocker les balises
     private ArrayList cou = new ArrayList();
@@ -64,8 +64,10 @@ public class GestFile
     /// <param name="nameMap"> nom du fichier ".osm" dont on doit extraire les infos </param>
     public void readFileOSM(string nameMap)
     {
+		int cpt1 = 0, cpt2 = 0, cpt3 = 0, cpt4 = 0, cpt5 = 0, cpt6 = 0, cpt7 = 0;
         counter = 0;
         buildingCounter = 0;
+		highwayCounter = 0;
         string line;
 
         long id = 0;
@@ -85,9 +87,13 @@ public class GestFile
                 maxlat = float.Parse(line.Substring(line.IndexOf("maxlat=") + 8, 9)) * 1000f;
                 minlon = float.Parse(line.Substring(line.IndexOf("minlon=") + 8, 9)) * 1000f;
                 maxlon = float.Parse(line.Substring(line.IndexOf("maxlon=") + 8, 9)) * 1000f;
+
+				main.minlat = minlat;
+				main.maxlat = maxlat;
+				main.minlon = minlon;
+				main.maxlon = maxlon;
             }
-
-
+				
             // on recupère les nodes
             if (line.Contains("<node"))
             {
@@ -141,6 +147,26 @@ public class GestFile
                         {
                             buildingCounter++;
                         }
+						if (key.Equals("highway") && (value.Equals("primary") || value.Equals("secondary") || value.Equals("tertiary") 
+							|| value.Equals("unclassified") || value.Equals("residential") || value.Equals("service")))// || value.Equals("footway")) )
+						{
+							highwayCounter++;
+						}
+						if (key.Equals("highway") && (value.Equals("primary")  || value.Equals("tertiary") 
+							|| value.Equals("unclassified") || value.Equals("residential") || value.Equals("service")))// || value.Equals("footway")) )
+							cpt1++;
+						if (key.Equals ("highway") && value.Equals ("secondary"))
+							cpt2++;
+						if (key.Equals ("highway") && value.Equals ("tertiary"))
+							cpt3++;
+						if (key.Equals ("highway") && value.Equals ("unclassified"))
+							cpt4++;
+						if (key.Equals ("highway") && value.Equals ("residential"))
+							cpt5++;
+						if (key.Equals ("highway") && value.Equals ("service"))
+							cpt6++;
+						if (key.Equals ("highway") && value.Equals ("footway"))
+							cpt7++;
                     }
 
                     line = file.ReadLine();
@@ -151,7 +177,18 @@ public class GestFile
         }
 
         file.Close();
-        //Debug.Log ("There were "+ counter +" nodes.");
+        Debug.Log ("There are "+ counter +" nodes.");
+		Debug.Log ("There are "+ main.nodeGroups.Count +" ways.");
+		Debug.Log ("There are "+ buildingCounter +" buildings.");
+		Debug.Log ("There are "+ highwayCounter +" highways.");
+		Debug.Log (cpt1 + " primary.");
+		Debug.Log (cpt2 + " secondary.");
+		Debug.Log (cpt3 + " tertiary.");
+		Debug.Log (cpt4 + " unclassified.");
+		Debug.Log (cpt5 + " residential.");
+		Debug.Log (cpt6 + " service.");
+		Debug.Log (cpt7 + " footway.");
+
     }
 
     ///</summary>

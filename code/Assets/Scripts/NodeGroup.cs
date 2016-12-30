@@ -74,9 +74,49 @@ public class NodeGroup {
 		this.tags.Add (key, value);
 	}
 
-	// 
+	// retourne vrai si le nodeGroup correspond à un batiment
 	public bool isBuilding(){
 		return this.tags.ContainsKey ("building");
+	}
+
+	// retourne vrai si le nodeGroup correspond à une route
+	public bool isHighway(){
+		return this.tags.ContainsKey ("highway");
+	}
+
+	// vrai si on a une route de type "primaire"
+	public bool isPrimary(){
+		return this.tags.ContainsValue ("primary");
+	}
+
+	// vrai si on a une route de type "secondaire"
+	public bool isSecondary(){
+		return this.tags.ContainsValue ("secondary");
+	}
+
+	// vrai si on a une route de type "tertiaire"
+	public bool isTertiary(){
+		return this.tags.ContainsValue ("tertiary");
+	}
+
+	// vrai si on a une route de type "non classifiée"
+	public bool isUnclassified(){
+		return this.tags.ContainsValue ("unclassified");
+	}
+
+	// vrai si on a une route de type "résidentielle"
+	public bool isResidential(){
+		return this.tags.ContainsValue ("residential");
+	}
+
+	// vrai si on a une route de type "service"
+	public bool isService(){
+		return this.tags.ContainsValue ("service");
+	}
+
+	// vrai si on a une route de type "chemin piétons"
+	public bool isFootway(){
+		return this.tags.ContainsValue ("footway");
 	}
 
 	//teste l'egalité de deux NodeGroup
@@ -84,7 +124,7 @@ public class NodeGroup {
 		return this.id == ng.id;
 	}
 
-	// renvoie la valeur du tag si la clé exitste
+	// renvoie la valeur du tag si la clé existe
 	public string GetTagValue(string key){
 		if (this.tags.ContainsKey(key)) {
 			return this.tags [key].ToString ();
@@ -107,7 +147,6 @@ public class NodeGroup {
 		determinant = abx * dy - aby * dx;
 
 		return (determinant >= 0);
-	
 	}
 
 
@@ -326,7 +365,7 @@ public class NodeGroup {
 	
 	}
 
-    // Accesseurs de l'atribut de country
+    // Accesseurs de l'attribut de country
     public void setCountry(string country)
     {
         this.country = country;
@@ -336,7 +375,7 @@ public class NodeGroup {
         return this.country;
     }
 
-    // Accesseurs de l'atribut de region
+    // Accesseurs de l'attribut de region
     public void setRegion(string region)
     {
         this.region = region;
@@ -346,7 +385,7 @@ public class NodeGroup {
         return this.region;
     }
 
-    // Accesseurs de l'atribut de town
+    // Accesseurs de l'attribut de town
     public void setTown(string town)
     {
         this.town = town;
@@ -356,7 +395,7 @@ public class NodeGroup {
         return this.town;
     }
 
-    // Accesseurs de l'atribut de district
+    // Accesseurs de l'attribut de district
     public void setDistrict(string district)
     {
         this.district = district;
@@ -367,7 +406,7 @@ public class NodeGroup {
 
     }
 
-    // Accesseurs de l'atribut de temperature
+    // Accesseurs de l'attribut de temperature
     public void setTemperature(float temperature)
     {
         this.temperature = temperature;
@@ -377,7 +416,7 @@ public class NodeGroup {
         return this.temperature;
     }
 
-    // Accesseurs de l'atribut de nbFloors
+    // Accesseurs de l'attribut de nbFloors
     public void setNbFloors(int nbFloors)
     {
         this.nbFloors = nbFloors;
@@ -387,7 +426,7 @@ public class NodeGroup {
         return this.nbFloors;
     }
 
-    // Accesseurs de l'atribut de name
+    // Accesseurs de l'attribut de name
     public void setName(string name)
     {
         this.name = name;

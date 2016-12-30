@@ -5,7 +5,8 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour {
 
 	public bool wallActive = true;
-	public bool nodeActive = true;
+	public bool highwayNodeActive = true;
+	public bool buildingNodeActive = true;
 
 	public void SetWallActive(){
 
@@ -29,26 +30,48 @@ public class UIManager : MonoBehaviour {
 		wallActive = !wallActive;
 	}
 
-	public void SetNodeActive(){
+	public void SetBuildingNodeActive(){
 		
-		GameObject[] nodes = GameObject.FindGameObjectsWithTag("Node");
+		GameObject[] nodes = GameObject.FindGameObjectsWithTag("BuildingNode");
 
 		if (nodes.Length == 0) {
-			nodes = main.mainNodes;
+			nodes = main.mainBuildingNodes;
 		}
 		else{
-			main.mainNodes = nodes;
+			main.mainBuildingNodes = nodes;
 		}
 
 		foreach(GameObject go in nodes){
-			if (nodeActive) {
+			if (buildingNodeActive) {
 				go.SetActive(false);
 			} 
 			else {
 				go.SetActive(true);
 			}
 		}
-		nodeActive = !nodeActive;
+		buildingNodeActive = !buildingNodeActive;
+	}
+
+	public void SetHighwayNodeActive(){
+
+		GameObject[] nodes = GameObject.FindGameObjectsWithTag("HighwayNode");
+
+		if (nodes.Length == 0) {
+			nodes = main.mainHighwayNodes;
+		}
+		else{
+			main.mainHighwayNodes = nodes;
+		}
+
+		foreach(GameObject go in nodes){
+			if (highwayNodeActive) {
+				go.SetActive(false);
+			} 
+			else {
+				go.SetActive(true);
+			}
+		}
+		highwayNodeActive = !highwayNodeActive;
 	}
 
 	public void SetPanelInnactive(){
