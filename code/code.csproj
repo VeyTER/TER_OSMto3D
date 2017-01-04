@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\GetInfos.cs" />
     <Compile Include="Assets\Scripts\Node.cs" />
     <Compile Include="Assets\Scripts\NodeGroup.cs" />
+    <Compile Include="Assets\Scripts\Tree.cs" />
     <Compile Include="Assets\Scripts\TRGDelaunay.cs" />
     <Compile Include="Assets\Scripts\Triangle.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
