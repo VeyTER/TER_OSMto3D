@@ -67,6 +67,13 @@ public class NodeGroup {
         this.nbNode++;
 	}
 
+    //supprime la n ieme valeur de node 
+    public void removeNode(int n)
+    {
+        this.nodes.RemoveAt(n);
+        this.nbNode--;
+    }
+
 	// retourne la node demandée 
 	public Node getNode(int i){
 		return (Node)this.nodes[i];

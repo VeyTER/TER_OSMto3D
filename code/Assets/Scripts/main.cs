@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class main : MonoBehaviour {
 
@@ -148,7 +149,7 @@ public class main : MonoBehaviour {
 	public void createFile(string nomFile){
         foreach (NodeGroup ngp in nodeGroups)
         {
-            modifPoint(ngp);
+            //modifPoint(ngp);
         }
         string pathString = path + "MapsResumed/" + nomFile + "Resumed.osm";
 		string buildingName;
@@ -356,6 +357,7 @@ public class main : MonoBehaviour {
 		
 		//on lit le fichier de configuration
 		System.IO.StreamReader file = new System.IO.StreamReader (pathString);
+        System.Random rdm = new System.Random();
 
 		while((line = file.ReadLine()) != null)
 		{
@@ -371,8 +373,9 @@ public class main : MonoBehaviour {
 				foreach( NodeGroup ngp in nodeGroups) {
 					if(ngp.equals(ng)){
 						ngp.addTag("etages",etages.ToString());
-						ngp.addTag("temperature", (int) Random.Range(0,35) + "°C"); 
-						ngp.addTag("humidité",(int) Random.Range(1,10) + "%");
+						ngp.addTag("temperature", (int) rdm.Next(0,35) + "°C"); 
+						ngp.addTag("humidité",(int) rdm.Next(1,10) + "%");
+                        
 					}
 				}
 			}
@@ -425,20 +428,103 @@ public class main : MonoBehaviour {
 	}
     public void modifPoint(NodeGroup ngp)
     {
+        float nouvLat, nouvLon;
+        float xa,xb,xc,ya,yb,yc;
+        double a,d;
+        float coef, dist;
+
         for (int i = 0; i < ngp.nbNode - 2; i++)
         {
-            float nouvLat, nouvLon;
-            nouvLat = (-((ngp.getNode(i + 1).getLongitude() - ngp.getNode(i).getLongitude()) * (ngp.getNode(i + 2).getLongitude() - ngp.getNode(i + 1).getLongitude())) / (ngp.getNode(i + 1).getLatitude() - ngp.getNode(i).getLatitude()) + ngp.getNode(i + 1).getLatitude());
-            nouvLon = (-((ngp.getNode(i).getLatitude() - ngp.getNode(i + 1).getLatitude()) * (ngp.getNode(i + 2).getLatitude() - ngp.getNode(i + 1).getLatitude())) / (ngp.getNode(i).getLongitude() - ngp.getNode(i + 1).getLongitude()) + ngp.getNode(i + 1).getLongitude());
+            xa = ngp.getNode(i).getLongitude();
+            ya = ngp.getNode(i).getLatitude();
 
-            if ((nouvLat - ngp.getNode(i + 2).getLatitude()) < (nouvLon - ngp.getNode(i + 2).getLongitude()))
+            xb = ngp.getNode(i+1).getLongitude();
+            yb = ngp.getNode(i+1).getLatitude();
+
+            xc = ngp.getNode(i+2).getLongitude();
+            yc = ngp.getNode(i+2).getLatitude();
+
+            if (((xb-xa)/(xc-xb))-((yb-ya)/(yc-yb)) < 0.3)
             {
-                ngp.getNode(i + 2).setLatitude(nouvLat);
+
+                nouvLat = (-((xb - xa) * (xc - xb)) / (yb - ya)) + yb;
+                nouvLon = (-((yb - ya) * (yc - yb)) / (xb - xa)) + xb;
+                a = Math.Sqrt(Math.Pow(xc - xb, 2) + Math.Pow(yc - yb, 2));
+                if ((yc - nouvLat) < (xc - nouvLon))
+                {
+                    d = Math.Sqrt(Math.Pow(xc - xb, 2) + Math.Pow(nouvLat - yb, 2));
+                    coef = (float)(a / d);
+                    dist = nouvLat - yb;
+                    nouvLat = yb + (dist * coef);
+                    dist = xc - xb;
+                    xc = xb + (dist * coef);
+                    ngp.getNode(i + 2).setLatitude(nouvLat);
+                    ngp.getNode(i + 2).setLongitude(xc);
+                }
+                else
+                {
+                    d = Math.Sqrt(Math.Pow(nouvLon - xb, 2) + Math.Pow(yc - yb, 2));
+                    coef = (float)(a / d);
+                    dist = nouvLon - xb;
+                    nouvLon = xb + (dist * coef);
+                    dist = yc - yb;
+                    yc = yb + (dist * coef);
+                    //Math.Pow(ngp.getNode(i).getLatitude(),2);
+                    ngp.getNode(i + 2).setLongitude(nouvLon);
+                    ngp.getNode(i + 2).setLatitude(yc);
+                }
+                
             }
             else
             {
-                ngp.getNode(i + 2).setLongitude(nouvLon);
+                if (i < ngp.nbNode - 3)
+                    ngp.removeNode(i + 2);
             }
         }
+        xa = ngp.getNode(1).getLongitude();
+        ya = ngp.getNode(1).getLatitude();
+
+        xb = ngp.getNode(0).getLongitude();
+        yb = ngp.getNode(0).getLatitude();
+
+        xc = ngp.getNode(ngp.nbNode-1).getLongitude();
+        yc = ngp.getNode(ngp.nbNode-1).getLatitude();
+
+        nouvLon = (-((yb - ya) * (yc - yb)) / (xc - xb));
+        nouvLat = (-((xb - xa) * (xc - xb)) / (yc - yb));
+        /*
+         * 
+         * a finir pour ajuster le point du milieu
+         * 
+         * 
+         * 
+         * 
+         * a = Math.Sqrt(Math.Pow(xc - xb, 2) + Math.Pow(yc - yb, 2));
+        if ((yb - nouvLat) < (xb - nouvLon))
+        {
+            d = Math.Sqrt(Math.Pow(xc - xb, 2) + Math.Pow(nouvLat - yb, 2));
+            coef = (float)(a / d);
+            dist = nouvLat - yb;
+            nouvLat = yb + (dist * coef);
+            dist = xc - xb;
+            xc = xb + (dist * coef);
+            ngp.getNode(i + 2).setLatitude(nouvLat);
+            ngp.getNode(i + 2).setLongitude(xc);
+        }
+        else
+        {
+            d = Math.Sqrt(Math.Pow(nouvLon - xb, 2) + Math.Pow(yc - yb, 2));
+            coef = (float)(a / d);
+            dist = nouvLon - xb;
+            nouvLon = xb + (dist * coef);
+            dist = yc - yb;
+            yc = yb + (dist * coef);
+            //Math.Pow(ngp.getNode(i).getLatitude(),2);
+            ngp.getNode(i + 2).setLongitude(nouvLon);
+            ngp.getNode(i + 2).setLatitude(yc);
+        }
+
+        ngp.getNode(0).setLongitude(2);
+        */
     }
 }
