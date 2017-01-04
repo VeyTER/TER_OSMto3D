@@ -38,14 +38,14 @@ public class main : MonoBehaviour {
 		SetUpUI ();
 		f.readFileOSM(fileName);
 		f.createResumeFile(fileName);
-		// si la carte n'a pas de fichier de parametre on le créé
-		if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
+        // si la carte n'a pas de fichier de parametre on le créé
+        /*if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
 			f.createSettingsFile (fileName);	
 		}
 		else{
             f.readSettingsFile (fileName);
-		}
-
+		}*/
+        f.createSettingsFile(fileName);
         //test//
         
 		buildNodes ();

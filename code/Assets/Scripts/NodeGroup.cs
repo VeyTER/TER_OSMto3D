@@ -326,7 +326,7 @@ public class NodeGroup {
 	
 	}
 
-    // Accesseurs de l'atribut de country
+    // Accesseurs de l'attribut de country
     public void setCountry(string country)
     {
         this.country = country;
@@ -336,7 +336,7 @@ public class NodeGroup {
         return this.country;
     }
 
-    // Accesseurs de l'atribut de region
+    // Accesseurs de l'attribut de region
     public void setRegion(string region)
     {
         this.region = region;
@@ -346,7 +346,7 @@ public class NodeGroup {
         return this.region;
     }
 
-    // Accesseurs de l'atribut de town
+    // Accesseurs de l'attribut de town
     public void setTown(string town)
     {
         this.town = town;
@@ -356,7 +356,7 @@ public class NodeGroup {
         return this.town;
     }
 
-    // Accesseurs de l'atribut de district
+    // Accesseurs de l'attribut de district
     public void setDistrict(string district)
     {
         this.district = district;
@@ -367,7 +367,7 @@ public class NodeGroup {
 
     }
 
-    // Accesseurs de l'atribut de temperature
+    // Accesseurs de l'attribut de temperature
     public void setTemperature(float temperature)
     {
         this.temperature = temperature;
@@ -377,7 +377,7 @@ public class NodeGroup {
         return this.temperature;
     }
 
-    // Accesseurs de l'atribut de nbFloors
+    // Accesseurs de l'attribut de nbFloors
     public void setNbFloors(int nbFloors)
     {
         this.nbFloors = nbFloors;
@@ -387,7 +387,7 @@ public class NodeGroup {
         return this.nbFloors;
     }
 
-    // Accesseurs de l'atribut de name
+    // Accesseurs de l'attribut de name
     public void setName(string name)
     {
         this.name = name;

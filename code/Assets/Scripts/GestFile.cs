@@ -469,45 +469,55 @@ public class GestFile
     /// </summary>
     /// <param name="nameFile"> nom du fichier resume a lire </param>
  
-    public void createSettingFile(string fileName)
+    public void createSettingsFile(string fileName)
     {
 
-        // listing des balises de location "country,region,town,district"
-        foreach (NodeGroup ngp in main.nodeGroups)
-        {
-            if (!cou.Contains(ngp.country))
-            {
-                cou.Add(ngp.country);
-            }
-            if (!reg.Contains(ngp.region))
-            {
-                reg.Add(ngp.region);
-            }
-            if (!tow.Contains(ngp.town))
-            {
-                tow.Add(ngp.town);
-            }
-            if (!dis.Contains(ngp.district))
-            {
-                dis.Add(ngp.district);
-            }
-        }
-
-        string pathString = path + "MapsSettings/" + nameFile + "Settings.osm";
-        string buildingName;
+        string pathString = path + "MapsSettings/" + fileName + "Settings.osm";
 
         //on créé le fichier et on va écrire dedans
         System.IO.StreamWriter file = new System.IO.StreamWriter(pathString);
         file.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        //On crée les caractéristiques par défaut dans le monde
+        file.WriteLine("\t<earth>");
+        file.WriteLine("\t<Info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        //On crée les caractéristiques par défaut en France
+        file.WriteLine("\t\t<country c=\"France\">");
+        file.WriteLine("\t\t<Info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        //On crée les caractéristiques par défaut en Midi-Pyrenees
+        file.WriteLine("\t\t\t<region r=\"Midi-Pyrenees\">");
+        file.WriteLine("\t\t\t<Info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        //On crée les caractéristiques par défaut à Toulouse
+        file.WriteLine("\t\t\t\t<town t=\"Toulouse\">");
+        file.WriteLine("\t\t\t\t<Info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        //On crée les caractéristiques par défaut à l'UPS
+        file.WriteLine("\t\t\t\t\t<district d=\"UPS\"");
+        file.WriteLine("\t\t\t\t\t<Info nf=\"1\" roof=\"0\" type=\"flat\"/>");
+        //Ici on crée les caractéristiques des différents buildings de l'UPS si nous les avons
+        foreach (NodeGroup ngp in main.nodeGroups)
+        {
+            if (ngp.isBuilding())
+            { 
+                //On crée les caractéristiques du building ayant cet ID
+                file.WriteLine("\t\t\t\t\t\t<building id=\"" + ngp.id + ">");
+                file.WriteLine("\t\t\t\t\t\t\t<Info name=\"" + ngp.name + "\"  nf=\"4\" roof=\"0\" type=\"flat\"/>");
+                file.WriteLine("\t\t\t\t\t\t</building>");
+            }
+        }
 
+        file.WriteLine("\t\t\t\t\t</district>");
+        //Si on veut rajouter un quartier de la ville de Toulouse, le faire ici
 
+        file.WriteLine("\t\t\t\t</town>");
+        //Si on veut rajouter une ville de la région Midi-Pyrenees, le faire ici
 
+        file.WriteLine("\t\t\t</region>");
+        //Si on veut rajouter une région de France, le faire ici
 
+        file.WriteLine("\t\t</country>");
+        //Si on veut rajouter des pays, les ajouter à partir d'ici
 
-
-
-        file.WriteLine("\t</buildingList>");
-
+        file.WriteLine("\t</earth>");
+        //SI on veut changer de planète, pourquoi pas le faire ici :D
         file.WriteLine("</xml>");
 
         file.Close();

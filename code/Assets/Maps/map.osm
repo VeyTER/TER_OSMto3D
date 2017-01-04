@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="CGImap 0.4.0 (6506 thorn-04.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
  <bounds minlat="43.5618600" minlon="1.4677700" maxlat="43.5619500" maxlon="1.4678800"/>
  <node id="259096615" visible="true" version="3" changeset="832895" timestamp="2009-03-19T21:44:06Z" user="Florian Birée" uid="26867" lat="43.5623203" lon="1.4676467"/>
@@ -41,5 +41,40 @@
   <nd ref="259096615"/>
   <tag k="building" v="yes"/>
   <tag k="name" v="IRIT"/>
+ </way>
+ <way id="23905090" visible="true" version="9" changeset="14763690" timestamp="2013-01-23T23:34:13Z" user="don-vip" uid="297482">
+  <nd ref="259096200"/>
+  <nd ref="286216292"/>
+  <nd ref="259096201"/>
+  <nd ref="259096202"/>
+  <nd ref="363895245"/>
+  <nd ref="259096203"/>
+  <nd ref="259096200"/>
+  <tag k="building" v="yes"/>
+  <tag k="name" v="1 A"/>
+  <tag k="ref" v="1 A"/>
+ </way>
+ <way id="18753277" visible="true" version="6" changeset="14763690" timestamp="2013-01-23T23:34:21Z" user="don-vip" uid="297482">
+  <nd ref="193560126"/>
+  <nd ref="363894964"/>
+  <nd ref="363895008"/>
+  <nd ref="363895030"/>
+  <nd ref="363895049"/>
+  <nd ref="363895063"/>
+  <nd ref="193560127"/>
+  <nd ref="193560128"/>
+  <nd ref="363894956"/>
+  <nd ref="363895118"/>
+  <nd ref="363895133"/>
+  <nd ref="363894988"/>
+  <nd ref="363895150"/>
+  <nd ref="363894982"/>
+  <nd ref="363895174"/>
+  <nd ref="363895094"/>
+  <nd ref="193560129"/>
+  <nd ref="193560126"/>
+  <tag k="building" v="yes"/>
+  <tag k="name" v="4 TP4"/>
+  <tag k="ref" v="4 TP4"/>
  </way>
 </osm>
