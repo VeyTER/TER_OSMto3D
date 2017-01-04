@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.5.8 (3020 thorn-01.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <bounds minlat="43.5608700" minlon="1.4671900" maxlat="43.5616200" maxlon="1.4682600"/>
+ <node id="192187659" visible="true" version="4" changeset="42372743" timestamp="2016-09-23T12:24:13Z" user="FredB" uid="1626" lat="43.5612591" lon="1.4666061"/>
+ <node id="192187660" visible="true" version="4" changeset="42372743" timestamp="2016-09-23T12:24:13Z" user="FredB" uid="1626" lat="43.5610062" lon="1.4668575"/>
+ <node id="192187663" visible="true" version="4" changeset="42372743" timestamp="2016-09-23T12:24:14Z" user="FredB" uid="1626" lat="43.5614435" lon="1.4669652"/>
+ <node id="192189493" visible="true" version="6" changeset="832895" timestamp="2009-03-19T21:45:07Z" user="Florian Birée" uid="26867" lat="43.5622000" lon="1.4663840"/>
+ <node id="192189494" visible="true" version="5" changeset="832895" timestamp="2009-03-19T21:45:08Z" user="Florian Birée" uid="26867" lat="43.5613744" lon="1.4671970"/>
+ <node id="192189495" visible="true" version="5" changeset="832895" timestamp="2009-03-19T21:45:07Z" user="Florian Birée" uid="26867" lat="43.5614676" lon="1.4673797"/>
+ <node id="192189496" visible="true" version="5" changeset="832895" timestamp="2009-03-19T21:45:08Z" user="Florian Birée" uid="26867" lat="43.5622949" lon="1.4665666"/>
+ <node id="259096615" visible="true" version="4" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5623036" lon="1.4676494"/>
+ <node id="267177581" visible="true" version="5" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5613363" lon="1.4678461">
+  <tag k="highway" v="crossing"/>
+ </node>
+ <node id="267178252" visible="true" version="1" changeset="537797" timestamp="2008-05-27T23:01:05Z" user="Florian Birée" uid="26867" lat="43.5598560" lon="1.4693403"/>
+ <node id="267178373" visible="true" version="2" changeset="807746" timestamp="2009-03-14T14:57:17Z" user="Florian Birée" uid="26867" lat="43.5603289" lon="1.4688719"/>
+ <node id="267178333" visible="true" version="4" changeset="42347259" timestamp="2016-09-22T13:03:48Z" user="FredB" uid="1626" lat="43.5607382" lon="1.4684361"/>
+ <node id="267178471" visible="true" version="4" changeset="832895" timestamp="2009-03-19T21:44:32Z" user="Florian Birée" uid="26867" lat="43.5621744" lon="1.4670506"/>
+ <node id="267178472" visible="true" version="3" changeset="832895" timestamp="2009-03-19T21:44:33Z" user="Florian Birée" uid="26867" lat="43.5620640" lon="1.4668371"/>
+ <node id="267179847" visible="true" version="2" changeset="807746" timestamp="2009-03-14T14:57:09Z" user="Florian Birée" uid="26867" lat="43.5612238" lon="1.4679856"/>
+ <node id="267179846" visible="true" version="4" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5614147" lon="1.4677699"/>
+ <node id="267366996" visible="true" version="4" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5619308" lon="1.4666126"/>
+ <node id="267367148" visible="true" version="5" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5615335" lon="1.4676473"/>
+ <node id="267367238" visible="true" version="5" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5614313" lon="1.4674454"/>
+ <node id="286216230" visible="true" version="4" changeset="3055718" timestamp="2009-11-07T13:30:04Z" user="Florian Birée" uid="26867" lat="43.5612133" lon="1.4673301"/>
+ <node id="286216200" visible="true" version="3" changeset="832895" timestamp="2009-03-19T21:45:02Z" user="Florian Birée" uid="26867" lat="43.5615080" lon="1.4670392"/>
+ <node id="286216239" visible="true" version="1" changeset="135347" timestamp="2008-08-08T13:24:15Z" user="Florian Birée" uid="26867" lat="43.5613971" lon="1.4676590"/>
+ <node id="286216242" visible="true" version="1" changeset="135347" timestamp="2008-08-08T13:24:16Z" user="Florian Birée" uid="26867" lat="43.5613519" lon="1.4676649"/>
+ <node id="286216235" visible="true" version="4" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5613256" lon="1.4675343"/>
+ <node id="286216246" visible="true" version="3" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5612605" lon="1.4676905">
+  <tag k="highway" v="crossing"/>
+ </node>
+ <node id="286216221" visible="true" version="4" changeset="42372743" timestamp="2016-09-23T12:24:14Z" user="FredB" uid="1626" lat="43.5611663" lon="1.4666943"/>
+ <node id="286216223" visible="true" version="4" changeset="42372743" timestamp="2016-09-23T12:24:14Z" user="FredB" uid="1626" lat="43.5611971" lon="1.4666691"/>
+ <node id="286216250" visible="true" version="1" changeset="135347" timestamp="2008-08-08T13:24:16Z" user="Florian Birée" uid="26867" lat="43.5612130" lon="1.4678046"/>
+ <node id="286216255" visible="true" version="1" changeset="135347" timestamp="2008-08-08T13:24:16Z" user="Florian Birée" uid="26867" lat="43.5612463" lon="1.4678641"/>
+ <node id="286216270" visible="true" version="3" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5615742" lon="1.4677283">
+  <tag k="amenity" v="bicycle_parking"/>
+ </node>
+ <node id="286216275" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5619677" lon="1.4676908"/>
+ <node id="286216278" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5618960" lon="1.4678414"/>
+ <node id="292314464" visible="true" version="5" changeset="42372743" timestamp="2016-09-23T12:24:14Z" user="FredB" uid="1626" lat="43.5611308" lon="1.4665337"/>
+ <node id="360289238" visible="true" version="3" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5622435" lon="1.4666611">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895271" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5615819" lon="1.4672666">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895264" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5614791" lon="1.4670649">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895286" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5620484" lon="1.4668067">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895280" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5614889" lon="1.4670826">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895253" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5615960" lon="1.4672947">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895190" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5620116" lon="1.4676469">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895201" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5621124" lon="1.4675825">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895220" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5621760" lon="1.4675514">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895304" visible="true" version="3" changeset="42353049" timestamp="2016-09-22T16:56:36Z" user="FredB" uid="1626" lat="43.5608803" lon="1.4669618">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895297" visible="true" version="4" changeset="42372743" timestamp="2016-09-23T12:24:14Z" user="FredB" uid="1626" lat="43.5611532" lon="1.4666681">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="267366926" visible="true" version="3" changeset="1512186" timestamp="2009-06-14T10:46:13Z" user="Sebastien Dinot" uid="13384" lat="43.5622808" lon="1.4662729"/>
+ <node id="718873080" visible="true" version="1" changeset="4595575" timestamp="2010-05-03T14:53:39Z" user="Florian Birée" uid="26867" lat="43.5622336" lon="1.4666252">
+  <tag k="name" v="Sud-Étudiant Rangueil"/>
+ </node>
+ <node id="1279090788" visible="true" version="2" changeset="14160986" timestamp="2012-12-05T08:57:42Z" user="Géovélo" uid="208829" lat="43.5622527" lon="1.4663015">
+  <tag k="highway" v="crossing"/>
+ </node>
+ <node id="192188017" visible="true" version="5" changeset="42372743" timestamp="2016-09-23T12:24:14Z" user="FredB" uid="1626" lat="43.5610995" lon="1.4665652"/>
+ <node id="191941839" visible="true" version="9" changeset="10231586" timestamp="2011-12-29T00:23:48Z" user="Sebastien Dinot" uid="13384" lat="43.5617008" lon="1.4685414"/>
+ <node id="286216266" visible="true" version="4" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5614546" lon="1.4680720"/>
+ <node id="286216298" visible="true" version="3" changeset="10231586" timestamp="2011-12-29T00:23:55Z" user="Sebastien Dinot" uid="13384" lat="43.5616343" lon="1.4684126"/>
+ <node id="287691540" visible="true" version="4" changeset="42345912" timestamp="2016-09-22T12:01:08Z" user="jgc" uid="219187" lat="43.5616462" lon="1.4684368"/>
+ <node id="192183077" visible="true" version="4" changeset="42345903" timestamp="2016-09-22T12:00:46Z" user="ANMON" uid="3428349" lat="43.5606808" lon="1.4666150"/>
+ <node id="4413146783" visible="true" version="1" changeset="42346171" timestamp="2016-09-22T12:13:15Z" user="FredB" uid="1626" lat="43.5598738" lon="1.4693226"/>
+ <node id="4413201867" visible="true" version="1" changeset="42347043" timestamp="2016-09-22T12:51:20Z" user="FredB" uid="1626" lat="43.5613109" lon="1.4684221"/>
+ <node id="286216258" visible="true" version="2" changeset="42347043" timestamp="2016-09-22T12:51:20Z" user="FredB" uid="1626" lat="43.5610982" lon="1.4680126"/>
+ <node id="286216263" visible="true" version="3" changeset="42347043" timestamp="2016-09-22T12:51:20Z" user="FredB" uid="1626" lat="43.5611326" lon="1.4680744"/>
+ <node id="4413209221" visible="true" version="1" changeset="42347259" timestamp="2016-09-22T13:03:48Z" user="FredB" uid="1626" lat="43.5608996" lon="1.4681481">
+  <tag k="emergency" v="assembly_point"/>
+ </node>
+ <node id="4413214332" visible="true" version="1" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5615253" lon="1.4677863"/>
+ <node id="4413214333" visible="true" version="1" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5613925" lon="1.4674768"/>
+ <node id="4413214334" visible="true" version="1" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5614526" lon="1.4674876"/>
+ <node id="267177879" visible="true" version="6" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5612272" lon="1.4676308"/>
+ <node id="4413213420" visible="true" version="1" changeset="42347407" timestamp="2016-09-22T13:11:39Z" user="FredB" uid="1626" lat="43.5615717" lon="1.4674573">
+  <tag k="emergency" v="assembly_point"/>
+ </node>
+ <node id="4413213417" visible="true" version="2" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626" lat="43.5616072" lon="1.4677965"/>
+ <node id="4413213418" visible="true" version="2" changeset="42350322" timestamp="2016-09-22T14:57:45Z" user="FredB" uid="1626" lat="43.5616268" lon="1.4678301"/>
+ <node id="4413377644" visible="true" version="1" changeset="42349233" timestamp="2016-09-22T14:27:58Z" user="FredB" uid="1626" lat="43.5614029" lon="1.4674787"/>
+ <node id="4413377645" visible="true" version="1" changeset="42349233" timestamp="2016-09-22T14:27:58Z" user="FredB" uid="1626" lat="43.5613534" lon="1.4673716"/>
+ <node id="4413377646" visible="true" version="1" changeset="42349233" timestamp="2016-09-22T14:27:58Z" user="FredB" uid="1626" lat="43.5613650" lon="1.4673604"/>
+ <node id="4413377652" visible="true" version="1" changeset="42349233" timestamp="2016-09-22T14:27:58Z" user="FredB" uid="1626" lat="43.5619272" lon="1.4672808"/>
+ <node id="363895309" visible="true" version="3" changeset="42349233" timestamp="2016-09-22T14:27:59Z" user="FredB" uid="1626" lat="43.5614172" lon="1.4671261">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895314" visible="true" version="4" changeset="42372743" timestamp="2016-09-23T12:24:14Z" user="FredB" uid="1626" lat="43.5613694" lon="1.4670386">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="4413414719" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5615920" lon="1.4678419"/>
+ <node id="4413414720" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5616128" lon="1.4678439"/>
+ <node id="4413414721" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5617521" lon="1.4677071"/>
+ <node id="4413414722" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5617555" lon="1.4676806"/>
+ <node id="4413414723" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5620768" lon="1.4676023"/>
+ <node id="4413414724" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5621451" lon="1.4675554"/>
+ <node id="4413414725" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5621599" lon="1.4675503"/>
+ <node id="4413414726" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5621848" lon="1.4675581"/>
+ <node id="4413414727" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5621917" lon="1.4675701"/>
+ <node id="4413414728" visible="true" version="1" changeset="42350322" timestamp="2016-09-22T14:57:42Z" user="FredB" uid="1626" lat="43.5621969" lon="1.4675881"/>
+ <node id="192186974" visible="true" version="6" changeset="42350322" timestamp="2016-09-22T14:57:43Z" user="FredB" uid="1626" lat="43.5610172" lon="1.4674364"/>
+ <node id="192186975" visible="true" version="5" changeset="42350322" timestamp="2016-09-22T14:57:43Z" user="FredB" uid="1626" lat="43.5612386" lon="1.4678657"/>
+ <node id="192186976" visible="true" version="5" changeset="42350322" timestamp="2016-09-22T14:57:43Z" user="FredB" uid="1626" lat="43.5609504" lon="1.4681472"/>
+ <node id="192186977" visible="true" version="5" changeset="42350322" timestamp="2016-09-22T14:57:43Z" user="FredB" uid="1626" lat="43.5607308" lon="1.4677185"/>
+ <node id="259096616" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5617293" lon="1.4682150"/>
+ <node id="259096617" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5615538" lon="1.4678782"/>
+ <node id="259096618" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5617931" lon="1.4676441"/>
+ <node id="259097774" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5607762" lon="1.4684722"/>
+ <node id="259097775" visible="true" version="4" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5608530" lon="1.4686164"/>
+ <node id="259097776" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5612148" lon="1.4682640"/>
+ <node id="259097777" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5611373" lon="1.4681158"/>
+ <node id="286216283" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5619948" lon="1.4677418"/>
+ <node id="336095562" visible="true" version="2" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5611654" lon="1.4681973">
+  <tag k="amenity" v="toilets"/>
+ </node>
+ <node id="363895228" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5622214" lon="1.4675641">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895238" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5622459" lon="1.4675396">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895292" visible="true" version="3" changeset="42350322" timestamp="2016-09-22T14:57:44Z" user="FredB" uid="1626" lat="43.5619403" lon="1.4666287">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="4413157464" visible="true" version="3" changeset="42360105" timestamp="2016-09-22T21:08:19Z" user="HelenePETIT" uid="211286" lat="43.5618683" lon="1.4680782">
+  <tag k="entrance" v="main"/>
+ </node>
+ <node id="267366953" visible="true" version="5" changeset="42353049" timestamp="2016-09-22T16:56:36Z" user="FredB" uid="1626" lat="43.5611127" lon="1.4674254"/>
+ <node id="192187662" visible="true" version="5" changeset="42372743" timestamp="2016-09-23T12:24:13Z" user="FredB" uid="1626" lat="43.5611935" lon="1.4672123">
+  <tag k="man_made" v="surveillance"/>
+  <tag k="operator" v="Université Paul Sabatier"/>
+  <tag k="surveillance" v="outdoor"/>
+ </node>
+ <way id="23905163" visible="true" version="8" changeset="42350322" timestamp="2016-09-22T14:57:43Z" user="FredB" uid="1626">
+  <nd ref="259096615"/>
+  <nd ref="4413157464"/>
+  <nd ref="259096616"/>
+  <nd ref="259096617"/>
+  <nd ref="4413414719"/>
+  <nd ref="4413414720"/>
+  <nd ref="4413213418"/>
+  <nd ref="4413414721"/>
+  <nd ref="4413414722"/>
+  <nd ref="259096618"/>
+  <nd ref="286216278"/>
+  <nd ref="286216283"/>
+  <nd ref="286216275"/>
+  <nd ref="363895190"/>
+  <nd ref="4413414723"/>
+  <nd ref="363895201"/>
+  <nd ref="4413414724"/>
+  <nd ref="4413414725"/>
+  <nd ref="363895220"/>
+  <nd ref="4413414726"/>
+  <nd ref="4413414727"/>
+  <nd ref="4413414728"/>
+  <nd ref="363895228"/>
+  <nd ref="363895238"/>
+  <nd ref="259096615"/>
+  <tag k="building" v="yes"/>
+  <tag k="name" v="IRIT"/>
+ </way>
+ <way id="23905283" visible="true" version="7" changeset="14763690" timestamp="2013-01-23T23:34:19Z" user="don-vip" uid="297482">
+  <nd ref="259097774"/>
+  <nd ref="259097775"/>
+  <nd ref="259097776"/>
+  <nd ref="259097777"/>
+  <nd ref="259097774"/>
+  <tag k="building" v="yes"/>
+  <tag k="name" v="3 PN"/>
+  <tag k="ref" v="3 PN"/>
+ </way>
+ <way id="24574877" visible="true" version="4" changeset="42346171" timestamp="2016-09-22T12:13:16Z" user="FredB" uid="1626">
+  <nd ref="267179847"/>
+  <nd ref="286216263"/>
+  <nd ref="267178333"/>
+  <nd ref="267178373"/>
+  <nd ref="4413146783"/>
+  <nd ref="267178252"/>
+  <tag k="bicycle" v="yes"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="24574876" visible="true" version="4" changeset="14763690" timestamp="2013-01-23T23:33:56Z" user="don-vip" uid="297482">
+  <nd ref="267179846"/>
+  <nd ref="267177581"/>
+  <nd ref="267179847"/>
+  <tag k="highway" v="steps"/>
+ </way>
+ <way id="24574848" visible="true" version="6" changeset="42349233" timestamp="2016-09-22T14:27:59Z" user="FredB" uid="1626">
+  <nd ref="267178471"/>
+  <nd ref="4413377652"/>
+  <nd ref="267367148"/>
+  <nd ref="267179846"/>
+  <tag k="bicycle" v="yes"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="24594815" visible="true" version="6" changeset="8100591" timestamp="2011-05-10T09:43:28Z" user="Florian Birée" uid="26867">
+  <nd ref="267366926"/>
+  <nd ref="1279090788"/>
+  <nd ref="267366996"/>
+  <nd ref="286216200"/>
+  <nd ref="363895264"/>
+  <nd ref="363895309"/>
+  <nd ref="286216230"/>
+  <nd ref="267366953"/>
+  <tag k="bicycle" v="yes"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="24594843" visible="true" version="5" changeset="42347407" timestamp="2016-09-22T13:11:40Z" user="FredB" uid="1626">
+  <nd ref="267367148"/>
+  <nd ref="286216270"/>
+  <nd ref="4413213417"/>
+  <tag k="bicycle" v="yes"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="24594846" visible="true" version="4" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626">
+  <nd ref="267367148"/>
+  <nd ref="4413214334"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="26138216" visible="true" version="1" changeset="135347" timestamp="2008-08-08T13:24:51Z" user="Florian Birée" uid="26867">
+  <nd ref="286216230"/>
+  <nd ref="286216235"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="26138217" visible="true" version="2" changeset="42347043" timestamp="2016-09-22T12:51:21Z" user="FredB" uid="1626">
+  <nd ref="267367148"/>
+  <nd ref="286216239"/>
+  <nd ref="286216242"/>
+  <nd ref="286216246"/>
+  <nd ref="286216250"/>
+  <nd ref="286216255"/>
+  <nd ref="286216258"/>
+  <nd ref="286216263"/>
+  <nd ref="4413201867"/>
+  <tag k="highway" v="footway"/>
+  <tag k="ramp" v="yes"/>
+ </way>
+ <way id="26138218" visible="true" version="2" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626">
+  <nd ref="286216266"/>
+  <nd ref="4413214332"/>
+  <nd ref="286216270"/>
+  <tag k="highway" v="cycleway"/>
+ </way>
+ <way id="26650675" visible="true" version="9" changeset="20844583" timestamp="2014-03-01T12:57:57Z" user="Med" uid="88164">
+  <nd ref="286216221"/>
+  <nd ref="192187660"/>
+  <nd ref="192187662"/>
+  <nd ref="363895314"/>
+  <nd ref="192187663"/>
+  <nd ref="192187659"/>
+  <nd ref="286216223"/>
+  <nd ref="292314464"/>
+  <nd ref="192188017"/>
+  <nd ref="363895297"/>
+  <nd ref="286216221"/>
+  <tag k="building" v="yes"/>
+  <tag k="name" v="1 CN - Emile Durand"/>
+  <tag k="ref" v="ICN / CICT"/>
+  <tag k="wikipedia" v="fr:Émile Durand (physicien)"/>
+ </way>
+ <way id="32322262" visible="true" version="3" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626">
+  <nd ref="363895253"/>
+  <nd ref="363895271"/>
+  <tag k="highway" v="steps"/>
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </way>
+ <way id="43945281" visible="true" version="1" changeset="3055718" timestamp="2009-11-07T13:30:03Z" user="Florian Birée" uid="26867">
+  <nd ref="360289238"/>
+  <nd ref="267178472"/>
+  <nd ref="363895253"/>
+  <tag k="bicycle" v="yes"/>
+  <tag k="highway" v="footway"/>
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </way>
+ <way id="43945282" visible="true" version="2" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626">
+  <nd ref="363895253"/>
+  <nd ref="267367238"/>
+  <tag k="highway" v="footway"/>
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </way>
+ <way id="18629054" visible="true" version="7" changeset="6884355" timestamp="2011-01-06T16:44:55Z" user="Florian Birée" uid="26867">
+  <nd ref="192189493"/>
+  <nd ref="363895292"/>
+  <nd ref="363895280"/>
+  <nd ref="192189494"/>
+  <nd ref="192189495"/>
+  <nd ref="363895271"/>
+  <nd ref="363895286"/>
+  <nd ref="718873080"/>
+  <nd ref="192189496"/>
+  <nd ref="192189493"/>
+  <tag k="building" v="yes"/>
+  <tag k="layer" v="1"/>
+  <tag k="name" v="1 TP1"/>
+  <tag k="ref" v="1 TP1"/>
+ </way>
+ <way id="26285631" visible="true" version="4" changeset="16226155" timestamp="2013-05-21T16:00:28Z" user="xrn" uid="111600">
+  <nd ref="191941839"/>
+  <nd ref="287691540"/>
+  <nd ref="286216298"/>
+  <nd ref="286216266"/>
+  <nd ref="267177581"/>
+  <nd ref="286216246"/>
+  <nd ref="267177879"/>
+  <nd ref="267366953"/>
+  <nd ref="363895304"/>
+  <nd ref="192183077"/>
+  <tag k="access" v="private"/>
+  <tag k="bicycle" v="yes"/>
+  <tag k="foot" v="yes"/>
+  <tag k="highway" v="residential"/>
+  <tag k="oneway" v="yes"/>
+  <tag k="ref" v="Voie 6"/>
+ </way>
+ <way id="18628822" visible="true" version="5" changeset="14763690" timestamp="2013-01-23T23:34:20Z" user="don-vip" uid="297482">
+  <nd ref="192186974"/>
+  <nd ref="192186975"/>
+  <nd ref="192186976"/>
+  <nd ref="192186977"/>
+  <nd ref="192186974"/>
+  <tag k="building" v="yes"/>
+  <tag k="name" v="3 TP2"/>
+  <tag k="ref" v="3 TP2"/>
+ </way>
+ <way id="443783852" visible="true" version="1" changeset="42347407" timestamp="2016-09-22T13:11:39Z" user="FredB" uid="1626">
+  <nd ref="4413213417"/>
+  <nd ref="4413213418"/>
+  <tag k="highway" v="steps"/>
+ </way>
+ <way id="443784277" visible="true" version="1" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626">
+  <nd ref="4413214334"/>
+  <nd ref="267367238"/>
+  <tag k="highway" v="steps"/>
+ </way>
+ <way id="443784278" visible="true" version="1" changeset="42347470" timestamp="2016-09-22T13:15:06Z" user="FredB" uid="1626">
+  <nd ref="363895271"/>
+  <nd ref="363895280"/>
+  <tag k="highway" v="footway"/>
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </way>
+ <way id="443784276" visible="true" version="2" changeset="42349233" timestamp="2016-09-22T14:27:59Z" user="FredB" uid="1626">
+  <nd ref="4413214334"/>
+  <nd ref="4413377644"/>
+  <nd ref="4413214333"/>
+  <nd ref="286216235"/>
+  <nd ref="267177879"/>
+  <tag k="highway" v="footway"/>
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </way>
+ <way id="443793225" visible="true" version="1" changeset="42349233" timestamp="2016-09-22T14:27:58Z" user="FredB" uid="1626">
+  <nd ref="4413377644"/>
+  <nd ref="4413377645"/>
+  <nd ref="4413377646"/>
+  <tag k="highway" v="footway"/>
+  <tag k="ramp" v="yes"/>
+ </way>
+</osm>
