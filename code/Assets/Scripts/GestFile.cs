@@ -192,97 +192,67 @@ public class GestFile
         file.WriteLine("<bounds minlat=\"" + minlat + "\" minlon=\"" + minlon + "\" maxlat=\"" + maxlat + "\" maxlon=\"" + maxlon + "\"/>");
 
 
-        //ecriture balise building + le nbre
-        file.WriteLine("\t<buildingList number=\"" + buildingCounter + "\" >");
-        file.WriteLine("\t\t<earth>");
+        //Ecriture premiere balise earth
+        file.WriteLine("\t<earth>");
 
-        foreach (NodeGroup ngp in main.nodeGroups)
+       
+        
+        //ecriture des locations
+        foreach(string str1 in cou)
         {
-            //ecriture des locations
-            foreach(string str1 in cou)
+            file.WriteLine("\t\t<Country c=\"" + str1 + "\">");
+            // a prevoir ici l'ecriture des infos
+
+            foreach(string str2 in reg)
             {
-                file.WriteLine("\t\t\t<Country c=\"" + str1 + "\">");
+                file.WriteLine("\t\t\t<Region r=\"" + str2 + "\">");
                 // a prevoir ici l'ecriture des infos
-                if (ngp.country == str1)
+
+                foreach(string str3 in tow)
                 {
-                    foreach(string str2 in reg)
+                    file.WriteLine("\t\t\t\t<Town t=\"" + str3 + "\">");
+                    // a prevoir ici l'ecriture des infos
+
+                    foreach(string str4 in dis)
                     {
-                        file.WriteLine("\t\t\t\t<Region r=\"" + str2 + "\">");
                         // a prevoir ici l'ecriture des infos
-                        if (ngp.region == str2)
+                        file.WriteLine("\t\t\t\t\t<District d=\"" + str4 + "\">");
+                        foreach (NodeGroup ngp in main.nodeGroups)
                         {
-                            foreach(string str3 in tow)
+                            if ((ngp.country == str1) && (ngp.region == str2) && (ngp.town == str3) && (ngp.district == str4))
                             {
-                                file.WriteLine("\t\t\t\t\t<Town t=\"" + str3 + "\">");
-                                // a prevoir ici l'ecriture des infos
-                                if(ngp.town == str3)
+                                if (ngp.isBuilding())
                                 {
-                                    foreach(string str4 in dis)
+                                    //on récupère le nom du batiment
+                                    buildingName = ngp.getName();
+
+                                    file.WriteLine("\t\t\t\t\t\t<building id=\"" + ngp.id + "\" name=\"" + buildingName + "\">");
+
+                                    //ecriture des nodes
+                                    foreach (Node n in ngp.nodes)
                                     {
-                                        // a prevoir ici l'ecriture des infos
-                                        file.WriteLine("\t\t\t\t\t\t<District d=\"" + str4 + "\">");
-                                        if (ngp.district == str4)
-                                        {
-                                            if (ngp.isBuilding())
-                                            {
-                                                //on récupère le nom du batiment
-                                                buildingName = ngp.getName();
-
-                                                file.WriteLine("\t\t\t\t\t\t\t<building id=\"" + ngp.id + "\" name=\"" + buildingName + "\">");
-
-                                                //ecriture des nodes
-                                                foreach (Node n in ngp.nodes)
-                                                {
-                                                    file.WriteLine("\t\t\t\t\t\t\t\t<node id=\"" + n.id + "\" lat=\"" + n.latitude + "\" lon=\"" + n.longitude + "\">");
-                                                }
-
-                                                //ecriture balise fin de building
-                                                file.WriteLine("\t\t\t\t\t\t\t</building id=\"" + ngp.id + "\">");
-                                            }
-                                        }
-                                        file.WriteLine("\t\t\t\t\t\t</District d=\"" + str4 + "\">");
+                                        file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.id + "\" lat=\"" + n.latitude + "\" lon=\"" + n.longitude + "\"/>");
                                     }
+                                    //ecriture balise fin de building
+                                    file.WriteLine("\t\t\t\t\t\t</building id=\"" + ngp.id + "\">");
                                 }
-                                file.WriteLine("\t\t\t\t\t</Town t=\"" + str3 + "\">");
                             }
                         }
-                        file.WriteLine("\t\t\t\t</Region r=\"" + str2 + "\">");
+                        file.WriteLine("\t\t\t\t\t</District>");
                     }
+                    file.WriteLine("\t\t\t\t</Town>");
                 }
-                file.WriteLine("\t\t\t</Country c=\"" + str1 + "\">");
+                file.WriteLine("\t\t\t</Region>");
             }
-            //ancienne partie de code 
-            /*
-            if (ngp.isBuilding())
-            {
-                //on récupère le nom du batiment
-                buildingName = ngp.getName();
-
-                if (ngp.tags.ContainsKey("name"))
-                {
-                    buildingName = ngp.tags["name"].ToString();
-                }
-
-                file.WriteLine("\t\t\t<building id=\"" + ngp.id + "\" name=\"" + buildingName + "\" >");
-
-                //ecriture des nodes
-                foreach (Node n in ngp.nodes)
-                {
-                    file.WriteLine("\t\t\t\t<node id=\"" + n.id + "\" >");
-                }
-
-                //ecriture balise fin de building
-                file.WriteLine("\t\t\t</building id=\"" + ngp.id + "\" >");
-            }
-            */
+            file.WriteLine("\t\t</Country>");
         }
-        
-        file.WriteLine("\t\t</earth>");
-
-        file.WriteLine("\t</buildingList>");
-
+                
+        //Fermeture de le balise earth
+        file.WriteLine("\t</earth>");
+        //Fermeture de la balise xml
         file.WriteLine("</xml>");
 
+        // Fermeture du fichier 
         file.Close();
     }
 
@@ -383,10 +353,10 @@ public class GestFile
         float lon = 0f;
 
         //Variables permettant de recuperer les balises
-        string strCou="";
-        string strReg="";
-        string strTow="";
-        string strDis="";
+        string strCou="country";
+        string strReg="region";
+        string strTow="town";
+        string strDis="district";
 
         // Read the file and display it line by line.
         System.IO.StreamReader file = new System.IO.StreamReader(path + "MapsResumed/" + nameFile + ".osm");
