@@ -5,24 +5,17 @@ using System.Collections.Generic;
 
 public class GestFile
 {
-	
-    
-    // liste des nodes ( structure de donnée )
-    private ArrayList nodes = new ArrayList();
-    // liste des groupes de nodes ( structure de donnée )
-    public static ArrayList nodeGroups = new ArrayList();
+
     // compteur de nodes et groupe de nodes respectivements
-    private int counter;
-    private int buildingCounter;
+    public int counter;
+    public int buildingCounter;
     // coordonnées min et max de la carte
-    private float minlat, maxlat, minlon, maxlon;
-    // chemin d'acces et nom du fichier
+    public float minlat, maxlat, minlon, maxlon;
+   
+    // chemin d'acces et nom du fichier par deffaut
     private string path = @"./Assets/";
-    public string fileName = "map";
-    // listes des gameObjects créés dans la scene
-    public static GameObject[] mainWalls;
-    public static GameObject[] mainNodes;
-    public static GameObject panel = null;
+    private string fileName = "map";
+
 
     // Arraylist permettant de stocker les balises
     private ArrayList cou = new ArrayList();
@@ -31,9 +24,36 @@ public class GestFile
     private ArrayList dis = new ArrayList();
 
 
-    //Constructeur
+    //Constructeur par deffaut
     public GestFile()
     {   
+    }
+
+    //Constructeur 
+    public GestFile(string path, string fileName )
+    {
+        this.path = path;
+        this.fileName = fileName;
+    }
+
+    //Accesseur pour le nom des fichiers
+    public void setPath(string path)
+    {
+        this.path = path;
+    }
+    public string getPath()
+    {
+        return this.path;
+    }
+
+    public void setFileName(string fileName)
+    {
+        this.fileName = fileName;
+    }
+    public string getFileName()
+    {
+        return this.fileName;
+
     }
 
     /// <summary>
@@ -74,7 +94,7 @@ public class GestFile
                 lat = float.Parse(line.Substring(line.IndexOf("lat=") + 5, 9));
                 lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, 9));
 
-                nodes.Add(new Node(id, lat, lon));
+                main.nodes.Add(new Node(id, lat, lon));
                 counter++;
             }
 
@@ -97,7 +117,7 @@ public class GestFile
                         // on recupere l'id du node
                         long reference = long.Parse(line.Substring(line.IndexOf("ref=") + 5, line.IndexOf("\"/>") - line.IndexOf("ref=") - 5));
 
-                        foreach (Node n in nodes)
+                        foreach (Node n in main.nodes)
                         {
                             // on ajoute le node a la liste de ceux qui compose le node groupe
                             if (n.id == reference)
@@ -111,7 +131,10 @@ public class GestFile
                     {
                         string key = line.Substring(line.IndexOf("k=") + 3, line.IndexOf("\" v=") - line.IndexOf("k=") - 3);
                         string value = line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3);
+
+                        //Ajout du nom au nodegroup courrent
                         current.setName(value);
+
                         // on ajoute le tag
                         current.addTag(key, value);
                         if (key.Equals("building") && value.Equals("yes"))
@@ -122,7 +145,7 @@ public class GestFile
 
                     line = file.ReadLine();
                 }
-                nodeGroups.Add(current);
+                main.nodeGroups.Add(current);
             }
 
         }
@@ -139,7 +162,7 @@ public class GestFile
     public void createResumeFile(string nameFile)
     {
         // listing des balises de location "country,region,town,district"
-        foreach(NodeGroup ngp in nodeGroups)
+        foreach(NodeGroup ngp in main.nodeGroups)
         {
             if (!cou.Contains(ngp.country))
             {
@@ -157,8 +180,9 @@ public class GestFile
             {
                 dis.Add(ngp.district);
             }
+            
         }
-
+        
         string pathString = path + "MapsResumed/" + nameFile + "Resumed.osm";
         string buildingName;
 
@@ -168,23 +192,11 @@ public class GestFile
         file.WriteLine("<bounds minlat=\"" + minlat + "\" minlon=\"" + minlon + "\" maxlat=\"" + maxlat + "\" maxlon=\"" + maxlon + "\"/>");
 
 
-        //Supression pour avoir le nouveau format 
-        /*// on réécrit la liste des nodes avec les coordonnées recalculées
-        file.WriteLine("\t<nodeList number=\"" + counter + "\" >");
-        foreach (Node n in nodes)
-        {
-            file.WriteLine("\t\t<node id=\"" + n.id + "\" lat=\"" + n.latitude + "\" lon=\"" + n.longitude + "\" />");
-        }
-        file.WriteLine("\t</nodeList>");
-        */
-
-
-
         //ecriture balise building + le nbre
         file.WriteLine("\t<buildingList number=\"" + buildingCounter + "\" >");
         file.WriteLine("\t\t<earth>");
 
-        foreach (NodeGroup ngp in nodeGroups)
+        foreach (NodeGroup ngp in main.nodeGroups)
         {
             //ecriture des locations
             foreach(string str1 in cou)
@@ -273,7 +285,7 @@ public class GestFile
 
         file.Close();
     }
-
+    /*
     /// <summary>
     /// Methode createSettingsFile :
     /// Cree un fichier de parametre
@@ -291,7 +303,7 @@ public class GestFile
 
         // on réécrit la liste des batiments en mettant des options par défaut
         file.WriteLine("\t<buildingList number=\"" + buildingCounter + "\" >");
-        foreach (NodeGroup ngp in nodeGroups)
+        foreach (NodeGroup ngp in main.nodeGroups)
         {
             if (ngp.isBuilding())
             {
@@ -312,6 +324,7 @@ public class GestFile
 
         file.Close();
     }
+    */
 
     /// <summary>
     /// Methode readSettingsFile :
@@ -340,7 +353,7 @@ public class GestFile
                 //on met a jour la structure
 
                 NodeGroup ng = new NodeGroup(id);
-                foreach (NodeGroup ngp in nodeGroups)
+                foreach (NodeGroup ngp in main.nodeGroups)
                 {
                     if (ngp.equals(ng))
                     {
@@ -354,6 +367,7 @@ public class GestFile
 
         file.Close();
     }
+    
 
     /// <summary>
     /// Metode readSettingFile :
@@ -426,7 +440,7 @@ public class GestFile
                         lat = float.Parse(line.Substring(line.IndexOf("lat=") + 5, 9));
                         lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, 9));
                         Node nde = new Node(id, lat, lon);
-                        nodes.Add(nde);
+                        main.nodes.Add(nde);
                         counter++;
 
                         // Ajout du nouveau node au nodegroup
@@ -444,9 +458,59 @@ public class GestFile
                     // Changement de ligne
                     line = file.ReadLine();
                 }
-                nodeGroups.Add(current);
+                main.nodeGroups.Add(current);
             }
         }
+    }
+
+    /// <summary>
+    /// Metode createSettingFile :
+    /// Crée le fichier Setting contenant les paramètres de construction du mapResume
+    /// </summary>
+    /// <param name="nameFile"> nom du fichier resume a lire </param>
+ 
+    public void createSettingFile(string fileName)
+    {
+
+        // listing des balises de location "country,region,town,district"
+        foreach (NodeGroup ngp in main.nodeGroups)
+        {
+            if (!cou.Contains(ngp.country))
+            {
+                cou.Add(ngp.country);
+            }
+            if (!reg.Contains(ngp.region))
+            {
+                reg.Add(ngp.region);
+            }
+            if (!tow.Contains(ngp.town))
+            {
+                tow.Add(ngp.town);
+            }
+            if (!dis.Contains(ngp.district))
+            {
+                dis.Add(ngp.district);
+            }
+        }
+
+        string pathString = path + "MapsSettings/" + nameFile + "Settings.osm";
+        string buildingName;
+
+        //on créé le fichier et on va écrire dedans
+        System.IO.StreamWriter file = new System.IO.StreamWriter(pathString);
+        file.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
+
+
+
+
+
+
+        file.WriteLine("\t</buildingList>");
+
+        file.WriteLine("</xml>");
+
+        file.Close();
     }
 
 }
