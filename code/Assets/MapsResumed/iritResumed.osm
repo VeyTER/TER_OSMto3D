@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bounds minlat="43561.86" minlon="1467.77" maxlat="43561.95" maxlon="1467.88"/>
+	<earth>
+		<Country c="country">
+			<Region r="region">
+				<Town t="town">
+					<District d="district">
+						<building id="23905163" name="IRIT">
+							<node id="259096615" lat="43.56232" lon="1.467647"/>
+							<node id="259096616" lat="43.56174" lon="1.468213"/>
+							<node id="259096617" lat="43.56157" lon="1.467875"/>
+							<node id="267367193" lat="43.56162" lon="1.467823"/>
+							<node id="259096618" lat="43.56181" lon="1.467641"/>
+							<node id="286216278" lat="43.56191" lon="1.467836"/>
+							<node id="286216283" lat="43.56201" lon="1.467737"/>
+							<node id="286216275" lat="43.56198" lon="1.467688"/>
+							<node id="363895190" lat="43.56203" lon="1.467643"/>
+							<node id="363895201" lat="43.56213" lon="1.467573"/>
+							<node id="363895220" lat="43.56218" lon="1.467542"/>
+							<node id="363895228" lat="43.56223" lon="1.467575"/>
+							<node id="363895238" lat="43.56226" lon="1.467536"/>
+							<node id="259096615" lat="43.56232" lon="1.467647"/>
+						</building id="23905163">
+					</District>
+				</Town>
+			</Region>
+		</Country>
+	</earth>
+</xml>

@@ -32,19 +32,30 @@ public class main : MonoBehaviour {
 	void Start () {
 
 		SetUpUI ();
-		f.readFileOSM(fileName);
-		f.createResumeFile(fileName);
-		// si la carte n'a pas de fichier de parametre on le créé
-		if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
-			f.createSettingsFile (fileName);	
+		
+        // Si le fichier Resumed n'existe pas on le crée
+        if (!System.IO.File.Exists(path + "MapsResumed/" + fileName + "Resumed.osm"))
+        {
+            f.readFileOSM(fileName);
+            f.createResumeFile(fileName);
+        }
+        else
+        {
+            f.readResumeFile(fileName);
+
+        // si la carte n'a pas de fichier de parametre on le créé
+        if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
+            f.createSettingsFile(fileName);	
 		}
 		else{
-            f.readSettingsFile (fileName);
+            f.readSettingsFile(fileName);
+            }
 		}
-		ob.setNodeGroups (nodeGroups);
-	    ob.setLatLong (minlat, maxlat, minlon, maxlon);
-		ob.buildNodes ();
-		ob.buildWalls ();
+
+		ob.setNodeGroups(nodeGroups);
+	    ob.setLatLong(minlat, maxlat, minlon, maxlon);
+		ob.buildNodes();
+		ob.buildWalls();
 		//ob.buildHighways ();
 
 		// recommandé respecter un ration de interv/taille = 5 avec 0.01 0.002 si pas beaucoup de batiments

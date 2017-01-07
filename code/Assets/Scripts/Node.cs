@@ -14,8 +14,8 @@ public class Node {
 
 	public Node(float lat, float lon){
 		this.id = 0;
-		this.latitude = lat;
-		this.longitude = lon;
+		this.latitude = lat * 1000f; 
+		this.longitude = lon * 1000f; 
 	}
 
   
@@ -26,22 +26,22 @@ public class Node {
     //Accesseurs de latitutde
     public void setLatitude(float lat)
     {
-        this.latitude = lat;
+        this.latitude = lat * 1000f;
     }
 
     public float getLatitude()
     {
-        return this.latitude;
+        return this.latitude / 1000f;
     }
 
     //Accesseurs de longitude
     public void setLongitude(float lon)
     {
-        this.longitude = lon;
+        this.longitude = lon * 1000f;
     }
 
     public float getLongitude()
     {
-        return this.longitude;
+        return this.longitude / 1000f;
     }
 }

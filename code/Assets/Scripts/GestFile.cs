@@ -15,7 +15,7 @@ public class GestFile
    
     // chemin d'acces et nom du fichier par defaut
     private string path = @"./Assets/";
-    private string fileName;
+    public string fileName;
 
     // Arraylist permettant de stocker les balises
     private ArrayList cou = new ArrayList();
@@ -31,7 +31,7 @@ public class GestFile
     }
 
     //Constructeur 
-    public GestFile(string path, string fileName )
+    public GestFile(string path, string fileName)
     {
         this.path = path;
         this.fileName = fileName;
@@ -83,12 +83,13 @@ public class GestFile
             // on recupère les extremites
             if (line.Contains("<bounds"))
             {
-                minlat = float.Parse(line.Substring(line.IndexOf("minlat=") + 8, 9)) * 1000f;
-                maxlat = float.Parse(line.Substring(line.IndexOf("maxlat=") + 8, 9)) * 1000f;
-                minlon = float.Parse(line.Substring(line.IndexOf("minlon=") + 8, 9)) * 1000f;
-                maxlon = float.Parse(line.Substring(line.IndexOf("maxlon=") + 8, 9)) * 1000f;
+                minlat = float.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8)) * 1000f;
+                maxlat = float.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8)) * 1000f;
+                minlon = float.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8)) * 1000f;
+                maxlon = float.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8)) * 1000f;
+            
 
-				main.minlat = minlat;
+                main.minlat = minlat;
 				main.maxlat = maxlat;
 				main.minlon = minlon;
 				main.maxlon = maxlon;
@@ -98,10 +99,24 @@ public class GestFile
             if (line.Contains("<node"))
             {
                 id = long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" visible") - line.IndexOf("id=") - 4));
-                lat = float.Parse(line.Substring(line.IndexOf("lat=") + 5, 9));
-                lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, 9));
+                lat = float.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
+                Debug.Log(lat);
 
+                //le dernier node sur osm a une baliste defin "> au lieux de "/> 
+                if (line.Contains("\"/>"))
+                {
+                    lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
+
+                }
+                else
+                {
+                    lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\">") - line.IndexOf("lon=") - 5));
+                }
+
+                // création d'un point 
                 main.nodes.Add(new Node(id, lat, lon));
+
+                //incrément du compteur de point
                 counter++;
             }
 
@@ -396,16 +411,21 @@ public class GestFile
         string strDis="district";
 
         // Read the file and display it line by line.
-        System.IO.StreamReader file = new System.IO.StreamReader(path + "MapsResumed/" + nameFile + ".osm");
+        System.IO.StreamReader file = new System.IO.StreamReader(path + "MapsResumed/" + nameFile + "Resumed.osm");
         while ((line = file.ReadLine()) != null)
         {
             // Recuperation de limites de la carte
             if (line.Contains("<bounds"))
             {
-                minlat = float.Parse(line.Substring(line.IndexOf("minlat=") + 8, 9)) * 1000f;
-                maxlat = float.Parse(line.Substring(line.IndexOf("maxlat=") + 8, 9)) * 1000f;
-                minlon = float.Parse(line.Substring(line.IndexOf("minlon=") + 8, 9)) * 1000f;
-                maxlon = float.Parse(line.Substring(line.IndexOf("maxlon=") + 8, 9)) * 1000f;
+                minlat = float.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8)) * 1000f;
+                maxlat = float.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8)) * 1000f;
+                minlon = float.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8)) * 1000f;
+                maxlon = float.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8)) * 1000f;
+
+                main.minlat = minlat;
+                main.maxlat = maxlat;
+                main.minlon = minlon;
+                main.maxlon = maxlon;
             }
 
             // Recuperation des balises
@@ -432,7 +452,7 @@ public class GestFile
 
                 // Creation d'un nouveau nodegroup
                 NodeGroup current = new NodeGroup(long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("name=") - line.IndexOf("id=") - 6)));
-                current.setName(line.Substring(line.IndexOf("name=") + 6, line.IndexOf("\" >") - line.IndexOf("name=") - 6));
+                current.setName(line.Substring(line.IndexOf("name=") + 6, line.IndexOf("\">") - line.IndexOf("name=") - 6));
 
                 // Lecture d'une nouvelle ligne
                 line = file.ReadLine();
@@ -441,31 +461,40 @@ public class GestFile
                     if (line.Contains("<node"))
                     {
                         // Recuperation des nodes
-                        id = long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat = ") - line.IndexOf("id=") - 4));
-                        lat = float.Parse(line.Substring(line.IndexOf("lat=") + 5, 9));
-                        lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, 9));
-                        Node nde = new Node(id, lat, lon);
-                        main.nodes.Add(nde);
+                        id = long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
+                        lat = float.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
+                        lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
+                        
+                        main.nodes.Add(new Node(id, lat, lon));
                         counter++;
 
                         // Ajout du nouveau node au nodegroup
-                        current.addNode(nde);
+                        current.addNode(new Node(id, lat, lon));
                         
-
                     }
-
-                    // Ajout des balises de location dans le nodegroup
-                    current.setCountry(strCou);
-                    current.setRegion(strReg);
-                    current.setTown(strTow);
-                    current.setDistrict(strDis);
 
                     // Changement de ligne
                     line = file.ReadLine();
                 }
+                // Ajout des balises de location dans le nodegroup
+                current.setCountry(strCou);
+                current.setRegion(strReg);
+                current.setTown(strTow);
+                current.setDistrict(strDis);
+
+                //Ajout du tag 
+                current.addTag("building", "yes");
+
+                //Ajout du nodeGroup courent à la liste main.nodeGroups
                 main.nodeGroups.Add(current);
+
+                //Increment du compteur de batiment 
+                buildingCounter++;
             }
         }
+        Debug.Log("There are " + counter + " nodes.");
+        Debug.Log("There are " + buildingCounter + " buildings.");
+        Debug.Log("There are " + main.nodeGroups.Count + " buildings.");
     }
 
 }

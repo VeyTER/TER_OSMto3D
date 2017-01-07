@@ -117,13 +117,22 @@ public class ObjectBuilding {
 						mur.transform.localEulerAngles = new Vector3(0,angle+90,0);
 					}
 
-					mur.name = ngp.id + "_" + ngp.GetTagValue("name") +"_Mur"+ i;
+                    //Si on ne connait pas le nom du batiment on utilise l'id
+                    if(ngp.name == "unknown")
+                    {
+                        mur.name = ngp.id +"_Mur"+ i;
+                    }
+                    else
+                    {
+                        mur.name = ngp.name + "_Mur" + i;                     
+                    }
+					
 				}
 			}	
 		}
 	}
 
-	//  coustruction des toits
+	//  construction des toits
 	public void buildRoofs(float interv, float taille){
 
 		Node n = new Node (0, 0);
@@ -162,13 +171,13 @@ public class ObjectBuilding {
 		mainCam.AddComponent <Camera>();
 		Light mainLight = mainCam.AddComponent<Light>();
 		mainLight.range = 30;
-		mainLight.intensity = 0.5f;
+        mainLight.intensity = 0.5f;
 		mainCam.name = "MainCam";
-		mainCam.transform.position = new Vector3(CamLat,-5, CamLon);
-		mainCam.transform.localEulerAngles = new Vector3(-90,270,0);
+        mainCam.transform.position = new Vector3(CamLat, -5, CamLon);
+        mainCam.transform.localEulerAngles = new Vector3(-90, 270, 0);
 		mainCam.AddComponent <CameraController>();
 
-		GameObject background = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        GameObject background = GameObject.CreatePrimitive(PrimitiveType.Plane);
 		background.name = "Background";
 		background.transform.position = new Vector3(CamLat,0.5f, CamLon);
 		background.transform.localScale = new Vector3(10,10,10);

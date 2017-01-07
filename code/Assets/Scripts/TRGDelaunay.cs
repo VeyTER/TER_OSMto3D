@@ -23,14 +23,14 @@ public class TRGDelaunay
     public void rempMatrisse(Node noeudA, Node noeudB, Node noeudC, Node noeudD)
     {
         // calcul vecteur AB
-        double xa = System.Convert.ToDouble(noeudA.longitude);
-        double xb = System.Convert.ToDouble(noeudB.longitude);
-        double ya = System.Convert.ToDouble(noeudA.latitude);
-        double yb = System.Convert.ToDouble(noeudB.latitude);
+        double xa = System.Convert.ToDouble(noeudA.getLongitude());
+        double xb = System.Convert.ToDouble(noeudB.getLongitude());
+        double ya = System.Convert.ToDouble(noeudA.getLatitude());
+        double yb = System.Convert.ToDouble(noeudB.getLatitude());
         double[] vectAB = new double[2] { (xb - xa), (yb - ya) };
         // calcul vecteur AC
-        double xc = System.Convert.ToDouble(noeudC.longitude);
-        double yc = System.Convert.ToDouble(noeudC.latitude);
+        double xc = System.Convert.ToDouble(noeudC.getLongitude());
+        double yc = System.Convert.ToDouble(noeudC.getLatitude());
         double[] vectAC = new double[2] { (xc - xa), (yc - ya) };
 
         // calcul signe angle orienté
@@ -109,29 +109,29 @@ public class TRGDelaunay
     {
 
         float maxX, maxY, minX, minY;
-        minY = listNodeTemp[0].latitude;
-        maxY = listNodeTemp[0].latitude;
-        minX = listNodeTemp[0].longitude;
-        maxX = listNodeTemp[0].longitude;
+        minY = listNodeTemp[0].getLatitude();
+        maxY = listNodeTemp[0].getLatitude();
+        minX = listNodeTemp[0].getLongitude();
+        maxX = listNodeTemp[0].getLongitude();
 
 
         foreach(Node nd in listNode)
         {
-            if (nd.latitude > maxY)
+            if (nd.getLatitude() > maxY)
             {
-                maxY = nd.latitude;
+                maxY = nd.getLatitude();
             }
-            if (nd.latitude < minY)
+            if (nd.getLatitude() < minY)
             {
-                minY = nd.latitude;
+                minY = nd.getLatitude();
             }
-            if (nd.longitude > maxX)
+            if (nd.getLongitude() > maxX)
             {
-                maxX = nd.longitude;
+                maxX = nd.getLongitude();
             }
-            if (nd.longitude < minX)
+            if (nd.getLongitude() < minX)
             {
-                minY = nd.longitude;
+                minY = nd.getLongitude();
             }
         }
 
