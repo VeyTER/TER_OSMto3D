@@ -48,7 +48,3 @@ C:\Users\tbres\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.VR
 C:\Users\tbres\Documents\upssitech\TER\source\code\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 C:\Users\tbres\Documents\upssitech\TER\source\code\obj\Debug\Assembly-CSharp.dll
 C:\Users\tbres\Documents\upssitech\TER\source\code\obj\Debug\Assembly-CSharp.pdb
-C:\Users\tbres\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.Advertisements.dll
-C:\Users\tbres\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.Purchasing.dll
-C:\Users\tbres\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.Advertisements.xml
-C:\Users\tbres\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.Purchasing.xml

@@ -492,39 +492,35 @@ public class main : MonoBehaviour {
 
         nouvLon = (-((yb - ya) * (yc - yb)) / (xc - xb));
         nouvLat = (-((xb - xa) * (xc - xb)) / (yc - yb));
-        /*
-         * 
-         * a finir pour ajuster le point du milieu
-         * 
-         * 
-         * 
-         * 
-         * a = Math.Sqrt(Math.Pow(xc - xb, 2) + Math.Pow(yc - yb, 2));
+
+
+
+        a = Math.Sqrt(Math.Pow(xc - xb, 2) + Math.Pow(yc - yb, 2));
         if ((yb - nouvLat) < (xb - nouvLon))
         {
-            d = Math.Sqrt(Math.Pow(xc - xb, 2) + Math.Pow(nouvLat - yb, 2));
+            d = Math.Sqrt(Math.Pow(xb - xa, 2) + Math.Pow(nouvLat - ya, 2));
             coef = (float)(a / d);
             dist = nouvLat - yb;
             nouvLat = yb + (dist * coef);
-            dist = xc - xb;
-            xc = xb + (dist * coef);
-            ngp.getNode(i + 2).setLatitude(nouvLat);
-            ngp.getNode(i + 2).setLongitude(xc);
+            dist = xb - xa;
+            xb = xa + (dist * coef);
+            ngp.getNode(0).setLatitude(nouvLat);
+            ngp.getNode(0).setLongitude(xb);
+            ngp.getNode(ngp.nbNode-1).setLatitude(nouvLat);
+            ngp.getNode(ngp.nbNode-1).setLongitude(xb);
         }
         else
         {
-            d = Math.Sqrt(Math.Pow(nouvLon - xb, 2) + Math.Pow(yc - yb, 2));
+            d = Math.Sqrt(Math.Pow(nouvLon - xa, 2) + Math.Pow(yb - ya, 2));
             coef = (float)(a / d);
             dist = nouvLon - xb;
             nouvLon = xb + (dist * coef);
-            dist = yc - yb;
-            yc = yb + (dist * coef);
-            //Math.Pow(ngp.getNode(i).getLatitude(),2);
-            ngp.getNode(i + 2).setLongitude(nouvLon);
-            ngp.getNode(i + 2).setLatitude(yc);
-        }
-
-        ngp.getNode(0).setLongitude(2);
-        */
+            dist = yb - ya;
+            yb = ya + (dist * coef);
+            ngp.getNode(0).setLongitude(nouvLon);
+            ngp.getNode(0).setLatitude(yb);
+            ngp.getNode(ngp.nbNode-1).setLongitude(nouvLon);
+            ngp.getNode(ngp.nbNode-1).setLatitude(yb);
+        }        
     }
 }
