@@ -17,6 +17,8 @@ public class NodeGroup {
     public float temperature;
     public int nbFloors;
     public string name;
+    public string typeRoof;
+    public int angleRoof;
     
     //constructeur
 	public NodeGroup(long id){
@@ -36,10 +38,12 @@ public class NodeGroup {
         this.temperature = 0;
         this.nbFloors = 1;
         this.name = "unknown";
+        this.typeRoof = "unknown";
+        this.angleRoof = 0; 
 	}
 
     //Surcharge du constructeur
-    public NodeGroup(long id,string country, string region, string town, string district, string name)
+    public NodeGroup(long id,string country, string region, string town, string district, string name, string type, int angle)
     {
         this.id = id;
         this.nodes = new ArrayList();
@@ -57,6 +61,8 @@ public class NodeGroup {
         this.temperature = 0;
         this.nbFloors = 1;
         this.name = name;
+        this.angleRoof = angle;
+        this.typeRoof = type;
     }
 
     // ajoute une node à l'ensemble 
@@ -398,4 +404,23 @@ public class NodeGroup {
 
     }
 
+    //Accesseurs de l'attribut de typeRoof
+    public void setType(string type)
+    {
+        this.typeRoof = type;
+    }
+    public string getType()
+    {
+        return this.typeRoof;
+    }
+
+    //Accesseurs de l'attribut d'angleRoof
+    public void setAngle(int angle)
+    {
+        this.angleRoof = angle;
+    }
+    public int getAngle()
+    {
+        return this.angleRoof;
+    }
 }

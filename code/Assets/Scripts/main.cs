@@ -47,7 +47,20 @@ public class main : MonoBehaviour {
 		}*/
         f.createSettingsFile(fileName);
         //test//
-        
+
+        f.readSettingsFile(fileName);
+
+        foreach (NodeGroup ngp in nodeGroups)
+        {
+            UnityEngine.Debug.Log(ngp.getCountry());
+            UnityEngine.Debug.Log(ngp.getRegion());
+            UnityEngine.Debug.Log(ngp.getTown());
+            UnityEngine.Debug.Log(ngp.getDistrict());
+            UnityEngine.Debug.Log(ngp.getName());
+            UnityEngine.Debug.Log(ngp.getNbFloors());
+
+        }
+        /*
 		buildNodes ();
 		buildWalls ();
 		// recommandé respecter un ration de interv/taille = 5 avec 0.01 0.002 si pas beaucoup de batiments
@@ -57,7 +70,7 @@ public class main : MonoBehaviour {
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");
 		panel.SetActive(false);
-        
+        */
 	}
 
 	// place les nodes dans la scène

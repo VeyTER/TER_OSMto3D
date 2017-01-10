@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bounds minlat="43561.86" minlon="1467.77" maxlat="43561.95" maxlon="1467.88"/>
-	<buildingList number="3" >
+	<buildingList number="1" >
 		<earth>
 			<Country c="country">
 				<Region r="region">
 					<Town t="town">
 						<District d="district">
-							<building id="23905163" name="IRIT">
+							<building id="23905163" name="yes">
 								<node id="259096615" lat="43562.32" lon="1467.647">
 								<node id="259096616" lat="43561.75" lon="1468.213">
 								<node id="259096617" lat="43561.57" lon="1467.875">
@@ -22,26 +22,6 @@
 								<node id="363895238" lat="43562.26" lon="1467.536">
 								<node id="259096615" lat="43562.32" lon="1467.647">
 							</building id="23905163">
-						</District d="district">
-					</Town t="town">
-				</Region r="region">
-			</Country c="country">
-			<Country c="country">
-				<Region r="region">
-					<Town t="town">
-						<District d="district">
-							<building id="23905090" name="1 A">
-							</building id="23905090">
-						</District d="district">
-					</Town t="town">
-				</Region r="region">
-			</Country c="country">
-			<Country c="country">
-				<Region r="region">
-					<Town t="town">
-						<District d="district">
-							<building id="18753277" name="4 TP4">
-							</building id="18753277">
 						</District d="district">
 					</Town t="town">
 				</Region r="region">
