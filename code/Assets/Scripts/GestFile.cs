@@ -141,7 +141,14 @@ public class GestFile
                         {
                             buildingCounter++;
                         }
+                        //Si la clé est un type de toit, on le rentre directement dans les valeurs du NodeGroup
+                        if (key.Equals("roof:shape"))
+                        {
+                            current.setType(value);
+                        }
                     }
+
+
 
                     line = file.ReadLine();
                 }
@@ -602,27 +609,41 @@ public class GestFile
         file.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         //On crée les caractéristiques par défaut dans le monde
         file.WriteLine("\t<earth>");
-        file.WriteLine("\t<Info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        file.WriteLine("\t\t<Info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
         //On crée les caractéristiques par défaut en France
         file.WriteLine("\t\t<country c=\"France\">");
-        file.WriteLine("\t\t<Info lat=\"47.3833300\" lon=\"0.6833300\" dst=\"5\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        file.WriteLine("\t\t\t<Info lat=\"47.3833300\" lon=\"0.6833300\" dst=\"5\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
         //On crée les caractéristiques par défaut en Midi-Pyrenees
         file.WriteLine("\t\t\t<region r=\"Midi-Pyrenees\">");
-        file.WriteLine("\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"1.1\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        file.WriteLine("\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"1.1\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
         //On crée les caractéristiques par défaut à Toulouse
         file.WriteLine("\t\t\t\t<town t=\"Toulouse\">");
-        file.WriteLine("\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"0.8\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        file.WriteLine("\t\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"0.8\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
         //On crée les caractéristiques par défaut à l'UPS
         file.WriteLine("\t\t\t\t\t<district d=\"UPS\">");
-        file.WriteLine("\t\t\t\t\t<Info lat=\"43.560397\" lon=\"1.468820\" dst=\"0.02\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
+        file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.560397\" lon=\"1.468820\" dst=\"0.02\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
 
         //Ici on crée les caractéristiques des différents buildings de l'UPS si nous les avons
         file.WriteLine("\t\t\t\t\t\t<building id=\"23905163\">");
         file.WriteLine("\t\t\t\t\t\t\t<Info name=\"IRIT\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
         file.WriteLine("\t\t\t\t\t\t</building>");
+        file.WriteLine("\t\t\t\t\t\t<building id=\"23905283\">");
+        file.WriteLine("\t\t\t\t\t\t\t<Info name=\"3 PN\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
+        file.WriteLine("\t\t\t\t\t\t</building>");
+        file.WriteLine("\t\t\t\t\t\t<building id=\"23905315\">");
+        file.WriteLine("\t\t\t\t\t\t\t<Info name=\"LAPLACE (3R2)\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
+        file.WriteLine("\t\t\t\t\t\t</building>");
+
+        //Si on veut rajouter des caractéristiques pour un batiment précis de l'UPS, le faire ici
+        file.WriteLine("\t\t\t\t\t</district>");
+
+        //On crée les caractéristiques par défaut à l'UPS
+        file.WriteLine("\t\t\t\t\t<district d=\"Centre-Ville\">");
+        file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.603236\" lon=\"1.444659\" dst=\"0.02\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
 
         file.WriteLine("\t\t\t\t\t</district>");
         //Si on veut rajouter un quartier de la ville de Toulouse, le faire ici
+
 
         file.WriteLine("\t\t\t\t</town>");
         //Si on veut rajouter une ville de la région Midi-Pyrenees, le faire ici

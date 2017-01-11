@@ -49,15 +49,12 @@ public class main : MonoBehaviour {
         //test//
 
         f.readSettingsFile(fileName);
-
+        
         foreach (NodeGroup ngp in nodeGroups)
         {
-            UnityEngine.Debug.Log(ngp.getCountry());
-            UnityEngine.Debug.Log(ngp.getRegion());
-            UnityEngine.Debug.Log(ngp.getTown());
+
             UnityEngine.Debug.Log(ngp.getDistrict());
             UnityEngine.Debug.Log(ngp.getName());
-            UnityEngine.Debug.Log(ngp.getNbFloors());
 
         }
         /*
