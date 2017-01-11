@@ -26,8 +26,7 @@ public class GestFile
 
     //Constructeur par deffaut
     public GestFile()
-    {
-        
+    {   
     }
 
     //Constructeur 
@@ -140,7 +139,7 @@ public class GestFile
 
                         foreach (Node n in main.nodes)
                         {
-                            // on ajoute le node a la lsite de ceux qui compose le node groupe
+                            // on ajoute le node a la liste de ceux qui compose le node groupe
                             if (n.id == reference)
                             {
                                 current.addNode(n);
@@ -153,7 +152,7 @@ public class GestFile
                         string key = line.Substring(line.IndexOf("k=") + 3, line.IndexOf("\" v=") - line.IndexOf("k=") - 3);
                         string value = line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3);
 
-                        //Ajout du nom au nodegroup courrent
+                        //Ajout du nom au nodegroup courant
                         current.setName(value);
 
                         // on ajoute le tag
@@ -162,6 +161,7 @@ public class GestFile
                         {
                             buildingCounter++;
                         }
+<<<<<<< HEAD
 						if (key.Equals("highway") && (value.Equals("primary") || value.Equals("secondary") || value.Equals("tertiary") 
 							|| value.Equals("unclassified") || value.Equals("residential") || value.Equals("service")))// || value.Equals("footway")) )
 						{
@@ -182,7 +182,16 @@ public class GestFile
 							cpt6++;
 						if (key.Equals ("highway") && value.Equals ("footway"))
 							cpt7++;
+=======
+                        //Si la clé est un type de toit, on le rentre directement dans les valeurs du NodeGroup
+                        if (key.Equals("roof:shape"))
+                        {
+                            current.setType(value);
+                        }
+>>>>>>> Killian
                     }
+
+
 
                     line = file.ReadLine();
                 }
@@ -307,45 +316,7 @@ public class GestFile
         // Fermeture du fichier 
         file.Close();
     }
-
-    /// <summary>
-    /// Methode createSettingsFile :
-    /// Cree un fichier de parametre
-    /// </summary>
-    /// <param name="nameFile"> nom du fichier ou l'on inscrit les informations </param>
-    public void createSettingsFile(string nameFile)
-    {
-        string pathString = path + "MapsSettings/" + nameFile + "Settings.osm";
-        string buildingName;
-
-        //on créé le fichier et on va écrire dedans
-        System.IO.StreamWriter file = new System.IO.StreamWriter(pathString);
-        file.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-
-        // on réécrit la liste des batiments en mettant des options par défaut
-        file.WriteLine("\t<buildingList number=\"" + buildingCounter + "\" >");
-        foreach (NodeGroup ngp in main.nodeGroups)
-        {
-            if (ngp.isBuilding())
-            {
-                //on récupère le nom du batiment
-                buildingName = "unknown";
-                if (ngp.tags.ContainsKey("name"))
-                {
-                    buildingName = ngp.tags["name"].ToString();
-                }
-
-                file.WriteLine("\t\t<building id=\"" + ngp.id + "\" name=\"" + buildingName + "\" floors=\"1\" >");
-            }
-        }
-
-        file.WriteLine("\t</buildingList>");
-
-        file.WriteLine("</xml>");
-
-        file.Close();
-    }
+  
 
     /// <summary>
     /// Methode readSettingsFile :
@@ -356,31 +327,193 @@ public class GestFile
     {
         string pathString = path + "MapsSettings/" + nameFile + "Settings.osm";
         string line;
-        int etages = 5;
-        long id;
+
+        string country = "";
+        string region = "";
+        string town = "";
+        string district = "";
+
+        double lat = 0, longi = 0, distance = 0;
+
+        int nb = 0;
+        int roof = 0;
+        string type = "";
+        long id = 0;
+
+        string name = "";
 
         //on lit le fichier de configuration
         System.IO.StreamReader file = new System.IO.StreamReader(pathString);
 
         while ((line = file.ReadLine()) != null)
         {
-            // on recupère les nodes
-            if (line.Contains("<building "))
+            if (line.Contains("<earth "))
             {
-                // on recupere l'id du batiment et son nombre d'etages
-                id = long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" name") - line.IndexOf("id=") - 4));
-                etages = int.Parse(line.Substring(line.IndexOf("floors=") + 8, line.IndexOf("\" >") - line.IndexOf("floors=") - 8));
-
-                //on met a jour la structure
-
-                NodeGroup ng = new NodeGroup(id);
+                line = file.ReadLine();
+                if (line.Contains("<Info "))
+                {
+                    nb = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
+                    roof = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
+                    type = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
+                }
+                //On donne aux nodegroup les attributs par défaut de la planète Terre
                 foreach (NodeGroup ngp in main.nodeGroups)
                 {
-                    if (ngp.equals(ng))
+                    ngp.setNbFloors(nb);
+                    ngp.setAngle(roof);
+                    ngp.setType(type);
+                }
+            }
+
+            //PAYS
+            if (line.Contains("<country "))
+            {
+                //On récupère le pays de la ligne
+                country = line.Substring(line.IndexOf("c=") + 3, line.IndexOf("\">") - line.IndexOf("c=") - 3);
+                //On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
+                line = file.ReadLine();
+                if (line.Contains("<Info "))
+                {
+                    lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
+                    longi = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
+                    distance = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
+
+                    nb = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
+                    roof = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
+                    type = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
+                }
+                //Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
+                //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
+                foreach (NodeGroup ngp in main.nodeGroups)
+                {
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude / 1000f), 2) + Math.Pow(longi - (ngp.getNode(0).longitude / 1000f), 2)) < distance)
                     {
-                        ngp.addTag("etages", etages.ToString());
-                        //ngp.addTag("temperature", (int)Random.Range(0, 35) + "°C");
-                        //ngp.addTag("humidité", (int)Random.Range(1, 10) + "%");
+                        ngp.setCountry(country);
+                        ngp.setNbFloors(nb);
+                        ngp.setAngle(roof);
+                        ngp.setType(type);
+
+                    }
+                }  
+            }
+
+            //REGIONS
+            if (line.Contains("<region "))
+            {
+                //On récupère la region de la ligne
+                region = line.Substring(line.IndexOf("r=") + 3, line.IndexOf("\">") - line.IndexOf("r=") - 3);
+                //On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
+                line = file.ReadLine();
+                if (line.Contains("<Info "))
+                {
+                    lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
+                    longi = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
+                    distance = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
+
+                    nb = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
+                    roof = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
+                    type = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
+                }
+                //Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
+                //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
+                foreach (NodeGroup ngp in main.nodeGroups)
+                {
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude / 1000f), 2) + Math.Pow(longi - (ngp.getNode(0).longitude / 1000f), 2)) < distance)
+                    {
+                        ngp.setRegion(region);
+                        ngp.setNbFloors(nb);
+                        ngp.setAngle(roof);
+                        ngp.setType(type);
+                    }
+                }
+            }
+
+            //VILLES
+            if (line.Contains("<town "))
+            {
+                //On récupère la ville de la ligne
+                town = line.Substring(line.IndexOf("t=") + 3, line.IndexOf("\">") - line.IndexOf("t=") - 3);
+                //On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
+                line = file.ReadLine();
+                if (line.Contains("<Info "))
+                {
+                    lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
+                    longi = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
+                    distance = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
+
+                    nb = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
+                    roof = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
+                    type = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
+                }
+                //Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
+                //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
+                foreach (NodeGroup ngp in main.nodeGroups)
+                {
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude / 1000f), 2) + Math.Pow(longi - (ngp.getNode(0).longitude / 1000f), 2)) < distance)
+                    {
+                        ngp.setTown(town);
+                        ngp.setNbFloors(nb);
+                        ngp.setAngle(roof);
+                        ngp.setType(type);
+                    }
+                }
+            }
+
+            //QUARTIERS
+            if (line.Contains("<district "))
+            {
+                //On récupère le quartier de la ligne
+                district = line.Substring(line.IndexOf("d=") + 3, line.IndexOf("\">") - line.IndexOf("d=") - 3);
+                //On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
+                line = file.ReadLine();
+                if (line.Contains("<Info "))
+                {
+                    lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
+                    longi = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
+                    distance = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
+
+                    nb = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
+                    roof = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
+                    type = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
+                }
+                //Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
+                //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
+                foreach (NodeGroup ngp in main.nodeGroups)
+                {
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude / 1000f), 2) + Math.Pow(longi - (ngp.getNode(0).longitude / 1000f), 2)) < distance)
+                    {
+                        ngp.setDistrict(district);
+                        ngp.setNbFloors(nb);
+                        ngp.setAngle(roof);
+                        ngp.setType(type);
+                    }
+                }
+            }
+
+            //BATIMENTS SPECIFIQUES
+            if (line.Contains("<building "))
+            {
+                //On récupère le pays de la ligne
+                id = long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\">") - line.IndexOf("id=") - 4));
+                //On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
+                line = file.ReadLine();
+                if (line.Contains("<Info "))
+                {
+                    name = line.Substring(line.IndexOf("name=") + 6, line.IndexOf("\" nf") - line.IndexOf("name=") - 6);
+                    nb = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
+                    roof = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
+                    type = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
+                }
+                //Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
+                //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
+                foreach (NodeGroup ngp in main.nodeGroups)
+                {
+                    if (ngp.id == id)
+                    {
+                        ngp.setName(name);
+                        ngp.setNbFloors(nb);
+                        ngp.setAngle(roof);
+                        ngp.setType(type);
                     }
                 }
             }
@@ -388,6 +521,7 @@ public class GestFile
 
         file.Close();
     }
+    
 
     /// <summary>
     /// Metode readSettingFile :
@@ -495,6 +629,74 @@ public class GestFile
         Debug.Log("There are " + counter + " nodes.");
         Debug.Log("There are " + buildingCounter + " buildings.");
         Debug.Log("There are " + main.nodeGroups.Count + " buildings.");
+    }
+
+    /// <summary>
+    /// Metode createSettingFile :
+    /// Crée le fichier Setting contenant les paramètres de construction du mapResume
+    /// </summary>
+    /// <param name="nameFile"> nom du fichier resume a lire </param>
+ 
+    public void createSettingsFile(string fileName)
+    {
+
+        string pathString = path + "MapsSettings/" + fileName + "Settings.osm";
+
+        //on créé le fichier et on va écrire dedans
+        System.IO.StreamWriter file = new System.IO.StreamWriter(pathString);
+        file.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        //On crée les caractéristiques par défaut dans le monde
+        file.WriteLine("\t<earth>");
+        file.WriteLine("\t\t<Info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        //On crée les caractéristiques par défaut en France
+        file.WriteLine("\t\t<country c=\"France\">");
+        file.WriteLine("\t\t\t<Info lat=\"47.3833300\" lon=\"0.6833300\" dst=\"5\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        //On crée les caractéristiques par défaut en Midi-Pyrenees
+        file.WriteLine("\t\t\t<region r=\"Midi-Pyrenees\">");
+        file.WriteLine("\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"1.1\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        //On crée les caractéristiques par défaut à Toulouse
+        file.WriteLine("\t\t\t\t<town t=\"Toulouse\">");
+        file.WriteLine("\t\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"0.8\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        //On crée les caractéristiques par défaut à l'UPS
+        file.WriteLine("\t\t\t\t\t<district d=\"UPS\">");
+        file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.560397\" lon=\"1.468820\" dst=\"0.02\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
+
+        //Ici on crée les caractéristiques des différents buildings de l'UPS si nous les avons
+        file.WriteLine("\t\t\t\t\t\t<building id=\"23905163\">");
+        file.WriteLine("\t\t\t\t\t\t\t<Info name=\"IRIT\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
+        file.WriteLine("\t\t\t\t\t\t</building>");
+        file.WriteLine("\t\t\t\t\t\t<building id=\"23905283\">");
+        file.WriteLine("\t\t\t\t\t\t\t<Info name=\"3 PN\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
+        file.WriteLine("\t\t\t\t\t\t</building>");
+        file.WriteLine("\t\t\t\t\t\t<building id=\"23905315\">");
+        file.WriteLine("\t\t\t\t\t\t\t<Info name=\"LAPLACE (3R2)\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
+        file.WriteLine("\t\t\t\t\t\t</building>");
+
+        //Si on veut rajouter des caractéristiques pour un batiment précis de l'UPS, le faire ici
+        file.WriteLine("\t\t\t\t\t</district>");
+
+        //On crée les caractéristiques par défaut à l'UPS
+        file.WriteLine("\t\t\t\t\t<district d=\"Centre-Ville\">");
+        file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.603236\" lon=\"1.444659\" dst=\"0.02\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+
+        file.WriteLine("\t\t\t\t\t</district>");
+        //Si on veut rajouter un quartier de la ville de Toulouse, le faire ici
+
+
+        file.WriteLine("\t\t\t\t</town>");
+        //Si on veut rajouter une ville de la région Midi-Pyrenees, le faire ici
+
+        file.WriteLine("\t\t\t</region>");
+        //Si on veut rajouter une région de France, le faire ici
+
+        file.WriteLine("\t\t</country>");
+        //Si on veut rajouter des pays, les ajouter à partir d'ici
+
+        file.WriteLine("\t</earth>");
+        //SI on veut changer de planète, pourquoi pas le faire ici :D
+        file.WriteLine("</xml>");
+
+        file.Close();
     }
 
 }
