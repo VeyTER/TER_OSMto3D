@@ -161,7 +161,6 @@ public class GestFile
                         {
                             buildingCounter++;
                         }
-<<<<<<< HEAD
 						if (key.Equals("highway") && (value.Equals("primary") || value.Equals("secondary") || value.Equals("tertiary") 
 							|| value.Equals("unclassified") || value.Equals("residential") || value.Equals("service")))// || value.Equals("footway")) )
 						{
@@ -182,13 +181,11 @@ public class GestFile
 							cpt6++;
 						if (key.Equals ("highway") && value.Equals ("footway"))
 							cpt7++;
-=======
                         //Si la clé est un type de toit, on le rentre directement dans les valeurs du NodeGroup
                         if (key.Equals("roof:shape"))
                         {
                             current.setType(value);
                         }
->>>>>>> Killian
                     }
 
 

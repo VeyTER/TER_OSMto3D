@@ -32,7 +32,7 @@ public class main : MonoBehaviour {
 	void Start () {
 
 		SetUpUI ();
-		
+
         // Si le fichier Resumed n'existe pas on le crée
         if (!System.IO.File.Exists(path + "MapsResumed/" + fileName + "Resumed.osm"))
         {
@@ -42,16 +42,17 @@ public class main : MonoBehaviour {
         else
         {
             f.readResumeFile(fileName);
-
+        }
+/*
         // si la carte n'a pas de fichier de parametre on le créé
-        if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
+        if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {*/
             f.createSettingsFile(fileName);	
-		}
-		else{
+		//}
+		//else{
             f.readSettingsFile(fileName);
-            }
-		}
-
+        //  }
+        //}
+        /*
 		ob.setNodeGroups(nodeGroups);
 	    ob.setLatLong(minlat, maxlat, minlon, maxlon);
 		ob.buildNodes();
@@ -64,7 +65,12 @@ public class main : MonoBehaviour {
 
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");
-		panel.SetActive(false);  
+		panel.SetActive(false);  */
+        foreach (NodeGroup ngp in nodeGroups){
+
+            UnityEngine.Debug.Log(ngp.district);
+            UnityEngine.Debug.Log(ngp.name);
+        }
 	}
 		
 

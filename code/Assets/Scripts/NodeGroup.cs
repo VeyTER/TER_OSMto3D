@@ -443,9 +443,6 @@ public class NodeGroup {
 
     }
 
-<<<<<<< HEAD
-
-=======
     //Accesseurs de l'attribut de typeRoof
     public void setType(string type)
     {
@@ -465,5 +462,4 @@ public class NodeGroup {
     {
         return this.angleRoof;
     }
->>>>>>> Killian
 }
