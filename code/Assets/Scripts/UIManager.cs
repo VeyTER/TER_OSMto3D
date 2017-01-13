@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour {
 
 	public bool wallActive = true;
+	public bool highwayActive = true;
 	public bool highwayNodeActive = true;
 	public bool buildingNodeActive = true;
 
@@ -28,6 +29,28 @@ public class UIManager : MonoBehaviour {
 			}
 		}
 		wallActive = !wallActive;
+	}
+
+	public void SetHighwayActive(){
+
+		GameObject[] highways = GameObject.FindGameObjectsWithTag("Highway");
+
+		if (highways.Length == 0) {
+			highways = main.mainHighways;
+		}
+		else{
+			main.mainHighways = highways;
+		}
+
+		foreach( GameObject go in highways){
+			if (highwayActive) {
+				go.SetActive(false);
+			} 
+			else {
+				go.SetActive(true);
+			}
+		}
+		highwayActive = !highwayActive;
 	}
 
 	public void SetBuildingNodeActive(){

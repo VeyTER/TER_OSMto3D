@@ -15,22 +15,21 @@ public class main : MonoBehaviour {
 	private string path = @"./Assets/";
 	// "map" est la valeur qu'on met par defaut dans fileName. 
 	// Mais celle-ci sera écrasée par la valeur qu'on met dans File Name dans ScriptGameObject (sur Unity)
-	public string fileName = "map";
+	public string fileName;
 	// listes des gameObjects créés dans la scene
 	public static GameObject[] mainWalls;
-	public static GameObject[] mainHighwaysCons;
+	public static GameObject[] mainHighways;
 	public static GameObject[] mainBuildingNodes;
 	public static GameObject[] mainHighwayNodes;
 	public static GameObject panel = null;
-
+	public Material roadMaterial;
     //création d'une instance de GestFile
     public GestFile f = new GestFile();
-	//création d'une instance de ObjectBuilding
-	public ObjectBuilding ob = new ObjectBuilding();
 
 	// Fonction lancée à l'initialisation de la scene
 	void Start () {
-
+		//création d'une instance de ObjectBuilding
+		ObjectBuilding ob = new ObjectBuilding(roadMaterial);
 		SetUpUI ();
 		f.readFileOSM(fileName);
 		f.createResumeFile(fileName);

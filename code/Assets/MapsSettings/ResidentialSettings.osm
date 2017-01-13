@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<buildingList number="5" >
+		<building id="23905163" name="IRIT" floors="1" >
+		<building id="23905283" name="3 PN" floors="1" >
+		<building id="26650675" name="1 CN - Emile Durand" floors="1" >
+		<building id="18629054" name="1 TP1" floors="1" >
+		<building id="18628822" name="3 TP2" floors="1" >
+	</buildingList>
+</xml>
