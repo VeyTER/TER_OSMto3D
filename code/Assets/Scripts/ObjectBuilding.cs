@@ -6,10 +6,11 @@ public class ObjectBuilding {
 
 	private ArrayList nodeGroups;
 	private float minlat, maxlat, minlon, maxlon;
+	private RoadCreation rc;
 
 	// constructeur
-	public ObjectBuilding(){
-
+	public ObjectBuilding(Material roadMat){
+		rc = new RoadCreation(roadMat);
 	}
 
 	// copie d'une liste de groupe de nodes
@@ -27,6 +28,8 @@ public class ObjectBuilding {
 
 	// place les nodes dans la scène
 	public void buildNodes(){
+		int j = -1;
+		int i;
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.isBuilding()){
 				// on construit les angles des buildings
@@ -40,48 +43,61 @@ public class ObjectBuilding {
 			}
 			if (ngp.isHighway ()) {
 				//on construit les nodes des highways
-				if(ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isUnclassified() || ngp.isResidential() || ngp.isService()) //|| ngp.isFootway())
+				if (ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isUnclassified() || ngp.isResidential () || ngp.isService()) {
+					j++;
+					i = -1;
 					foreach (Node n in ngp.nodes) {
+						i++;
 						GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
 						cube.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
 						cube.transform.position = new Vector3 (n.latitude, 0, n.longitude);
-						cube.name = "" + n.id;
+						cube.name = "" + j + "-" + i + "  " + n.id;
 						cube.tag = "HighwayNode";
 					}
+				}
 			}
 		}
 	}
 
 	//construction des routes
-	//	public void buildHighways(ArrayList nodeGroups){
-	//		foreach (NodeGroup ngp in nodeGroups) {
-	//			if (ngp.isHighway () && ngp.isResidential ()) {
-	//
-	//			}
-	//		}
-	//	}
+	public void buildHighways(){
+		float x,y,length,width=0.08f,adj,angle;
+		int j = 0;
+		foreach (NodeGroup ngp in nodeGroups) {
+			if ( ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isService() || ngp.isUnclassified()) ) {
+				for (int i = 0; i < ngp.nodes.Count-1; i++) {
+					//Calcul des coordonées du milieu du vecteur formé par les 2 nodes consécutives
+					Vector3 node1 = new Vector3(ngp.getNode(i).latitude,0,ngp.getNode(i).longitude);
+					Vector3 node2 = new Vector3(ngp.getNode(i+1).latitude,0,ngp.getNode(i+1).longitude);
+					Vector3 diff = node2-node1;
+
+					if (diff.z <= 0) {
+						x = ngp.getNode (i + 1).latitude;
+						y = ngp.getNode (i + 1).longitude;
+						length = Mathf.Sqrt (Mathf.Pow (ngp.getNode (i + 1).latitude - ngp.getNode (i).latitude, 2) + Mathf.Pow (ngp.getNode (i + 1).longitude - ngp.getNode (i).longitude, 2));
+						angle = Vector3.Angle(Vector3.right,diff)+180;
+					} 
+					else {
+						x = ngp.getNode (i).latitude;
+						y = ngp.getNode (i).longitude;
+						length = Mathf.Sqrt (Mathf.Pow (ngp.getNode (i + 1).latitude - ngp.getNode (i).latitude, 2) + Mathf.Pow (ngp.getNode (i + 1).longitude - ngp.getNode (i).longitude, 2));
+						angle = Vector3.Angle(Vector3.right,-diff)+180;
+					}
+
+					rc.createRoad (x, y, length, width, angle, j, i);
+				}
+				j++;
+			}	
+		}
+	}
 
 	// place les murs dans la scène
 	public void buildWalls(){
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.isBuilding()){
-
-
 				if(!ngp.decomposerRight()){
 					ngp.decomposerLeft();
 				}
-				/*
-				// affichage de la decomposition
-				int a = 0;
-				foreach(NodeGroup ngpb in ngp.decomposition){
-					Debug.Log("decomposition " + a);
-					a++;
-					foreach (Node n in ngpb.nodes){
-						Debug.Log(n.toString());
-					}
-				}*/
-
-
 				//On créé les murs
 				float x, y, length,adj,angle;
 				int etages = 5;
@@ -104,7 +120,7 @@ public class ObjectBuilding {
 						etages = 1;
 					}
 					mur.transform.localScale = new Vector3(length+0.015f,0.1f*etages,0.02f);
-					mur.transform.position = new Vector3(x,-0.05f*etages, y);
+					mur.transform.position = new Vector3(x,0.05f*etages, y);
 					mur.AddComponent<GetInfos>();
 
 					// on modifie l'angle en fonction de l'ordre des points
@@ -129,33 +145,6 @@ public class ObjectBuilding {
 					
 				}
 			}	
-		}
-	}
-
-	//  construction des toits
-	public void buildRoofs(float interv, float taille){
-
-		Node n = new Node (0, 0);
-		float x, y;
-		foreach (NodeGroup ng in nodeGroups) {
-			if(ng.isBuilding()){
-				ng.setBoundaries();
-				for(x = ng.minLat; x < ng.maxLat; x += interv){
-					for(y = ng.minLon; y < ng.maxLon; y += interv){
-
-						n.latitude = x;
-						n.longitude = y;
-
-						if(ng.appartient(n)){
-							int etages = int.Parse(ng.GetTagValue("etages"));
-							GameObject toit = GameObject.CreatePrimitive(PrimitiveType.Plane);
-							toit.transform.position = new Vector3(x,-0.1f*etages,y);
-							toit.transform.localScale = new Vector3(taille,taille,taille);
-							toit.transform.localEulerAngles = new Vector3(0,0,180);
-						}
-					}
-				}
-			}
 		}
 	}
 

@@ -442,24 +442,4 @@ public class NodeGroup {
         return this.name;
 
     }
-
-    //Accesseurs de l'attribut de typeRoof
-    public void setType(string type)
-    {
-        this.typeRoof = type;
-    }
-    public string getType()
-    {
-        return this.typeRoof;
-    }
-
-    //Accesseurs de l'attribut d'angleRoof
-    public void setAngle(int angle)
-    {
-        this.angleRoof = angle;
-    }
-    public int getAngle()
-    {
-        return this.angleRoof;
-    }
 }

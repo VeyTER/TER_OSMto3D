@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 160fc011c75b2664393c50857015261f
 timeCreated: 1483825646
+=======
+guid: e0832be02ae2e1d4d9d3c70370ee88ee
+timeCreated: 1483632153
+>>>>>>> origin/Txomin
 licenseType: Free
 DefaultImporter:
   userData: 

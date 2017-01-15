@@ -15,25 +15,26 @@ public class main : MonoBehaviour {
 	private string path = @"./Assets/";
 	// "map" est la valeur qu'on met par defaut dans fileName. 
 	// Mais celle-ci sera écrasée par la valeur qu'on met dans File Name dans ScriptGameObject (sur Unity)
-	public string fileName = "map";
+	public string fileName;
 	// listes des gameObjects créés dans la scene
 	public static GameObject[] mainWalls;
-	public static GameObject[] mainHighwaysCons;
+	public static GameObject[] mainHighways;
 	public static GameObject[] mainBuildingNodes;
 	public static GameObject[] mainHighwayNodes;
 	public static GameObject panel = null;
-
+	public Material roadMaterial;
     //création d'une instance de GestFile
     public GestFile f = new GestFile();
-	//création d'une instance de ObjectBuilding
-	public ObjectBuilding ob = new ObjectBuilding();
+
     //création d'une instance de TRGDelaunay
     public TRGDelaunay tr;
 
     // Fonction lancée à l'initialisation de la scene
     void Start () {
+        //création d'une instance de ObjectBuilding
+        ObjectBuilding ob = new ObjectBuilding(roadMaterial);
 
-		SetUpUI ();
+        SetUpUI ();
 
         // Si le fichier Resumed n'existe pas on le crée
         if (!System.IO.File.Exists(path + "MapsResumed/" + fileName + "Resumed.osm"))
@@ -86,10 +87,7 @@ public class main : MonoBehaviour {
 	    ob.setLatLong(minlat, maxlat, minlon, maxlon);
 		ob.buildNodes();
 		ob.buildWalls();
-		//ob.buildHighways ();
-
-		// recommandé respecter un ration de interv/taille = 5 avec 0.01 0.002 si pas beaucoup de batiments
-		//ob.buildRoofs (0.03f,0.006f); //probleme de format dans la fonction, à commenter pour le moment
+		ob.buildHighways ();
 		ob.buildMainCameraBG ();
 
 		// on recupere la reference du panneau et on le desactive

@@ -23,7 +23,6 @@ public class TRGDelaunay
         }
     }
 
-
     public bool isWithin(Triangle tri , Node n)
     {
         float A, B;
@@ -49,10 +48,12 @@ public class TRGDelaunay
     {
 
         float maxX, maxY, minX, minY;
+
         minY = listNode[0].latitude;
         maxY = listNode[0].latitude;
         minX = listNode[0].longitude;
         maxX = listNode[0].longitude;
+
 
         foreach(Node nd in listNode)
         {
@@ -170,5 +171,4 @@ public class TRGDelaunay
         listTriangleSupp.Clear();
         UnityEngine.Debug.Log("liste triangle = " + listTriangle.Count);
     }
-        
 }

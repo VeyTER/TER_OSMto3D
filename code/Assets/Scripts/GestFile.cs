@@ -198,17 +198,17 @@ public class GestFile
         }
 
         file.Close();
-        Debug.Log ("There are "+ counter +" nodes.");
-		Debug.Log ("There are "+ main.nodeGroups.Count +" ways.");
-		Debug.Log ("There are "+ buildingCounter +" buildings.");
-		Debug.Log ("There are "+ highwayCounter +" highways.");
-		Debug.Log (cpt1 + " primary.");
-		Debug.Log (cpt2 + " secondary.");
-		Debug.Log (cpt3 + " tertiary.");
-		Debug.Log (cpt4 + " unclassified.");
-		Debug.Log (cpt5 + " residential.");
-		Debug.Log (cpt6 + " service.");
-		Debug.Log (cpt7 + " footway.");
+//      Debug.Log ("There are "+ counter +" nodes.");
+//		Debug.Log ("There are "+ main.nodeGroups.Count +" ways.");
+//		Debug.Log ("There are "+ buildingCounter +" buildings.");
+//		Debug.Log ("There are "+ highwayCounter +" highways.");
+//		Debug.Log (cpt1 + " primary.");
+//		Debug.Log (cpt2 + " secondary.");
+//		Debug.Log (cpt3 + " tertiary.");
+//		Debug.Log (cpt4 + " unclassified.");
+//		Debug.Log (cpt5 + " residential.");
+//		Debug.Log (cpt6 + " service.");
+//		Debug.Log (cpt7 + " footway.");
 
     }
 

@@ -6,7 +6,7 @@ public class Node {
 	public long id;
 	public float latitude, longitude;
 
-	public Node(long id, float lat, float lon){
+	public Node(long id, float lon, float lat){
 		this.id = id;
 		this.latitude = lat * 1000f;
 		this.longitude = lon * 1000f;

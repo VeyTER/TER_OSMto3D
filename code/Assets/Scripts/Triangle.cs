@@ -12,6 +12,7 @@ public class Triangle
     public Node noeudC;
     public Node centre;
 
+
     // Constructeur
     public Triangle (Node noeudA,Node noeudB, Node noeudC)
     {
