@@ -199,6 +199,7 @@ public class GestFile
         }
 
         file.Close();
+        /*
         Debug.Log ("There are "+ counter +" nodes.");
 		Debug.Log ("There are "+ main.nodeGroups.Count +" ways.");
 		Debug.Log ("There are "+ buildingCounter +" buildings.");
@@ -210,7 +211,7 @@ public class GestFile
 		Debug.Log (cpt5 + " residential.");
 		Debug.Log (cpt6 + " service.");
 		Debug.Log (cpt7 + " footway.");
-
+        */
     }
 
 
@@ -239,10 +240,10 @@ public class GestFile
         file.WriteLine("\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"1.1\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
         //On crée les caractéristiques par défaut à Toulouse
         file.WriteLine("\t\t\t\t<town t=\"Toulouse\">");
-        file.WriteLine("\t\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"0.8\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        file.WriteLine("\t\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"0.8\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
         //On crée les caractéristiques par défaut à l'UPS
         file.WriteLine("\t\t\t\t\t<district d=\"UPS\">");
-        file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.560397\" lon=\"1.468820\" dst=\"0.02\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
+        file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.560397\" lon=\"1.468820\" dst=\"0.03\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
 
         //Ici on crée les caractéristiques des différents buildings de l'UPS si nous les avons
         file.WriteLine("\t\t\t\t\t\t<building b=\"IRIT\">");
@@ -254,7 +255,7 @@ public class GestFile
 
         //On crée les caractéristiques par défaut à l'UPS
         file.WriteLine("\t\t\t\t\t<district d=\"Centre-Ville\">");
-        file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.603236\" lon=\"1.444659\" dst=\"0.02\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+        file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.603236\" lon=\"1.444659\" dst=\"0.03\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
 
         file.WriteLine("\t\t\t\t\t</district>");
         //Si on veut rajouter un quartier de la ville de Toulouse, le faire ici
@@ -516,6 +517,11 @@ public class GestFile
 
         string pathString = path + "MapsResumed/" + nameFile + "Resumed.osm";
         string buildingName;
+        string typeRoof;
+        int angleRoof;
+        int nbFloor;
+        double ID;
+
 
         //on créé le fichier et on va écrire dedans
         System.IO.StreamWriter file = new System.IO.StreamWriter(pathString);
@@ -532,21 +538,17 @@ public class GestFile
         foreach (string str1 in cou)
         {
             file.WriteLine("\t\t<Country c=\"" + str1 + "\">");
-            // a prevoir ici l'ecriture des infos
 
             foreach (string str2 in reg)
             {
                 file.WriteLine("\t\t\t<Region r=\"" + str2 + "\">");
-                // a prevoir ici l'ecriture des infos
 
                 foreach (string str3 in tow)
                 {
                     file.WriteLine("\t\t\t\t<Town t=\"" + str3 + "\">");
-                    // a prevoir ici l'ecriture des infos
 
                     foreach (string str4 in dis)
                     {
-                        // a prevoir ici l'ecriture des infos
                         file.WriteLine("\t\t\t\t\t<District d=\"" + str4 + "\">");
                         foreach (NodeGroup ngp in main.nodeGroups)
                         {
@@ -556,8 +558,14 @@ public class GestFile
                                 {
                                     //on récupère le nom du batiment
                                     buildingName = ngp.getName();
+                                    nbFloor = ngp.getNbFloors();
+                                    typeRoof = ngp.getType();
+                                    angleRoof = ngp.getAngle();
+                                    ID = ngp.getId();
 
-                                    file.WriteLine("\t\t\t\t\t\t<building id=\"" + ngp.id + "\" name=\"" + buildingName + "\">");
+
+                                    file.WriteLine("\t\t\t\t\t\t<building>");
+                                    file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\" name=\"" + buildingName + "\" nbFloor=\"" + nbFloor + "\" type=\"" + typeRoof + "\" angle=\"" + angleRoof + "\">");
 
                                     //ecriture des nodes
                                     foreach (Node n in ngp.nodes)
@@ -565,7 +573,7 @@ public class GestFile
                                         file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.id + "\" lat=\"" + n.latitude + "\" lon=\"" + n.longitude + "\"/>");
                                     }
                                     //ecriture balise fin de building
-                                    file.WriteLine("\t\t\t\t\t\t</building id=\"" + ngp.id + "\">");
+                                    file.WriteLine("\t\t\t\t\t\t</building>");
                                 }
                             }
                         }

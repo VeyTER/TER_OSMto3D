@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bounds minlat="43561.86" minlon="1467.77" maxlat="43561.95" maxlon="1467.88"/>
 	<earth>
-		<Country c="country">
-			<Region r="region">
-				<Town t="town">
-					<District d="district">
-						<building id="23905163" name="yes">
+		<Country c="France">
+			<Region r="Midi-Pyrenees">
+				<Town t="Toulouse">
+					<District d="UPS">
+						<building>
+							<Info id="23905163" name="IRIT" nbFloor="4" type="flat" angle="0">
 							<node id="259096615" lat="43562.32" lon="1467.647"/>
 							<node id="259096616" lat="43561.75" lon="1468.213"/>
 							<node id="259096617" lat="43561.57" lon="1467.875"/>
@@ -20,7 +21,7 @@
 							<node id="363895228" lat="43562.23" lon="1467.575"/>
 							<node id="363895238" lat="43562.26" lon="1467.536"/>
 							<node id="259096615" lat="43562.32" lon="1467.647"/>
-						</building id="23905163">
+						</building>
 					</District>
 				</Town>
 			</Region>

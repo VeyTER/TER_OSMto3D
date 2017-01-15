@@ -70,13 +70,13 @@ public class main : MonoBehaviour {
         f.readFileOSM(fileName);
         f.createSettingsFile(fileName);
 
+        f.readSettingsFile(fileName);
+
         f.createResumeFile(fileName);
 
         f.readResumeFile(fileName);
         SetUpUI();
         
-        f.readSettingsFile(fileName);
-
         foreach (NodeGroup ngp in main.nodeGroups){
 
             UnityEngine.Debug.Log(ngp.district);

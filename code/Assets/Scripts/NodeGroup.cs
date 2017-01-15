@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class NodeGroup {
 
-	public long id;
+	public double id;
 	public ArrayList nodes;
 	public ArrayList decomposition;
 	public LinkedList <Node> list;
@@ -31,10 +31,10 @@ public class NodeGroup {
 		this.maxLon = 0;
 		this.minLat = 0;
 		this.maxLat = 0;
-        this.country = "country";
-        this.region = "region";
-        this.town = "town";
-        this.district = "district";
+        this.country = "unknown";
+        this.region = "unknown";
+        this.town = "unknown";
+        this.district = "unknown";
         this.temperature = 0;
         this.nbFloors = 1;
         this.name = "unknown";
@@ -462,4 +462,15 @@ public class NodeGroup {
     {
         return this.angleRoof;
     }
+
+    //Accesseurs de l'attribut d'angleRoof
+    public void setId(double ID)
+    {
+        this.id = ID;
+    }
+    public double getId()
+    {
+        return this.id;
+    }
+
 }
