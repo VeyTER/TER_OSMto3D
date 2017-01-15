@@ -28,6 +28,8 @@ public class ObjectBuilding {
 
 	// place les nodes dans la scène
 	public void buildNodes(){
+		int j = -1;
+		int i;
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.isBuilding()){
 				// on construit les angles des buildings
@@ -41,45 +43,50 @@ public class ObjectBuilding {
 			}
 			if (ngp.isHighway ()) {
 				//on construit les nodes des highways
-				if(/*ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isUnclassified() || */ngp.isResidential())/* || ngp.isService()) *///|| ngp.isFootway())
+				if (ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isUnclassified() || ngp.isResidential () || ngp.isService()) {
+					j++;
+					i = -1;
 					foreach (Node n in ngp.nodes) {
+						i++;
 						GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
 						cube.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
 						cube.transform.position = new Vector3 (n.latitude, 0, n.longitude);
-						cube.name = "" + n.id;
+						cube.name = "" + j + "-" + i + "  " + n.id;
 						cube.tag = "HighwayNode";
 					}
+				}
 			}
 		}
 	}
 
 	//construction des routes
 	public void buildHighways(){
-		float x,y,length,width=0,adj,angle;
+		float x,y,length,width=0.08f,adj,angle;
+		int j = 0;
 		foreach (NodeGroup ngp in nodeGroups) {
-			if ( ngp.isHighway () && (ngp.isResidential () /*|| ngp.isPrimary() || ngp.isSecondary() || ngp.isService() || ngp.isUnclassified()*/) ) {
-				for (int i = 0; i < ngp.nodes.Count - 1; i++) {
-					//on recup les coordonées utiles
+			if ( ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isService() || ngp.isUnclassified()) ) {
+				for (int i = 0; i < ngp.nodes.Count-1; i++) {
 					//Calcul des coordonées du milieu du vecteur formé par les 2 nodes consécutives
-					x = (ngp.getNode (i).latitude + ngp.getNode (i + 1).latitude) / 2;
-					y = (ngp.getNode (i).longitude + ngp.getNode (i + 1).longitude) / 2;
-					//Calcul de la norme de ce vecteur (sera la longueur du morceau de route)
-					length = Mathf.Sqrt (Mathf.Pow (ngp.getNode (i + 1).latitude - ngp.getNode (i).latitude, 2) + Mathf.Pow (ngp.getNode (i + 1).longitude - ngp.getNode (i).longitude, 2));
-					//Calcul de l'angle
-					adj = Mathf.Abs(ngp.getNode(i+1).longitude - ngp.getNode(i).longitude);
-					angle = (Mathf.Acos(adj/length)*180f/Mathf.PI);
+					Vector3 node1 = new Vector3(ngp.getNode(i).latitude,0,ngp.getNode(i).longitude);
+					Vector3 node2 = new Vector3(ngp.getNode(i+1).latitude,0,ngp.getNode(i+1).longitude);
+					Vector3 diff = node2-node1;
 
-					rc.createRoad (x, y, length, width);
-//					GameObject route = GameObject.CreatePrimitive (PrimitiveType.Cube);
-//					route.tag = "Highway";
-//					route.transform.localScale = new Vector3 (length, 0.002f, 0.1f);
-//					route.transform.position = new Vector3 (x, 0, y);
-//					route.transform.localEulerAngles = new Vector3 (0, angle+90, 0);
-//					Renderer rendRoute = route.GetComponent<Renderer> ();
-//					rendRoute.material.mainTexture = Resources.Load ("route") as Texture;
-//					route.AddComponent<GetInfos> (); //à voir plus tard si c'est utile...
+					if (diff.z <= 0) {
+						x = ngp.getNode (i + 1).latitude;
+						y = ngp.getNode (i + 1).longitude;
+						length = Mathf.Sqrt (Mathf.Pow (ngp.getNode (i + 1).latitude - ngp.getNode (i).latitude, 2) + Mathf.Pow (ngp.getNode (i + 1).longitude - ngp.getNode (i).longitude, 2));
+						angle = Vector3.Angle(Vector3.right,diff)+180;
+					} 
+					else {
+						x = ngp.getNode (i).latitude;
+						y = ngp.getNode (i).longitude;
+						length = Mathf.Sqrt (Mathf.Pow (ngp.getNode (i + 1).latitude - ngp.getNode (i).latitude, 2) + Mathf.Pow (ngp.getNode (i + 1).longitude - ngp.getNode (i).longitude, 2));
+						angle = Vector3.Angle(Vector3.right,-diff)+180;
+					}
 
+					rc.createRoad (x, y, length, width, angle, j, i);
 				}
+				j++;
 			}	
 		}
 	}
@@ -88,11 +95,9 @@ public class ObjectBuilding {
 	public void buildWalls(){
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.isBuilding()){
-
 				if(!ngp.decomposerRight()){
 					ngp.decomposerLeft();
 				}
-
 				//On créé les murs
 				float x, y, length,adj,angle;
 				int etages = 5;

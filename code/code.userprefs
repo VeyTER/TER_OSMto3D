@@ -2,9 +2,13 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\main.cs">
     <Files>
-      <File FileName="Assets\Scripts\main.cs" Line="46" Column="20" />
-      <File FileName="Assets\Scripts\RoadCreation.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ObjectBuilding.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\main.cs" Line="38" Column="37" />
+      <File FileName="Assets\Scripts\RoadCreation.cs" Line="11" Column="3" />
+      <File FileName="Assets\Scripts\ObjectBuilding.cs" Line="66" Column="42" />
+      <File FileName="Assets\Maps\campus.osm" Line="4192" Column="21" />
+      <File FileName="Assets\Scripts\Node.cs" Line="1" Column="1" />
+      <File FileName="Assets\Maps\Residential.osm" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GestFile.cs" Line="180" Column="9" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -44,7 +44,7 @@ public class main : MonoBehaviour {
 	    ob.setLatLong (minlat, maxlat, minlon, maxlon);
 		ob.buildNodes ();
 		ob.buildWalls ();
-		//ob.buildHighways ();
+		ob.buildHighways ();
 
 		// recommandé respecter un ration de interv/taille = 5 avec 0.01 0.002 si pas beaucoup de batiments
 		//ob.buildRoofs (0.03f,0.006f); //probleme de format dans la fonction, à commenter pour le moment
