@@ -10,6 +10,7 @@ public class Triangle
     public Node noeudA;
     public Node noeudB;
     public Node noeudC;
+    public Node centre;
 
     // Constructeur
     public Triangle (Node noeudA,Node noeudB, Node noeudC)
@@ -34,7 +35,59 @@ public class Triangle
         }
         return res;
     }
-        
+    
+    public void calculCentre()
+    {
+        float nalat, nalon, nblat, nblon, nclat, nclon;
+        float axc, bxc, dxc,ayc,byc, xc, yc;
+        float templat,templon;
+
+        nalat = this.noeudA.latitude;
+        nalon = this.noeudA.longitude;
+        nblat = this.noeudB.latitude;
+        nblon = this.noeudB.longitude;
+        nclat = this.noeudC.latitude;
+        nclon = this.noeudC.longitude;
+ 
+        if ((nblat==nalat) || (nblat == nclat)){
+            templat = nalat;
+            templon = nalon;
+            nalat = nblat;
+            nalon = nblon;
+            nblat = nclat;
+            nblon = nclon;
+            nclat = templat;
+            nclon = templon;
+        }
+        if ((nblat == nalat) || (nblat == nclat)){
+            templat = nalat;
+            templon = nalon;
+            nalat = nblat;
+            nalon = nblon;
+            nblat = nclat;
+            nblon = nclon;
+            nclat = templat;
+            nclon = templon;
+        }
+
+
+
+        axc = ((nclon * nclon) - (nblon * nblon)) / (nclat - nblat);
+
+        bxc = (((nalon * nalon) - (nblon * nblon)) / (nalat - nblat)) + (nclat - nalat);
+
+        dxc = (2 * ((nclon - nblon) / (nclat - nblat))) - (2 * ((nalon - nblon) / (nalat - nblat)));
+        xc = (axc - bxc) / dxc;
+        ayc = -((nblon - nalon) / (nblat - nalat));
+        byc = (((nblon * nblon) - (nalon * nalon)) + ((nblat * nblat) - (nalat * nalat))) / (2 * (nblat - nalat));
+        yc = ayc * xc + byc;
+       /* UnityEngine.Debug.Log("axc " + axc + " bxc " + bxc + " dxc " + dxc);
+        UnityEngine.Debug.Log("ayc " + ayc + " byc " + byc);
+        UnityEngine.Debug.Log("xc = " + xc + " yc = " + yc);
+        UnityEngine.Debug.Log("nalon = " + nalon + " nalat = " + nalat);*/
+        this.centre = new Node(yc, xc);
+
+    }
 
 }
 

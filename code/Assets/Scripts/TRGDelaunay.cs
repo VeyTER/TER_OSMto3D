@@ -6,13 +6,16 @@ using System.Text;
 
 public class TRGDelaunay
 {
-    // Matrisse pour utilise pour vérifier si un point D se trouve dans le cercle circonscrit à A, B et C
-    public float[,] matrisse = new float[3, 3];
     public List<Triangle> listTriangle = new List<Triangle>();
-    public ArrayList listNode = new ArrayList();
+    public List<Triangle> listTriangleAdd = new List<Triangle>();
+    public List<Triangle> listTriangleSupp = new List<Triangle>();
+    public List<Node> listNode = new List<Node>();
     public List<Node> listNodeTemp = new List<Node>();
+    public List<Node> listNodeRm = new List<Node>();
+    public float ecart = 0.1f;
 
-    public TRGDelaunay(NodeGroup build)
+
+    public TRGDelaunay (NodeGroup build)
     {
         foreach (Node nd in build.nodes)
         {
@@ -20,82 +23,19 @@ public class TRGDelaunay
         }
     }
 
-    public void rempMatrisse(Node noeudA, Node noeudB, Node noeudC, Node noeudD)
+
+    public bool isWithin(Triangle tri , Node n)
     {
-        // calcul vecteur AB
-        double xa = System.Convert.ToDouble(noeudA.getLongitude());
-        double xb = System.Convert.ToDouble(noeudB.getLongitude());
-        double ya = System.Convert.ToDouble(noeudA.getLatitude());
-        double yb = System.Convert.ToDouble(noeudB.getLatitude());
-        double[] vectAB = new double[2] { (xb - xa), (yb - ya) };
-        // calcul vecteur AC
-        double xc = System.Convert.ToDouble(noeudC.getLongitude());
-        double yc = System.Convert.ToDouble(noeudC.getLatitude());
-        double[] vectAC = new double[2] { (xc - xa), (yc - ya) };
+        float A, B;
+        float moduleA, moduleB;
+        tri.calculCentre();
+        //UnityEngine.Debug.Log("noeud A " + tri.noeudA.longitude + " centre " + tri.centre.longitude);
+        A = ((tri.noeudA.longitude - tri.centre.getLongitude()) * (tri.noeudA.longitude - tri.centre.getLongitude())) + ((tri.noeudA.latitude - tri.centre.getLatitude()) * (tri.noeudA.latitude - tri.centre.getLatitude()));
+        B = ((n.longitude - tri.centre.getLongitude()) * (n.longitude - tri.centre.getLongitude())) + ((n.latitude - tri.centre.getLatitude()) * (n.latitude - tri.centre.getLatitude()));
+        moduleA = (float)Math.Sqrt(System.Convert.ToDouble(A));
+        moduleB = (float)Math.Sqrt(System.Convert.ToDouble(B));
 
-        // calcul signe angle orienté
-        // cela revient a calculer regarder le signe du determinant de vectAB, vectAC
-        double res = (vectAB[0] * vectAC[1]) - (vectAB[1] * vectAC[0]);
-
-        // Le critere marche que si A B et C sont dans le sens trigo
-        if (res < 0)
-        {
-            //1,1
-            this.matrisse[0, 0] = noeudA.getLongitude() - noeudD.getLongitude();
-            //1,2
-            this.matrisse[0, 1] = noeudA.getLatitude() - noeudD.getLatitude();
-            //1,3
-            this.matrisse[0, 2] = ((noeudA.getLongitude() * noeudA.getLongitude()) - (noeudD.getLongitude() * noeudD.getLongitude())) 
-                + ((noeudA.getLatitude() * noeudA.getLatitude()) - (noeudD.getLatitude() * noeudD.getLatitude()));
-            //2,1
-            this.matrisse[1, 0] = noeudC.getLatitude() - noeudD.getLatitude();
-            //2,2
-            this.matrisse[1, 1] = noeudC.getLatitude() - noeudD.getLatitude();
-            //2,3
-            this.matrisse[1, 2] = ((noeudC.getLongitude() * noeudC.getLongitude()) - (noeudD.getLongitude() * noeudD.getLongitude())) 
-                + ((noeudC.getLatitude() * noeudC.getLatitude()) - (noeudD.getLatitude() * noeudD.getLatitude()));
-            //3,1
-            this.matrisse[2, 0] = noeudB.getLatitude() - noeudD.getLatitude();
-            //3,2
-            this.matrisse[2, 1] = noeudB.getLatitude() - noeudD.getLatitude();
-            //3,3
-            this.matrisse[2, 2] = ((noeudB.getLongitude() * noeudB.getLongitude()) - (noeudD.getLongitude() * noeudD.getLongitude())) 
-                + ((noeudB.getLatitude() * noeudB.getLatitude()) - (noeudD.getLatitude() * noeudD.getLatitude()));
-
-        }
-        //1,1
-        this.matrisse[0, 0] = noeudA.getLongitude() - noeudD.getLongitude();
-        //1,2
-        this.matrisse[0, 1] = noeudA.getLatitude() - noeudD.getLatitude();
-        //1,3
-        this.matrisse[0, 2] = ((noeudA.getLongitude() * noeudA.getLongitude()) - (noeudD.getLongitude() * noeudD.getLongitude())) + ((noeudA.getLatitude() * noeudA.getLatitude()) - (noeudD.getLatitude() * noeudD.getLatitude()));
-        //2,1
-        this.matrisse[1, 0] = noeudB.getLatitude() - noeudD.getLatitude();
-        //2,2
-        this.matrisse[1, 1] = noeudB.getLatitude() - noeudD.getLatitude();
-        //2,3
-        this.matrisse[1, 2] = ((noeudB.getLongitude() * noeudB.getLongitude()) - (noeudD.getLongitude() * noeudD.getLongitude())) + ((noeudB.getLatitude() * noeudB.getLatitude()) - (noeudD.getLatitude() * noeudD.getLatitude()));
-        //3,1
-        this.matrisse[2, 0] = noeudC.getLatitude() - noeudD.getLatitude();
-        //3,2
-        this.matrisse[2, 1] = noeudC.getLatitude() - noeudD.getLatitude();
-        //3,3
-        this.matrisse[2, 2] = ((noeudC.getLongitude() * noeudC.getLongitude()) - (noeudD.getLongitude() * noeudD.getLongitude())) + ((noeudC.getLatitude() * noeudC.getLatitude()) - (noeudD.getLatitude() * noeudD.getLatitude()));
-    }
-
-    public float detMatrisse()
-    {
-        float res,res1,res2,res3;
-        res1 = matrisse[0, 0] * (matrisse[1, 1] * matrisse[2, 2] - matrisse[2, 1] * matrisse[1, 2]);
-        res2 = matrisse[0, 1] * (matrisse[1, 0] * matrisse[2, 2] - matrisse[2, 0] * matrisse[1, 2]);
-        res3 = matrisse[0, 2] * (matrisse[1, 0] * matrisse[2, 1] - matrisse[2, 0] * matrisse[1, 1]);
-        res = res1 - res2 + res3;
-        return res;
-    }
-
-    public bool isWithin()
-    {
-        if (detMatrisse() > 0)
+        if (moduleA > moduleB)
         {
             return true;
         }
@@ -109,53 +49,126 @@ public class TRGDelaunay
     {
 
         float maxX, maxY, minX, minY;
-        minY = listNodeTemp[0].getLatitude();
-        maxY = listNodeTemp[0].getLatitude();
-        minX = listNodeTemp[0].getLongitude();
-        maxX = listNodeTemp[0].getLongitude();
-
+        minY = listNode[0].latitude;
+        maxY = listNode[0].latitude;
+        minX = listNode[0].longitude;
+        maxX = listNode[0].longitude;
 
         foreach(Node nd in listNode)
         {
-            if (nd.getLatitude() > maxY)
+            if (nd.latitude > maxY)
             {
-                maxY = nd.getLatitude();
+                maxY = nd.latitude;
             }
-            if (nd.getLatitude() < minY)
+            if (nd.latitude < minY)
             {
-                minY = nd.getLatitude();
+                minY = nd.latitude;
             }
-            if (nd.getLongitude() > maxX)
+            if (nd.longitude > maxX)
             {
-                maxX = nd.getLongitude();
+                maxX = nd.longitude;
             }
-            if (nd.getLongitude() < minX)
+            if (nd.longitude < minX)
             {
-                minY = nd.getLongitude();
+                minX = nd.longitude;
             }
         }
 
-        // valeur par deffaut
-        maxX += 50;
-        maxY += 50;
-        minX -= 50;
-        minY -= 50;
+        // valeur par deffaut = 0.1f
+        maxX += ecart;
+        maxY += ecart;
+        minX -= ecart;
+        minY -= ecart;
+
 
         //Création des points composant la boite englobante
-        Node temp1 = new Node(1, minY, minX);
-        Node temp2 = new Node(2, minY, maxX);
-        Node temp3 = new Node(3, maxY, minX);
-        Node temp4 = new Node(4, maxY, maxX);
+        Node temp1 = new Node(1, minY / 1000f, minX / 1000f);
+        Node temp2 = new Node(2, maxY / 1000f, minX / 1000f);
+        Node temp3 = new Node(3, maxY / 1000f, maxX / 1000f);
 
-        // Ajout de ces points dans la listes des point déja traiter
-        listNodeTemp.Add(temp1);
-        listNodeTemp.Add(temp2);
-        listNodeTemp.Add(temp3);
-        listNodeTemp.Add(temp4);
 
-        // Ajout de deux triangles respectant les conditons de Delaunay
+        // Ajout de ces points dans la listes a en
+        listNodeRm.Add(temp1);
+        listNodeRm.Add(temp2);
+        listNodeRm.Add(temp3);
+        
+
+        // Ajout d'un triangle respectant les conditons de Delaunay
         listTriangle.Add(new Triangle(temp1, temp2, temp3));
-        listTriangle.Add(new Triangle(temp4, temp3, temp2));
+        //UnityEngine.Debug.Log("nalat " +listTriangle[0].noeudA.latitude +" nblat "+ listTriangle[0].noeudB.latitude +" nclat " + listTriangle[0].noeudC.latitude);
+        //UnityEngine.Debug.Log("nalon " + listTriangle[0].noeudA.longitude + " nblon " + listTriangle[0].noeudB.longitude + " nclon " + listTriangle[0].noeudC.longitude);
+
 
     }
+
+    public void start()
+    {
+        foreach(Node n in listNode)
+        {
+            foreach(Triangle t1 in listTriangle)
+            {
+                if (this.isWithin(t1, n))
+                {
+                    listTriangleSupp.Add(t1);
+                }
+            }
+            
+            foreach(Triangle t2 in listTriangleSupp)
+            {
+                if (!listNodeTemp.Contains(t2.noeudA))
+                {
+                    listNodeTemp.Add(t2.noeudA);
+                }
+                if (!listNodeTemp.Contains(t2.noeudB))
+                {
+                    listNodeTemp.Add(t2.noeudB);
+                }
+                if (!listNodeTemp.Contains(t2.noeudC))
+                {
+                    listNodeTemp.Add(t2.noeudC);
+                }
+            }
+
+            for(int i = 0; i<listNodeTemp.Count;i++)
+            {
+                if (i < (listNodeTemp.Count - 1))
+                {
+                    listTriangleAdd.Add(new Triangle(listNodeTemp[i], listNodeTemp[i + 1], n));
+                }
+                else
+                {
+                    listTriangleAdd.Add(new Triangle(listNodeTemp[i], listNodeTemp[0], n));
+                }
+            }
+
+            foreach (Triangle t3 in listTriangleSupp)
+            {
+                listTriangle.Remove(t3);
+            }
+            foreach(Triangle t4 in listTriangleAdd)
+            {
+                listTriangle.Add(t4);
+            }
+            listTriangleAdd.Clear();
+            listTriangleSupp.Clear();
+            listNodeTemp.Clear();
+        }
+        foreach(Node n in listNodeRm)
+        {
+            foreach (Triangle t5 in listTriangle)
+            {
+                if (t5.containNode(n))
+                {
+                    listTriangleSupp.Add(t5);
+                }
+            }
+        }
+        foreach(Triangle t6 in listTriangleSupp)
+        {
+            listTriangle.Remove(t6);
+        }
+        listTriangleSupp.Clear();
+        UnityEngine.Debug.Log("liste triangle = " + listTriangle.Count);
+    }
+        
 }

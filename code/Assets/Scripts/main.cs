@@ -27,9 +27,11 @@ public class main : MonoBehaviour {
     public GestFile f = new GestFile();
 	//création d'une instance de ObjectBuilding
 	public ObjectBuilding ob = new ObjectBuilding();
+    //création d'une instance de TRGDelaunay
+    public TRGDelaunay tr;
 
-	// Fonction lancée à l'initialisation de la scene
-	void Start () {
+    // Fonction lancée à l'initialisation de la scene
+    void Start () {
 
 		SetUpUI ();
 
@@ -52,7 +54,34 @@ public class main : MonoBehaviour {
             f.readSettingsFile(fileName);
         //  }
         //}
-        /*
+
+        foreach(NodeGroup ngp in nodeGroups)
+        {
+            tr = new TRGDelaunay(ngp);
+            tr.creaBoiteEnglob();
+            tr.start();
+            foreach (Triangle tri in tr.listTriangle)
+            {
+                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+                cube.transform.position = new Vector3(tri.noeudA.latitude, 0, tri.noeudA.longitude);
+                cube.name = "" + tri.noeudA.id;
+
+
+                cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+                cube.transform.position = new Vector3(tri.noeudB.latitude, 0, tri.noeudB.longitude);
+                cube.name = "" + tri.noeudB.id;
+
+
+                cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+                cube.transform.position = new Vector3(tri.noeudC.latitude, 0, tri.noeudC.longitude);
+                cube.name = "" + tri.noeudC.id;
+
+            }
+        }
+        
 		ob.setNodeGroups(nodeGroups);
 	    ob.setLatLong(minlat, maxlat, minlon, maxlon);
 		ob.buildNodes();
@@ -65,7 +94,7 @@ public class main : MonoBehaviour {
 
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");
-		panel.SetActive(false);  */
+		panel.SetActive(false);  
         foreach (NodeGroup ngp in nodeGroups){
 
             UnityEngine.Debug.Log(ngp.district);
