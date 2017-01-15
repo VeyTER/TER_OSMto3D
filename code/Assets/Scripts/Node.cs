@@ -3,45 +3,47 @@ using System.Collections;
 
 public class Node {
 
-	public long id;
-	public float latitude, longitude;
+	public double id;
+	public double latitude, longitude;
 
-	public Node(long id, float lon, float lat){
+	public Node(double id, double lon, double lat){
 		this.id = id;
-		this.latitude = lat * 1000f;
-		this.longitude = lon * 1000f;
+        this.longitude = lon;
+        this.latitude = lat;
+
 	}
 
-	public Node(float lat, float lon){
+	public Node(double lon, double lat){
 		this.id = 0;
-		this.latitude = lat * 1000f; 
-		this.longitude = lon * 1000f; 
+        this.longitude = lon;
+        this.latitude = lat; 
+ 
 	}
 
   
 	public string toString(){
-		return "Node ["+this.id+"] : ("+this.latitude+" ; "+this.longitude+")"; 
+		return "Node ["+this.id+"] : ("+this.longitude+" ; "+this.latitude+")"; 
 	}
 
     //Accesseurs de latitutde
-    public void setLatitude(float lat)
+    public void setLatitude(double lat)
     {
-        this.latitude = lat * 1000f;
+        this.latitude = lat;
     }
 
-    public float getLatitude()
+    public double getLatitude()
     {
-        return this.latitude / 1000f;
+        return this.latitude;
     }
 
     //Accesseurs de longitude
-    public void setLongitude(float lon)
+    public void setLongitude(double lon)
     {
-        this.longitude = lon * 1000f;
+        this.longitude = lon;
     }
 
-    public float getLongitude()
+    public double getLongitude()
     {
-        return this.longitude / 1000f;
+        return this.longitude;
     }
 }

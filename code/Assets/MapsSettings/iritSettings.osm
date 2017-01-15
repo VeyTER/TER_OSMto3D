@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
 	<earth>
 		<Info nf="1" roof="15" type="pitched"/>
 		<country c="France">
@@ -27,9 +26,4 @@
 			</region>
 		</country>
 	</earth>
-=======
-	<buildingList number="1" >
-		<building id="23905163" name="IRIT" floors="1" >
-	</buildingList>
->>>>>>> origin/Txomin
 </xml>

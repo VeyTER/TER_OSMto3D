@@ -39,9 +39,9 @@ public class Triangle
     
     public void calculCentre()
     {
-        float nalat, nalon, nblat, nblon, nclat, nclon;
-        float axc, bxc, dxc,ayc,byc, xc, yc;
-        float templat,templon;
+        double nalat, nalon, nblat, nblon, nclat, nclon;
+        double axc, bxc, dxc,ayc,byc, xc, yc;
+        double templat,templon;
 
         nalat = this.noeudA.latitude;
         nalon = this.noeudA.longitude;
@@ -86,7 +86,7 @@ public class Triangle
         UnityEngine.Debug.Log("ayc " + ayc + " byc " + byc);
         UnityEngine.Debug.Log("xc = " + xc + " yc = " + yc);
         UnityEngine.Debug.Log("nalon = " + nalon + " nalat = " + nalat);*/
-        this.centre = new Node(yc, xc);
+        this.centre = new Node(xc, yc);
 
     }
 

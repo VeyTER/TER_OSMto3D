@@ -11,7 +11,7 @@ public class GestFile
     public int buildingCounter;
 	public int highwayCounter;
 	// coordonnées min et max de la carte
-    private float minlat, maxlat, minlon, maxlon;
+    private double minlat, maxlat, minlon, maxlon;
    
     // chemin d'acces et nom du fichier par defaut
     private string path = @"./Assets/";
@@ -69,9 +69,9 @@ public class GestFile
 		highwayCounter = 0;
         string line;
 
-        long id = 0;
-        float lat = 0f;
-        float lon = 0f;
+        double id = 0;
+        double lat = 0f;
+        double lon = 0f;
 
         // Read the file and display it line by line.
         System.IO.StreamReader file = new System.IO.StreamReader(path + "Maps/" + nameMap + ".osm");
@@ -82,10 +82,10 @@ public class GestFile
             // on recupère les extremites
             if (line.Contains("<bounds"))
             {
-                minlat = float.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8)) * 1000f;
-                maxlat = float.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8)) * 1000f;
-                minlon = float.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8)) * 1000f;
-                maxlon = float.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8)) * 1000f;
+                minlat = double.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8));
+                maxlat = double.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8));
+                minlon = double.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8));
+                maxlon = double.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8));
             
 
                 main.minlat = minlat;
@@ -97,23 +97,22 @@ public class GestFile
             // on recupère les nodes
             if (line.Contains("<node"))
             {
-                id = long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" visible") - line.IndexOf("id=") - 4));
-                lat = float.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
-                Debug.Log(lat);
+                id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" visible") - line.IndexOf("id=") - 4));
+                lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
 
                 //le dernier node sur osm a une baliste defin "> au lieux de "/> 
                 if (line.Contains("\"/>"))
                 {
-                    lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
+                    lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
 
                 }
                 else
                 {
-                    lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\">") - line.IndexOf("lon=") - 5));
+                    lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\">") - line.IndexOf("lon=") - 5));
                 }
 
                 // création d'un point 
-                main.nodes.Add(new Node(id, lat, lon));
+                main.nodes.Add(new Node(id, lon, lat));
 
                 //incrément du compteur de point
                 counter++;
@@ -135,7 +134,7 @@ public class GestFile
                     if (line.Contains("<nd"))
                     {
                         // on recupere l'id du node
-                        long reference = long.Parse(line.Substring(line.IndexOf("ref=") + 5, line.IndexOf("\"/>") - line.IndexOf("ref=") - 5));
+                        double reference = double.Parse(line.Substring(line.IndexOf("ref=") + 5, line.IndexOf("\"/>") - line.IndexOf("ref=") - 5));
 
                         foreach (Node n in main.nodes)
                         {
@@ -335,7 +334,7 @@ public class GestFile
         int nb = 0;
         int roof = 0;
         string type = "";
-        long id = 0;
+        double id = 0;
 
         string name = "";
 
@@ -415,7 +414,7 @@ public class GestFile
                 //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
                 foreach (NodeGroup ngp in main.nodeGroups)
                 {
-                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude / 1000f), 2) + Math.Pow(longi - (ngp.getNode(0).longitude / 1000f), 2)) < distance)
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude ), 2) + Math.Pow(longi - (ngp.getNode(0).longitude ), 2)) < distance)
                     {
                         ngp.setRegion(region);
                         ngp.setNbFloors(nb);
@@ -446,7 +445,7 @@ public class GestFile
                 //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
                 foreach (NodeGroup ngp in main.nodeGroups)
                 {
-                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude / 1000f), 2) + Math.Pow(longi - (ngp.getNode(0).longitude / 1000f), 2)) < distance)
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude ), 2) + Math.Pow(longi - (ngp.getNode(0).longitude ), 2)) < distance)
                     {
                         ngp.setTown(town);
                         ngp.setNbFloors(nb);
@@ -477,7 +476,7 @@ public class GestFile
                 //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
                 foreach (NodeGroup ngp in main.nodeGroups)
                 {
-                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude / 1000f), 2) + Math.Pow(longi - (ngp.getNode(0).longitude / 1000f), 2)) < distance)
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude ), 2) + Math.Pow(longi - (ngp.getNode(0).longitude ), 2)) < distance)
                     {
                         ngp.setDistrict(district);
                         ngp.setNbFloors(nb);
@@ -491,7 +490,7 @@ public class GestFile
             if (line.Contains("<building "))
             {
                 //On récupère le pays de la ligne
-                id = long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\">") - line.IndexOf("id=") - 4));
+                id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\">") - line.IndexOf("id=") - 4));
                 //On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
                 line = file.ReadLine();
                 if (line.Contains("<Info "))
@@ -531,9 +530,9 @@ public class GestFile
         buildingCounter = 0;
         string line;
 
-        long id = 0;
-        float lat = 0f;
-        float lon = 0f;
+        double id = 0d;
+        double lat = 0d;
+        double lon = 0d;
 
         //Variables permettant de recuperer les balises
         string strCou="country";
@@ -548,10 +547,10 @@ public class GestFile
             // Recuperation de limites de la carte
             if (line.Contains("<bounds"))
             {
-                minlat = float.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8)) * 1000f;
-                maxlat = float.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8)) * 1000f;
-                minlon = float.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8)) * 1000f;
-                maxlon = float.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8)) * 1000f;
+                minlat = double.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8));
+                maxlat = double.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8));
+                minlon = double.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8));
+                maxlon = double.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8));
 
                 main.minlat = minlat;
                 main.maxlat = maxlat;
@@ -592,15 +591,15 @@ public class GestFile
                     if (line.Contains("<node"))
                     {
                         // Recuperation des nodes
-                        id = long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
-                        lat = float.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
-                        lon = float.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
+                        id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
+                        lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
+                        lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
                         
-                        main.nodes.Add(new Node(id, lat, lon));
+                        main.nodes.Add(new Node(id, lon, lat));
                         counter++;
 
                         // Ajout du nouveau node au nodegroup
-                        current.addNode(new Node(id, lat, lon));
+                        current.addNode(new Node(id, lon, lat));
                         
                     }
 

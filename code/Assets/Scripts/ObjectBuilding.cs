@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class ObjectBuilding {
 
 	private ArrayList nodeGroups;
-	private float minlat, maxlat, minlon, maxlon;
+	private double minlat, maxlat, minlon, maxlon;
 	private RoadCreation rc;
 
 	// constructeur
@@ -16,10 +17,25 @@ public class ObjectBuilding {
 	// copie d'une liste de groupe de nodes
 	public void setNodeGroups(ArrayList nodeG){
 		this.nodeGroups = new ArrayList(nodeG);
-	}
+        foreach(NodeGroup ngp in nodeGroups)
+        {
+            foreach(Node n in ngp.nodes)
+            {
+                n.setLatitude(n.getLatitude() * 1000d);
+                n.setLongitude(n.getLongitude() * 1000d);
+            }
+        }
+        foreach (NodeGroup ngp in nodeGroups)
+        {
+            foreach (Node n in ngp.nodes)
+            {
+                Debug.Log("lat:"+n.getLatitude()+" lon:"+ n.getLongitude());
+            }
+        }
+    }
 
 	//copie des coordonnées en latitude et longitude
-	public void setLatLong(float minla, float maxla, float minlo, float maxlo){
+	public void setLatLong(double minla, double maxla, double minlo, double maxlo){
 		this.minlat = minla;
 		this.maxlat = maxla;
 		this.minlon = minlo;
@@ -36,7 +52,7 @@ public class ObjectBuilding {
 				foreach(Node n in ngp.nodes){
 					GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 					cube.transform.localScale = new Vector3(0.02f,0.02f,0.02f);
-					cube.transform.position = new Vector3(n.latitude,0, n.longitude);
+					cube.transform.position = new Vector3((float)n.getLongitude(),0, (float)n.getLatitude());
 					cube.name = ""+n.id;
 					cube.tag = "BuildingNode";
 				}
@@ -50,7 +66,7 @@ public class ObjectBuilding {
 						i++;
 						GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
 						cube.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
-						cube.transform.position = new Vector3 (n.latitude, 0, n.longitude);
+						cube.transform.position = new Vector3 ((float)n.getLongitude(), 0, (float)n.getLatitude());
 						cube.name = "" + j + "-" + i + "  " + n.id;
 						cube.tag = "HighwayNode";
 					}
@@ -61,30 +77,30 @@ public class ObjectBuilding {
 
 	//construction des routes
 	public void buildHighways(){
-		float x,y,length,width=0.08f,adj,angle;
+		double x,y,length,width=0.08d,angle;
 		int j = 0;
 		foreach (NodeGroup ngp in nodeGroups) {
 			if ( ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isService() || ngp.isUnclassified()) ) {
 				for (int i = 0; i < ngp.nodes.Count-1; i++) {
 					//Calcul des coordonées du milieu du vecteur formé par les 2 nodes consécutives
-					Vector3 node1 = new Vector3(ngp.getNode(i).latitude,0,ngp.getNode(i).longitude);
-					Vector3 node2 = new Vector3(ngp.getNode(i+1).latitude,0,ngp.getNode(i+1).longitude);
+					Vector3 node1 = new Vector3((float)ngp.getNode(i).getLongitude(),0, (float)ngp.getNode(i).getLatitude());
+					Vector3 node2 = new Vector3((float)ngp.getNode(i+1).getLongitude(),0, (float)ngp.getNode(i+1).getLatitude());
 					Vector3 diff = node2-node1;
 
 					if (diff.z <= 0) {
-						x = ngp.getNode (i + 1).latitude;
-						y = ngp.getNode (i + 1).longitude;
-						length = Mathf.Sqrt (Mathf.Pow (ngp.getNode (i + 1).latitude - ngp.getNode (i).latitude, 2) + Mathf.Pow (ngp.getNode (i + 1).longitude - ngp.getNode (i).longitude, 2));
-						angle = Vector3.Angle(Vector3.right,diff)+180;
+						x = ngp.getNode (i + 1).getLongitude();
+						y = ngp.getNode (i + 1).getLatitude();
+						length = Math.Sqrt(Math.Pow(ngp.getNode(i + 1).getLatitude() - ngp.getNode (i).getLatitude(), 2) + Math.Pow(ngp.getNode (i + 1).getLongitude() - ngp.getNode (i).getLongitude(), 2));
+						angle = (double)Vector3.Angle(Vector3.right,diff)+180;
 					} 
 					else {
-						x = ngp.getNode (i).latitude;
-						y = ngp.getNode (i).longitude;
-						length = Mathf.Sqrt (Mathf.Pow (ngp.getNode (i + 1).latitude - ngp.getNode (i).latitude, 2) + Mathf.Pow (ngp.getNode (i + 1).longitude - ngp.getNode (i).longitude, 2));
-						angle = Vector3.Angle(Vector3.right,-diff)+180;
+						x = ngp.getNode(i).getLongitude();
+						y = ngp.getNode(i).getLatitude();
+						length = Math.Sqrt(Math.Pow(ngp.getNode (i + 1).getLatitude() - ngp.getNode (i).getLatitude(), 2) + Math.Pow(ngp.getNode(i + 1).getLongitude() - ngp.getNode (i).getLongitude(), 2));
+						angle = (double)Vector3.Angle(Vector3.right,-diff)+180;
 					}
 
-					rc.createRoad (x, y, length, width, angle, j, i);
+					rc.createRoad ((float)x, (float)y, (float)length, (float)width, (float)angle, j, i);
 				}
 				j++;
 			}	
@@ -99,16 +115,16 @@ public class ObjectBuilding {
 					ngp.decomposerLeft();
 				}
 				//On créé les murs
-				float x, y, length,adj,angle;
+				double x, y, length,adj,angle;
 				int etages = 5;
 
 				for(int i=0;i<ngp.nodes.Count-1;i++){
 					//on recup les coordonées utiles
-					x = (ngp.getNode(i).latitude + ngp.getNode(i+1).latitude)/2;
-					y = (ngp.getNode(i).longitude + ngp.getNode(i+1).longitude)/2;
-					length = Mathf.Sqrt(Mathf.Pow(ngp.getNode(i+1).latitude - ngp.getNode(i).latitude,2) + Mathf.Pow(ngp.getNode(i+1).longitude - ngp.getNode(i).longitude,2));
-					adj = Mathf.Abs(ngp.getNode(i+1).longitude - ngp.getNode(i).longitude);
-					angle = (Mathf.Acos(adj/length)*180f/Mathf.PI);
+					x = (ngp.getNode(i).getLongitude() + ngp.getNode(i+1).getLongitude()) /2;
+					y = (ngp.getNode(i).getLatitude() + ngp.getNode(i+1).getLatitude()) /2;
+					length = Math.Sqrt(Math.Pow(ngp.getNode(i+1).getLatitude() - ngp.getNode(i).getLatitude(),2) + Math.Pow(ngp.getNode(i+1).getLongitude() - ngp.getNode(i).getLongitude(),2));
+					adj = Math.Abs(ngp.getNode(i+1).getLatitude() - ngp.getNode(i).getLatitude());
+					angle = (Math.Acos(adj/length)*180d/Math.PI);
 
 					//on positionne le mur
 					GameObject mur = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -119,18 +135,18 @@ public class ObjectBuilding {
 					else{
 						etages = 1;
 					}
-					mur.transform.localScale = new Vector3(length+0.015f,0.1f*etages,0.02f);
-					mur.transform.position = new Vector3(x,0.05f*etages, y);
+					mur.transform.localScale = new Vector3((float)length+0.015f,0.1f*(float)etages,0.02f);
+					mur.transform.position = new Vector3((float)x,0.05f*(float)etages, (float)y);
 					mur.AddComponent<GetInfos>();
 
 					// on modifie l'angle en fonction de l'ordre des points
 
-					if((ngp.getNode(i).latitude > ngp.getNode(i+1).latitude && ngp.getNode(i).longitude < ngp.getNode(i+1).longitude) 
-						|| (ngp.getNode(i).latitude < ngp.getNode(i+1).latitude && ngp.getNode(i).longitude > ngp.getNode(i+1).longitude)){
-						mur.transform.localEulerAngles = new Vector3(0,90-angle,0);
+					if((ngp.getNode(i).getLatitude() > ngp.getNode(i+1).getLatitude() && ngp.getNode(i).getLongitude() < ngp.getNode(i+1).getLongitude()) 
+						|| (ngp.getNode(i).getLatitude() < ngp.getNode(i+1).getLatitude() && ngp.getNode(i).getLongitude() > ngp.getNode(i+1).getLongitude())){
+						mur.transform.localEulerAngles = new Vector3(0,90-(float)angle,0);
 					}
 					else {
-						mur.transform.localEulerAngles = new Vector3(0,angle+90,0);
+						mur.transform.localEulerAngles = new Vector3(0,(float)angle+90,0);
 					}
 
                     //Si on ne connait pas le nom du batiment on utilise l'id
@@ -151,7 +167,7 @@ public class ObjectBuilding {
 	// place la caméra et le background dans la scene
 	public void buildMainCameraBG(){
 
-		float CamLat, CamLon;
+		double CamLat, CamLon;
 
 		// On centre la camera 
 		CamLat = (minlat + maxlat) / 2;
@@ -162,13 +178,13 @@ public class ObjectBuilding {
 		mainLight.range = 30;
         mainLight.intensity = 0.5f;
 		mainCam.name = "MainCam";
-        mainCam.transform.position = new Vector3(CamLat, -5, CamLon);
+        mainCam.transform.position = new Vector3((float)CamLon, -5,(float)CamLat );
         mainCam.transform.localEulerAngles = new Vector3(-90, 270, 0);
 		mainCam.AddComponent <CameraController>();
 
         GameObject background = GameObject.CreatePrimitive(PrimitiveType.Plane);
 		background.name = "Background";
-		background.transform.position = new Vector3(CamLat,0.5f, CamLon);
+		background.transform.position = new Vector3((float)CamLon, 0.5f, (float)CamLat );
 		background.transform.localScale = new Vector3(10,10,10);
 		background.transform.localEulerAngles = new Vector3(0,0,180);
 		background.GetComponent<Renderer>().material.mainTexture = Resources.Load ("bg") as Texture;

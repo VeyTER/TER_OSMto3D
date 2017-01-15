@@ -1,39 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<buildingList number="35" >
-		<building id="18628626" name="3 R1" floors="1" >
-		<building id="18753222" name="IBCG" floors="1" >
-		<building id="18753277" name="4 TP4" floors="1" >
-		<building id="18753309" name="4 R3" floors="1" >
-		<building id="23905090" name="1 A" floors="1" >
-		<building id="23905163" name="IRIT" floors="1" >
-		<building id="23905315" name="Laplace (3R2)" floors="1" >
-		<building id="23905283" name="3 PN" floors="1" >
-		<building id="23905487" name="4 A" floors="1" >
-		<building id="23905335" name="4 R1" floors="1" >
-		<building id="23905477" name="4 TP2" floors="1" >
-		<building id="26138226" name="Laplace (3R3)" floors="1" >
-		<building id="26138230" name="AL 1 à 6" floors="1" >
-		<building id="26265919" name="UFR STAPS" floors="1" >
-		<building id="26285670" name="unknown" floors="1" >
-		<building id="26650675" name="1 CN - Emile Durand" floors="1" >
-		<building id="18628306" name="U4" floors="1" >
-		<building id="36967627" name="unknown" floors="1" >
-		<building id="36967628" name="unknown" floors="1" >
-		<building id="36967626" name="unknown" floors="1" >
-		<building id="18629054" name="1 TP1" floors="1" >
-		<building id="18628158" name="U1" floors="1" >
-		<building id="26138225" name="E4-SCUIO" floors="1" >
-		<building id="18628236" name="U3" floors="1" >
-		<building id="18752346" name="RU 2" floors="1" >
-		<building id="18628167" name="U2" floors="1" >
-		<building id="18628900" name="1 R1" floors="1" >
-		<building id="18628958" name="Institut de Mathématiques de Toulouse (1R3)" floors="1" >
-		<building id="18629011" name="1 R2" floors="1" >
-		<building id="18628793" name="Espace reprographie" floors="1" >
-		<building id="18628652" name="3 TP1" floors="1" >
-		<building id="18628822" name="3 TP2" floors="1" >
-		<building id="17027867" name="Administration" floors="1" >
-		<building id="18628710" name="3 A" floors="1" >
-		<building id="443797585" name="unknown" floors="1" >
-	</buildingList>
+	<earth>
+		<Info nf="1" roof="15" type="pitched"/>
+		<country c="France">
+			<Info lat="47.3833300" lon="0.6833300" dst="5" nf="1" roof="15" type="pitched"/>
+			<region r="Midi-Pyrenees">
+				<Info lat="43.600000" lon="1.433333" dst="1.1" nf="1" roof="15" type="pitched"/>
+				<town t="Toulouse">
+					<Info lat="43.600000" lon="1.433333" dst="0.8" nf="1" roof="15" type="pitched"/>
+					<district d="UPS">
+						<Info lat="43.560397" lon="1.468820" dst="0.02" nf="4" roof="0" type="flat"/>
+						<building id="23905163">
+							<Info name="IRIT" nf="4" roof="0" type="flat"/>
+						</building>
+						<building id="23905283">
+							<Info name="3 PN" nf="4" roof="0" type="flat"/>
+						</building>
+						<building id="23905315">
+							<Info name="LAPLACE (3R2)" nf="4" roof="0" type="flat"/>
+						</building>
+					</district>
+					<district d="Centre-Ville">
+						<Info lat="43.603236" lon="1.444659" dst="0.02" nf="1" roof="15" type="pitched"/>
+					</district>
+				</town>
+			</region>
+		</country>
+	</earth>
 </xml>

@@ -9,16 +9,17 @@ public class NodeGroup {
 	public ArrayList decomposition;
 	public LinkedList <Node> list;
 	public Hashtable tags;
-	public float minLon, maxLon, minLat, maxLat;
+	public double minLon, maxLon, minLat, maxLat;
     public string country;
     public string region;
     public string town;
     public string district;
-    public float temperature;
+    public double temperature;
     public int nbFloors;
     public string name;
     public string typeRoof;
     public int angleRoof;
+    public int nbNode;
     
     //constructeur
 	public NodeGroup(long id){
@@ -39,7 +40,8 @@ public class NodeGroup {
         this.nbFloors = 1;
         this.name = "unknown";
         this.typeRoof = "unknown";
-        this.angleRoof = 0; 
+        this.angleRoof = 0;
+        this.nbNode = 0;
 	}
 
     //Surcharge du constructeur
@@ -68,10 +70,18 @@ public class NodeGroup {
     // ajoute une node à l'ensemble 
     public void addNode(Node n){
 		this.nodes.Add (n);
+        this.nbNode++;
 	}
 
-	// retourne la node demandée 
-	public Node getNode(int i){
+    //supprime la n ieme valeur de node 
+    public void removeNode(int n)
+    {
+        this.nodes.RemoveAt(n);
+        this.nbNode--;
+    }
+
+    // retourne la node demandée 
+    public Node getNode(int i){
 		return (Node)this.nodes [i];
 	}
 
@@ -143,7 +153,7 @@ public class NodeGroup {
 	// teste si un point est à gauche ou a droite d'un vecteur
 	public bool isAtRight( Node nodeA, Node nodeB, Node nodeTest){
 
-		float determinant, abx, aby, dx, dy;
+		double determinant, abx, aby, dx, dy;
 
 		abx = nodeB.latitude - nodeA.latitude;
 		aby = nodeB.longitude - nodeA.longitude;
@@ -413,11 +423,11 @@ public class NodeGroup {
     }
 
     // Accesseurs de l'attribut de temperature
-    public void setTemperature(float temperature)
+    public void setTemperature(double temperature)
     {
         this.temperature = temperature;
     }
-    public float getTemperature()
+    public double getTemperature()
     {
         return this.temperature;
     }
@@ -442,4 +452,24 @@ public class NodeGroup {
         return this.name;
 
     }
+    //Accesseurs de l'attribut de typeRoof
+    public void setType(string type)
+    {
+        this.typeRoof = type;
+    }
+    public string getType()
+    {
+        return this.typeRoof;
+    }
+
+    //Accesseurs de l'attribut d'angleRoof
+    public void setAngle(int angle)
+    {
+        this.angleRoof = angle;
+    }
+    public int getAngle()
+    {
+        return this.angleRoof;
+    }
 }
+

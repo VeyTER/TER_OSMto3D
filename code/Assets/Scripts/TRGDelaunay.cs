@@ -12,7 +12,7 @@ public class TRGDelaunay
     public List<Node> listNode = new List<Node>();
     public List<Node> listNodeTemp = new List<Node>();
     public List<Node> listNodeRm = new List<Node>();
-    public float ecart = 0.1f;
+    public double ecartement = 0.1d;
 
 
     public TRGDelaunay (NodeGroup build)
@@ -25,14 +25,14 @@ public class TRGDelaunay
 
     public bool isWithin(Triangle tri , Node n)
     {
-        float A, B;
-        float moduleA, moduleB;
+        double A, B;
+        double moduleA, moduleB;
         tri.calculCentre();
         //UnityEngine.Debug.Log("noeud A " + tri.noeudA.longitude + " centre " + tri.centre.longitude);
-        A = ((tri.noeudA.longitude - tri.centre.getLongitude()) * (tri.noeudA.longitude - tri.centre.getLongitude())) + ((tri.noeudA.latitude - tri.centre.getLatitude()) * (tri.noeudA.latitude - tri.centre.getLatitude()));
-        B = ((n.longitude - tri.centre.getLongitude()) * (n.longitude - tri.centre.getLongitude())) + ((n.latitude - tri.centre.getLatitude()) * (n.latitude - tri.centre.getLatitude()));
-        moduleA = (float)Math.Sqrt(System.Convert.ToDouble(A));
-        moduleB = (float)Math.Sqrt(System.Convert.ToDouble(B));
+        A = Math.Pow((tri.noeudA.getLongitude() - tri.centre.getLongitude()), 2) + Math.Pow((tri.noeudA.getLatitude() - tri.centre.getLatitude()), 2);
+        B = Math.Pow((n.getLongitude() - tri.centre.getLongitude()), 2) + Math.Pow((n.getLatitude() - tri.centre.getLatitude()), 2); 
+        moduleA = Math.Sqrt(A);
+        moduleB = Math.Sqrt(B);
 
         if (moduleA > moduleB)
         {
@@ -47,45 +47,45 @@ public class TRGDelaunay
     public void creaBoiteEnglob()
     {
 
-        float maxX, maxY, minX, minY;
+        double maxX, maxY, minX, minY;
 
-        minY = listNode[0].latitude;
-        maxY = listNode[0].latitude;
-        minX = listNode[0].longitude;
-        maxX = listNode[0].longitude;
+        minY = listNode[0].getLatitude();
+        maxY = listNode[0].getLatitude();
+        minX = listNode[0].getLongitude();
+        maxX = listNode[0].getLongitude();
 
 
         foreach(Node nd in listNode)
         {
-            if (nd.latitude > maxY)
+            if (nd.getLatitude() > maxY)
             {
-                maxY = nd.latitude;
+                maxY = nd.getLatitude();
             }
-            if (nd.latitude < minY)
+            if (nd.getLatitude() < minY)
             {
-                minY = nd.latitude;
+                minY = nd.getLatitude();
             }
-            if (nd.longitude > maxX)
+            if (nd.getLongitude() > maxX)
             {
-                maxX = nd.longitude;
+                maxX = nd.getLongitude();
             }
-            if (nd.longitude < minX)
+            if (nd.getLongitude() < minX)
             {
-                minX = nd.longitude;
+                minX = nd.getLongitude();
             }
         }
 
         // valeur par deffaut = 0.1f
-        maxX += ecart;
-        maxY += ecart;
-        minX -= ecart;
-        minY -= ecart;
+        maxX += ecartement;
+        maxY += ecartement;
+        minX -= ecartement;
+        minY -= ecartement;
 
 
         //Création des points composant la boite englobante
-        Node temp1 = new Node(1, minY / 1000f, minX / 1000f);
-        Node temp2 = new Node(2, maxY / 1000f, minX / 1000f);
-        Node temp3 = new Node(3, maxY / 1000f, maxX / 1000f);
+        Node temp1 = new Node(1, minX, minY);
+        Node temp2 = new Node(2, minX, maxY);
+        Node temp3 = new Node(3, maxX, maxY);
 
 
         // Ajout de ces points dans la listes a en
