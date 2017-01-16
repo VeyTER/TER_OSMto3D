@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="CGImap 0.4.0 (6315 thorn-03.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
  <bounds minlat="43.5540000" minlon="1.4633000" maxlat="43.5629000" maxlon="1.4811000"/>
  <node id="625240" visible="true" version="3" changeset="4440731" timestamp="2010-04-16T17:29:50Z" user="Florian Birée" uid="26867" lat="43.5544525" lon="1.4714710"/>
@@ -7,6 +7,52 @@
  <node id="625236" visible="true" version="2" changeset="750508" timestamp="2009-03-07T17:58:17Z" user="hromain" uid="39569" lat="43.5554962" lon="1.4722469">
   <tag k="highway" v="turning_circle"/>
  </node>
+ <node id="426597790" visible="true" version="5" changeset="9170452" timestamp="2011-08-30T20:10:00Z" user="AmiFritz" uid="172867" lat="43.6038469" lon="1.4429104"/>
+ <node id="426597836" visible="true" version="5" changeset="9170452" timestamp="2011-08-30T20:10:01Z" user="AmiFritz" uid="172867" lat="43.6037921" lon="1.4432267"/>
+ <node id="1308633651" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6040588" lon="1.4446811"/>
+ <node id="1308633653" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6047182" lon="1.4445372"/>
+ <node id="1308633654" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6048977" lon="1.4442329"/>
+ <node id="1308633655" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6040969" lon="1.4439949"/>
+ <node id="1308633659" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6039868" lon="1.4441722"/>
+ <node id="1308633661" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6047378" lon="1.4445371"/>
+ <node id="1308633664" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6049013" lon="1.4441378"/>
+ <node id="1308633666" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6039802" lon="1.4440231"/>
+ <node id="1308633669" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6048830" lon="1.4444822"/>
+ <node id="1308633670" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6049170" lon="1.4438593"/>
+ <node id="1308633671" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6040002" lon="1.4440121"/>
+ <node id="1308633672" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:32Z" user="Art Penteur" uid="92075" lat="43.6040417" lon="1.4446622"/>
+ <node id="1308633678" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6042207" lon="1.4446435"/>
+ <node id="1308633681" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6048591" lon="1.4445071"/>
+ <node id="1308633683" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6039817" lon="1.4441735"/>
+ <node id="1308633685" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6040680" lon="1.4446851"/>
+ <node id="1308633686" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6039725" lon="1.4440298"/>
+ <node id="1308633689" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6040798" lon="1.4446859"/>
+ <node id="1308633690" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6048884" lon="1.4444602"/>
+ <node id="1308633702" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6042022" lon="1.4446549"/>
+ <node id="1308633705" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6048753" lon="1.4444969"/>
+ <node id="1308633709" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6040523" lon="1.4446761"/>
+ <node id="1308633710" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6049005" lon="1.4442298"/>
+ <node id="1308633711" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6048907" lon="1.4444633"/>
+ <node id="1308633712" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6049125" lon="1.4438611"/>
+ <node id="1308633713" visible="true" version="1" changeset="8316777" timestamp="2011-06-02T07:23:33Z" user="Art Penteur" uid="92075" lat="43.6040788" lon="1.4439930"/>
+ <node id="83815661" visible="true" version="4" changeset="8316777" timestamp="2011-06-02T07:23:34Z" user="Art Penteur" uid="92075" lat="43.6048891" lon="1.4444790"/>
+ <node id="597192583" visible="true" version="2" changeset="8316777" timestamp="2011-06-02T07:23:36Z" user="Art Penteur" uid="92075" lat="43.6043060" lon="1.4444380"/>
+ <node id="83815655" visible="true" version="4" changeset="8316777" timestamp="2011-06-02T07:23:36Z" user="Art Penteur" uid="92075" lat="43.6049183" lon="1.4438403"/>
+ <node id="597192588" visible="true" version="2" changeset="8316777" timestamp="2011-06-02T07:23:36Z" user="Art Penteur" uid="92075" lat="43.6044993" lon="1.4440676"/>
+ <node id="597192590" visible="true" version="2" changeset="8316777" timestamp="2011-06-02T07:23:36Z" user="Art Penteur" uid="92075" lat="43.6045308" lon="1.4443881"/>
+ <node id="83815656" visible="true" version="4" changeset="8316777" timestamp="2011-06-02T07:23:37Z" user="Art Penteur" uid="92075" lat="43.6039694" lon="1.4440384"/>
+ <node id="426597740" visible="true" version="5" changeset="13820209" timestamp="2012-11-10T12:46:16Z" user="don-vip" uid="297482" lat="43.6049052" lon="1.4441408"/>
+ <node id="1308645070" visible="true" version="1" changeset="8316825" timestamp="2011-06-02T07:30:04Z" user="Art Penteur" uid="92075" lat="43.6044079" lon="1.4445911"/>
+ <node id="1308645075" visible="true" version="1" changeset="8316825" timestamp="2011-06-02T07:30:04Z" user="Art Penteur" uid="92075" lat="43.6045301" lon="1.4445569"/>
+ <node id="1308645090" visible="true" version="1" changeset="8316825" timestamp="2011-06-02T07:30:04Z" user="Art Penteur" uid="92075" lat="43.6044057" lon="1.4445858"/>
+ <node id="1308645095" visible="true" version="1" changeset="8316825" timestamp="2011-06-02T07:30:04Z" user="Art Penteur" uid="92075" lat="43.6045293" lon="1.4445646"/>
+ <node id="426691320" visible="true" version="5" changeset="14546755" timestamp="2013-01-06T10:40:34Z" user="xtianetkti" uid="387066" lat="43.6049777" lon="1.4435955"/>
+ <node id="450980988" visible="true" version="3" changeset="9170452" timestamp="2011-08-30T20:10:03Z" user="AmiFritz" uid="172867" lat="43.6039895" lon="1.4438504"/>
+ <node id="409758000" visible="true" version="3" changeset="9170452" timestamp="2011-08-30T20:17:29Z" user="AmiFritz" uid="172867" lat="43.6044841" lon="1.4448606"/>
+ <node id="409758003" visible="true" version="3" changeset="9170452" timestamp="2011-08-30T20:17:29Z" user="AmiFritz" uid="172867" lat="43.6043710" lon="1.4448895"/>
+ <node id="596621593" visible="true" version="2" changeset="9187735" timestamp="2011-09-01T19:55:44Z" user="AmiFritz" uid="172867" lat="43.6046140" lon="1.4427394"/>
+ <node id="596621595" visible="true" version="2" changeset="9187735" timestamp="2011-09-01T19:55:44Z" user="AmiFritz" uid="172867" lat="43.6045185" lon="1.4427601"/>
+
  <node id="625242" visible="true" version="3" changeset="4463943" timestamp="2010-04-18T23:14:58Z" user="Florian Birée" uid="26867" lat="43.5550721" lon="1.4719338"/>
  <node id="625255" visible="true" version="4" changeset="3385318" timestamp="2009-12-16T09:35:34Z" user="Flopy" uid="209134" lat="43.5551804" lon="1.4686231"/>
  <node id="625285" visible="true" version="2" changeset="4460271" timestamp="2010-04-18T17:19:07Z" user="Florian Birée" uid="26867" lat="43.5531035" lon="1.4664865"/>
@@ -31680,4 +31726,69 @@
   <tag k="website" v="http://www.toulouse.fr/"/>
   <tag k="wikipedia" v="fr:Toulouse"/>
  </relation>
+ <way id="10157283" visible="true" version="18" changeset="34545514" timestamp="2015-10-10T09:06:37Z" user="GeorgeKaplan" uid="1198089">
+  <nd ref="83815655"/>
+  <nd ref="426597782"/>
+  <nd ref="426597780"/>
+  <nd ref="426597778"/>
+  <nd ref="426597775"/>
+  <nd ref="426597773"/>
+  <nd ref="2097748040"/>
+  <nd ref="426597771"/>
+  <nd ref="426597769"/>
+  <nd ref="426597766"/>
+  <nd ref="1308633655"/>
+  <nd ref="1308633713"/>
+  <nd ref="426597764"/>
+  <nd ref="426597762"/>
+  <nd ref="1308633671"/>
+  <nd ref="1308633666"/>
+  <nd ref="1308633686"/>
+  <nd ref="83815656"/>
+  <nd ref="1308633683"/>
+  <nd ref="1308633659"/>
+  <nd ref="426597760"/>
+  <nd ref="426597758"/>
+  <nd ref="426597755"/>
+  <nd ref="1308633672"/>
+  <nd ref="1308633709"/>
+  <nd ref="1308633651"/>
+  <nd ref="1308633685"/>
+  <nd ref="1308633689"/>
+  <nd ref="83815659"/>
+  <nd ref="426597753"/>
+  <nd ref="1308633702"/>
+  <nd ref="1308633678"/>
+  <nd ref="426597751"/>
+  <nd ref="1308645090"/>
+  <nd ref="1308645070"/>
+  <nd ref="2130192067"/>
+  <nd ref="1308645095"/>
+  <nd ref="1308645075"/>
+  <nd ref="426597749"/>
+  <nd ref="1308633653"/>
+  <nd ref="1308633661"/>
+  <nd ref="426597746"/>
+  <nd ref="426597744"/>
+  <nd ref="1308633681"/>
+  <nd ref="1308633705"/>
+  <nd ref="1308633669"/>
+  <nd ref="83815661"/>
+  <nd ref="1308633711"/>
+  <nd ref="1308633690"/>
+  <nd ref="1308633654"/>
+  <nd ref="1308633710"/>
+  <nd ref="426597740"/>
+  <nd ref="1308633664"/>
+  <nd ref="1308633712"/>
+  <nd ref="1308633670"/>
+  <nd ref="83815655"/>
+  <tag k="addr:housename" v="Capitole"/>
+  <tag k="addr:street" v="Place du Capitole"/>
+  <tag k="building" v="yes"/>
+  <tag k="height" v="25"/>
+  <tag k="heritage" v="2"/>
+  <tag k="heritage:operator" v="mhs"/>
+  <tag k="name" v="Capitole - Mairie de Toulouse"/>
+ </way>
 </osm>

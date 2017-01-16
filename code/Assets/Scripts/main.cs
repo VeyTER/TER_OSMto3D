@@ -32,6 +32,7 @@ public class main : MonoBehaviour {
 
     // Fonction lancée à l'initialisation de la scene
     void Start () {
+        /*
         //création d'une instance de ObjectBuilding
         ObjectBuilding ob = new ObjectBuilding(roadMaterial);
         SetUpUI ();
@@ -46,16 +47,16 @@ public class main : MonoBehaviour {
         {
             f.readResumeFile(fileName);
         }
-/*
+
         // si la carte n'a pas de fichier de parametre on le créé
-        if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {*/
+        if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
             f.createSettingsFile(fileName);	
 		//}
 		//else{
             f.readSettingsFile(fileName);
         //  }
         //}
-
+        
         foreach(NodeGroup ngp in nodeGroups)
         {
             tr = new TRGDelaunay(ngp);
@@ -77,7 +78,17 @@ public class main : MonoBehaviour {
 
             UnityEngine.Debug.Log(ngp.getDistrict());
             UnityEngine.Debug.Log(ngp.getName());
-        }
+        
+
+
+        }*/
+        f.readFileOSM(fileName);
+        f.createSettingsFile(fileName);
+
+        f.readSettingsFile(fileName);
+
+        f.createResumeFile(fileName);
+
 	}
 		
 

@@ -6,21 +6,15 @@
 			<region r="Midi-Pyrenees">
 				<Info lat="43.600000" lon="1.433333" dst="1.1" nf="1" roof="15" type="pitched"/>
 				<town t="Toulouse">
-					<Info lat="43.600000" lon="1.433333" dst="0.8" nf="1" roof="15" type="pitched"/>
+					<Info lat="43.600000" lon="1.433333" dst="0.8" nf="3" roof="15" type="pitched"/>
 					<district d="UPS">
-						<Info lat="43.560397" lon="1.468820" dst="0.02" nf="4" roof="0" type="flat"/>
-						<building id="23905163">
-							<Info name="IRIT" nf="4" roof="0" type="flat"/>
-						</building>
-						<building id="23905283">
-							<Info name="3 PN" nf="4" roof="0" type="flat"/>
-						</building>
-						<building id="23905315">
-							<Info name="LAPLACE (3R2)" nf="4" roof="0" type="flat"/>
+						<Info lat="43.560397" lon="1.468820" dst="0.03" nf="4" roof="0" type="flat"/>
+						<building b="IRIT">
+							<Info lat="43.561988" lon="1.467984" dst="0.0005" nf="4" roof="0" type="flat"/>
 						</building>
 					</district>
 					<district d="Centre-Ville">
-						<Info lat="43.603236" lon="1.444659" dst="0.02" nf="1" roof="15" type="pitched"/>
+						<Info lat="43.603236" lon="1.444659" dst="0.03" nf="3" roof="15" type="pitched"/>
 					</district>
 				</town>
 			</region>

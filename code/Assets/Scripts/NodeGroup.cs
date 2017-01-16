@@ -32,10 +32,10 @@ public class NodeGroup {
 		this.maxLon = 0;
 		this.minLat = 0;
 		this.maxLat = 0;
-        this.country = "country";
-        this.region = "region";
-        this.town = "town";
-        this.district = "district";
+        this.country = "unknown";
+        this.region = "unknown";
+        this.town = "unknown";
+        this.district = "unknown";
         this.temperature = 0;
         this.nbFloors = 1;
         this.name = "unknown";
