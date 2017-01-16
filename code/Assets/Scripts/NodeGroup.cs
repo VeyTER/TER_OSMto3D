@@ -463,7 +463,7 @@ public class NodeGroup {
         return this.angleRoof;
     }
 
-    //Accesseurs de l'attribut d'angleRoof
+    //Accesseurs de l'attribut d'id
     public void setId(double ID)
     {
         this.id = ID;

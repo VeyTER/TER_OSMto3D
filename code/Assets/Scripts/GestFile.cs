@@ -278,11 +278,11 @@ public class GestFile
     }
 
 
-/// <summary>
-/// Methode readSettingsFile :
-/// Lit un fichier setting
-/// </summary>
-/// <param name="nameFile"> nom du fichier setting a lire </param>
+    /// <summary>
+    /// Methode readSettingsFile :
+    /// Lit un fichier setting
+    /// </summary>
+    /// <param name="nameFile"> nom du fichier setting a lire </param>
     public void readSettingsFile(string nameFile)
     {
         string pathString = path + "MapsSettings/" + nameFile + "Settings.osm";
@@ -597,7 +597,7 @@ public class GestFile
 
 
     /// <summary>
-    /// Metode readSettingFile :
+    /// Metode readResumeFile :
     /// Lit un fichier resume
     /// </summary>
     /// <param name="nameFile"> nom du fichier resume a lire </param>
@@ -656,6 +656,8 @@ public class GestFile
             //Recuparation des batiments
             if (line.Contains("<building"))
             {
+                // Changement de ligne
+                line = file.ReadLine();
 
                 // Creation d'un nouveau nodegroup
                 NodeGroup current = new NodeGroup(long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("name=") - line.IndexOf("id=") - 6)));
@@ -699,9 +701,11 @@ public class GestFile
                 buildingCounter++;
             }
         }
+        /*
         Debug.Log("There are " + counter + " nodes.");
         Debug.Log("There are " + buildingCounter + " buildings.");
         Debug.Log("There are " + main.nodeGroups.Count + " buildings.");
+        */
     }
 
 
