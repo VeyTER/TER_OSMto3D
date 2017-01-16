@@ -561,7 +561,7 @@ public class GestFile
 
 
                                     file.WriteLine("\t\t\t\t\t\t<building>");
-                                    file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\" name=\"" + buildingName + "\" nbFloor=\"" + nbFloor + "\" type=\"" + typeRoof + "\" angle=\"" + angleRoof + "\">");
+                                    file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\" name=\"" + buildingName + "\" nbFloor=\"" + nbFloor + "\" type=\"" + typeRoof + "\" angle=\"" + angleRoof + "\"/>");
 
                                     //ecriture des nodes
                                     foreach (Node n in ngp.nodes)
@@ -615,8 +615,8 @@ public class GestFile
     /// <param name="nameFile"> nom du fichier resume a lire </param>
     public void readResumeFile(string nameFile)
     {
-        counter = 0;
-        buildingCounter = 0;
+        int counter = 0;
+        int buildingCounter = 0;
         string line;
 
         double id = 0d;
@@ -668,10 +668,16 @@ public class GestFile
             //Recuparation des batiments
             if (line.Contains("<building"))
             {
+                line = file.ReadLine();
 
                 // Creation d'un nouveau nodegroup
-                NodeGroup current = new NodeGroup(long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("name=") - line.IndexOf("id=") - 6)));
-                current.setName(line.Substring(line.IndexOf("name=") + 6, line.IndexOf("\">") - line.IndexOf("name=") - 6));
+                NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("name=") - line.IndexOf("id=") - 6)));
+
+                // Ajout des caractéristiques du batiment
+                current.setName(line.Substring(line.IndexOf("name=") + 6, line.IndexOf("\" nbFloor") - line.IndexOf("name=") - 6));
+                current.setNbFloors(int.Parse(line.Substring(line.IndexOf("nbFloor=") + 9, line.IndexOf("\" type") - line.IndexOf("nbFloor=") - 9)));
+                current.setType(line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\" angle") - line.IndexOf("type=") - 6));
+                current.setAngle(int.Parse(line.Substring(line.IndexOf("angle=") + 7, line.IndexOf("\"/>") - line.IndexOf("angle=") - 7)));
 
                 // Lecture d'une nouvelle ligne
                 line = file.ReadLine();
@@ -695,6 +701,7 @@ public class GestFile
                     // Changement de ligne
                     line = file.ReadLine();
                 }
+
                 // Ajout des balises de location dans le nodegroup
                 current.setCountry(strCou);
                 current.setRegion(strReg);
@@ -710,10 +717,57 @@ public class GestFile
                 //Increment du compteur de batiment 
                 buildingCounter++;
             }
+
+            // Récupération des routes
+            if (line.Contains("<highway"))
+            {
+                line = file.ReadLine();
+
+                // Creation d'un nouveau nodegroup
+                NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("type=") - line.IndexOf("id=") - 6)));
+
+                // Ajout des caractéristiques du batiment
+                current.addTag("highway", line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6));
+
+                // Lecture d'une nouvelle ligne
+                line = file.ReadLine();
+
+                while (!line.Contains("</highway"))
+                {
+                    if (line.Contains("<node"))
+                    {
+                        // Recuperation des nodes
+                        id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
+                        lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
+                        lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
+
+                        main.nodes.Add(new Node(id, lon, lat));
+                        counter++;
+
+                        // Ajout du nouveau node au nodegroup
+                        current.addNode(new Node(id, lon, lat));
+                    }
+
+                    // Changement de ligne
+                    line = file.ReadLine();
+                }
+
+                // Ajout des balises de location dans le nodegroup
+                current.setCountry(strCou);
+                current.setRegion(strReg);
+                current.setTown(strTow);
+                current.setDistrict(strDis);
+
+                //Ajout du nodeGroup courent à la liste main.nodeGroups
+                main.nodeGroups.Add(current);
+
+                //Increment du compteur de batiment 
+                buildingCounter++;
+            }
         }
         Debug.Log("There are " + counter + " nodes.");
         Debug.Log("There are " + buildingCounter + " buildings.");
-        Debug.Log("There are " + main.nodeGroups.Count + " buildings.");
+        Debug.Log("There are " + main.nodeGroups.Count + " nodegroups.");
     }
 
 }

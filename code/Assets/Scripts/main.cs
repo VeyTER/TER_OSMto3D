@@ -31,8 +31,8 @@ public class main : MonoBehaviour {
     public TRGDelaunay tr;
 
     // Fonction lancée à l'initialisation de la scene
-    void Start () {
-        /*
+    void Start() {
+        
         //création d'une instance de ObjectBuilding
         ObjectBuilding ob = new ObjectBuilding(roadMaterial);
         SetUpUI ();
@@ -41,21 +41,28 @@ public class main : MonoBehaviour {
         if (!System.IO.File.Exists(path + "MapsResumed/" + fileName + "Resumed.osm"))
         {
             f.readFileOSM(fileName);
+
+            f.createSettingsFile(fileName);
+            f.readSettingsFile(fileName);
+
             f.createResumeFile(fileName);
+
         }
         else
         {
             f.readResumeFile(fileName);
         }
-
+        /*
         // si la carte n'a pas de fichier de parametre on le créé
-        if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm")) {
+        if (!System.IO.File.Exists (path + "MapsSettings/" + fileName + "Settings.osm"))
+        {
             f.createSettingsFile(fileName);	
-		//}
-		//else{
+		}
+		else
+        {
             f.readSettingsFile(fileName);
-        //  }
-        //}
+        }
+        */
         
         foreach(NodeGroup ngp in nodeGroups)
         {
@@ -81,14 +88,20 @@ public class main : MonoBehaviour {
         
 
 
+        }
+        /*
+        if (!System.IO.File.Exists(path + "MapsResumed/" + fileName + "Resumed.osm")) { 
+            f.readFileOSM(fileName);
+            f.createSettingsFile(fileName);
+
+            f.readSettingsFile(fileName);
+
+            f.createResumeFile(fileName);
+        }
+        else
+        {
+            f.readResumeFile(fileName);
         }*/
-        f.readFileOSM(fileName);
-        f.createSettingsFile(fileName);
-
-        f.readSettingsFile(fileName);
-
-        f.createResumeFile(fileName);
-
 	}
 		
 
