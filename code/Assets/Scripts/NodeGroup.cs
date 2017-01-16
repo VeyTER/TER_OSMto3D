@@ -4,25 +4,25 @@ using System.Collections.Generic;
 
 public class NodeGroup {
 
-	public long id;
-	public ArrayList nodes;
-	public ArrayList decomposition;
-	public LinkedList <Node> list;
-	public Hashtable tags;
-	public double minLon, maxLon, minLat, maxLat;
-    public string country;
-    public string region;
-    public string town;
-    public string district;
-    public double temperature;
-    public int nbFloors;
-    public string name;
-    public string typeRoof;
-    public int angleRoof;
-    public int nbNode;
+	protected double id;
+    public ArrayList nodes;
+    protected ArrayList decomposition;
+    protected LinkedList <Node> list;
+    public Hashtable tags;
+    protected double minLon, maxLon, minLat, maxLat;
+    protected string country;
+    protected string region;
+    protected string town;
+    protected string district;
+    protected double temperature;
+    protected int nbFloors;
+    protected string name;
+    protected string typeRoof;
+    protected int angleRoof;
+    protected int nbNode;
     
     //constructeur
-	public NodeGroup(long id){
+	public NodeGroup(double id){
 		this.id = id;
 		this.nodes = new ArrayList ();
 		this.decomposition = new ArrayList ();
@@ -45,7 +45,7 @@ public class NodeGroup {
 	}
 
     //Surcharge du constructeur
-    public NodeGroup(long id,string country, string region, string town, string district, string name, string type, int angle)
+    public NodeGroup(double id,string country, string region, string town, string district, string name, string type, int angle)
     {
         this.id = id;
         this.nodes = new ArrayList();
@@ -135,7 +135,7 @@ public class NodeGroup {
 		return this.tags.ContainsValue ("footway");
 	}
 
-	//teste l'egalité de deux NodeGroup
+	// teste l'egalité de deux NodeGroup
 	public bool equals (NodeGroup ng){
 		return this.id == ng.id;
 	}
@@ -155,10 +155,10 @@ public class NodeGroup {
 
 		double determinant, abx, aby, dx, dy;
 
-		abx = nodeB.latitude - nodeA.latitude;
-		aby = nodeB.longitude - nodeA.longitude;
-		dx = nodeTest.latitude - nodeA.latitude;
-		dy = nodeTest.longitude - nodeA.longitude;
+		abx = nodeB.getLatitude() - nodeA.getLatitude();
+		aby = nodeB.getLongitude() - nodeA.getLongitude();
+		dx = nodeTest.getLatitude() - nodeA.getLatitude();
+		dy = nodeTest.getLongitude() - nodeA.getLongitude();
 
 		determinant = abx * dy - aby * dx;
 
@@ -166,7 +166,7 @@ public class NodeGroup {
 	}
 
 
-	//décompose le polygone en triangles
+	// Décompose le polygone en triangles
 	public bool decomposerRight(){
 	
 		LinkedListNode<Node> cur = new LinkedListNode<Node> (this.getNode (0));
@@ -251,7 +251,8 @@ public class NodeGroup {
 		return sens;
 	}
 
-	public bool decomposerLeft(){
+    // Décompose le polygone en triangles
+    public bool decomposerLeft(){
 
 		this.list.Clear ();
 		LinkedListNode<Node> cur = new LinkedListNode<Node> (this.getNode (0));
@@ -336,10 +337,6 @@ public class NodeGroup {
 		return sens;
 	}
 
-
-
-
-
 	// teste l'appartenance d'un point à un nodeGroup
 	public bool appartient( Node test ){
 
@@ -362,21 +359,20 @@ public class NodeGroup {
 		return resultat;
 	}
 
-
-	// met a jour la longitude et latitude min et max
+	// met a jour la longitude et getLatitude() min et max
 	public void setBoundaries(){
 
-		this.minLon = this.getNode(0).longitude;
-		this.maxLon = this.getNode(0).longitude;
-		this.minLat = this.getNode(0).latitude;
-		this.maxLat = this.getNode(0).latitude;
+		this.minLon = this.getNode(0).getLongitude();
+		this.maxLon = this.getNode(0).getLongitude();
+		this.minLat = this.getNode(0).getLatitude();
+		this.maxLat = this.getNode(0).getLatitude();
 
 
 		foreach (Node n in this.nodes) {
-			if(n.latitude > this.maxLat) maxLat = n.latitude;
-			if(n.latitude < this.minLat) minLat = n.latitude;
-			if(n.longitude > this.maxLon) maxLon = n.longitude;
-			if(n.longitude < this.minLon) minLon = n.longitude;
+			if(n.getLatitude() > this.maxLat) maxLat = n.getLatitude();
+			if(n.getLatitude() < this.minLat) minLat = n.getLatitude();
+			if(n.getLongitude() > this.maxLon) maxLon = n.getLongitude();
+			if(n.getLongitude() < this.minLon) minLon = n.getLongitude();
 		}
 	
 	}
@@ -452,6 +448,7 @@ public class NodeGroup {
         return this.name;
 
     }
+
     //Accesseurs de l'attribut de typeRoof
     public void setType(string type)
     {
@@ -470,6 +467,26 @@ public class NodeGroup {
     public int getAngle()
     {
         return this.angleRoof;
+    }
+
+    // Accesseurs de l'attribut de id
+    public void setID(double ident)
+    {
+        this.id = ident;
+    }
+    public double getID()
+    {
+        return this.id;
+    }
+
+    // Accesseurs de l'attribut de nbNode
+    public void setNbNode(int num)
+    {
+        this.nbNode = num;
+    }
+    public double getNbNode()
+    {
+        return this.nbNode;
     }
 }
 

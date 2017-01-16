@@ -6,22 +6,22 @@ using System.Collections.Generic;
 public class GestFile
 {
 
-	// compteurs de nodes et groupes de nodes (batiments puis routes) respectivement
-    public int counter;
-    public int buildingCounter;
-	public int highwayCounter;
+    // compteurs de nodes et groupes de nodes (batiments puis routes) respectivement
+    protected int counter;
+    protected int buildingCounter;
+    protected int highwayCounter;
 	// coordonnées min et max de la carte
     private double minlat, maxlat, minlon, maxlon;
-   
+
     // chemin d'acces et nom du fichier par defaut
-    private string path = @"./Assets/";
-    public string fileName;
+    protected string path = @"./Assets/";
+    protected string fileName;
 
     // Arraylist permettant de stocker les balises
-    private ArrayList cou = new ArrayList();
-    private ArrayList reg = new ArrayList();
-    private ArrayList tow = new ArrayList();
-    private ArrayList dis = new ArrayList();
+    protected ArrayList cou = new ArrayList();
+    protected ArrayList reg = new ArrayList();
+    protected ArrayList tow = new ArrayList();
+    protected ArrayList dis = new ArrayList();
 
 
     //Constructeur par deffaut
@@ -70,8 +70,8 @@ public class GestFile
         string line;
 
         double id = 0;
-        double lat = 0f;
-        double lon = 0f;
+        double lat = 0d;
+        double lon = 0d;
 
         // Read the file and display it line by line.
         System.IO.StreamReader file = new System.IO.StreamReader(path + "Maps/" + nameMap + ".osm");
@@ -139,7 +139,7 @@ public class GestFile
                         foreach (Node n in main.nodes)
                         {
                             // on ajoute le node a la liste de ceux qui compose le node groupe
-                            if (n.id == reference)
+                            if (n.getID() == reference)
                             {
                                 current.addNode(n);
                             }
@@ -221,21 +221,21 @@ public class GestFile
         // listing des balises de location "country,region,town,district"
         foreach(NodeGroup ngp in main.nodeGroups)
         {
-            if (!cou.Contains(ngp.country))
+            if (!cou.Contains(ngp.getCountry()))
             {
-                cou.Add(ngp.country);
+                cou.Add(ngp.getCountry());
             }
-            if (!reg.Contains(ngp.region))
+            if (!reg.Contains(ngp.getRegion()))
             {
-                reg.Add(ngp.region);
+                reg.Add(ngp.getRegion());
             }
-            if (!tow.Contains(ngp.town))
+            if (!tow.Contains(ngp.getTown()))
             {
-                tow.Add(ngp.town);
+                tow.Add(ngp.getTown());
             }
-            if (!dis.Contains(ngp.district))
+            if (!dis.Contains(ngp.getDistrict()))
             {
-                dis.Add(ngp.district);
+                dis.Add(ngp.getDistrict());
             }
             
         }
@@ -276,22 +276,22 @@ public class GestFile
                         file.WriteLine("\t\t\t\t\t<District d=\"" + str4 + "\">");
                         foreach (NodeGroup ngp in main.nodeGroups)
                         {
-                            if ((ngp.country == str1) && (ngp.region == str2) && (ngp.town == str3) && (ngp.district == str4))
+                            if ((ngp.getCountry() == str1) && (ngp.getRegion() == str2) && (ngp.getTown() == str3) && (ngp.getDistrict() == str4))
                             {
                                 if (ngp.isBuilding())
                                 {
                                     //on récupère le nom du batiment
                                     buildingName = ngp.getName();
 
-                                    file.WriteLine("\t\t\t\t\t\t<building id=\"" + ngp.id + "\" name=\"" + buildingName + "\">");
+                                    file.WriteLine("\t\t\t\t\t\t<building id=\"" + ngp.getID() + "\" name=\"" + buildingName + "\">");
 
                                     //ecriture des nodes
                                     foreach (Node n in ngp.nodes)
                                     {
-                                        file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.id + "\" lat=\"" + n.latitude + "\" lon=\"" + n.longitude + "\"/>");
+                                        file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.getID() + "\" lat=\"" + n.getLatitude() + "\" lon=\"" + n.getLongitude() + "\"/>");
                                     }
                                     //ecriture balise fin de building
-                                    file.WriteLine("\t\t\t\t\t\t</building id=\"" + ngp.id + "\">");
+                                    file.WriteLine("\t\t\t\t\t\t</building id=\"" + ngp.getID() + "\">");
                                 }
                             }
                         }
@@ -382,7 +382,7 @@ public class GestFile
                 //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
                 foreach (NodeGroup ngp in main.nodeGroups)
                 {
-                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude / 1000f), 2) + Math.Pow(longi - (ngp.getNode(0).longitude / 1000f), 2)) < distance)
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).getLatitude()), 2) + Math.Pow(longi - (ngp.getNode(0).getLongitude()), 2)) < distance)
                     {
                         ngp.setCountry(country);
                         ngp.setNbFloors(nb);
@@ -414,7 +414,7 @@ public class GestFile
                 //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
                 foreach (NodeGroup ngp in main.nodeGroups)
                 {
-                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude ), 2) + Math.Pow(longi - (ngp.getNode(0).longitude ), 2)) < distance)
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).getLatitude() ), 2) + Math.Pow(longi - (ngp.getNode(0).getLongitude() ), 2)) < distance)
                     {
                         ngp.setRegion(region);
                         ngp.setNbFloors(nb);
@@ -445,7 +445,7 @@ public class GestFile
                 //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
                 foreach (NodeGroup ngp in main.nodeGroups)
                 {
-                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude ), 2) + Math.Pow(longi - (ngp.getNode(0).longitude ), 2)) < distance)
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).getLatitude() ), 2) + Math.Pow(longi - (ngp.getNode(0).getLongitude() ), 2)) < distance)
                     {
                         ngp.setTown(town);
                         ngp.setNbFloors(nb);
@@ -476,7 +476,7 @@ public class GestFile
                 //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
                 foreach (NodeGroup ngp in main.nodeGroups)
                 {
-                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).latitude ), 2) + Math.Pow(longi - (ngp.getNode(0).longitude ), 2)) < distance)
+                    if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).getLatitude() ), 2) + Math.Pow(longi - (ngp.getNode(0).getLongitude() ), 2)) < distance)
                     {
                         ngp.setDistrict(district);
                         ngp.setNbFloors(nb);
@@ -504,7 +504,7 @@ public class GestFile
                 //Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
                 foreach (NodeGroup ngp in main.nodeGroups)
                 {
-                    if (ngp.id == id)
+                    if (ngp.getID() == id)
                     {
                         ngp.setName(name);
                         ngp.setNbFloors(nb);

@@ -34,7 +34,6 @@ public class main : MonoBehaviour {
     void Start () {
         //création d'une instance de ObjectBuilding
         ObjectBuilding ob = new ObjectBuilding(roadMaterial);
-        ob.setNodeGroups(nodeGroups);
         SetUpUI ();
 
         // Si le fichier Resumed n'existe pas on le crée
@@ -76,8 +75,8 @@ public class main : MonoBehaviour {
 		panel.SetActive(false);  
         foreach (NodeGroup ngp in nodeGroups){
 
-            UnityEngine.Debug.Log(ngp.district);
-            UnityEngine.Debug.Log(ngp.name);
+            UnityEngine.Debug.Log(ngp.getDistrict());
+            UnityEngine.Debug.Log(ngp.getName());
         }
 	}
 		
@@ -99,7 +98,7 @@ public class main : MonoBehaviour {
         double coef, dist;
         double xba, yba, xbc, ybc, angleABC;
 
-        for (int i = 0; i < ngp.nbNode - 2; i++)
+        for (int i = 0; i < ngp.getNbNode() - 2; i++)
         {
             xa = ngp.getNode(i).getLongitude();
             ya = ngp.getNode(i).getLatitude();
