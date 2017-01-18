@@ -7,10 +7,10 @@ using System.Text;
 public class Triangle
 {
     // Les trois sommets d'un triangle
-    public Node noeudA;
-    public Node noeudB;
-    public Node noeudC;
-    public Node centre;
+    protected Node noeudA;
+    protected Node noeudB;
+    protected Node noeudC;
+    protected Node centre;
 
 
     // Constructeur
@@ -21,6 +21,38 @@ public class Triangle
         this.noeudC = noeudC;
     }
 
+    public void setNoeudA(Node n)
+    {
+        this.noeudA = n;
+    }
+    public Node getNoeudA()
+    {
+        return this.noeudA;
+    }
+    public void setNoeudB(Node n)
+    {
+        this.noeudB = n;
+    }
+    public Node getNoeudB()
+    {
+        return this.noeudB;
+    }
+    public void setNoeudC(Node n)
+    {
+        this.noeudC = n;
+    }
+    public Node getNoeudC()
+    {
+        return this.noeudC;
+    }
+    public void setCentre(Node n)
+    {
+        this.centre = n;
+    }
+    public Node getCentre()
+    {
+        return this.centre;
+    }
     /// <summary>
     /// Methode cotainNode : 
     /// Retourne true si le noeud passe en parametre est dans le triangle
@@ -30,7 +62,7 @@ public class Triangle
     public bool containNode(Node noeud)
     {
         bool res = false;
-        if((noeud.id==noeudA.id)|| (noeud.id == noeudB.id) || (noeud.id == noeudC.id))
+        if((noeud.getID() ==noeudA.getID()) || (noeud.getID() == noeudB.getID()) || (noeud.getID() == noeudC.getID()))
         {
             res = true;
         }
@@ -43,12 +75,12 @@ public class Triangle
         double axc, bxc, dxc,ayc,byc, xc, yc;
         double templat,templon;
 
-        nalat = this.noeudA.latitude;
-        nalon = this.noeudA.longitude;
-        nblat = this.noeudB.latitude;
-        nblon = this.noeudB.longitude;
-        nclat = this.noeudC.latitude;
-        nclon = this.noeudC.longitude;
+        nalat = this.noeudA.getLatitude();
+        nalon = this.noeudA.getLongitude();
+        nblat = this.noeudB.getLatitude();
+        nblon = this.noeudB.getLongitude();
+        nclat = this.noeudC.getLatitude();
+        nclon = this.noeudC.getLongitude();
  
         if ((nblat==nalat) || (nblat == nclat)){
             templat = nalat;

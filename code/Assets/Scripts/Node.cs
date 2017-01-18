@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Node {
 
-	public double id;
-	public double latitude, longitude;
+	protected double id;
+	protected double latitude, longitude;
 
 	public Node(double id, double lon, double lat){
 		this.id = id;
@@ -45,5 +45,15 @@ public class Node {
     public double getLongitude()
     {
         return this.longitude;
+    }
+
+    public void setID(double ident)
+    {
+        this.id = ident;
+    }
+
+    public double getID()
+    {
+        return this.id;
     }
 }

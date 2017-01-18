@@ -5,37 +5,36 @@ using System;
 
 public class ObjectBuilding {
 
-	private ArrayList nodeGroups;
-	private double minlat, maxlat, minlon, maxlon;
-	private RoadCreation rc;
+    protected ArrayList nodeGroups;
+    protected double minlat, maxlat, minlon, maxlon;
+    protected RoadCreation rc;
 
 	// constructeur
 	public ObjectBuilding(Material roadMat){
 		rc = new RoadCreation(roadMat);
 	}
 
-	// copie d'une liste de groupe de nodes
-	public void setNodeGroups(ArrayList nodeG){
-		this.nodeGroups = new ArrayList(nodeG);
-        foreach(NodeGroup ngp in nodeGroups)
-        {
-            foreach(Node n in ngp.nodes)
-            {
-                n.setLatitude(n.getLatitude() * 1000d);
-                n.setLongitude(n.getLongitude() * 1000d);
-            }
-        }
+    // copie d'une liste de groupe de nodes
+    public void setNodeGroups(ArrayList nodeG)
+    {
+        ArrayList memo = new ArrayList();
+        this.nodeGroups = new ArrayList(nodeG);
         foreach (NodeGroup ngp in nodeGroups)
         {
             foreach (Node n in ngp.nodes)
             {
-                Debug.Log("lat:"+n.getLatitude()+" lon:"+ n.getLongitude());
+                if (!memo.Contains(n))
+                {
+                    n.setLatitude(n.getLatitude() * 1000d);
+                    n.setLongitude(n.getLongitude() * 1000d);
+                    memo.Add(n);
+                }
             }
         }
     }
 
-	//copie des coordonnées en latitude et longitude
-	public void setLatLong(double minla, double maxla, double minlo, double maxlo){
+    //copie des coordonnées en latitude et longitude
+    public void setLatLong(double minla, double maxla, double minlo, double maxlo){
 		this.minlat = minla;
 		this.maxlat = maxla;
 		this.minlon = minlo;
@@ -53,7 +52,7 @@ public class ObjectBuilding {
 					GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 					cube.transform.localScale = new Vector3(0.02f,0.02f,0.02f);
 					cube.transform.position = new Vector3((float)n.getLongitude(),0, (float)n.getLatitude());
-					cube.name = ""+n.id;
+					cube.name = ""+n.getID();
 					cube.tag = "BuildingNode";
 				}
 			}
@@ -67,7 +66,7 @@ public class ObjectBuilding {
 						GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
 						cube.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
 						cube.transform.position = new Vector3 ((float)n.getLongitude(), 0, (float)n.getLatitude());
-						cube.name = "" + j + "-" + i + "  " + n.id;
+						cube.name = "" + j + "-" + i + "  " + n.getID();
 						cube.tag = "HighwayNode";
 					}
 				}
@@ -150,13 +149,13 @@ public class ObjectBuilding {
 					}
 
                     //Si on ne connait pas le nom du batiment on utilise l'id
-                    if(ngp.name == "unknown")
+                    if(ngp.getName() == "unknown")
                     {
-                        mur.name = ngp.id +"_Mur"+ i;
+                        mur.name = ngp.getID() +"_Mur"+ i;
                     }
                     else
                     {
-                        mur.name = ngp.name + "_Mur" + i;                     
+                        mur.name = ngp.getName() + "_Mur" + i;                     
                     }
 					
 				}

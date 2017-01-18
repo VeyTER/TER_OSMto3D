@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class RoadCreation
 {
-	//Possibilité d'utiliser un prefab dans cette classe si on préfère faire des 
-	//modifs sur les morceaux de routes via Unity plutôt que via le code
-	public Material roadMaterial;
+    //Possibilité d'utiliser un prefab dans cette classe si on préfère faire des 
+    //modifs sur les morceaux de routes via Unity plutôt que via le code
+    protected Material roadMaterial;
 
 	public RoadCreation (Material roadMat)
 	{
