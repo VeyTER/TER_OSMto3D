@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour {
 
 	public bool wallActive = true;
+	public bool roofActive = true;
 	public bool highwayActive = true;
 	public bool highwayNodeActive = true;
 	public bool buildingNodeActive = true;
@@ -29,6 +30,28 @@ public class UIManager : MonoBehaviour {
 			}
 		}
 		wallActive = !wallActive;
+	}
+
+	public void SetRoofActive(){
+
+		GameObject[] roofs = GameObject.FindGameObjectsWithTag("Roof");
+
+		if (roofs.Length == 0) {
+			roofs = main.mainRoofs;
+		}
+		else{
+			main.mainRoofs = roofs;
+		}
+
+		foreach( GameObject go in roofs){
+			if (roofActive) {
+				go.SetActive(false);
+			} 
+			else {
+				go.SetActive(true);
+			}
+		}
+		roofActive = !roofActive;
 	}
 
 	public void SetHighwayActive(){

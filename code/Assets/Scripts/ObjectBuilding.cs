@@ -8,10 +8,12 @@ public class ObjectBuilding {
     protected ArrayList nodeGroups;
     protected double minlat, maxlat, minlon, maxlon;
     protected RoadCreation rc;
+    protected RoofCreation rfc;
 
 	// constructeur
-	public ObjectBuilding(Material roadMat){
+	public ObjectBuilding(Material roadMat, Material roofMat){
 		rc = new RoadCreation(roadMat);
+        rfc = new RoofCreation(roofMat);
 	}
 
     // copie d'une liste de groupe de nodes
@@ -162,6 +164,11 @@ public class ObjectBuilding {
 			}	
 		}
 	}
+
+    public void buildRoofs(TRGDelaunay TRG)
+    {
+        rfc.createRoof(TRG);
+    }
 
 	// place la caméra et le background dans la scene
 	public void buildMainCameraBG(){

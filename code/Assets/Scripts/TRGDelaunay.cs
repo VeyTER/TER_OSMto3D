@@ -6,7 +6,7 @@ using System.Text;
 
 public class TRGDelaunay
 {
-    protected List<Triangle> listTriangle = new List<Triangle>();
+    public List<Triangle> listTriangle = new List<Triangle>();
     protected List<Triangle> listTriangleAdd = new List<Triangle>();
     protected List<Triangle> listTriangleSupp = new List<Triangle>();
     protected List<Node> listNode = new List<Node>();
