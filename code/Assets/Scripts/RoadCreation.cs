@@ -5,11 +5,8 @@ public class RoadCreation
 {
     //Possibilité d'utiliser un prefab dans cette classe si on préfère faire des 
     //modifs sur les morceaux de routes via Unity plutôt que via le code
-    protected Material roadMaterial;
-
-	public RoadCreation (Material roadMat)
+	public RoadCreation ()
 	{
-		roadMaterial = roadMat;
 	}
 
 	public void createRoad(float x, float z, float length, float width, float angle, int j, int i)
@@ -29,7 +26,7 @@ public class RoadCreation
 			mesh_filter.mesh = mesh;
 
 			MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
-			mesh_renderer.material = roadMaterial;
+			mesh_renderer.material = Resources.Load ("Materials/route") as Material;
 	}
 
 	private Vector3 [] makeRoadVertices(float length, float width){

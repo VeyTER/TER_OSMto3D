@@ -24,19 +24,18 @@ public class main : MonoBehaviour {
 	public static GameObject[] mainBuildingNodes;
 	public static GameObject[] mainHighwayNodes;
 	public static GameObject panel = null;
-	public Material roadMaterial;
-    public Material roofMaterial;
+
     //création d'une instance de GestFile
     public GestFile f = new GestFile();
+
+	//création d'une instance de ObjectBuilding
+	ObjectBuilding ob = new ObjectBuilding();
 
     //création d'une instance de TRGDelaunay
     public TRGDelaunay tr;
 
     // Fonction lancée à l'initialisation de la scene
     void Start() {
-        
-        //création d'une instance de ObjectBuilding
-        ObjectBuilding ob = new ObjectBuilding(roadMaterial, roofMaterial);
         SetUpUI ();
         // Si le fichier Resumed n'existe pas on le crée
         if (!System.IO.File.Exists(path + "MapsResumed/" + fileName + "Resumed.osm"))
@@ -85,6 +84,7 @@ public class main : MonoBehaviour {
 		ob.buildWalls();
 		ob.buildHighways ();
 		ob.buildMainCameraBG ();
+		ob.buildBackground ();
 
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");

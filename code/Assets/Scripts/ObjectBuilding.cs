@@ -9,11 +9,13 @@ public class ObjectBuilding {
     protected double minlat, maxlat, minlon, maxlon;
     protected RoadCreation rc;
     protected RoofCreation rfc;
+	protected BackgroundCreation bgc;
 
 	// constructeur
-	public ObjectBuilding(Material roadMat, Material roofMat){
-		rc = new RoadCreation(roadMat);
-        rfc = new RoofCreation(roofMat);
+	public ObjectBuilding(){
+		rc = new RoadCreation();
+        rfc = new RoofCreation();
+		bgc = new BackgroundCreation ();
 	}
 
     // copie d'une liste de groupe de nodes
@@ -170,32 +172,51 @@ public class ObjectBuilding {
         rfc.createRoof(TRG);
     }
 
-	// place la caméra et le background dans la scene
+	// place la caméra dans la scene
 	public void buildMainCameraBG(){
 
 		double CamLat, CamLon;
 
 		// On centre la camera 
-		CamLat = (minlat + maxlat) / 2;
-		CamLon = (minlon + maxlon) / 2;
+		CamLat = (minlat * 1000d + maxlat * 1000d) / 2;
+		CamLon = (minlon * 1000d + maxlon * 1000d) / 2;
 		GameObject mainCam = new GameObject ();
-		mainCam.AddComponent <Camera>();
-		Light mainLight = mainCam.AddComponent<Light>();
+		mainCam.AddComponent <Camera> ();
+		Light mainLight = mainCam.AddComponent<Light> ();
 		mainLight.range = 30;
-        mainLight.intensity = 0.5f;
+		mainLight.intensity = 0.5f;
 		mainCam.name = "MainCam";
-        mainCam.transform.position = new Vector3((float)CamLon, -5,(float)CamLat );
-        mainCam.transform.localEulerAngles = new Vector3(-90, 270, 0);
-		mainCam.AddComponent <CameraController>();
+		mainCam.transform.position = new Vector3 ((float)CamLon, 5, (float)CamLat);
+		mainCam.transform.localEulerAngles = new Vector3 (-90, 270, 0);
+		mainCam.AddComponent <CameraController> ();
+	}
 
-        GameObject background = GameObject.CreatePrimitive(PrimitiveType.Plane);
-		background.name = "Background";
-		background.transform.position = new Vector3((float)CamLon, 0.5f, (float)CamLat );
-		background.transform.localScale = new Vector3(10,10,10);
-		background.transform.localEulerAngles = new Vector3(0,0,180);
-		background.GetComponent<Renderer>().material.mainTexture = Resources.Load ("bg") as Texture;
-		background.GetComponent<Renderer>().material.name = "Texture_Background";
-		background.GetComponent<Renderer>().material.color = Color.gray;
-		background.GetComponent<Renderer>().material.mainTextureScale = new Vector2 (500,500);
+	public void buildBackground(){
+		double angle;
+		double lat = (minlat * 1000d + maxlat * 1000d) / 2;
+		double lon = (minlon * 1000d + maxlon * 1000d) / 2;
+		double width = maxlon*1000d-minlon*1000d;
+		double length = maxlat*1000d-minlat*1000d;
+
+		Vector3 node1 = new Vector3((float)maxlon,0, (float)maxlat);
+		Vector3 node2 = new Vector3((float)minlon,0, (float)minlat);
+		Vector3 diff = node2-node1;
+
+//		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+//		cube.transform.localScale = new Vector3(0.02f,0.02f,0.02f);
+//		cube.transform.position = new Vector3((float)minlon*1000f,0, (float)minlat*1000f);
+//		GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+//		cube2.transform.localScale = new Vector3(0.02f,0.02f,0.02f);
+//		cube2.transform.position = new Vector3((float)maxlon*1000f,0, (float)maxlat*1000f);
+//		GameObject cube3 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+//		cube3.transform.localScale = new Vector3(0.02f,0.02f,0.02f);
+//		cube3.transform.position = new Vector3((float)lon,0, (float)lat);
+
+		if (diff.z <= 0) {
+			angle = (double)Vector3.Angle (Vector3.right, diff) + 180;
+		} else {
+			angle = (double)Vector3.Angle (Vector3.right, -diff) + 180;
+		}
+		bgc.createBackground ((float)lon, (float)lat, (float)length, (float)width, (float)angle, (float) minlat, (float)minlon);
 	}
 }

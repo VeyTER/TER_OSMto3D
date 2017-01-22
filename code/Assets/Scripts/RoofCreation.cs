@@ -3,11 +3,8 @@ using UnityEngine;
 
 public class RoofCreation
 {
-    protected Material roofMaterial;
-
-    public RoofCreation(Material roofMat)
+    public RoofCreation()
     {
-        roofMaterial = roofMat;
     }
 
     public void createRoof(TRGDelaunay TRG)
@@ -30,8 +27,8 @@ public class RoofCreation
         MeshFilter mesh_filter = roof.GetComponent<MeshFilter>();
         mesh_filter.mesh = mesh;
 
-        MeshRenderer mesh_renderer = roof.GetComponent<MeshRenderer>();
-        mesh_renderer.material = roofMaterial;
+		MeshRenderer mesh_renderer = roof.GetComponent<MeshRenderer> ();
+		mesh_renderer.material = Resources.Load ("Materials/toit") as Material;
     }
 
     private Vector3[] makeRoofVertices(TRGDelaunay TRG, float x, float z)

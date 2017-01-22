@@ -3,15 +3,15 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class GetInfos : MonoBehaviour {
-
+//
 //	void OnMouseDown() {
-//		long id = long.Parse(this.gameObject.name.Substring(0,this.gameObject.name.IndexOf("_")));
+//		double id = double.Parse(this.gameObject.name.Substring(0,this.gameObject.name.IndexOf("_")));
 //
 //		NodeGroup ngp = null;
 //
 //		foreach (NodeGroup ng in main.nodeGroups){
 //
-//			if(ng.id == id){
+//			if(ng.getID.Equals(id)){
 //				ngp = ng;
 //			}
 //		}
