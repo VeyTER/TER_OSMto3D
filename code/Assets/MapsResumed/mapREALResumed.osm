@@ -6,6 +6,402 @@
 				<Town t="Toulouse">
 					<District d="UPS">
 						<highway>
+							<Info id="625236" type="turning_circle" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="625236" lat="43.5554962" lon="1.4722469"/>
+						</highway>
+						<highway>
+							<Info id="625334" type="mini_roundabout" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="625334" lat="43.5544117" lon="1.4634928"/>
+						</highway>
+						<highway>
+							<Info id="191961124" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="191961124" lat="43.5604674" lon="1.4662843"/>
+						</highway>
+						<highway>
+							<Info id="192177213" type="turning_circle" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="192177213" lat="43.5594158" lon="1.4713519"/>
+						</highway>
+						<highway>
+							<Info id="267177581" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="267177581" lat="43.561312" lon="1.4678983"/>
+						</highway>
+						<highway>
+							<Info id="267218228" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="267218228" lat="43.560903" lon="1.4715378"/>
+						</highway>
+						<feuTri>
+							<Info id="282224513"/>
+							<node id="282224513" lat="43.5545557" lon="1.4765123"/>
+						</feuTri>
+						<highway>
+							<Info id="282224513" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282224513" lat="43.5545557" lon="1.4765123"/>
+						</highway>
+						<highway>
+							<Info id="286216246" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="286216246" lat="43.5612454" lon="1.467771"/>
+						</highway>
+						<highway>
+							<Info id="286216159" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="286216159" lat="43.5582388" lon="1.4683083"/>
+						</highway>
+						<highway>
+							<Info id="286216421" type="turning_circle" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="286216421" lat="43.5589886" lon="1.4707037"/>
+						</highway>
+						<highway>
+							<Info id="286271561" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="286271561" lat="43.5580777" lon="1.4728442"/>
+						</highway>
+						<highway>
+							<Info id="286271562" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="286271562" lat="43.558028" lon="1.472759"/>
+						</highway>
+						<highway>
+							<Info id="191921760" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="191921760" lat="43.562312" lon="1.4644749"/>
+						</highway>
+						<highway>
+							<Info id="26930241" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="26930241" lat="43.5550139" lon="1.4668646"/>
+						</highway>
+						<highway>
+							<Info id="192182381" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="192182381" lat="43.5616444" lon="1.465135"/>
+						</highway>
+						<feuTri>
+							<Info id="282222816"/>
+							<node id="282222816" lat="43.5493664" lon="1.4794271"/>
+						</feuTri>
+						<highway>
+							<Info id="282222816" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282222816" lat="43.5493664" lon="1.4794271"/>
+						</highway>
+						<feuTri>
+							<Info id="282222353"/>
+							<node id="282222353" lat="43.5419629" lon="1.4816626"/>
+						</feuTri>
+						<highway>
+							<Info id="282222353" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282222353" lat="43.5419629" lon="1.4816626"/>
+						</highway>
+						<highway>
+							<Info id="287645288" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="287645288" lat="43.5589714" lon="1.4638258"/>
+						</highway>
+						<highway>
+							<Info id="287645350" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="287645350" lat="43.5596691" lon="1.4635967"/>
+						</highway>
+						<feuTri>
+							<Info id="191910070"/>
+							<node id="191910070" lat="43.56487" lon="1.4694558"/>
+						</feuTri>
+						<highway>
+							<Info id="191910070" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="191910070" lat="43.56487" lon="1.4694558"/>
+						</highway>
+						<highway>
+							<Info id="192182576" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="192182576" lat="43.5618332" lon="1.4654942"/>
+						</highway>
+						<highway>
+							<Info id="286216150" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="286216150" lat="43.5572751" lon="1.466439"/>
+						</highway>
+						<highway>
+							<Info id="287645320" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="287645320" lat="43.5598117" lon="1.4637004"/>
+						</highway>
+						<feuTri>
+							<Info id="282224226"/>
+							<node id="282224226" lat="43.5545726" lon="1.4769552"/>
+						</feuTri>
+						<highway>
+							<Info id="282224226" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282224226" lat="43.5545726" lon="1.4769552"/>
+						</highway>
+						<feuTri>
+							<Info id="282224228"/>
+							<node id="282224228" lat="43.5546312" lon="1.4767658"/>
+						</feuTri>
+						<highway>
+							<Info id="282224228" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282224228" lat="43.5546312" lon="1.4767658"/>
+						</highway>
+						<feuTri>
+							<Info id="282224232"/>
+							<node id="282224232" lat="43.5544324" lon="1.4764361"/>
+						</feuTri>
+						<highway>
+							<Info id="282224232" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282224232" lat="43.5544324" lon="1.4764361"/>
+						</highway>
+						<feuTri>
+							<Info id="282224236"/>
+							<node id="282224236" lat="43.5541843" lon="1.4768019"/>
+						</feuTri>
+						<highway>
+							<Info id="282224236" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282224236" lat="43.5541843" lon="1.4768019"/>
+						</highway>
+						<feuTri>
+							<Info id="282224300"/>
+							<node id="282224300" lat="43.5544722" lon="1.4770429"/>
+						</feuTri>
+						<highway>
+							<Info id="282224300" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282224300" lat="43.5544722" lon="1.4770429"/>
+						</highway>
+						<feuTri>
+							<Info id="282224317"/>
+							<node id="282224317" lat="43.5542073" lon="1.4768923"/>
+						</feuTri>
+						<highway>
+							<Info id="282224317" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282224317" lat="43.5542073" lon="1.4768923"/>
+						</highway>
+						<feuTri>
+							<Info id="282224392"/>
+							<node id="282224392" lat="43.5542689" lon="1.4764983"/>
+						</feuTri>
+						<highway>
+							<Info id="282224392" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="282224392" lat="43.5542689" lon="1.4764983"/>
+						</highway>
+						<highway>
+							<Info id="287645367" type="turning_circle" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="287645367" lat="43.5606873" lon="1.4640436"/>
+						</highway>
+						<highway>
+							<Info id="287931768" type="turning_circle" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="287931768" lat="43.5596143" lon="1.4755323"/>
+						</highway>
+						<highway>
+							<Info id="359698672" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="359698672" lat="43.5540976" lon="1.4710969"/>
+						</highway>
+						<highway>
+							<Info id="371853446" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="371853446" lat="43.5596341" lon="1.4805146"/>
+						</highway>
+						<highway>
+							<Info id="287645358" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="287645358" lat="43.5612867" lon="1.4634385"/>
+						</highway>
+						<highway>
+							<Info id="287651089" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="287651089" lat="43.5627857" lon="1.4640056"/>
+						</highway>
+						<highway>
+							<Info id="559643584" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="559643584" lat="43.5560153" lon="1.466038"/>
+						</highway>
+						<highway>
+							<Info id="558860011" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="558860011" lat="43.5550972" lon="1.4667854"/>
+						</highway>
+						<highway>
+							<Info id="287645357" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="287645357" lat="43.5607809" lon="1.4633044"/>
+						</highway>
+						<highway>
+							<Info id="356781552" type="turning_circle" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="356781552" lat="43.5543738" lon="1.4802097"/>
+						</highway>
+						<highway>
+							<Info id="559643583" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="559643583" lat="43.5559841" lon="1.4659585"/>
+						</highway>
+						<feuTri>
+							<Info id="649120746"/>
+							<node id="649120746" lat="43.5632483" lon="1.4756639"/>
+						</feuTri>
+						<highway>
+							<Info id="649120746" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="649120746" lat="43.5632483" lon="1.4756639"/>
+						</highway>
+						<highway>
+							<Info id="615264322" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="615264322" lat="43.5576179" lon="1.4807172"/>
+						</highway>
+						<highway>
+							<Info id="649120827" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="649120827" lat="43.5645784" lon="1.4788497"/>
+						</highway>
+						<highway>
+							<Info id="649120829" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="649120829" lat="43.5646325" lon="1.4790515"/>
+						</highway>
+						<highway>
+							<Info id="735660803" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="735660803" lat="43.5575647" lon="1.480532"/>
+						</highway>
+						<highway>
+							<Info id="1279090777" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1279090777" lat="43.5628382" lon="1.4674145"/>
+						</highway>
+						<highway>
+							<Info id="1279090765" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1279090765" lat="43.5623708" lon="1.46653"/>
+						</highway>
+						<highway>
+							<Info id="1279090790" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1279090790" lat="43.5630399" lon="1.4677982"/>
+						</highway>
+						<highway>
+							<Info id="1279090788" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1279090788" lat="43.5622527" lon="1.4663015"/>
+						</highway>
+						<highway>
+							<Info id="1279090792" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1279090792" lat="43.5624786" lon="1.4667495"/>
+						</highway>
+						<highway>
+							<Info id="1378882322" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1378882322" lat="43.5571799" lon="1.4650967"/>
+						</highway>
+						<feuTri>
+							<Info id="1378929865"/>
+							<node id="1378929865" lat="43.5633197" lon="1.4751729"/>
+						</feuTri>
+						<highway>
+							<Info id="1378929865" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="1378929865" lat="43.5633197" lon="1.4751729"/>
+						</highway>
+						<highway>
+							<Info id="1378881213" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1378881213" lat="43.5562883" lon="1.4813188"/>
+						</highway>
+						<highway>
+							<Info id="1333728731" type="mini_roundabout" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1333728731" lat="43.5543197" lon="1.4588463"/>
+						</highway>
+						<highway>
+							<Info id="1305579114" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1305579114" lat="43.5575321" lon="1.466945"/>
+						</highway>
+						<highway>
+							<Info id="1533199131" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="1533199131" lat="43.5624279" lon="1.4810932"/>
+						</highway>
+						<feuTri>
+							<Info id="2084715879"/>
+							<node id="2084715879" lat="43.5651187" lon="1.4699069"/>
+						</feuTri>
+						<highway>
+							<Info id="2084715879" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="2084715879" lat="43.5651187" lon="1.4699069"/>
+						</highway>
+						<highway>
+							<Info id="2165492282" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2165492282" lat="43.5606576" lon="1.4810892"/>
+						</highway>
+						<highway>
+							<Info id="2170743258" type="turning_circle" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2170743258" lat="43.5544579" lon="1.4753873"/>
+						</highway>
+						<tree>
+							<Info id="2367058129"/>
+							<node id="2367058129" lat="43.5617138" lon="1.4797707"/>
+						</tree>
+						<tree>
+							<Info id="2367058131"/>
+							<node id="2367058131" lat="43.5617786" lon="1.4797716"/>
+						</tree>
+						<tree>
+							<Info id="2367058135"/>
+							<node id="2367058135" lat="43.561888" lon="1.4798511"/>
+						</tree>
+						<highway>
+							<Info id="2389937809" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937809" lat="43.5577963" lon="1.4832873"/>
+						</highway>
+						<highway>
+							<Info id="2389937810" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937810" lat="43.5575313" lon="1.4827732"/>
+						</highway>
+						<highway>
+							<Info id="2389937811" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937811" lat="43.557161" lon="1.482061"/>
+						</highway>
+						<highway>
+							<Info id="2389937813" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937813" lat="43.5572417" lon="1.4818411"/>
+						</highway>
+						<highway>
+							<Info id="2389937814" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937814" lat="43.557543" lon="1.4815313"/>
+						</highway>
+						<highway>
+							<Info id="2389937815" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937815" lat="43.5578676" lon="1.4812121"/>
+						</highway>
+						<highway>
+							<Info id="2389937817" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937817" lat="43.5578666" lon="1.4810834"/>
+						</highway>
+						<highway>
+							<Info id="2389937824" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937824" lat="43.5585611" lon="1.4813204"/>
+						</highway>
+						<highway>
+							<Info id="2389937827" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937827" lat="43.5592597" lon="1.4806246"/>
+						</highway>
+						<highway>
+							<Info id="2389937828" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937828" lat="43.5598783" lon="1.4809935"/>
+						</highway>
+						<highway>
+							<Info id="2389937831" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2389937831" lat="43.560371" lon="1.4817489"/>
+						</highway>
+						<highway>
+							<Info id="2651685820" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2651685820" lat="43.5624748" lon="1.4811816"/>
+						</highway>
+						<feuTri>
+							<Info id="2683988341"/>
+							<node id="2683988341" lat="43.556728" lon="1.4761888"/>
+						</feuTri>
+						<highway>
+							<Info id="2683988341" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="2683988341" lat="43.556728" lon="1.4761888"/>
+						</highway>
+						<feuTri>
+							<Info id="2683988342"/>
+							<node id="2683988342" lat="43.5564335" lon="1.476166"/>
+						</feuTri>
+						<highway>
+							<Info id="2683988342" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
+							<node id="2683988342" lat="43.5564335" lon="1.476166"/>
+						</highway>
+						<highway>
+							<Info id="2926778281" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2926778281" lat="43.5626246" lon="1.4807522"/>
+						</highway>
+						<highway>
+							<Info id="2926778286" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2926778286" lat="43.5626722" lon="1.480842"/>
+						</highway>
+						<highway>
+							<Info id="2926778290" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2926778290" lat="43.5627202" lon="1.4809324"/>
+						</highway>
+						<highway>
+							<Info id="2205028811" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2205028811" lat="43.5646105" lon="1.4789512"/>
+						</highway>
+						<highway>
+							<Info id="2651685817" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2651685817" lat="43.5623729" lon="1.4809893"/>
+						</highway>
+						<highway>
+							<Info id="3914938827" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="3914938827" lat="43.5551423" lon="1.4671164"/>
+						</highway>
+						<highway>
 							<Info id="4485508" type="residential" name="Impasse des Clarines" nbVoie="1" maxspd="50"/>
 							<node id="26930240" lat="43.5544301" lon="1.4667451"/>
 							<node id="271750107" lat="43.5540932" lon="1.4659009"/>

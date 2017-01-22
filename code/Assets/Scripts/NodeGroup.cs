@@ -97,12 +97,26 @@ public class NodeGroup {
 	}
 
 	// retourne vrai si le nodeGroup correspond à un batiment
-	public bool isBuilding(){
+	public bool isBuilding()
+    {
 		return this.tags.ContainsKey ("building");
 	}
 
-	// retourne vrai si le nodeGroup correspond à une route
-	public bool isHighway(){
+    // retourne vrai si le NodeGroup correspond à un arbre
+    public bool isTree()
+    {
+        return this.tags.ContainsValue("tree");
+    }
+
+    // retourne vrai si le NodeGroup correspond à un feu tricolore
+    public bool isFeuTri()
+    {
+        return this.tags.ContainsValue("traffic_signals");
+    }
+
+    // retourne vrai si le nodeGroup correspond à une route
+    public bool isHighway()
+    {
 		return this.tags.ContainsKey ("highway");
 	}
 

@@ -101,6 +101,50 @@ public class GestFile
                 else
                 {
                     lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\">") - line.IndexOf("lon=") - 5));
+                    
+                    //Test pour trouver des caractéristiques de ce node
+                    line = file.ReadLine();
+                    if (line.Contains("<tag"))
+                    {
+                        string key = line.Substring(line.IndexOf("k=") + 3, line.IndexOf("\" v=") - line.IndexOf("k=") - 3);
+                        string value = line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3);
+
+                        // On regarde si c'est la key Natural qui contient les arbres
+                        if (key.Equals("natural"))
+                        {
+                            NodeGroup current = new NodeGroup(id);
+
+                            current.addTag(key, value);
+
+                            if (current.isTree())
+                            {
+                                current.setName(value);
+                            }
+                            //On ajoute le node de cet arbre au NodeGroup de l'arbre.
+                            current.addNode(new Node(id, lon, lat));
+
+                            //On ajoute le NodeGroup à la liste des nodeGroup du Main.
+                            main.nodeGroups.Add(current);
+                        }
+
+                        //On regarde si c'est la key highway qui contient les feux tricolores
+                        if (key.Equals("highway"))
+                        {
+                            NodeGroup current = new NodeGroup(id);
+
+                            current.addTag(key, value);
+
+                            if (current.isFeuTri())
+                            {
+                                current.setName(value);
+                            }
+                            //On ajoute le node de ce feu tricolore au NodeGroup de ce feu tricolore.
+                            current.addNode(new Node(id, lon, lat));
+
+                            //On ajoute le NodeGroup à la liste des nodeGroup du Main.
+                            main.nodeGroups.Add(current);
+                        }
+                    }
                 }
 
                 // création d'un point 
@@ -108,13 +152,14 @@ public class GestFile
 
                 //incrément du compteur de point
                 counter++;
+
             }
 
             // on recupere les batiments
             if (line.Contains("<way"))
             {
                 // on créé un nouveau groupement de nodes
-                NodeGroup current = new NodeGroup(long.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" visible") - line.IndexOf("id=") - 4)));
+                NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" visible") - line.IndexOf("id=") - 4)));
 
                 //lecture d'une nouvelle ligne
                 line = file.ReadLine();
@@ -142,12 +187,13 @@ public class GestFile
                     {
                         string key = line.Substring(line.IndexOf("k=") + 3, line.IndexOf("\" v=") - line.IndexOf("k=") - 3);
 
+                        //Si on a une route alors, on a peut être un nombre de voie et on la récupère
                         if (key.Equals("lanes"))
                         {
                             int value2 = int.Parse(line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3));
                             current.setNbVoie(value2);
                         }
-
+                        //Si on a une vitesse maximum, on la récupère aussi
                         if (key.Equals("maxspeed"))
                         {
                             int value2 = int.Parse(line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3));
@@ -558,6 +604,7 @@ public class GestFile
                         {
                             if ((ngp.getCountry() == str1) && (ngp.getRegion() == str2) && (ngp.getTown() == str3) && (ngp.getDistrict() == str4))
                             {
+                                //Si c'est un bâtiment 
                                 if (ngp.isBuilding())
                                 {
                                     //on récupère le nom du batiment et ses caractéristiques
@@ -580,7 +627,43 @@ public class GestFile
                                     file.WriteLine("\t\t\t\t\t\t</building>");
                                 }
 
+                                //Si c'est un arbre
+                                if (ngp.isTree())
+                                {
+                                    //On récupère les caractéristiques de l'arbre
+                                    ID = ngp.getID();
 
+                                    //On écrit ces infos sur le ...Resumed
+                                    file.WriteLine("\t\t\t\t\t\t<tree>");
+                                    file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\"/>");
+                                    //ecriture des nodes
+                                    foreach (Node n in ngp.nodes)
+                                    {
+                                        file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.getID() + "\" lat=\"" + n.getLatitude() + "\" lon=\"" + n.getLongitude() + "\"/>");
+                                    }
+                                    //ecriture balise fin d'arbre
+                                    file.WriteLine("\t\t\t\t\t\t</tree>");
+                                }
+
+                                //Si c'est un feu tricolore
+                                if (ngp.isFeuTri())
+                                {
+                                    //On récupère les caractéristiques du feu tricolore
+                                    ID = ngp.getID();
+
+                                    //On écrit ces infos sur le ...Resumed
+                                    file.WriteLine("\t\t\t\t\t\t<feuTri>");
+                                    file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\"/>");
+                                    //ecriture des nodes
+                                    foreach (Node n in ngp.nodes)
+                                    {
+                                        file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.getID() + "\" lat=\"" + n.getLatitude() + "\" lon=\"" + n.getLongitude() + "\"/>");
+                                    }
+                                    //ecriture balise fin d'arbre
+                                    file.WriteLine("\t\t\t\t\t\t</feuTri>");
+                                }
+
+                                // Si c'est une route
                                 if (ngp.isHighway()){
                                     //on recupère les données sur la route
                                     ID = ngp.getID();
@@ -735,7 +818,7 @@ public class GestFile
                 // Creation d'un nouveau nodegroup
                 NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("type=") - line.IndexOf("id=") - 6)));
 
-                // Ajout des caractéristiques du batiment
+                // Ajout des caractéristiques de la route
                 current.addTag("highway", line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\" name") - line.IndexOf("type=") - 6));
                 current.setName(line.Substring(line.IndexOf("name=") + 6, line.IndexOf("\" nbVoie") - line.IndexOf("name=")-6));
                 current.setNbVoie(int.Parse(line.Substring(line.IndexOf("nbVoie=") + 8, line.IndexOf("\" maxspd") - line.IndexOf("nbVoie=") - 8)));
@@ -772,10 +855,95 @@ public class GestFile
 
                 //Ajout du nodeGroup courent à la liste main.nodeGroups
                 main.nodeGroups.Add(current);
-
-                //Increment du compteur de batiment 
-                buildingCounter++;
             }
+
+            //Recuparation des arbres
+            if (line.Contains("<tree"))
+            {
+                line = file.ReadLine();
+
+                // Creation d'un nouveau nodegroup
+                NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("name=") - line.IndexOf("id=") - 6)));
+
+                // Lecture d'une nouvelle ligne
+                line = file.ReadLine();
+                while (!line.Contains("</tree"))
+                {
+                    if (line.Contains("<node"))
+                    {
+                        // Recuperation des nodes
+                        id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
+                        lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
+                        lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
+
+                        main.nodes.Add(new Node(id, lon, lat));
+                        counter++;
+
+                        // Ajout du nouveau node au nodegroup
+                        current.addNode(new Node(id, lon, lat));
+                    }
+
+                    // Changement de ligne
+                    line = file.ReadLine();
+                }
+
+                // Ajout des balises de location dans le nodegroup
+                current.setCountry(strCou);
+                current.setRegion(strReg);
+                current.setTown(strTow);
+                current.setDistrict(strDis);
+
+                //Ajout du tag 
+                current.addTag("natural", "tree");
+
+                //Ajout du nodeGroup courent à la liste main.nodeGroups
+                main.nodeGroups.Add(current);
+            }
+
+
+            //Recuparation des feux tricolores
+            if (line.Contains("<feuTri"))
+            {
+                line = file.ReadLine();
+
+                // Creation d'un nouveau nodegroup
+                NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("name=") - line.IndexOf("id=") - 6)));
+
+                // Lecture d'une nouvelle ligne
+                line = file.ReadLine();
+                while (!line.Contains("</feuTri"))
+                {
+                    if (line.Contains("<node"))
+                    {
+                        // Recuperation des nodes
+                        id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
+                        lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
+                        lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
+
+                        main.nodes.Add(new Node(id, lon, lat));
+                        counter++;
+
+                        // Ajout du nouveau node au nodegroup
+                        current.addNode(new Node(id, lon, lat));
+                    }
+
+                    // Changement de ligne
+                    line = file.ReadLine();
+                }
+
+                // Ajout des balises de location dans le nodegroup
+                current.setCountry(strCou);
+                current.setRegion(strReg);
+                current.setTown(strTow);
+                current.setDistrict(strDis);
+
+                //Ajout du tag 
+                current.addTag("highway", "traffic_signals");
+
+                //Ajout du nodeGroup courent à la liste main.nodeGroups
+                main.nodeGroups.Add(current);
+            }
+
         }
         Debug.Log("There are " + counter + " nodes.");
         Debug.Log("There are " + buildingCounter + " buildings.");
