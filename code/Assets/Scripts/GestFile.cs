@@ -10,8 +10,6 @@ public class GestFile
     protected int counter;
     protected int buildingCounter;
     protected int highwayCounter;
-	// coordonnées min et max de la carte
-    private double minlat, maxlat, minlon, maxlon;
 
     // chemin d'acces et nom du fichier par defaut
     protected string path = @"./Assets/";
@@ -82,16 +80,10 @@ public class GestFile
             // on recupère les extremites
             if (line.Contains("<bounds"))
             {
-                minlat = double.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8));
-                maxlat = double.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8));
-                minlon = double.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8));
-                maxlon = double.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8));
-            
-
-                main.minlat = minlat;
-				main.maxlat = maxlat;
-				main.minlon = minlon;
-				main.maxlon = maxlon;
+                main.minlat = double.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8));
+                main.maxlat = double.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8));
+                main.minlon = double.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8));
+                main.maxlon = double.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8));
             }
 				
             // on recupère les nodes
@@ -149,8 +141,21 @@ public class GestFile
                     if (line.Contains("<tag"))
                     {
                         string key = line.Substring(line.IndexOf("k=") + 3, line.IndexOf("\" v=") - line.IndexOf("k=") - 3);
+
+                        if (key.Equals("lanes"))
+                        {
+                            int value2 = int.Parse(line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3));
+                            current.setNbVoie(value2);
+                        }
+
+                        if (key.Equals("maxspeed"))
+                        {
+                            int value2 = int.Parse(line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3));
+                            current.setVitMax(value2);
+                        }
+
                         string value = line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3);
-                        
+
                         // on ajoute le tag
                         current.addTag(key, value);
                         if (key.Equals("building") && value.Equals("yes"))
@@ -182,11 +187,12 @@ public class GestFile
                         {
                             current.setType(value);
                         }
-                        //Si la clé est le nom du batiment, on le rentre directement dans les valeurs du NodeGroup
+                        //Si la clé est le nom du batiment /de la route, on le rentre directement dans les valeurs du NodeGroup
                         if (key.Equals("name"))
                         {
                             current.setName(value);
                         }
+                       
                     }
 
                     line = file.ReadLine();
@@ -481,7 +487,7 @@ public class GestFile
         file.Close();
     }
 
-    ///</summary>
+    /// <summary>
     /// Methode createResumeFile :
     /// Cree un fichier propre ou les informations sont resumees
     /// </summary>
@@ -512,17 +518,20 @@ public class GestFile
 
         string pathString = path + "MapsResumed/" + nameFile + "Resumed.osm";
         string buildingName;
+        string highwayName;
         string typeRoof;
         int angleRoof;
         int nbFloor;
         double ID;
         string typeRoute;
+        int nbVoie;
+        int maxspeed;
 
 
         //on créé le fichier et on va écrire dedans
         System.IO.StreamWriter file = new System.IO.StreamWriter(pathString);
         file.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        file.WriteLine("<bounds minlat=\"" + minlat + "\" minlon=\"" + minlon + "\" maxlat=\"" + maxlat + "\" maxlon=\"" + maxlon + "\"/>");
+        file.WriteLine("<bounds minlat=\"" +main.minlat + "\" minlon=\"" + main.minlon + "\" maxlat=\"" + main.maxlat + "\" maxlon=\"" + main.maxlon + "\"/>");
 
 
         //Ecriture premiere balise earth
@@ -547,7 +556,6 @@ public class GestFile
                         file.WriteLine("\t\t\t\t\t<District d=\"" + str4 + "\">");
                         foreach (NodeGroup ngp in main.nodeGroups)
                         {
-                            UnityEngine.Debug.Log("district = " + ngp.getDistrict() + " et ID = " + ngp.getID());
                             if ((ngp.getCountry() == str1) && (ngp.getRegion() == str2) && (ngp.getTown() == str3) && (ngp.getDistrict() == str4))
                             {
                                 if (ngp.isBuilding())
@@ -559,7 +567,7 @@ public class GestFile
                                     angleRoof = ngp.getAngle();
                                     ID = ngp.getID();
 
-
+                                    //On écrit ces infos sur le ...Resumed
                                     file.WriteLine("\t\t\t\t\t\t<building>");
                                     file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\" name=\"" + buildingName + "\" nbFloor=\"" + nbFloor + "\" type=\"" + typeRoof + "\" angle=\"" + angleRoof + "\"/>");
 
@@ -571,13 +579,19 @@ public class GestFile
                                     //ecriture balise fin de building
                                     file.WriteLine("\t\t\t\t\t\t</building>");
                                 }
+
+
                                 if (ngp.isHighway()){
                                     //on recupère les données sur la route
                                     ID = ngp.getID();
                                     typeRoute = ngp.GetTagValue("highway");
+                                    highwayName = ngp.getName();
+                                    nbVoie = ngp.getNbVoie();
+                                    maxspeed = ngp.getVitMax();
 
+                                    //On écrit ces infos sur le ...Resumed
                                     file.WriteLine("\t\t\t\t\t\t<highway>");
-                                    file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\" type=\"" + typeRoute + "\"/>");
+                                    file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\" type=\"" + typeRoute + "\" name=\"" + highwayName + "\" nbVoie=\"" + nbVoie + "\" maxspd=\"" + maxspeed + "\"/>");
 
                                     //ecriture des nodes
                                     foreach (Node n in ngp.nodes)
@@ -636,15 +650,10 @@ public class GestFile
             // Recuperation de limites de la carte
             if (line.Contains("<bounds"))
             {
-                minlat = double.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8));
-                maxlat = double.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8));
-                minlon = double.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8));
-                maxlon = double.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8));
-
-                main.minlat = minlat;
-                main.maxlat = maxlat;
-                main.minlon = minlon;
-                main.maxlon = maxlon;
+                main.minlat = double.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8));
+                main.maxlat = double.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8));
+                main.minlon = double.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8));
+                main.maxlon = double.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8));
             }
 
             // Recuperation des balises
@@ -727,7 +736,10 @@ public class GestFile
                 NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("type=") - line.IndexOf("id=") - 6)));
 
                 // Ajout des caractéristiques du batiment
-                current.addTag("highway", line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6));
+                current.addTag("highway", line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\" name") - line.IndexOf("type=") - 6));
+                current.setName(line.Substring(line.IndexOf("name=") + 6, line.IndexOf("\" nbVoie") - line.IndexOf("name=")-6));
+                current.setNbVoie(int.Parse(line.Substring(line.IndexOf("nbVoie=") + 8, line.IndexOf("\" maxspd") - line.IndexOf("nbVoie=") - 8)));
+                current.setVitMax(int.Parse(line.Substring(line.IndexOf("maxspd=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxspd=") - 8)));
 
                 // Lecture d'une nouvelle ligne
                 line = file.ReadLine();

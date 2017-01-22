@@ -10986,7 +10986,6 @@
   <nd ref="363895238"/>
   <nd ref="259096615"/>
   <tag k="building" v="yes"/>
-  <tag k="name" v="IRIT"/>
  </way>
  <way id="23905315" visible="true" version="5" changeset="31748013" timestamp="2015-06-05T14:59:23Z" user="Christophe Marteau" uid="2959594">
   <nd ref="259098010"/>

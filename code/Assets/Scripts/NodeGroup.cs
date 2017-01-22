@@ -20,6 +20,8 @@ public class NodeGroup {
     protected string typeRoof;
     protected int angleRoof;
     protected int nbNode;
+    protected int nbVoie;
+    protected int vitMax;
     
     //constructeur
 	public NodeGroup(double id){
@@ -42,10 +44,12 @@ public class NodeGroup {
         this.typeRoof = "unknown";
         this.angleRoof = 0;
         this.nbNode = 0;
-	}
+        this.nbVoie = 1;
+        this.vitMax = 50;
+    }
 
     //Surcharge du constructeur
-    public NodeGroup(double id,string country, string region, string town, string district, string name, string type, int angle)
+    public NodeGroup(double id,string country, string region, string town, string district, string name, string type, int angle, int nbVoie, int vitMax)
     {
         this.id = id;
         this.nodes = new ArrayList();
@@ -65,6 +69,8 @@ public class NodeGroup {
         this.name = name;
         this.angleRoof = angle;
         this.typeRoof = type;
+        this.nbVoie = nbVoie;
+        this.vitMax = vitMax;
     }
 
     // ajoute une node à l'ensemble 
@@ -484,9 +490,29 @@ public class NodeGroup {
     {
         this.nbNode = num;
     }
-    public double getNbNode()
+    public int getNbNode()
     {
         return this.nbNode;
+    }
+
+    // Accesseurs de l'attribut de nbVoie
+    public void setNbVoie(int num)
+    {
+        this.nbVoie = num;
+    }
+    public int getNbVoie()
+    {
+        return this.nbVoie;
+    }
+
+    // Accesseurs de l'attribut de vitMax
+    public void setVitMax(int num)
+    {
+        this.vitMax = num;
+    }
+    public int getVitMax()
+    {
+        return this.vitMax;
     }
 }
 

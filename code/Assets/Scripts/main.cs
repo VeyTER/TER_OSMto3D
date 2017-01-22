@@ -88,17 +88,14 @@ public class main : MonoBehaviour {
 
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");
-		panel.SetActive(false);  
+		panel.SetActive(false);
 
-        foreach (NodeGroup ngp in nodeGroups){
-
-            UnityEngine.Debug.Log(ngp.getDistrict());
-            UnityEngine.Debug.Log(ngp.getName());
-        
-
+        foreach (NodeGroup ngp in nodeGroups)
+        {
+            //Debug.Log(ngp.getName() + " nbVoie = " + ngp.getNbVoie() + " maxspd = " +  ngp.getVitMax());
 
         }
-	}
+    }
 		
 
 	// mise en place de l'interface

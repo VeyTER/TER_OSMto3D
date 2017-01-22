@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="CGImap 0.5.8 (3020 thorn-01.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
  <bounds minlat="43.5608700" minlon="1.4671900" maxlat="43.5616200" maxlon="1.4682600"/>
  <node id="192187659" visible="true" version="4" changeset="42372743" timestamp="2016-09-23T12:24:13Z" user="FredB" uid="1626" lat="43.5612591" lon="1.4666061"/>
@@ -336,6 +336,8 @@
   <tag k="highway" v="residential"/>
   <tag k="oneway" v="yes"/>
   <tag k="ref" v="Voie 6"/>
+  <tag k="lanes" v="2"/>
+  <tag k="maxspeed" v="30"/>
  </way>
  <way id="18628822" visible="true" version="5" changeset="14763690" timestamp="2013-01-23T23:34:20Z" user="don-vip" uid="297482">
   <nd ref="192186974"/>
