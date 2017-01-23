@@ -21,22 +21,25 @@ public class main : MonoBehaviour {
 	public static GameObject[] mainWalls;
     public static GameObject[] mainRoofs;
     public static GameObject[] mainHighways;
+	public static GameObject[] mainTrees;
+	public static GameObject[] mainCycleways;
+	public static GameObject[] mainBusLanes;
+	public static GameObject[] mainFootways;
 	public static GameObject[] mainBuildingNodes;
 	public static GameObject[] mainHighwayNodes;
 	public static GameObject panel = null;
-	public Material roadMaterial;
-    public Material roofMaterial;
+
     //création d'une instance de GestFile
     public GestFile f = new GestFile();
+
+	//création d'une instance de ObjectBuilding
+	//ObjectBuilding ob = new ObjectBuilding();
 
     //création d'une instance de TRGDelaunay
     public TRGDelaunay tr;
 
     // Fonction lancée à l'initialisation de la scene
     void Start() {
-        
-        //création d'une instance de ObjectBuilding
-        ObjectBuilding ob = new ObjectBuilding(roadMaterial, roofMaterial);
         SetUpUI ();
         // Si le fichier Resumed n'existe pas on le crée
         if (!System.IO.File.Exists(path + "MapsResumed/" + fileName + "Resumed.osm"))
@@ -53,49 +56,54 @@ public class main : MonoBehaviour {
             f.readResumeFile(fileName);
         }
         
-        foreach(NodeGroup ngp in nodeGroups)
-        {
-            if (ngp.isBuilding())
-            {
-                tr = new TRGDelaunay(ngp);
-                tr.creaBoiteEnglob();
-                tr.start();
+//        foreach(NodeGroup ngp in nodeGroups)
+//        {
+//            if (ngp.isBuilding())
+//            {
+//                tr = new TRGDelaunay(ngp);
+//                tr.creaBoiteEnglob();
+//                tr.start();
                 
-                /*foreach (Triangle item in tr.listTriangle)
-                {
-                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-                    cube.transform.position = new Vector3((float)item.getNoeudA().getLongitude() * 1000f, 0, (float)item.getNoeudA().getLatitude() * 1000f);
-                    cube.name = "" + item.getNoeudA().getID();
-                    cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-                    cube.transform.position = new Vector3((float)item.getNoeudB().getLongitude()*1000f, 0, (float)item.getNoeudB().getLatitude() * 1000f);
-                    cube.name = "" + item.getNoeudB().getID();
-                    cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-                    cube.transform.position = new Vector3((float)item.getNoeudC().getLongitude() * 1000f, 0, (float)item.getNoeudC().getLatitude() * 1000f);
-                    cube.name = "" + item.getNoeudC().getID(); 
-                }*/
-                ob.buildRoofs(tr);
-            }
-        }
-        ob.setNodeGroups(nodeGroups);
-	    ob.setLatLong(minlat, maxlat, minlon, maxlon);
-		ob.buildNodes();
-		ob.buildWalls();
-		ob.buildHighways ();
-		ob.buildMainCameraBG ();
+//                /*foreach (Triangle item in tr.listTriangle)
+//                {
+//                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+//                    cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+//                    cube.transform.position = new Vector3((float)item.getNoeudA().getLongitude() * 1000f, 0, (float)item.getNoeudA().getLatitude() * 1000f);
+//                    cube.name = "" + item.getNoeudA().getID();
+//                    cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+//                    cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+//                    cube.transform.position = new Vector3((float)item.getNoeudB().getLongitude()*1000f, 0, (float)item.getNoeudB().getLatitude() * 1000f);
+//                    cube.name = "" + item.getNoeudB().getID();
+//                    cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+//                    cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+//                    cube.transform.position = new Vector3((float)item.getNoeudC().getLongitude() * 1000f, 0, (float)item.getNoeudC().getLatitude() * 1000f);
+//                    cube.name = "" + item.getNoeudC().getID(); 
+//                }*/
+//                ob.buildRoofs(tr);
+//            }
+//        }
+//        ob.setNodeGroups(nodeGroups);
+//	    ob.setLatLong(minlat, maxlat, minlon, maxlon);
+//		ob.buildNodes();
+//		ob.buildWalls();
+//		ob.buildHighways ();
+//		ob.buildTrees ();
+//		ob.buildMainCameraBG ();
+//		ob.buildBackground ();
 
-		// on recupere la reference du panneau et on le desactive
-		panel = GameObject.Find ("Panneau");
-		panel.SetActive(false);
+//		// on recupere la reference du panneau et on le desactive
+//		panel = GameObject.Find ("Panneau");
+//		panel.SetActive(false);  
 
-        foreach (NodeGroup ngp in nodeGroups)
-        {
-            //Debug.Log(ngp.getName() + " nbVoie = " + ngp.getNbVoie() + " maxspd = " +  ngp.getVitMax());
-
-        }
-    }
+////        foreach (NodeGroup ngp in nodeGroups){
+////
+////            UnityEngine.Debug.Log(ngp.getDistrict());
+////            UnityEngine.Debug.Log(ngp.getName());
+////        
+////
+////
+////        }
+	}
 		
 
 	// mise en place de l'interface
@@ -139,7 +147,7 @@ public class main : MonoBehaviour {
 
             //angleABC = ((xba * xbc) + (yba * ybc)) / ((float)(Math.Sqrt(Math.Pow((double)xbc, 2) + Math.Pow((double)ybc, 2)) * (Math.Sqrt(Math.Pow((double)xbc, 2) + Math.Pow((double)ybc, 2)))));
             //angleABC = (float)Math.Acos((double)angleABC);
-            UnityEngine.Debug.Log("angle : " + angleABC + "  Xa : " + xa + "  Xb : " + xb + "  Xc : " + xc);
+//            UnityEngine.Debug.Log("angle : " + angleABC + "  Xa : " + xa + "  Xb : " + xb + "  Xc : " + xc);
             if (angleABC > 70 && angleABC < 110)
             //if(((xb-xa)/(xc-xb))-((yb-ya)/(yc-yb)) < 0.2)
             {
@@ -201,7 +209,7 @@ public class main : MonoBehaviour {
 			bc = new Vector3((float)xbc, 0, (float)ybc);
 
             angleABC = Vector3.Angle(ba, bc);
-            UnityEngine.Debug.Log("nouvel angle : " + angleABC + "  Xa : " + xa + "  Xb : " + xb + "  Xc : " + xc);
+//            UnityEngine.Debug.Log("nouvel angle : " + angleABC + "  Xa : " + xa + "  Xb : " + xb + "  Xc : " + xc);
         }
         /*
         xa = ngp.getNode(0).getLongitude();

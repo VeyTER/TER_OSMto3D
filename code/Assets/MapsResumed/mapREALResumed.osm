@@ -34,10 +34,6 @@
 							<node id="282224513" lat="43.5545557" lon="1.4765123"/>
 						</feuTri>
 						<highway>
-							<Info id="282224513" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282224513" lat="43.5545557" lon="1.4765123"/>
-						</highway>
-						<highway>
 							<Info id="286216246" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
 							<node id="286216246" lat="43.5612454" lon="1.467771"/>
 						</highway>
@@ -73,18 +69,10 @@
 							<Info id="282222816"/>
 							<node id="282222816" lat="43.5493664" lon="1.4794271"/>
 						</feuTri>
-						<highway>
-							<Info id="282222816" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282222816" lat="43.5493664" lon="1.4794271"/>
-						</highway>
 						<feuTri>
 							<Info id="282222353"/>
 							<node id="282222353" lat="43.5419629" lon="1.4816626"/>
 						</feuTri>
-						<highway>
-							<Info id="282222353" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282222353" lat="43.5419629" lon="1.4816626"/>
-						</highway>
 						<highway>
 							<Info id="287645288" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
 							<node id="287645288" lat="43.5589714" lon="1.4638258"/>
@@ -97,10 +85,6 @@
 							<Info id="191910070"/>
 							<node id="191910070" lat="43.56487" lon="1.4694558"/>
 						</feuTri>
-						<highway>
-							<Info id="191910070" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="191910070" lat="43.56487" lon="1.4694558"/>
-						</highway>
 						<highway>
 							<Info id="192182576" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
 							<node id="192182576" lat="43.5618332" lon="1.4654942"/>
@@ -117,58 +101,30 @@
 							<Info id="282224226"/>
 							<node id="282224226" lat="43.5545726" lon="1.4769552"/>
 						</feuTri>
-						<highway>
-							<Info id="282224226" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282224226" lat="43.5545726" lon="1.4769552"/>
-						</highway>
 						<feuTri>
 							<Info id="282224228"/>
 							<node id="282224228" lat="43.5546312" lon="1.4767658"/>
 						</feuTri>
-						<highway>
-							<Info id="282224228" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282224228" lat="43.5546312" lon="1.4767658"/>
-						</highway>
 						<feuTri>
 							<Info id="282224232"/>
 							<node id="282224232" lat="43.5544324" lon="1.4764361"/>
 						</feuTri>
-						<highway>
-							<Info id="282224232" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282224232" lat="43.5544324" lon="1.4764361"/>
-						</highway>
 						<feuTri>
 							<Info id="282224236"/>
 							<node id="282224236" lat="43.5541843" lon="1.4768019"/>
 						</feuTri>
-						<highway>
-							<Info id="282224236" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282224236" lat="43.5541843" lon="1.4768019"/>
-						</highway>
 						<feuTri>
 							<Info id="282224300"/>
 							<node id="282224300" lat="43.5544722" lon="1.4770429"/>
 						</feuTri>
-						<highway>
-							<Info id="282224300" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282224300" lat="43.5544722" lon="1.4770429"/>
-						</highway>
 						<feuTri>
 							<Info id="282224317"/>
 							<node id="282224317" lat="43.5542073" lon="1.4768923"/>
 						</feuTri>
-						<highway>
-							<Info id="282224317" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282224317" lat="43.5542073" lon="1.4768923"/>
-						</highway>
 						<feuTri>
 							<Info id="282224392"/>
 							<node id="282224392" lat="43.5542689" lon="1.4764983"/>
 						</feuTri>
-						<highway>
-							<Info id="282224392" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="282224392" lat="43.5542689" lon="1.4764983"/>
-						</highway>
 						<highway>
 							<Info id="287645367" type="turning_circle" name="unknown" nbVoie="1" maxspd="50"/>
 							<node id="287645367" lat="43.5606873" lon="1.4640436"/>
@@ -218,10 +174,6 @@
 							<node id="649120746" lat="43.5632483" lon="1.4756639"/>
 						</feuTri>
 						<highway>
-							<Info id="649120746" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="649120746" lat="43.5632483" lon="1.4756639"/>
-						</highway>
-						<highway>
 							<Info id="615264322" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
 							<node id="615264322" lat="43.5576179" lon="1.4807172"/>
 						</highway>
@@ -266,10 +218,6 @@
 							<node id="1378929865" lat="43.5633197" lon="1.4751729"/>
 						</feuTri>
 						<highway>
-							<Info id="1378929865" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="1378929865" lat="43.5633197" lon="1.4751729"/>
-						</highway>
-						<highway>
 							<Info id="1378881213" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
 							<node id="1378881213" lat="43.5562883" lon="1.4813188"/>
 						</highway>
@@ -289,10 +237,6 @@
 							<Info id="2084715879"/>
 							<node id="2084715879" lat="43.5651187" lon="1.4699069"/>
 						</feuTri>
-						<highway>
-							<Info id="2084715879" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="2084715879" lat="43.5651187" lon="1.4699069"/>
-						</highway>
 						<highway>
 							<Info id="2165492282" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
 							<node id="2165492282" lat="43.5606576" lon="1.4810892"/>
@@ -365,18 +309,10 @@
 							<Info id="2683988341"/>
 							<node id="2683988341" lat="43.556728" lon="1.4761888"/>
 						</feuTri>
-						<highway>
-							<Info id="2683988341" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="2683988341" lat="43.556728" lon="1.4761888"/>
-						</highway>
 						<feuTri>
 							<Info id="2683988342"/>
 							<node id="2683988342" lat="43.5564335" lon="1.476166"/>
 						</feuTri>
-						<highway>
-							<Info id="2683988342" type="traffic_signals" name="traffic_signals" nbVoie="1" maxspd="50"/>
-							<node id="2683988342" lat="43.5564335" lon="1.476166"/>
-						</highway>
 						<highway>
 							<Info id="2926778281" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
 							<node id="2926778281" lat="43.5626246" lon="1.4807522"/>
