@@ -80,10 +80,12 @@ public class ObjectBuilding {
 
 	//construction des routes
 	public void buildHighways(){
-		double x,y,length,width=0.08d,angle;
+		double x,y,length,width=0.06d,angle;
 		int j = 0;
 		foreach (NodeGroup ngp in nodeGroups) {
-			if ( ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isService() || ngp.isUnclassified()) ) {
+			if ( (ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() 
+				|| ngp.isService() || ngp.isUnclassified() || ngp.isCycleWay() || ngp.isFootway())) 
+				|| ngp.isBusWayLane() ) {
 				for (int i = 0; i < ngp.nodes.Count-1; i++) {
 					//Calcul des coordonées du milieu du vecteur formé par les 2 nodes consécutives
 					Vector3 node1 = new Vector3((float)ngp.getNode(i).getLongitude(),0, (float)ngp.getNode(i).getLatitude());
@@ -102,8 +104,14 @@ public class ObjectBuilding {
 						length = Math.Sqrt(Math.Pow(ngp.getNode (i + 1).getLatitude() - ngp.getNode (i).getLatitude(), 2) + Math.Pow(ngp.getNode(i + 1).getLongitude() - ngp.getNode (i).getLongitude(), 2));
 						angle = (double)Vector3.Angle(Vector3.right,-diff)+180;
 					}
-
-					rc.createRoad ((float)x, (float)y, (float)length, (float)width, (float)angle, j, i);
+					if (ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary () || ngp.isSecondary () || ngp.isTertiary () || ngp.isService () || ngp.isUnclassified ()))
+						rc.createClassicRoad ((float)x, (float)y, (float)length, (float)width, (float)angle, j, i);
+					else if (ngp.isFootway ())
+						rc.createFootway ((float)x, (float)y, (float)length, (float)width, (float)angle);
+					else if (ngp.isCycleWay ())
+						rc.createCycleway ((float)x, (float)y, (float)length, (float)width, (float)angle);
+//					else if (ngp.isBusWayLane ())
+//						rc.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
 				}
 				j++;
 			}	
@@ -112,6 +120,9 @@ public class ObjectBuilding {
 
 	// place les murs dans la scène
 	public void buildWalls(){
+		
+		float epaisseur = 0.01f;
+
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.isBuilding()){
 				if(!ngp.decomposerRight()){
@@ -138,8 +149,9 @@ public class ObjectBuilding {
 					else{
 						etages = 1;
 					}
-					mur.transform.localScale = new Vector3((float)length+0.015f,0.1f*(float)etages,0.02f);
+					mur.transform.localScale = new Vector3((float)length+0.015f,0.1f*(float)etages,epaisseur);
 					mur.transform.position = new Vector3((float)x,0.05f*(float)etages, (float)y);
+//					mur.GetComponent<MeshRenderer>().shadowCastingMode = false;
 					mur.AddComponent<GetInfos>();
 
 					// on modifie l'angle en fonction de l'ordre des points
@@ -161,16 +173,78 @@ public class ObjectBuilding {
                     {
                         mur.name = ngp.getName() + "_Mur" + i;                     
                     }
+					MeshRenderer mesh_renderer1 = mur.GetComponent<MeshRenderer> ();
+					mesh_renderer1.material = Resources.Load ("Materials/mur") as Material;
 					
 				}
 			}	
 		}
 	}
 
+	//construction des toits
     public void buildRoofs(TRGDelaunay TRG)
     {
         rfc.createRoof(TRG);
     }
+
+	//construction des arbres
+	public void buildTrees(){
+		double x, z;
+		float height=0.06f,diameter=0.04f;
+
+		foreach (NodeGroup ngp in nodeGroups) {
+			if ( ngp.isTree() ) {
+				x = ngp.getNode (0).getLongitude ();
+				z = ngp.getNode (0).getLatitude ();
+
+				GameObject trunk = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
+				trunk.name = "Trunk";
+				trunk.tag = "Tree";
+				trunk.transform.position = new Vector3 ((float)x, height / 2f, (float)z);
+				trunk.transform.localScale = new Vector3 (0.01f, 0.03f, 0.01f);
+				GameObject foliage = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+				foliage.name = "Foliage";
+				foliage.tag = "Tree";
+				foliage.transform.position = new Vector3 ((float)x, height, (float)z);
+				foliage.transform.localScale = new Vector3 (diameter, diameter, diameter);
+
+				MeshRenderer mesh_renderer1 = trunk.GetComponent<MeshRenderer> ();
+				mesh_renderer1.material = Resources.Load ("Materials/troncArbre") as Material;
+				MeshRenderer mesh_renderer2 = foliage.GetComponent<MeshRenderer> ();
+				mesh_renderer2.material = Resources.Load ("Materials/feuillesArbre") as Material;
+			}
+		}	
+	}
+
+	//construction des arbres
+	public void buildTrafficSignals(){
+		double x, z;
+		float height=0.03f,diameter=0.015f;
+
+		foreach (NodeGroup ngp in nodeGroups) {
+			if ( ngp.isHighway() && ngp.isFeuTri() ) {
+				for (int i = 0; i < ngp.nodes.Count; i++) {
+					Debug.Log ("efjzfijeifjzeofij");
+					x = ngp.getNode (i).getLongitude ();
+					z = ngp.getNode (i).getLatitude ();
+
+					GameObject trunk = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
+					trunk.name = "TrafficSignalsTrunk";
+					trunk.transform.position = new Vector3 ((float)x, height / 2f, (float)z);
+					trunk.transform.localScale = new Vector3 (0.005f, 0.015f, 0.005f);
+					GameObject TSLights = GameObject.CreatePrimitive (PrimitiveType.Cube);
+					TSLights.name = "TrafficSignalsLights";
+					TSLights.transform.position = new Vector3 ((float)x, height, (float)z);
+					TSLights.transform.localScale = new Vector3 (diameter, diameter * 2f, diameter);
+
+					MeshRenderer mesh_renderer1 = trunk.GetComponent<MeshRenderer> ();
+					mesh_renderer1.material = Resources.Load ("Materials/metal") as Material;
+					MeshRenderer mesh_renderer2 = TSLights.GetComponent<MeshRenderer> ();
+					mesh_renderer2.material = Resources.Load ("Materials/feuxTricolores") as Material;
+				}
+			}
+		}	
+	}
 
 	// place la caméra dans la scene
 	public void buildMainCameraBG(){
@@ -186,8 +260,8 @@ public class ObjectBuilding {
 		mainLight.range = 30;
 		mainLight.intensity = 0.5f;
 		mainCam.name = "MainCam";
-		mainCam.transform.position = new Vector3 ((float)CamLon, 5, (float)CamLat);
-		mainCam.transform.localEulerAngles = new Vector3 (-90, 270, 0);
+		mainCam.transform.position = new Vector3 ((float)CamLon, 7, (float)CamLat);
+		mainCam.transform.rotation = Quaternion.Euler (90, 0, 360);
 		mainCam.AddComponent <CameraController> ();
 	}
 
@@ -196,20 +270,21 @@ public class ObjectBuilding {
 		double lat = (minlat * 1000d + maxlat * 1000d) / 2;
 		double lon = (minlon * 1000d + maxlon * 1000d) / 2;
 		double width = maxlon*1000d-minlon*1000d;
-		double length = maxlat*1000d-minlat*1000d;
+//		double length = maxlat*1000d-minlat*1000d;
+		double length =  Math.Sqrt(Math.Pow(maxlat*1000d - minlat*1000d,2)+Math.Pow(maxlon*1000d - minlon*1000d,2));
 
 		Vector3 node1 = new Vector3((float)maxlon,0, (float)maxlat);
 		Vector3 node2 = new Vector3((float)minlon,0, (float)minlat);
 		Vector3 diff = node2-node1;
 
 //		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-//		cube.transform.localScale = new Vector3(0.02f,0.02f,0.02f);
+//		cube.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
 //		cube.transform.position = new Vector3((float)minlon*1000f,0, (float)minlat*1000f);
 //		GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-//		cube2.transform.localScale = new Vector3(0.02f,0.02f,0.02f);
+//		cube2.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
 //		cube2.transform.position = new Vector3((float)maxlon*1000f,0, (float)maxlat*1000f);
 //		GameObject cube3 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-//		cube3.transform.localScale = new Vector3(0.02f,0.02f,0.02f);
+//		cube3.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
 //		cube3.transform.position = new Vector3((float)lon,0, (float)lat);
 
 		if (diff.z <= 0) {
@@ -217,6 +292,7 @@ public class ObjectBuilding {
 		} else {
 			angle = (double)Vector3.Angle (Vector3.right, -diff) + 180;
 		}
-		bgc.createBackground ((float)lon, (float)lat, (float)length, (float)width, (float)angle, (float) minlat, (float)minlon);
+//		bgc.createBackground ((float)lon, (float)lat, (float)length, (float)width, (float)angle, (float) minlat, (float)minlon);
+		bgc.createBackground ((float)lon, (float)lat, (float)length, (float)length, (float)angle, (float) minlat, (float)minlon);
 	}
 }

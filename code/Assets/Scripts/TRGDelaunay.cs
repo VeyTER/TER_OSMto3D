@@ -202,7 +202,7 @@ public class TRGDelaunay
             listTriangle.Remove(t6);
         }
         listTriangleSupp.Clear();
-        UnityEngine.Debug.Log("liste triangle = " + listTriangle.Count);
+//        UnityEngine.Debug.Log("liste triangle = " + listTriangle.Count);
     }
 
     // Accesseur de l'atribut ecartement 

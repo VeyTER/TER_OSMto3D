@@ -9,24 +9,87 @@ public class RoadCreation
 	{
 	}
 
-	public void createRoad(float x, float z, float length, float width, float angle, int j, int i)
+	public void createClassicRoad(float x, float z, float length, float width, float angle, int j, int i)
 	{
 			GameObject road = new GameObject ("Highway" + j.ToString () + "-" + i.ToString (), typeof(MeshFilter), typeof(MeshRenderer));
 			road.tag = "Highway";
-			road.transform.position = new Vector3 (x, 0, z);
+			road.transform.position = new Vector3 (x, 0.01f, z);
 			road.transform.rotation = Quaternion.Euler (0, angle, 0);
 			Mesh mesh = new Mesh ();
 	
-			mesh.vertices = makeRoadVertices (length, width);
+			mesh.vertices = makeRoadVertices (length+0.01f, width);
 			mesh.triangles = makeRoadTriangles ();
-			mesh.uv = makeRoadUV (length, width);
+			mesh.uv = makeRoadUV (length+0.01f, width);
 			mesh.normals = makeRoadNormals ();
 
 			MeshFilter mesh_filter = road.GetComponent<MeshFilter> ();
 			mesh_filter.mesh = mesh;
 
 			MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
+//			mesh_renderer.shadowCastingMode = false;
 			mesh_renderer.material = Resources.Load ("Materials/route") as Material;
+	}
+
+//	public void createBusLane(float x, float z, float length, float width, float angle)
+//	{
+//		GameObject road = new GameObject ("BusLane", typeof(MeshFilter), typeof(MeshRenderer));
+//		road.tag = "BusLane";
+//		road.transform.position = new Vector3 (x, 0, z);
+//		road.transform.rotation = Quaternion.Euler (0, angle, 0);
+//		Mesh mesh = new Mesh ();
+//
+//		mesh.vertices = makeRoadVertices (length, width);
+//		mesh.triangles = makeRoadTriangles ();
+//		mesh.uv = makeRoadUV (length, width);
+//		mesh.normals = makeRoadNormals ();
+//
+//		MeshFilter mesh_filter = road.GetComponent<MeshFilter> ();
+//		mesh_filter.mesh = mesh;
+//
+//		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
+//		mesh_renderer.material = Resources.Load ("Materials/voieBus") as Material;
+//	}
+
+	public void createCycleway(float x, float z, float length, float width, float angle)
+	{
+		width = width /2f;
+		GameObject road = new GameObject ("Cycleway", typeof(MeshFilter), typeof(MeshRenderer));
+		road.tag = "Cycleway";
+		road.transform.position = new Vector3 (x, 0, z);
+		road.transform.rotation = Quaternion.Euler (0, angle, 0);
+		Mesh mesh = new Mesh ();
+
+		mesh.vertices = makeRoadVertices (length, width);
+		mesh.triangles = makeRoadTriangles ();
+		mesh.uv = makeRoadUV (length, width);
+		mesh.normals = makeRoadNormals ();
+
+		MeshFilter mesh_filter = road.GetComponent<MeshFilter> ();
+		mesh_filter.mesh = mesh;
+
+		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
+		mesh_renderer.material = Resources.Load ("Materials/voieCyclable") as Material;
+	}
+
+	public void createFootway(float x, float z, float length, float width, float angle)
+	{
+		width = width /1.5f;
+		GameObject road = new GameObject ("Footway", typeof(MeshFilter), typeof(MeshRenderer));
+		road.tag = "Footway";
+		road.transform.position = new Vector3 (x, 0, z);
+		road.transform.rotation = Quaternion.Euler (0, angle, 0);
+		Mesh mesh = new Mesh ();
+
+		mesh.vertices = makeRoadVertices (length, width);
+		mesh.triangles = makeRoadTriangles ();
+		mesh.uv = makeRoadUV (length, width);
+		mesh.normals = makeRoadNormals ();
+
+		MeshFilter mesh_filter = road.GetComponent<MeshFilter> ();
+		mesh_filter.mesh = mesh;
+
+		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
+		mesh_renderer.material = Resources.Load ("Materials/cheminPieton") as Material;
 	}
 
 	private Vector3 [] makeRoadVertices(float length, float width){

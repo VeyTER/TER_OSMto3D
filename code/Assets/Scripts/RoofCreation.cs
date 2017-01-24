@@ -28,6 +28,7 @@ public class RoofCreation
         mesh_filter.mesh = mesh;
 
 		MeshRenderer mesh_renderer = roof.GetComponent<MeshRenderer> ();
+//		mesh_renderer.shadowCastingMode = false;
 		mesh_renderer.material = Resources.Load ("Materials/toit") as Material;
     }
 

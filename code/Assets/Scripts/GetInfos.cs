@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class GetInfos : MonoBehaviour {
 //
-//	void OnMouseDown() {
+	public void OnMouseDown() {
 //		double id = double.Parse(this.gameObject.name.Substring(0,this.gameObject.name.IndexOf("_")));
 //
 //		NodeGroup ngp = null;
@@ -16,7 +16,7 @@ public class GetInfos : MonoBehaviour {
 //			}
 //		}
 //
-//		main.panel.SetActive(true);
+		main.panel.SetActive(true);
 //		Text nomBatiment = GameObject.Find("NomBatiment").GetComponent<Text>();
 //		Text temperature = GameObject.Find("Temperature").GetComponent<Text>();
 //		Text humidite = GameObject.Find("Humidite").GetComponent<Text>();
@@ -25,5 +25,5 @@ public class GetInfos : MonoBehaviour {
 //		temperature.text = "Temperature : " + ngp.GetTagValue ("temperature");
 //		humidite.text = "Humidité : " + ngp.GetTagValue ("humidité");
 //
-//	}
+	}
 }

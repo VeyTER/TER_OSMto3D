@@ -11,13 +11,10 @@ public class BackgroundCreation
 
 	public void createBackground(float x, float z, float length, float width, float angle, float minlat, float minlon)
 	{
-		length = length * 2.1f;
-		width = width * 1.4f;
-
+		
 		GameObject bg = new GameObject ("Background", typeof(MeshFilter), typeof(MeshRenderer));
 
 		bg.transform.position = new Vector3 (minlon*1000f, -0.02f, minlat*1000f);
-		//bg.transform.position = new Vector3 (x, -0.02f, z);
 		bg.transform.rotation = Quaternion.Euler (0, angle, 0);
 
 		Mesh mesh = new Mesh ();
@@ -32,6 +29,8 @@ public class BackgroundCreation
 
 		MeshRenderer mesh_renderer = bg.GetComponent<MeshRenderer> ();
 		mesh_renderer.material = Resources.Load ("Materials/bg") as Material;
+
+
 	}
 
 	private Vector3 [] makeBgVertices(float length, float width){

@@ -21,6 +21,10 @@ public class main : MonoBehaviour {
 	public static GameObject[] mainWalls;
     public static GameObject[] mainRoofs;
     public static GameObject[] mainHighways;
+	public static GameObject[] mainTrees;
+	public static GameObject[] mainCycleways;
+	public static GameObject[] mainBusLanes;
+	public static GameObject[] mainFootways;
 	public static GameObject[] mainBuildingNodes;
 	public static GameObject[] mainHighwayNodes;
 	public static GameObject panel = null;
@@ -45,7 +49,7 @@ public class main : MonoBehaviour {
             f.createSettingsFile(fileName);
             f.readSettingsFile(fileName);
 
-            f.createResumeFile(fileName);
+            //f.createResumeFile(fileName);
         }
         else
         {
@@ -83,21 +87,32 @@ public class main : MonoBehaviour {
 		ob.buildNodes();
 		ob.buildWalls();
 		ob.buildHighways ();
+		ob.buildTrees ();
+		ob.buildTrafficSignals ();
 		ob.buildMainCameraBG ();
 		ob.buildBackground ();
+
+		mainBuildingNodes = GameObject.FindGameObjectsWithTag("BuildingNode");
+		mainHighwayNodes = GameObject.FindGameObjectsWithTag("HighwayNode");
+		foreach (GameObject go in mainBuildingNodes) {
+			go.SetActive (false);
+		}
+		foreach (GameObject go in mainHighwayNodes) {
+			go.SetActive (false);
+		}
 
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");
 		panel.SetActive(false);  
 
-        foreach (NodeGroup ngp in nodeGroups){
-
-            UnityEngine.Debug.Log(ngp.getDistrict());
-            UnityEngine.Debug.Log(ngp.getName());
-        
-
-
-        }
+//        foreach (NodeGroup ngp in nodeGroups){
+//
+//            UnityEngine.Debug.Log(ngp.getDistrict());
+//            UnityEngine.Debug.Log(ngp.getName());
+//        
+//
+//
+//        }
 	}
 		
 
@@ -142,7 +157,7 @@ public class main : MonoBehaviour {
 
             //angleABC = ((xba * xbc) + (yba * ybc)) / ((float)(Math.Sqrt(Math.Pow((double)xbc, 2) + Math.Pow((double)ybc, 2)) * (Math.Sqrt(Math.Pow((double)xbc, 2) + Math.Pow((double)ybc, 2)))));
             //angleABC = (float)Math.Acos((double)angleABC);
-            UnityEngine.Debug.Log("angle : " + angleABC + "  Xa : " + xa + "  Xb : " + xb + "  Xc : " + xc);
+//            UnityEngine.Debug.Log("angle : " + angleABC + "  Xa : " + xa + "  Xb : " + xb + "  Xc : " + xc);
             if (angleABC > 70 && angleABC < 110)
             //if(((xb-xa)/(xc-xb))-((yb-ya)/(yc-yb)) < 0.2)
             {
@@ -204,7 +219,7 @@ public class main : MonoBehaviour {
 			bc = new Vector3((float)xbc, 0, (float)ybc);
 
             angleABC = Vector3.Angle(ba, bc);
-            UnityEngine.Debug.Log("nouvel angle : " + angleABC + "  Xa : " + xa + "  Xb : " + xb + "  Xc : " + xc);
+//            UnityEngine.Debug.Log("nouvel angle : " + angleABC + "  Xa : " + xa + "  Xb : " + xb + "  Xc : " + xc);
         }
         /*
         xa = ngp.getNode(0).getLongitude();
