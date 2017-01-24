@@ -10,12 +10,24 @@ public class ObjectBuilding {
     protected RoadCreation rc;
     protected RoofCreation rfc;
 	protected BackgroundCreation bgc;
+	protected TRGDelaunay tr;
+	protected float sizeFloor=0.08f;
 
 	// constructeur
 	public ObjectBuilding(){
 		rc = new RoadCreation();
         rfc = new RoofCreation();
 		bgc = new BackgroundCreation ();
+	}
+
+	//Accesseurs de l'atribut sizeFloors
+	public void setSizeFloor(float size)
+	{
+		this.sizeFloor = size;
+	}
+	public float getSizeFloor()
+	{
+		return this.sizeFloor;
 	}
 
     // copie d'une liste de groupe de nodes
@@ -38,7 +50,7 @@ public class ObjectBuilding {
     }
 
     //copie des coordonnées en latitude et longitude
-    public void setLatLong(double minla, double maxla, double minlo, double maxlo){
+	public void setLatLong(double minla, double maxla, double minlo, double maxlo){
 		this.minlat = minla;
 		this.maxlat = maxla;
 		this.minlon = minlo;
@@ -81,7 +93,7 @@ public class ObjectBuilding {
 	//construction des routes
 	public void buildHighways(){
 		double x,y,length,width=0.06d,angle;
-		int j = 0;
+
 		foreach (NodeGroup ngp in nodeGroups) {
 			if ( (ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() 
 				|| ngp.isService() || ngp.isUnclassified() || ngp.isCycleWay() || ngp.isFootway())) 
@@ -105,7 +117,7 @@ public class ObjectBuilding {
 						angle = (double)Vector3.Angle(Vector3.right,-diff)+180;
 					}
 					if (ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary () || ngp.isSecondary () || ngp.isTertiary () || ngp.isService () || ngp.isUnclassified ()))
-						rc.createClassicRoad ((float)x, (float)y, (float)length, (float)width, (float)angle, j, i);
+						rc.createClassicRoad ((float)x, (float)y, (float)length, (float)width, (float)angle);
 					else if (ngp.isFootway ())
 						rc.createFootway ((float)x, (float)y, (float)length, (float)width, (float)angle);
 					else if (ngp.isCycleWay ())
@@ -113,14 +125,13 @@ public class ObjectBuilding {
 //					else if (ngp.isBusWayLane ())
 //						rc.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
 				}
-				j++;
 			}	
 		}
 	}
 
 	// place les murs dans la scène
 	public void buildWalls(){
-		
+
 		float epaisseur = 0.01f;
 
 		foreach (NodeGroup ngp in nodeGroups) {
@@ -130,9 +141,11 @@ public class ObjectBuilding {
 				}
 				//On créé les murs
 				double x, y, length,adj,angle;
-				int etages = 5;
+				int etages = 1;
 
 				for(int i=0;i<ngp.nodes.Count-1;i++){
+
+
 					//on recup les coordonées utiles
 					x = (ngp.getNode(i).getLongitude() + ngp.getNode(i+1).getLongitude()) /2;
 					y = (ngp.getNode(i).getLatitude() + ngp.getNode(i+1).getLatitude()) /2;
@@ -143,15 +156,16 @@ public class ObjectBuilding {
 					//on positionne le mur
 					GameObject mur = GameObject.CreatePrimitive(PrimitiveType.Cube);
 					mur.tag = "Wall";
-					if(ngp.tags.ContainsKey("etages")){
-						etages = int.Parse(ngp.GetTagValue("etages"));
-					}
-					else{
-						etages = 1;
-					}
-					mur.transform.localScale = new Vector3((float)length+0.015f,0.1f*(float)etages,epaisseur);
-					mur.transform.position = new Vector3((float)x,0.05f*(float)etages, (float)y);
-//					mur.GetComponent<MeshRenderer>().shadowCastingMode = false;
+					//					if(ngp.tags.ContainsKey("etages")){
+					//						etages = int.Parse(ngp.GetTagValue("etages"));
+					//					}
+					//					else{
+					//						etages = 1;
+					//					}
+					etages = ngp.getNbFloors();
+					//UnityEngine.Debug.Log ("etage "+ etages);					
+					mur.transform.localScale = new Vector3((float)length+0.015f, this.sizeFloor * etages,epaisseur);
+					mur.transform.position = new Vector3((float)x, (this.sizeFloor /2) * (float)etages, (float)y);
 					mur.AddComponent<GetInfos>();
 
 					// on modifie l'angle en fonction de l'ordre des points
@@ -164,33 +178,43 @@ public class ObjectBuilding {
 						mur.transform.localEulerAngles = new Vector3(0,(float)angle+90,0);
 					}
 
-                    //Si on ne connait pas le nom du batiment on utilise l'id
-                    if(ngp.getName() == "unknown")
-                    {
-                        mur.name = ngp.getID() +"_Mur"+ i;
-                    }
-                    else
-                    {
-                        mur.name = ngp.getName() + "_Mur" + i;                     
-                    }
+					//Si on ne connait pas le nom du batiment on utilise l'id
+					if(ngp.getName() == "unknown")
+					{
+						mur.name = ngp.getID() +"_Mur"+ i;
+					}
+					else
+					{
+						mur.name = ngp.getName() + "_Mur" + i;                     
+					}
+
 					MeshRenderer mesh_renderer1 = mur.GetComponent<MeshRenderer> ();
 					mesh_renderer1.material = Resources.Load ("Materials/mur") as Material;
-					
+
 				}
 			}	
 		}
 	}
 
 	//construction des toits
-    public void buildRoofs(TRGDelaunay TRG)
-    {
-        rfc.createRoof(TRG);
-    }
+	public void buildRoofs()
+	{
+		foreach(NodeGroup ngp in nodeGroups)
+		{
+			if (ngp.isBuilding())
+			{
+				tr = new TRGDelaunay(ngp);
+				tr.creaBoiteEnglob();
+				tr.start();
+				rfc.createRoof(tr,ngp.getNbFloors(),this.sizeFloor);
+			}
+		}
+	}
 
 	//construction des arbres
 	public void buildTrees(){
 		double x, z;
-		float height=0.06f,diameter=0.04f;
+		float height=0.12f,diameter=0.08f;
 
 		foreach (NodeGroup ngp in nodeGroups) {
 			if ( ngp.isTree() ) {
@@ -201,7 +225,7 @@ public class ObjectBuilding {
 				trunk.name = "Trunk";
 				trunk.tag = "Tree";
 				trunk.transform.position = new Vector3 ((float)x, height / 2f, (float)z);
-				trunk.transform.localScale = new Vector3 (0.01f, 0.03f, 0.01f);
+				trunk.transform.localScale = new Vector3 (height / 6f, height / 2f, height / 6f);
 				GameObject foliage = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 				foliage.name = "Foliage";
 				foliage.tag = "Tree";
@@ -224,7 +248,6 @@ public class ObjectBuilding {
 		foreach (NodeGroup ngp in nodeGroups) {
 			if ( ngp.isHighway() && ngp.isFeuTri() ) {
 				for (int i = 0; i < ngp.nodes.Count; i++) {
-					Debug.Log ("efjzfijeifjzeofij");
 					x = ngp.getNode (i).getLongitude ();
 					z = ngp.getNode (i).getLatitude ();
 
@@ -266,33 +289,22 @@ public class ObjectBuilding {
 	}
 
 	public void buildBackground(){
-		double angle;
-		double lat = (minlat * 1000d + maxlat * 1000d) / 2;
-		double lon = (minlon * 1000d + maxlon * 1000d) / 2;
-		double width = maxlon*1000d-minlon*1000d;
-//		double length = maxlat*1000d-minlat*1000d;
-		double length =  Math.Sqrt(Math.Pow(maxlat*1000d - minlat*1000d,2)+Math.Pow(maxlon*1000d - minlon*1000d,2));
+		double angle, lat, lon, width, length;
+		Vector3 node1, node2, diff;
+		lat = (minlat * 1000d + maxlat * 1000d) / 2;
+		lon = (minlon * 1000d + maxlon * 1000d) / 2;
+		width = maxlon*1000d-minlon*1000d;
+		length =  Math.Sqrt(Math.Pow(maxlat*1000d - minlat*1000d,2)+Math.Pow(maxlon*1000d - minlon*1000d,2));
 
-		Vector3 node1 = new Vector3((float)maxlon,0, (float)maxlat);
-		Vector3 node2 = new Vector3((float)minlon,0, (float)minlat);
-		Vector3 diff = node2-node1;
-
-//		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-//		cube.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
-//		cube.transform.position = new Vector3((float)minlon*1000f,0, (float)minlat*1000f);
-//		GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-//		cube2.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
-//		cube2.transform.position = new Vector3((float)maxlon*1000f,0, (float)maxlat*1000f);
-//		GameObject cube3 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-//		cube3.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
-//		cube3.transform.position = new Vector3((float)lon,0, (float)lat);
+		node1 = new Vector3((float)maxlon,0, (float)maxlat);
+		node2 = new Vector3((float)minlon,0, (float)minlat);
+		diff = node2-node1;
 
 		if (diff.z <= 0) {
 			angle = (double)Vector3.Angle (Vector3.right, diff) + 180;
 		} else {
 			angle = (double)Vector3.Angle (Vector3.right, -diff) + 180;
 		}
-//		bgc.createBackground ((float)lon, (float)lat, (float)length, (float)width, (float)angle, (float) minlat, (float)minlon);
 		bgc.createBackground ((float)lon, (float)lat, (float)length, (float)length, (float)angle, (float) minlat, (float)minlon);
 	}
 }

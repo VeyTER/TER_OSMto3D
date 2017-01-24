@@ -56,7 +56,6 @@
      <Compile Include="Assets\Scripts\RoadCreation.cs" />
      <Compile Include="Assets\Scripts\RoofCreation.cs" />
      <Compile Include="Assets\Scripts\TRGDelaunay.cs" />
-     <Compile Include="Assets\Scripts\ToggleGrid.cs" />
      <Compile Include="Assets\Scripts\Triangle.cs" />
      <Compile Include="Assets\Scripts\UIManager.cs" />
      <Compile Include="Assets\Scripts\main.cs" />

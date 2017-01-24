@@ -12,11 +12,13 @@ public class main : MonoBehaviour {
 
     // coordonnées min et max de la carte
     public static double minlat, maxlat, minlon, maxlon;
+	public static double minlat2, maxlat2, minlon2, maxlon2;
 	// chemin d'acces et nom du fichier
 	private string path = @"./Assets/";
 	// "map" est la valeur qu'on met par defaut dans fileName. 
 	// Mais celle-ci sera écrasée par la valeur qu'on met dans File Name dans ScriptGameObject (sur Unity)
 	public string fileName;
+	public string fileName2;
 	// listes des gameObjects créés dans la scene
 	public static GameObject[] mainWalls;
     public static GameObject[] mainRoofs;
@@ -35,57 +37,31 @@ public class main : MonoBehaviour {
 	//création d'une instance de ObjectBuilding
 	ObjectBuilding ob = new ObjectBuilding();
 
-    //création d'une instance de TRGDelaunay
-    public TRGDelaunay tr;
-
     // Fonction lancée à l'initialisation de la scene
     void Start() {
         SetUpUI ();
         // Si le fichier Resumed n'existe pas on le crée
-        if (!System.IO.File.Exists(path + "MapsResumed/" + fileName + "Resumed.osm"))
+        if (!System.IO.File.Exists(path + "MapsResumed/mapResumed.osm"))
         {
-            f.readFileOSM(fileName);
+            f.readFileOSM(fileName,0);
+			f.readFileOSM(fileName2,1);
 
-            f.createSettingsFile(fileName);
-            f.readSettingsFile(fileName);
+            f.createSettingsFile();
+            f.readSettingsFile();
 
-            //f.createResumeFile(fileName);
+            f.createResumeFile();
         }
         else
         {
-            f.readResumeFile(fileName);
+            f.readResumeFile();
         }
-        
-        foreach(NodeGroup ngp in nodeGroups)
-        {
-            if (ngp.isBuilding())
-            {
-                tr = new TRGDelaunay(ngp);
-                tr.creaBoiteEnglob();
-                tr.start();
-                
-                /*foreach (Triangle item in tr.listTriangle)
-                {
-                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-                    cube.transform.position = new Vector3((float)item.getNoeudA().getLongitude() * 1000f, 0, (float)item.getNoeudA().getLatitude() * 1000f);
-                    cube.name = "" + item.getNoeudA().getID();
-                    cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-                    cube.transform.position = new Vector3((float)item.getNoeudB().getLongitude()*1000f, 0, (float)item.getNoeudB().getLatitude() * 1000f);
-                    cube.name = "" + item.getNoeudB().getID();
-                    cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-                    cube.transform.position = new Vector3((float)item.getNoeudC().getLongitude() * 1000f, 0, (float)item.getNoeudC().getLatitude() * 1000f);
-                    cube.name = "" + item.getNoeudC().getID(); 
-                }*/
-                ob.buildRoofs(tr);
-            }
-        }
-        ob.setNodeGroups(nodeGroups);
-	    ob.setLatLong(minlat, maxlat, minlon, maxlon);
+
+		ob.setNodeGroups(nodeGroups);
+		classerlonlat ();
+		ob.setLatLong(minlat, maxlat, minlon, maxlon);
 		ob.buildNodes();
 		ob.buildWalls();
+		ob.buildRoofs ();
 		ob.buildHighways ();
 		ob.buildTrees ();
 		ob.buildTrafficSignals ();
@@ -105,14 +81,6 @@ public class main : MonoBehaviour {
 		panel = GameObject.Find ("Panneau");
 		panel.SetActive(false);  
 
-//        foreach (NodeGroup ngp in nodeGroups){
-//
-//            UnityEngine.Debug.Log(ngp.getDistrict());
-//            UnityEngine.Debug.Log(ngp.getName());
-//        
-//
-//
-//        }
 	}
 		
 
@@ -123,6 +91,17 @@ public class main : MonoBehaviour {
 		GameObject canvas = (GameObject) GameObject.Instantiate (Resources.Load("myCanvas"));
 		GameObject eventSystem = (GameObject) GameObject.Instantiate (Resources.Load("myEventSystem"));
 
+	}
+
+	public void classerlonlat(){
+		if (minlat > minlat2)
+			minlat = minlat2;
+		if (maxlat < maxlat2)
+			maxlat = maxlat2;
+		if (minlon > minlon2)
+			minlon = minlon2;
+		if (maxlon < minlon2)
+			maxlon = minlon2;
 	}
 
     public void modifPoint(NodeGroup ngp)

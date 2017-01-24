@@ -9,9 +9,9 @@ public class RoadCreation
 	{
 	}
 
-	public void createClassicRoad(float x, float z, float length, float width, float angle, int j, int i)
+	public void createClassicRoad(float x, float z, float length, float width, float angle)
 	{
-			GameObject road = new GameObject ("Highway" + j.ToString () + "-" + i.ToString (), typeof(MeshFilter), typeof(MeshRenderer));
+			GameObject road = new GameObject ("Highway", typeof(MeshFilter), typeof(MeshRenderer));
 			road.tag = "Highway";
 			road.transform.position = new Vector3 (x, 0.01f, z);
 			road.transform.rotation = Quaternion.Euler (0, angle, 0);
