@@ -13,7 +13,7 @@ public class RoadCreation
 	{
 			GameObject road = new GameObject ("Highway", typeof(MeshFilter), typeof(MeshRenderer));
 			road.tag = "Highway";
-			road.transform.position = new Vector3 (x, 0.01f, z);
+			road.transform.position = new Vector3 (x, 0.002f, z);
 			road.transform.rotation = Quaternion.Euler (0, angle, 0);
 			Mesh mesh = new Mesh ();
 	
@@ -30,25 +30,25 @@ public class RoadCreation
 			mesh_renderer.material = Resources.Load ("Materials/route") as Material;
 	}
 
-//	public void createBusLane(float x, float z, float length, float width, float angle)
-//	{
-//		GameObject road = new GameObject ("BusLane", typeof(MeshFilter), typeof(MeshRenderer));
-//		road.tag = "BusLane";
-//		road.transform.position = new Vector3 (x, 0, z);
-//		road.transform.rotation = Quaternion.Euler (0, angle, 0);
-//		Mesh mesh = new Mesh ();
-//
-//		mesh.vertices = makeRoadVertices (length, width);
-//		mesh.triangles = makeRoadTriangles ();
-//		mesh.uv = makeRoadUV (length, width);
-//		mesh.normals = makeRoadNormals ();
-//
-//		MeshFilter mesh_filter = road.GetComponent<MeshFilter> ();
-//		mesh_filter.mesh = mesh;
-//
-//		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
-//		mesh_renderer.material = Resources.Load ("Materials/voieBus") as Material;
-//	}
+	public void createBusLane(float x, float z, float length, float width, float angle)
+	{
+		GameObject road = new GameObject ("BusLane", typeof(MeshFilter), typeof(MeshRenderer));
+		road.tag = "BusLane";
+		road.transform.position = new Vector3 (x, 0, z);
+		road.transform.rotation = Quaternion.Euler (0, angle, 0);
+		Mesh mesh = new Mesh ();
+
+		mesh.vertices = makeRoadVertices (length, width);
+		mesh.triangles = makeRoadTriangles ();
+		mesh.uv = makeRoadUV (length, width);
+		mesh.normals = makeRoadNormals ();
+
+		MeshFilter mesh_filter = road.GetComponent<MeshFilter> ();
+		mesh_filter.mesh = mesh;
+
+		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
+		mesh_renderer.material = Resources.Load ("Materials/voieBus") as Material;
+	}
 
 	public void createCycleway(float x, float z, float length, float width, float angle)
 	{
@@ -90,6 +90,27 @@ public class RoadCreation
 
 		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
 		mesh_renderer.material = Resources.Load ("Materials/cheminPieton") as Material;
+	}
+
+	public void createWaterway(float x, float z, float length, float width, float angle)
+	{
+		width = width /1.5f;
+		GameObject road = new GameObject ("Waterway", typeof(MeshFilter), typeof(MeshRenderer));
+		//road.tag = "Waterway";
+		road.transform.position = new Vector3 (x, 0, z);
+		road.transform.rotation = Quaternion.Euler (0, angle, 0);
+		Mesh mesh = new Mesh ();
+
+		mesh.vertices = makeRoadVertices (length, width);
+		mesh.triangles = makeRoadTriangles ();
+		mesh.uv = makeRoadUV (length, width);
+		mesh.normals = makeRoadNormals ();
+
+		MeshFilter mesh_filter = road.GetComponent<MeshFilter> ();
+		mesh_filter.mesh = mesh;
+
+		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
+		mesh_renderer.material = Resources.Load ("Materials/waterway") as Material;
 	}
 
 	private Vector3 [] makeRoadVertices(float length, float width){

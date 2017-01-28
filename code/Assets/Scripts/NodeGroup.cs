@@ -102,6 +102,12 @@ public class NodeGroup {
 		return this.tags.ContainsKey ("building");
 	}
 
+	// retourne vrai si le nodeGroup correspond à une voie d'eau
+	public bool isWaterway()
+	{
+		return this.tags.ContainsKey ("waterway");
+	}
+
 	// retourne vrai si le NodeGroup correspond à un arbre
 	public bool isTree()
 	{

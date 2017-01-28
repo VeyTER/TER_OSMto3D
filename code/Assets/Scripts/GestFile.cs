@@ -6,6 +6,11 @@ using System.Collections.Generic;
 public class GestFile
 {
 
+	// liste des nodes ( structure de donnée )
+	protected ArrayList nodes = new ArrayList();
+	// liste des groupes de nodes ( structure de donnée )
+	protected ArrayList nodeGroups = new ArrayList();
+
 	// compteurs de nodes et groupes de nodes (batiments puis routes) respectivement
 	protected int counter;
 	protected int buildingCounter;
@@ -20,6 +25,8 @@ public class GestFile
 	protected ArrayList tow = new ArrayList();
 	protected ArrayList dis = new ArrayList();
 
+	//creation d'une instance de ModificationPoint
+	ModificationPoint m = new ModificationPoint();
 
 	//Constructeur par deffaut
 	public GestFile()
@@ -116,7 +123,7 @@ public class GestFile
 							current.addNode(new Node(id, lon, lat));
 
 							//On ajoute le NodeGroup à la liste des nodeGroup du Main.
-							main.nodeGroups.Add(current);
+							nodeGroups.Add(current);
 						}
 
 						//On regarde si c'est la key highway qui contient les feux tricolores
@@ -134,13 +141,13 @@ public class GestFile
 							current.addNode(new Node(id, lon, lat));
 
 							//On ajoute le NodeGroup à la liste des nodeGroup du Main.
-							main.nodeGroups.Add(current);
+							nodeGroups.Add(current);
 						}
 					}
 				}
 
 				// création d'un point 
-				main.nodes.Add(new Node(id, lon, lat));
+				nodes.Add(new Node(id, lon, lat));
 
 			}
 
@@ -162,7 +169,7 @@ public class GestFile
 						// on recupere l'id du node
 						double reference = double.Parse(line.Substring(line.IndexOf("ref=") + 5, line.IndexOf("\"/>") - line.IndexOf("ref=") - 5));
 
-						foreach (Node n in main.nodes)
+						foreach (Node n in nodes)
 						{
 							// on ajoute le node a la liste de ceux qui compose le node groupe
 							if (n.getID() == reference)
@@ -213,28 +220,16 @@ public class GestFile
 					line = file.ReadLine();
 
 				}
-				if ((current.isBuilding() || current.isHighway())) 
+				if ((current.isBuilding() || current.isHighway()) || current.isWaterway() ) 
 				{
-					main.nodeGroups.Add(current);
+					nodeGroups.Add(current);
 				}             
 			}
 		}
 
 		file.Close();
-		//      Debug.Log ("There are "+ counter +" nodes.");
-		//		Debug.Log ("There are "+ main.nodeGroups.Count +" ways.");
-		//		Debug.Log ("There are "+ buildingCounter +" buildings.");
-		//		Debug.Log ("There are "+ highwayCounter +" highways.");
-		//		Debug.Log (cpt1 + " primary.");
-		//		Debug.Log (cpt2 + " secondary.");
-		//		Debug.Log (cpt3 + " tertiary.");
-		//		Debug.Log (cpt4 + " unclassified.");
-		//		Debug.Log (cpt5 + " residential.");
-		//		Debug.Log (cpt6 + " service.");
-		//		Debug.Log (cpt7 + " footway.");
-
 	}
-
+		
 	/// <summary>
 	/// Metode createSettingFile :
 	/// Crée le fichier Setting contenant les paramètres de construction du mapResume
@@ -244,6 +239,8 @@ public class GestFile
 	{
 
 		string pathString = path + "MapsSettings/mapSettings.osm";
+
+		m.modifPoint (nodeGroups);
 
 		//on créé le fichier et on va écrire dedans
 		System.IO.StreamWriter file = new System.IO.StreamWriter(pathString);
@@ -361,7 +358,7 @@ public class GestFile
 					type = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
 				}
 				//On donne aux nodegroup les attributs par défaut de la planète Terre
-				foreach (NodeGroup ngp in main.nodeGroups)
+				foreach (NodeGroup ngp in nodeGroups)
 				{
 					ngp.setNbFloors(nb);
 					ngp.setAngle(roof);
@@ -388,7 +385,7 @@ public class GestFile
 				}
 				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
 				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in main.nodeGroups)
+				foreach (NodeGroup ngp in nodeGroups)
 				{
 					if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).getLatitude()), 2) + Math.Pow(longi - (ngp.getNode(0).getLongitude()), 2)) < distance)
 					{
@@ -420,7 +417,7 @@ public class GestFile
 				}
 				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
 				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in main.nodeGroups)
+				foreach (NodeGroup ngp in nodeGroups)
 				{
 					if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).getLatitude()), 2) + Math.Pow(longi - (ngp.getNode(0).getLongitude()), 2)) < distance)
 					{
@@ -451,7 +448,7 @@ public class GestFile
 				}
 				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
 				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in main.nodeGroups)
+				foreach (NodeGroup ngp in nodeGroups)
 				{
 					if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).getLatitude()), 2) + Math.Pow(longi - (ngp.getNode(0).getLongitude()), 2)) < distance)
 					{
@@ -482,7 +479,7 @@ public class GestFile
 				}
 				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
 				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in main.nodeGroups)
+				foreach (NodeGroup ngp in nodeGroups)
 				{
 					if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).getLatitude()), 2) + Math.Pow(longi - (ngp.getNode(0).getLongitude()), 2)) < distance)
 					{
@@ -513,7 +510,7 @@ public class GestFile
 				}
 				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
 				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in main.nodeGroups)
+				foreach (NodeGroup ngp in nodeGroups)
 				{
 					if (Math.Sqrt(Math.Pow(lat - (ngp.getNode(0).getLatitude()), 2) + Math.Pow(longi - (ngp.getNode(0).getLongitude()), 2)) < distance)
 					{
@@ -546,7 +543,7 @@ public class GestFile
 	public void createResumeFile()
 	{
 		// listing des balises de location "country,region,town,district"
-		foreach (NodeGroup ngp in main.nodeGroups)
+		foreach (NodeGroup ngp in nodeGroups)
 		{
 			if (!cou.Contains(ngp.getCountry()))
 			{
@@ -605,7 +602,7 @@ public class GestFile
 					{
 
 						file.WriteLine("\t\t\t\t\t<District d=\"" + str4 + "\">");
-						foreach (NodeGroup ngp in main.nodeGroups)
+						foreach (NodeGroup ngp in nodeGroups)
 						{
 							if ((ngp.getCountry() == str1) && (ngp.getRegion() == str2) && (ngp.getTown() == str3) && (ngp.getDistrict() == str4))
 							{
@@ -668,6 +665,24 @@ public class GestFile
 									file.WriteLine("\t\t\t\t\t\t</feuTri>");
 								}
 
+								//Si c'est une voie d'eau
+								if (ngp.isWaterway())
+								{
+									//On récupère les caractéristiques de la voie d'eau
+									ID = ngp.getID();
+
+									//On écrit ces infos sur le ...Resumed
+									file.WriteLine("\t\t\t\t\t\t<waterway>");
+									file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\"/>");
+									//ecriture des nodes
+									foreach (Node n in ngp.nodes)
+									{
+										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.getID() + "\" lat=\"" + n.getLatitude() + "\" lon=\"" + n.getLongitude() + "\"/>");
+									}
+									//ecriture balise fin d'arbre
+									file.WriteLine("\t\t\t\t\t\t</waterway>");
+								}
+
 								// Si c'est une route
 								if (ngp.isHighway() && !(ngp.isFeuTri())){
 									//on recupère les données sur la route
@@ -718,7 +733,7 @@ public class GestFile
 	public void readResumeFile()
 	{
 		string line;
-
+	
 		double id = 0d;
 		double lat = 0d;
 		double lon = 0d;
@@ -785,7 +800,7 @@ public class GestFile
 						lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
 						lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
 
-						main.nodes.Add(new Node(id, lon, lat));
+						nodes.Add(new Node(id, lon, lat));
 
 						// Ajout du nouveau node au nodegroup
 						current.addNode(new Node(id, lon, lat));
@@ -809,7 +824,7 @@ public class GestFile
 				main.nodeGroups.Add(current);
 			}
 
-			// Récupération des routes
+			//Récupération des routes
 			if (line.Contains("<highway"))
 			{
 				line = file.ReadLine();
@@ -827,6 +842,48 @@ public class GestFile
 				line = file.ReadLine();
 
 				while (!line.Contains("</highway"))
+				{
+					if (line.Contains("<node"))
+					{
+						// Recuperation des nodes
+						id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
+						lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
+						lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
+
+						main.nodes.Add(new Node(id, lon, lat));
+
+						// Ajout du nouveau node au nodegroup
+						current.addNode(new Node(id, lon, lat));
+					}
+
+					// Changement de ligne
+					line = file.ReadLine();
+				}
+
+				// Ajout des balises de location dans le nodegroup
+				current.setCountry(strCou);
+				current.setRegion(strReg);
+				current.setTown(strTow);
+				current.setDistrict(strDis);
+
+				//Ajout du nodeGroup courent à la liste main.nodeGroups
+				main.nodeGroups.Add(current);
+			}
+
+			// Récupération des routes
+			if (line.Contains("<waterway"))
+			{
+				line = file.ReadLine();
+
+				// Creation d'un nouveau nodegroup
+				NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\"/>") - line.IndexOf("id=") - 4)));
+
+				current.addTag("waterway", "");
+
+				// Lecture d'une nouvelle ligne
+				line = file.ReadLine();
+
+				while (!line.Contains("</waterway"))
 				{
 					if (line.Contains("<node"))
 					{

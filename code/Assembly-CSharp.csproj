@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\GestFile.cs" />
      <Compile Include="Assets\Scripts\GetInfos.cs" />
+     <Compile Include="Assets\Scripts\ModificationPoint.cs" />
      <Compile Include="Assets\Scripts\Node.cs" />
      <Compile Include="Assets\Scripts\NodeGroup.cs" />
      <Compile Include="Assets\Scripts\ObjectBuilding.cs" />

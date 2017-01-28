@@ -11,8 +11,8 @@ public class main : MonoBehaviour {
     public static ArrayList nodeGroups = new ArrayList();
 
     // coordonnées min et max de la carte
-    public static double minlat, maxlat, minlon, maxlon;
-	public static double minlat2, maxlat2, minlon2, maxlon2;
+    public static double minlat=0, maxlat=0, minlon=0, maxlon=0;
+	public static double minlat2=0, maxlat2=0, minlon2=0, maxlon2=0;
 	// chemin d'acces et nom du fichier
 	private string path = @"./Assets/";
 	// "map" est la valeur qu'on met par defaut dans fileName. 
@@ -37,45 +37,49 @@ public class main : MonoBehaviour {
 	//création d'une instance de ObjectBuilding
 	ObjectBuilding ob = new ObjectBuilding();
 
+
+
     // Fonction lancée à l'initialisation de la scene
     void Start() {
-        SetUpUI ();
-        // Si le fichier Resumed n'existe pas on le crée
-        if (!System.IO.File.Exists(path + "MapsResumed/mapResumed.osm"))
-        {
-            f.readFileOSM(fileName,0);
+
+		SetUpUI ();
+		if(fileName!="null")
+        	f.readFileOSM(fileName,0);
+		if(fileName2!="null")
 			f.readFileOSM(fileName2,1);
 
-            f.createSettingsFile();
-            f.readSettingsFile();
+		if ((fileName != "null") || (fileName2 != "null")) {
+			f.createSettingsFile ();
+			f.readSettingsFile ();
 
-            f.createResumeFile();
-        }
-        else
-        {
-            f.readResumeFile();
-        }
+			classerlonlat ();
+			f.createResumeFile ();
+			f.readResumeFile ();
+	        
+			ob.setNodeGroups (nodeGroups);
+			ob.setLatLong (minlat, maxlat, minlon, maxlon);
 
-		ob.setNodeGroups(nodeGroups);
-		classerlonlat ();
-		ob.setLatLong(minlat, maxlat, minlon, maxlon);
-		ob.buildNodes();
-		ob.buildWalls();
-		ob.buildRoofs ();
-		ob.buildHighways ();
-		ob.buildTrees ();
-		ob.buildTrafficSignals ();
-		ob.buildMainCameraBG ();
-		ob.buildBackground ();
+			ob.buildNodes ();
+			ob.buildWalls ();
+			ob.buildRoofs ();
+			ob.buildHighways ();
+			ob.buildTrees ();
+			ob.buildTrafficSignals ();
 
-		mainBuildingNodes = GameObject.FindGameObjectsWithTag("BuildingNode");
-		mainHighwayNodes = GameObject.FindGameObjectsWithTag("HighwayNode");
-		foreach (GameObject go in mainBuildingNodes) {
-			go.SetActive (false);
+			ob.buildMainCameraBG ();
+			ob.buildBackground ();
+
+			mainBuildingNodes = GameObject.FindGameObjectsWithTag ("BuildingNode");
+			mainHighwayNodes = GameObject.FindGameObjectsWithTag ("HighwayNode");
+			foreach (GameObject go in mainBuildingNodes) {
+				go.SetActive (false);
+			}
+			foreach (GameObject go in mainHighwayNodes) {
+				go.SetActive (false);
+			}
 		}
-		foreach (GameObject go in mainHighwayNodes) {
-			go.SetActive (false);
-		}
+
+		Debug.Log (" ");
 
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");
@@ -94,14 +98,14 @@ public class main : MonoBehaviour {
 	}
 
 	public void classerlonlat(){
-		if (minlat > minlat2)
+		if ( ((minlat > minlat2) && (minlat2!=0)) || (minlat==0) )
 			minlat = minlat2;
-		if (maxlat < maxlat2)
+		if ( (maxlat < maxlat2) || (maxlat==0) )
 			maxlat = maxlat2;
-		if (minlon > minlon2)
+		if ( ((minlon > minlon2) && (minlon2!=0)) || (minlon==0) )
 			minlon = minlon2;
-		if (maxlon < minlon2)
-			maxlon = minlon2;
+		if ( (maxlon < maxlon2) || (maxlon==0) )
+			maxlon = maxlon2;
 	}
 
     public void modifPoint(NodeGroup ngp)

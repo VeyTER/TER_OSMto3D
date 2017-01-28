@@ -35,6 +35,7 @@ public class ObjectBuilding {
     {
         ArrayList memo = new ArrayList();
         this.nodeGroups = new ArrayList(nodeG);
+
         foreach (NodeGroup ngp in nodeGroups)
         {
             foreach (Node n in ngp.nodes)
@@ -59,7 +60,6 @@ public class ObjectBuilding {
 
 	// place les nodes dans la scène
 	public void buildNodes(){
-		int j = -1;
 		int i;
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.isBuilding()){
@@ -72,19 +72,16 @@ public class ObjectBuilding {
 					cube.tag = "BuildingNode";
 				}
 			}
-			if (ngp.isHighway ()) {
-				//on construit les nodes des highways
-				if (ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isUnclassified() || ngp.isResidential () || ngp.isService()) {
-					j++;
+			if ( (ngp.isHighway () && ((ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() || ngp.isUnclassified() || ngp.isResidential () || ngp.isService()) || ngp.isCycleWay() || ngp.isFootway())) || ngp.isWaterway()){
+					//on construit les nodes des highways
 					i = -1;
-					foreach (Node n in ngp.nodes) {
-						i++;
-						GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
-						cube.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
-						cube.transform.position = new Vector3 ((float)n.getLongitude(), 0, (float)n.getLatitude());
-						cube.name = "" + j + "-" + i + "  " + n.getID();
-						cube.tag = "HighwayNode";
-					}
+				foreach (Node n in ngp.nodes) {
+					i++;
+					GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
+					cube.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
+					cube.transform.position = new Vector3 ((float)n.getLongitude(), 0, (float)n.getLatitude());
+					cube.name = "" + n.getID();
+					cube.tag = "HighwayNode";
 				}
 			}
 		}
@@ -97,7 +94,7 @@ public class ObjectBuilding {
 		foreach (NodeGroup ngp in nodeGroups) {
 			if ( (ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary() || ngp.isSecondary() || ngp.isTertiary() 
 				|| ngp.isService() || ngp.isUnclassified() || ngp.isCycleWay() || ngp.isFootway())) 
-				|| ngp.isBusWayLane() ) {
+				/*|| ngp.isBusWayLane()*/ || ngp.isWaterway() ) {
 				for (int i = 0; i < ngp.nodes.Count-1; i++) {
 					//Calcul des coordonées du milieu du vecteur formé par les 2 nodes consécutives
 					Vector3 node1 = new Vector3((float)ngp.getNode(i).getLongitude(),0, (float)ngp.getNode(i).getLatitude());
@@ -116,14 +113,19 @@ public class ObjectBuilding {
 						length = Math.Sqrt(Math.Pow(ngp.getNode (i + 1).getLatitude() - ngp.getNode (i).getLatitude(), 2) + Math.Pow(ngp.getNode(i + 1).getLongitude() - ngp.getNode (i).getLongitude(), 2));
 						angle = (double)Vector3.Angle(Vector3.right,-diff)+180;
 					}
-					if (ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary () || ngp.isSecondary () || ngp.isTertiary () || ngp.isService () || ngp.isUnclassified ()))
+//					Debug.Log (ngp.isWaterway());
+					if (ngp.isHighway () && (ngp.isResidential () || ngp.isPrimary () || ngp.isSecondary () || ngp.isTertiary () || ngp.isService () || ngp.isUnclassified ())) {
 						rc.createClassicRoad ((float)x, (float)y, (float)length, (float)width, (float)angle);
-					else if (ngp.isFootway ())
+					} else if (ngp.isFootway ()) {
 						rc.createFootway ((float)x, (float)y, (float)length, (float)width, (float)angle);
-					else if (ngp.isCycleWay ())
+					} else if (ngp.isCycleWay ()) {
 						rc.createCycleway ((float)x, (float)y, (float)length, (float)width, (float)angle);
+					}
 //					else if (ngp.isBusWayLane ())
 //						rc.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
+					else if (ngp.isWaterway ()) {
+						rc.createWaterway ((float)x, (float)y, (float)length, (float)width, (float)angle);
+					}
 				}
 			}	
 		}
@@ -283,7 +285,7 @@ public class ObjectBuilding {
 		mainLight.range = 30;
 		mainLight.intensity = 0.5f;
 		mainCam.name = "MainCam";
-		mainCam.transform.position = new Vector3 ((float)CamLon, 7, (float)CamLat);
+		mainCam.transform.position = new Vector3 ((float)CamLon, 10, (float)CamLat);
 		mainCam.transform.rotation = Quaternion.Euler (90, 0, 360);
 		mainCam.AddComponent <CameraController> ();
 	}
@@ -291,6 +293,7 @@ public class ObjectBuilding {
 	public void buildBackground(){
 		double angle, lat, lon, width, length;
 		Vector3 node1, node2, diff;
+
 		lat = (minlat * 1000d + maxlat * 1000d) / 2;
 		lon = (minlon * 1000d + maxlon * 1000d) / 2;
 		width = maxlon*1000d-minlon*1000d;
@@ -305,6 +308,7 @@ public class ObjectBuilding {
 		} else {
 			angle = (double)Vector3.Angle (Vector3.right, -diff) + 180;
 		}
+
 		bgc.createBackground ((float)lon, (float)lat, (float)length, (float)length, (float)angle, (float) minlat, (float)minlon);
 	}
 }
