@@ -1,0 +1,15 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\ObjectBuilding.cs">
+    <Files>
+      <File FileName="Assets\MapsResumed\grandezoneResumed.osm" Line="6" Column="24" />
+      <File FileName="Assets\MapsSettings\grandezoneSettings.osm" Line="9" Column="21" />
+      <File FileName="Assets\Maps\grandezone.osm" Line="9761" Column="24" />
+      <File FileName="Assets\Scripts\ObjectBuilding.cs" Line="196" Column="95" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

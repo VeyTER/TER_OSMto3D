@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.4.0 (6506 thorn-04.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <bounds minlat="43.5618600" minlon="1.4677700" maxlat="43.5619500" maxlon="1.4678800"/>
+ <node id="259096615" visible="true" version="3" changeset="832895" timestamp="2009-03-19T21:44:06Z" user="Florian Birée" uid="26867" lat="43.5623203" lon="1.4676467"/>
+ <node id="259096616" visible="true" version="2" changeset="832895" timestamp="2009-03-19T21:44:04Z" user="Florian Birée" uid="26867" lat="43.5617456" lon="1.4682130"/>
+ <node id="259096617" visible="true" version="2" changeset="832895" timestamp="2009-03-19T21:44:05Z" user="Florian Birée" uid="26867" lat="43.5615714" lon="1.4678747"/>
+ <node id="259096618" visible="true" version="2" changeset="832895" timestamp="2009-03-19T21:44:06Z" user="Florian Birée" uid="26867" lat="43.5618104" lon="1.4676406"/>
+ <node id="267367193" visible="true" version="4" changeset="832895" timestamp="2009-03-19T21:44:40Z" user="Florian Birée" uid="26867" lat="43.5616188" lon="1.4678230"/>
+ <node id="286216275" visible="true" version="2" changeset="832895" timestamp="2009-03-19T21:44:56Z" user="Florian Birée" uid="26867" lat="43.5619820" lon="1.4676877"/>
+ <node id="286216278" visible="true" version="2" changeset="832895" timestamp="2009-03-19T21:44:55Z" user="Florian Birée" uid="26867" lat="43.5619144" lon="1.4678361"/>
+ <node id="286216283" visible="true" version="2" changeset="832895" timestamp="2009-03-19T21:44:54Z" user="Florian Birée" uid="26867" lat="43.5620082" lon="1.4677374"/>
+ <node id="363895238" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5622629" lon="1.4675356">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895201" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5621351" lon="1.4675732">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895228" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5622269" lon="1.4675746">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895220" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:39Z" user="Florian Birée" uid="26867" lat="43.5621800" lon="1.4675422">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <node id="363895190" visible="true" version="2" changeset="1207285" timestamp="2009-05-16T09:08:40Z" user="Florian Birée" uid="26867" lat="43.5620272" lon="1.4676435">
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre ; mise à jour : 2008"/>
+ </node>
+ <way id="23905163" visible="true" version="5" changeset="14763690" timestamp="2013-01-23T23:32:15Z" user="don-vip" uid="297482">
+  <nd ref="259096615"/>
+  <nd ref="259096616"/>
+  <nd ref="259096617"/>
+  <nd ref="267367193"/>
+  <nd ref="259096618"/>
+  <nd ref="286216278"/>
+  <nd ref="286216283"/>
+  <nd ref="286216275"/>
+  <nd ref="363895190"/>
+  <nd ref="363895201"/>
+  <nd ref="363895220"/>
+  <nd ref="363895228"/>
+  <nd ref="363895238"/>
+  <nd ref="259096615"/>
+  <tag k="building" v="yes"/>
+  <tag k="name" v="IRIT"/>
+ </way>
+</osm>
