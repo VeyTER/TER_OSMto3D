@@ -17,6 +17,7 @@ public class ObjectBuilder {
 	private GroundBuilder groundBuilder;
 	private DelauneyTriangulation triangulation;
 
+	private GameObject mainCamera;
 	private GameObject cityComponents;
 	private GameObject wallGroups;
 	private GameObject roofs;
@@ -87,7 +88,7 @@ public class ObjectBuilder {
 					buildingNodeGo.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
 					buildingNodeGo.transform.position = new Vector3((float)n.Longitude, 0, (float)n.Latitude);
 					buildingNodeGo.name = "" + n.Id;
-					buildingNodeGo.tag = NodesTags.BUILDING_NODE;
+					buildingNodeGo.tag = NodeTags.BUILDING_NODE;
 					buildingNodeGo.transform.parent = buildingNodes.transform;
 				}
 			}
@@ -100,7 +101,7 @@ public class ObjectBuilder {
 					highwayNodeGo.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
 					highwayNodeGo.transform.position = new Vector3 ((float)n.Longitude, 0, (float)n.Latitude);
 					highwayNodeGo.name = "" + n.Id;
-					highwayNodeGo.tag = NodesTags.HIGHWAY_NODE;
+					highwayNodeGo.tag = NodeTags.HIGHWAY_NODE;
 					highwayNodeGo.transform.parent = highwayNodes.transform;
 				}
 			}
@@ -140,11 +141,14 @@ public class ObjectBuilder {
 
 					// on positionne le mur
 					GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
-					wall.tag = NodesTags.WALL;
+					wall.tag = NodeTags.WALL;
 					etages = ngp.NbFloor;
+
 					wall.transform.localScale = new Vector3((float) length + 0.015f, floorHeight * etages, thickness);
 					wall.transform.position = new Vector3((float) x, (floorHeight / 2F) * (float) etages, (float) y);
+
 					wall.AddComponent<GetInfos>();
+					wall.AddComponent<BuildingEditor>();
 
 					wall.transform.parent = wallGroup.transform;
 
@@ -281,14 +285,14 @@ public class ObjectBuilder {
 				// Creation du tronc d'arbre (cylindre)
 				GameObject trunk = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 				trunk.name = "Trunk";
-				trunk.tag = NodesTags.TREE;
+				trunk.tag = NodeTags.TREE;
 				trunk.transform.position = new Vector3 ((float)x, height / 2f, (float)z);
 				trunk.transform.localScale = new Vector3 (height / 6f, height / 2f, height / 6f);
 
 				// Creation du feuillage (sphere)
 				GameObject foliage = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 				foliage.name = "Foliage";
-				foliage.tag = NodesTags.TREE;
+				foliage.tag = NodeTags.TREE;
 				foliage.transform.position = new Vector3 ((float)x, height, (float)z);
 				foliage.transform.localScale = new Vector3 (diameter, diameter, diameter);
 
@@ -347,20 +351,21 @@ public class ObjectBuilder {
 	public void BuildMainCameraBG() {
 		double CamLat, CamLon;
 
+		mainCamera = new GameObject ();
+
 		// On centre la camera 
 		CamLat = (minlat * 1000d + maxlat * 1000d) / 2;
 		CamLon = (minlon * 1000d + maxlon * 1000d) / 2;
-		GameObject mainCam = new GameObject ();
 
-		mainCam.AddComponent <Camera> ();
-		Light mainLight = mainCam.AddComponent<Light> ();
+		mainCamera.AddComponent <Camera> ();
+		Light mainLight = mainCamera.AddComponent<Light> ();
 		mainLight.range = 30;
 		mainLight.intensity = 0.5f;
-		mainCam.AddComponent <CameraController> ();
+		mainCamera.AddComponent <CameraController> ();
 	}
 
 	// construction du background
-	public void BuildBackground() {
+	public void BuildGround() {
 		double angle, lat, lon, width, length;
 		Vector3 node1, node2, diff;
 
@@ -383,6 +388,10 @@ public class ObjectBuilder {
 
 	public ArrayList NodeGroups {
 		get { return nodeGroups; }
+	}
+
+	public GameObject MainCamera {
+		get { return mainCamera; }
 	}
 
 	public GameObject CityComponents {

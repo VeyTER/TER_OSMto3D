@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class NodesTags {
+public class NodeTags {
 	public const string WALL = "Wall";
 	public const string ROOF = "Roof";
 	public const string HIGHWAY = "Highway";

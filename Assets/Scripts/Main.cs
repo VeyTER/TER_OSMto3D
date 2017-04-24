@@ -15,13 +15,16 @@ public class Main : MonoBehaviour {
 	public static GameObject panel = null;
 
 	// création d'une instance de GestFile
-	private FilesManager fileManager = new FilesManager();
+	private FileManager fileManager;
 
 	// création d'une instance de ObjectBuilding
-	ObjectBuilder objectBuilder = ObjectBuilder.GetInstance();
+	private ObjectBuilder objectBuilder;
 
 	// Fonction lancée à l'initialisation de la scene
 	public void Start() {
+		this.objectBuilder = ObjectBuilder.GetInstance();
+		this.fileManager = new FileManager();
+
 		this.SetUpUI ();
 
 		OSMFileName1 = "capitole";
@@ -34,8 +37,6 @@ public class Main : MonoBehaviour {
 //		if (OSMFileName2 != "null") {
 //			gf.readFileOSM (OSMFileName2, 1);
 //		}
-
-		print (OSMFileName1);
 
 		// Test si aucun des nom des fichiers n'est egale a null
 		if (OSMFileName1 != null || OSMFileName2 != null) {
@@ -59,7 +60,6 @@ public class Main : MonoBehaviour {
 			GameObject cityComponents = new GameObject ("Ville");
 			objectBuilder.CityComponents = cityComponents;
 
-
 			// Contruction des noeuds
 			objectBuilder.BuildNodes ();
 
@@ -81,17 +81,14 @@ public class Main : MonoBehaviour {
 			objectBuilder.BuildMainCameraBG ();
 
 			// Mise en place du background
-			objectBuilder.BuildBackground ();
+			objectBuilder.BuildGround ();
 
-			print ("Construction terminée");
 
 			// Mise en place de panneaux d'information
 			// NE FOCTIONNE PAS POUR LE MOMMENT
 			objectBuilder.BuildingNodes.SetActive (false);
 			objectBuilder.HighwayNodes.SetActive (false);
 		}
-
-		Debug.Log (" ");
 
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find ("Panneau");

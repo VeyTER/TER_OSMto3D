@@ -15,8 +15,6 @@ public class Triangle {
 		this.nodeA = noeudA;
 		this.nodeB = noeudB;
 		this.nodeC = noeudC;
-
-		//UnityEngine.Debug.Log("noeud A " + tri.noeudA.longitude + " centre " + tri.centre.longitude);
 	}
 
 	/// <summary>

@@ -4883,7 +4883,7 @@
               <node id="582477682" lat="43.6029772" lon="1.4453218" />
             </building>
             <building>
-              <Info id="45728963" name="unknown" nbFloor="5" type="pitched" angle="15" />
+              <Info id="45728963" name="unknown" nbFloor="3" type="pitched" angle="15" />
               <node id="582477696" lat="43.6026524" lon="1.4455784" />
               <node id="582477713" lat="43.6025472" lon="1.4455799" />
               <node id="582477714" lat="43.6025354" lon="1.4455715" />
@@ -5345,7 +5345,7 @@
               <node id="596203952" lat="43.6029612" lon="1.4426382" />
             </building>
             <building>
-              <Info id="46655115" name="unknown" nbFloor="3" type="pitched" angle="15" />
+              <Info id="46655115" name="unknown" nbFloor="4" type="pitched" angle="15" />
               <node id="596203978" lat="43.6027375" lon="1.442928" />
               <node id="596203979" lat="43.6027136" lon="1.4427765" />
               <node id="596203996" lat="43.6028562" lon="1.4427326" />

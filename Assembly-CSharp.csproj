@@ -47,23 +47,23 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Images.cs" />
+     <Compile Include="Assets\Scripts\BuildingEditor.cs" />
      <Compile Include="Assets\Scripts\BuildingsTools.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\DelauneyTriangulation.cs" />
-     <Compile Include="Assets\Scripts\FilesManager.cs" />
+     <Compile Include="Assets\Scripts\FileManager.cs" />
      <Compile Include="Assets\Scripts\GetInfos.cs" />
      <Compile Include="Assets\Scripts\GroundBuilder.cs" />
      <Compile Include="Assets\Scripts\HighwayBuilder.cs" />
      <Compile Include="Assets\Scripts\Main.cs" />
      <Compile Include="Assets\Scripts\Node.cs" />
      <Compile Include="Assets\Scripts\NodeGroup.cs" />
-     <Compile Include="Assets\Scripts\NodesTags.cs" />
+     <Compile Include="Assets\Scripts\NodeTags.cs" />
      <Compile Include="Assets\Scripts\ObjectBuilder.cs" />
      <Compile Include="Assets\Scripts\PointEditor.cs" />
      <Compile Include="Assets\Scripts\RoadBuilder.cs" />
      <Compile Include="Assets\Scripts\RoofBuilder.cs" />
      <Compile Include="Assets\Scripts\Triangle.cs" />
-     <Compile Include="Assets\Scripts\TriangulationDelauney.cs" />
      <Compile Include="Assets\Scripts\UIManager.cs" />
      <None Include="Assets\Shaders\Standard.shader" />
  <Reference Include="UnityEngine.UI">

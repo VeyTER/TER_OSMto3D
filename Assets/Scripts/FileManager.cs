@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-public class FilesManager {
+public class FileManager {
 	private ObjectBuilder objectBuilder;
 
 	// compteurs de nodes et groupes de nodes (batiments puis routes) respectivement
@@ -24,13 +24,13 @@ public class FilesManager {
 	//creation d'une instance de ModificationPoint
 	private PointEditor pointEditor;
 
-	public FilesManager() {
+	public FileManager() {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 		this.pointEditor = new PointEditor();
 	}
 
 	//Constructeur 
-	public FilesManager(string path) {
+	public FileManager(string path) {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
 		this.path = path;
@@ -501,8 +501,6 @@ public class FilesManager {
 		}
 
 		mapSettingsFile.Close();
-
-		Debug.Log(objectBuilder.NodeGroups.Count);
 	}
 
 	/// <summary>
@@ -932,7 +930,5 @@ public class FilesManager {
 				objectBuilder.NodeGroups.Add(current);
 			}
 		}
-
-		Debug.Log(objectBuilder.NodeGroups.Count);
 	}
 }

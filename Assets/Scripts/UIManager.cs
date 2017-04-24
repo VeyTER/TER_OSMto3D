@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour {
 	private bool highwayNodesActive;
 	private bool buildingNodesActive;
 
+	private BuildingEditor buildingEditor;
+
 	public UIManager() {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
@@ -27,6 +29,8 @@ public class UIManager : MonoBehaviour {
 //		this.busLanesActive = true;
 		this.highwayNodesActive = false;
 		this.buildingNodesActive = false;
+
+		this.buildingEditor = null;
 	}
 
 	public void ToggleWallsVisibility() {
@@ -80,6 +84,12 @@ public class UIManager : MonoBehaviour {
 	public void SetPanelInnactive() {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 
+		BuildingEditor[] childrenBuildingEditor = buildingsTools.SelectedBuilding.GetComponentsInChildren<BuildingEditor> ();
+		foreach(BuildingEditor buildingEditor in childrenBuildingEditor) {
+			if (buildingEditor.InUse ())
+				buildingEditor.StartCoroutine ("MoveToInitSituation");
+		}
+
 		buildingsTools.DiscolorAll ();
 		buildingsTools.SelectedBuilding = null;
 
@@ -89,5 +99,10 @@ public class UIManager : MonoBehaviour {
 	public void IncrementBuildingHeight() {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 		buildingsTools.IncrementSelectedBuildingHeight ();
+	}
+
+	public BuildingEditor BuildingEditor {
+		get { return buildingEditor; }
+		set { buildingEditor = value; }
 	}
 }

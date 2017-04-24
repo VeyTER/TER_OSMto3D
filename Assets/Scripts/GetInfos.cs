@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class GetInfos : MonoBehaviour {
 	public void OnMouseDown() {
-		if (tag.Equals (NodesTags.WALL)) {
+		if (tag.Equals (NodeTags.WALL)) {
 
 			// Récupération du bâtiment correspondant au mur sélectionné
 			BuildingsTools buildingsTools = BuildingsTools.GetInstance ();

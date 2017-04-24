@@ -52,7 +52,7 @@ public class BuildingsTools {
 		string resumeFilePath = Application.dataPath + @"/MapsResumed/mapResumed.osm";
 		XmlDocument mapResumeDocument = new XmlDocument(); 
 
-		XmlAttribute floorAttribute = this.BuildingAttribute (ref mapResumeDocument, resumeFilePath, building, "nbFloor");
+		XmlAttribute floorAttribute = this.BuildingAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");
 		if (floorAttribute != null)
 			return int.Parse(floorAttribute.Value);
 		else
@@ -67,7 +67,6 @@ public class BuildingsTools {
 		int nbFloors = GetBuildingHeight(selectedBuilding);
 		this.ChangeBuildingHeight (SelectedBuilding, nbFloors + 1);
 	}
-
 	public void ChangeSelectedBuildingHeight(int nbFloors) {
 		this.ChangeBuildingHeight (selectedBuilding, nbFloors);
 	}
@@ -76,7 +75,7 @@ public class BuildingsTools {
 		string resumeFilePath = Application.dataPath + @"/MapsResumed/mapResumed.osm";
 		XmlDocument mapResumeDocument = new XmlDocument(); 
 		
-		XmlAttribute floorAttribute = this.BuildingAttribute (ref mapResumeDocument, resumeFilePath, building, "nbFloor");
+		XmlAttribute floorAttribute = this.BuildingAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");
 		if (floorAttribute != null)
 			floorAttribute.Value = Math.Max(nbFloors, 1) + "";
 
@@ -86,10 +85,11 @@ public class BuildingsTools {
 		objectBuilder.EditUniqueBuilding (building, nbFloors);
 	}
 
-	public XmlAttribute BuildingAttribute(ref XmlDocument xmlDocument, string filePath, GameObject building, string attributeKey) {
+	public XmlAttribute BuildingAttribute(XmlDocument xmlDocument, string filePath, GameObject building, string attributeKey) {
 		string buildingIdentifier = building.name;
 
-		XmlNode buildingInfoNode = null;
+		XmlNode res = null;
+
 		if (File.Exists (filePath)) {
 			xmlDocument.Load (filePath); 
 			XmlNodeList infosList = xmlDocument.GetElementsByTagName ("Info");
@@ -100,31 +100,32 @@ public class BuildingsTools {
 				if (nameAttribute != null) {
 					string nodeGroupName = nameAttribute.InnerText;
 					if (nodeGroupId.Equals (buildingIdentifier) || nodeGroupName.Equals (buildingIdentifier)) {
-						buildingInfoNode = infosNode;
+						res = infosNode;
 						break;
 					}
 				}
 			}
 		}
 
-		return buildingInfoNode.Attributes ["nbFloor"];
+		return res.Attributes ["nbFloor"];
 	}
 
 	public NodeGroup WallToBuildingNodeGroup(GameObject wallGo) {
 		string identifier = wallGo.name.Substring (0, wallGo.name.LastIndexOf ("_"));
-		NodeGroup buildingNgp = null;
+
+		NodeGroup res = null;
 
 		double numIdentifier;
 		bool parsingSuccess = double.TryParse (identifier, out numIdentifier);
 
 		foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
 			if ((!parsingSuccess && ngp.Name.Equals(identifier)) || (parsingSuccess && ngp.Id == numIdentifier)) {
-				buildingNgp = ngp;
+				res = ngp;
 				break;
 			}
 		}
 
-		return buildingNgp;
+		return res;
 	}
 
 	public GameObject NodeGroupToGameObject(NodeGroup buildingNgp) {
@@ -158,6 +159,28 @@ public class BuildingsTools {
 		}
 
 		return res;
+	}
+
+	public Vector3 BuildingCenter(GameObject building) {
+		Vector3 positionsSum = new Vector3 (0, 0, 0);
+
+		foreach (Transform wallTransform in building.transform)
+			positionsSum += wallTransform.position;
+		
+		return positionsSum / (building.transform.childCount * 1F);
+	}
+
+	public double BuildingRadius(GameObject building) {
+		Vector3 buildingCenter = this.BuildingCenter (building);
+
+		double maxDistance = 0;
+		foreach (Transform wallTransform in building.transform) {
+			double currentDistance = Vector3.Distance (buildingCenter, wallTransform.position);
+			if (currentDistance > maxDistance)
+				maxDistance = currentDistance;
+		}
+
+		return maxDistance;
 	}
 
 	public GameObject SelectedBuilding {

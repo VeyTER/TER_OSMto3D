@@ -35,7 +35,6 @@ public class DelauneyTriangulation {
 			// On parcour la liste des triangles
 			foreach(Triangle t1 in triangles) {
 				// Si le triangle ne respecte pas les conditions on l'ajout à la liste des triangles à supprimer de la liste des triangles
-				//UnityEngine.Debug.Log("is " + this.isWithin(t1, n));
 				if (this.IsWithin(t1, n)) {
 					trianglesSuppr.Add(t1);
 				}
