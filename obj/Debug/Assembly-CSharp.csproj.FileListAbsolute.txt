@@ -1,0 +1,50 @@
+C:\Users\Théo\Documents\upssitech\TER\source\code\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\Assembly-CSharp.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\Assembly-CSharp.pdb
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEditor.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.Networking.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.UI.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\Mono.Cecil.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\Unity.SerializationLogic.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\Unity.DataContract.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\ICSharpCode.NRefactory.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\Unity.UNetWeaver.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\Unity.CecilTools.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\Mono.Cecil.Pdb.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\Mono.Cecil.Mdb.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.xml
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEditor.xml
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.UI.xml
+C:\Users\Théo\Documents\upssitech\TER\source\code\Temp\bin\Debug\UnityEngine.Networking.xml
+C:\Users\Théo\Documents\upssitech\TER\source\code\obj\Debug\Assembly-CSharp.dll
+C:\Users\Théo\Documents\upssitech\TER\source\code\obj\Debug\Assembly-CSharp.pdb
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Assembly-CSharp.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Assembly-CSharp.pdb
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEditor.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Analytics.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.HoloLens.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Networking.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.PlaymodeTestsRunner.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.UI.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.VR.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Mono.Cecil.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Unity.SerializationLogic.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Unity.DataContract.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\ICSharpCode.NRefactory.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Unity.UNetWeaver.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Unity.CecilTools.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Mono.Cecil.Pdb.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Mono.Cecil.Mdb.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEditor.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.UI.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Networking.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.PlaymodeTestsRunner.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Analytics.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.HoloLens.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.VR.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.pdb
