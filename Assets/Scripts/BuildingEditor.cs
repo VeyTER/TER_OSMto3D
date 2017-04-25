@@ -1,8 +1,10 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class BuildingEditor : MonoBehaviour {
+public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 	private enum EditionStates { NONE_SELECTION, MOVING_TO_BUILDING, READY_TO_EDIT, RENAMING, TRANSLATING, TURNING, VERTICAL_SCALING, MOVING_TO_INITIAL_SITUATION }
 	private enum SelectionRanges { WALL, BUILDING }
 
@@ -15,6 +17,10 @@ public class BuildingEditor : MonoBehaviour {
 	private Vector3 cameraInitPosition;
 	private Quaternion cameraInitRotation;
 
+	public void OnPointerUp(PointerEventData eventData) {
+		print ("ok");
+	}
+
 	public void Start() {
 		this.editionState = EditionStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.WALL;
@@ -23,15 +29,52 @@ public class BuildingEditor : MonoBehaviour {
 		this.buildingsTools = BuildingsTools.GetInstance ();
 	}
 
-	public void OnMouseDown() {
-		if (editionState == EditionStates.NONE_SELECTION) {
-			GameObject mainCamera = objectBuilder.MainCamera;
+	public void OnMouseUp() {
+		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
 
-			UIManager UIManager = FindObjectOfType<UIManager> ();
-			UIManager.BuildingEditor = this;
+			// Récupération du bâtiment correspondant au mur sélectionné
+			BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
+			NodeGroup buildingNgp = buildingsTools.WallToBuildingNodeGroup (this.gameObject);
 
-			this.StartCoroutine ("MoveToBuilding");
+			string identifier = name.Substring (0, name.LastIndexOf ("_"));
+
+			// Si le bâtiment n'a pas de nom défini, ajouter un prefixe dans son affichage
+			double parsedValue = 0;
+			if (double.TryParse (identifier, out parsedValue))
+				identifier = "Bâtiment n°" + identifier;
+
+			if (buildingNgp != null) {
+				// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
+				Main.panel.SetActive (true);
+				Text buildingNameLabel = GameObject.Find ("Nom batiment").GetComponent<Text> ();
+				buildingNameLabel.text = identifier;
+
+				this.ChangeBuildingsColor ();
+				buildingsTools.SelectedBuilding = transform.parent.gameObject;
+			}
+
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			if (editionState == EditionStates.NONE_SELECTION/* && EventSystem.current.IsPointerOverGameObject()*/) {
+				GameObject mainCamera = objectBuilder.MainCamera;
+
+				UIManager UIManager = FindObjectOfType<UIManager> ();
+				UIManager.BuildingEditor = this;
+
+				this.StartCoroutine ("MoveToBuilding");
+			}
 		}
+	}
+
+	/// <summary>
+	/// Change la couleur du bâtiment pointé.
+	/// </summary>
+	private void ChangeBuildingsColor () {
+		GameObject buildingGo = transform.parent.gameObject;
+
+		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
+		buildingsTools.DiscolorAll ();
+		buildingsTools.ColorAsSelected (buildingGo);
 	}
 
 	public IEnumerator MoveToBuilding() {

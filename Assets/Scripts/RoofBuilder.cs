@@ -13,7 +13,7 @@ public class RoofBuilder {
 		GameObject roof = new GameObject("Roof", typeof(MeshFilter), typeof(MeshRenderer));
 
 		//Ajout du tag pour l'affichage avec le boutton associé dans Unity
-		roof.tag = NodeTags.ROOF;
+		roof.tag = NodeTags.ROOF_TAG;
 
 		//Position du GO
 		roof.transform.position = new Vector3(x, (etage * sizefloor), z);

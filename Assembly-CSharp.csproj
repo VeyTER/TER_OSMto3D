@@ -46,7 +46,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Images.cs" />
      <Compile Include="Assets\Scripts\BuildingEditor.cs" />
      <Compile Include="Assets\Scripts\BuildingsTools.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
@@ -65,6 +64,7 @@
      <Compile Include="Assets\Scripts\RoofBuilder.cs" />
      <Compile Include="Assets\Scripts\Triangle.cs" />
      <Compile Include="Assets\Scripts\UIManager.cs" />
+     <Compile Include="Assets\Scripts\UINames.cs" />
      <None Include="Assets\Shaders\Standard.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

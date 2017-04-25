@@ -2,12 +2,10 @@
 using System.Collections;
 
 public class CameraController : MonoBehaviour {
-	// Use this for initialization
-	void Start () {
-		this.name = "Main camera";
-		this.transform.position = new Vector3 (1441.543F, 1.242F, 43602.94F);
-		this.transform.rotation = Quaternion.Euler(38.485F, 67.24F, 2.307F);
-	}
+//	// Use this for initialization
+//	void Start () {
+//		this.name = "Main camera";
+//	}
 	
 	// Update is called once per frame
 	void Update () {

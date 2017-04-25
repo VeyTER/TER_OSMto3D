@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class UIManager : MonoBehaviour {
+public class UIManager : MonoBehaviour, IPointerUpHandler {
 	private ObjectBuilder objectBuilder;
 
 	private bool wallsActive;
@@ -31,6 +32,57 @@ public class UIManager : MonoBehaviour {
 		this.buildingNodesActive = false;
 
 		this.buildingEditor = null;
+	}
+
+	public void OnPointerUp (PointerEventData eventData) {
+		string sourceElementName = eventData.selectedObject.gameObject.name;
+
+		Debug.Log (sourceElementName);
+
+		switch (sourceElementName) {
+		case UINames.BUILDING_NODES_BUTTON:
+			this.ToggleBuildingNodesVisibility ();
+			break;
+		case UINames.HIGHWAY_NODES_BUTTON:
+			this.ToggleHighwayNodesVisibility ();
+			break;
+		case UINames.WALLS_BUTTON:
+			this.ToggleWallsVisibility ();
+			break;
+		case UINames.ROOFS_BUTTON:
+			this.ToggleRoofsVisibility ();
+			break;
+		case UINames.HIGHWAYS_BUTTON:
+			this.ToggleHighwaysVisibility ();
+			break;
+		case UINames.FOOTWAYS_BUTTON:
+			this.ToggleFootwaysVisibility ();
+			break;
+		case UINames.CYCLEWAYS_BUTTON:
+			this.ToggleCyclewaysVisibility ();
+			break;
+		case UINames.TREES_BUTTON:
+			this.ToggleTreesVisibility ();
+			break;
+		case UINames.TEST_BUTTON:
+			this.IncrementBuildingHeight ();
+			break;
+		case UINames.INFOS_PANEL_CLOSE_BUTTON:
+			this.SetPanelInnactive ();
+			break;
+		}
+	}
+
+	public void ToggleBuildingNodesVisibility() {
+		GameObject buildingNodes = objectBuilder.BuildingNodes;
+		buildingNodesActive = !buildingNodesActive;
+		buildingNodes.SetActive (buildingNodesActive);
+	}
+
+	public void ToggleHighwayNodesVisibility() {
+		GameObject highwayNodes = objectBuilder.HighwayNodes;
+		highwayNodesActive = !highwayNodesActive;
+		highwayNodes.SetActive (highwayNodesActive);
 	}
 
 	public void ToggleWallsVisibility() {
@@ -69,36 +121,24 @@ public class UIManager : MonoBehaviour {
 		trees.SetActive (treesActive);
 	}
 
-	public void ToggleBuildingNodesVisibility() {
-		GameObject buildingNodes = objectBuilder.BuildingNodes;
-		buildingNodesActive = !buildingNodesActive;
-		buildingNodes.SetActive (buildingNodesActive);
-	}
-
-	public void ToggleHighwayNodesVisibility() {
-		GameObject highwayNodes = objectBuilder.HighwayNodes;
-		highwayNodesActive = !highwayNodesActive;
-		highwayNodes.SetActive (highwayNodesActive);
+	public void IncrementBuildingHeight() {
+		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
+		buildingsTools.IncrementSelectedBuildingHeight ();
 	}
 
 	public void SetPanelInnactive() {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-
+		
 		BuildingEditor[] childrenBuildingEditor = buildingsTools.SelectedBuilding.GetComponentsInChildren<BuildingEditor> ();
-		foreach(BuildingEditor buildingEditor in childrenBuildingEditor) {
+		foreach (BuildingEditor buildingEditor in childrenBuildingEditor) {
 			if (buildingEditor.InUse ())
 				buildingEditor.StartCoroutine ("MoveToInitSituation");
 		}
-
+		
 		buildingsTools.DiscolorAll ();
 		buildingsTools.SelectedBuilding = null;
-
+		
 		Main.panel.SetActive (false);
-	}
-
-	public void IncrementBuildingHeight() {
-		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-		buildingsTools.IncrementSelectedBuildingHeight ();
 	}
 
 	public BuildingEditor BuildingEditor {

@@ -8,7 +8,7 @@ public class RoadBuilder {
 	public GameObject BuildClassicHighway(float x, float z, float length, float width, float angle) {
 		GameObject road = new GameObject ("Highway", typeof(MeshFilter), typeof(MeshRenderer));
 
-		road.tag = NodeTags.HIGHWAY;
+		road.tag = NodeTags.HIGHWAY_TAG;
 		road.transform.position = new Vector3 (x, 0.002f, z);
 		road.transform.rotation = Quaternion.Euler (0, angle, 0);
 
@@ -56,7 +56,7 @@ public class RoadBuilder {
 
 		width = width / 2f;
 
-		road.tag = NodeTags.CYCLEWAY;
+		road.tag = NodeTags.CYCLEWAY_TAG;
 		road.transform.position = new Vector3 (x, 0, z);
 		road.transform.rotation = Quaternion.Euler (0, angle, 0);
 		Mesh mesh = new Mesh ();
@@ -81,7 +81,7 @@ public class RoadBuilder {
 
 		width = width /1.5f;
 
-		road.tag = NodeTags.FOOTWAY;
+		road.tag = NodeTags.FOOTWAY_TAG;
 		road.transform.position = new Vector3 (x, 0, z);
 		road.transform.rotation = Quaternion.Euler (0, angle, 0);
 		Mesh mesh = new Mesh ();

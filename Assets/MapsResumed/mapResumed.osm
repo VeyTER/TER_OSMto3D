@@ -3429,7 +3429,7 @@
               <node id="65161480" lat="43.6034802" lon="1.4457148" />
             </highway>
             <building>
-              <Info id="10157283" name="Capitole - Mairie de Toulouse" nbFloor="3" type="pitched" angle="15" />
+              <Info id="10157283" name="Capitole - Mairie de Toulouse" nbFloor="9" type="pitched" angle="15" />
               <node id="83815655" lat="43.6049183" lon="1.4438403" />
               <node id="426597782" lat="43.6048943" lon="1.4438239" />
               <node id="426597780" lat="43.60479" lon="1.4438309" />
@@ -5345,7 +5345,7 @@
               <node id="596203952" lat="43.6029612" lon="1.4426382" />
             </building>
             <building>
-              <Info id="46655115" name="unknown" nbFloor="4" type="pitched" angle="15" />
+              <Info id="46655115" name="unknown" nbFloor="3" type="pitched" angle="15" />
               <node id="596203978" lat="43.6027375" lon="1.442928" />
               <node id="596203979" lat="43.6027136" lon="1.4427765" />
               <node id="596203996" lat="43.6028562" lon="1.4427326" />
