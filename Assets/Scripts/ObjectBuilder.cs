@@ -353,16 +353,16 @@ public class ObjectBuilder {
 	public void BuildMainCameraBG() {
 		double CamLat, CamLon;
 
-		GameObject mainCamera = Camera.main.gameObject;
+		GameObject mainCameraGo = Camera.main.gameObject;
 
 		// On centre la camera 
 		CamLat = (minlat * 1000d + maxlat * 1000d) / 2;
 		CamLon = (minlon * 1000d + maxlon * 1000d) / 2;
 
-		Light mainLight = mainCamera.AddComponent<Light> ();
+		Light mainLight = mainCameraGo.AddComponent<Light> ();
 		mainLight.range = 30;
 		mainLight.intensity = 0.5f;
-		mainCamera.AddComponent <CameraController> ();
+		mainCameraGo.AddComponent <CameraController> ();
 	}
 
 	// construction du background

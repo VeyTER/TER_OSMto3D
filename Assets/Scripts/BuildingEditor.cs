@@ -55,7 +55,7 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 			}
 
 			if (editionState == EditionStates.NONE_SELECTION/* && EventSystem.current.IsPointerOverGameObject()*/) {
-				GameObject mainCamera = Camera.main.gameObject;
+				GameObject mainCameraGo = Camera.main.gameObject;
 				UIManager UIManager = FindObjectOfType<UIManager> ();
 				UIManager.BuildingEditor = this;
 				this.StartCoroutine ("MoveToBuilding");
@@ -75,11 +75,11 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 	}
 
 	public IEnumerator MoveToBuilding() {
-		GameObject mainCamera = Camera.main.gameObject;
+		GameObject mainCameraGo = Camera.main.gameObject;
 		GameObject building = transform.parent.gameObject;
 
-		Vector3 cameraPosition = mainCamera.transform.position;
-		Quaternion cameraRotation = mainCamera.transform.rotation;
+		Vector3 cameraPosition = mainCameraGo.transform.position;
+		Quaternion cameraRotation = mainCameraGo.transform.rotation;
 
 		cameraInitPosition = new Vector3 (cameraPosition.x, cameraPosition.y, cameraPosition.z);
 		cameraInitRotation = new Quaternion (cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
@@ -91,6 +91,14 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 		float buildingHeight = building.transform.localScale.y;
 		double buildingRadius = buildingsTools.BuildingRadius (building);
 		float cameraHeight = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
+
+//		GameObject buildingTranslationHandle = GameObject.CreatePrimitive (PrimitiveType.Plane);
+
+//		GameObject buildingTranslationHandle = GameObject.CreatePrimitive (PrimitiveType.Cube);
+//		buildingTranslationHandle.transform.parent = mainCameraGo.transform;
+//		buildingTranslationHandle.transform.localPosition = new Vector3 (0, 0, 1F);
+//		buildingTranslationHandle.transform.localScale = new Vector3 (0.1F, 0.1F, 0.1F);
+//		buildingTranslationHandle.transform.localRotation = Quaternion.Euler (0, 0, 0);
 
 //		GameObject cercle = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 //		cercle.transform.position = new Vector3(buildingsTools.BuildingCenter (building).x, -0.4F, buildingsTools.BuildingCenter (building).z);
@@ -104,14 +112,14 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 			Vector3 cameraCurrentPosition = Vector3.Lerp (cameraInitPosition, new Vector3(targetPosition.x, cameraHeight, targetPosition.z), cursor);
 			Quaternion cameraCurrentRotation = Quaternion.Lerp (cameraInitRotation, targetRotation, cursor);
 
-			mainCamera.transform.position = cameraCurrentPosition;
-			mainCamera.transform.rotation = cameraCurrentRotation;
+			mainCameraGo.transform.position = cameraCurrentPosition;
+			mainCameraGo.transform.rotation = cameraCurrentRotation;
 
 			yield return new WaitForSeconds (0.01F);
 		}
 
-		mainCamera.transform.position = new Vector3(targetPosition.x, cameraHeight, targetPosition.z);
-		mainCamera.transform.rotation = targetRotation;
+		mainCameraGo.transform.position = new Vector3(targetPosition.x, cameraHeight, targetPosition.z);
+		mainCameraGo.transform.rotation = targetRotation;
 
 		this.GetPreviousInitSituation ();
 
@@ -131,11 +139,11 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 	}
 
 	public IEnumerator MoveToInitSituation() {
-		GameObject mainCamera = Camera.main.gameObject;
+		GameObject mainCameraGo = Camera.main.gameObject;
 		GameObject building = transform.parent.gameObject;
 
-		Vector3 buildingPosition = mainCamera.transform.position;
-		Quaternion buildingRotation = mainCamera.transform.rotation;
+		Vector3 buildingPosition = mainCameraGo.transform.position;
+		Quaternion buildingRotation = mainCameraGo.transform.rotation;
 
 		Vector3 targetPosition = cameraInitPosition;
 		Quaternion targetRotation = cameraInitRotation;
@@ -148,14 +156,14 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 			Vector3 cameraCurrentPosition = Vector3.Lerp (buildingPosition, targetPosition, cursor);
 			Quaternion cameraCurrentRotation = Quaternion.Lerp (buildingRotation, targetRotation, cursor);
 
-			mainCamera.transform.position = cameraCurrentPosition;
-			mainCamera.transform.rotation = cameraCurrentRotation;
+			mainCameraGo.transform.position = cameraCurrentPosition;
+			mainCameraGo.transform.rotation = cameraCurrentRotation;
 
 			yield return new WaitForSeconds (0.01F);
 		}
 
-		mainCamera.transform.position = targetPosition;
-		mainCamera.transform.rotation = targetRotation;
+		mainCameraGo.transform.position = targetPosition;
+		mainCameraGo.transform.rotation = targetRotation;
 
 		editionState = EditionStates.NONE_SELECTION;
 	}

@@ -126,7 +126,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 
 	public void SetPanelInnactive() {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-		
+
 		BuildingEditor[] childrenBuildingEditor = buildingsTools.SelectedBuilding.GetComponentsInChildren<BuildingEditor> ();
 		foreach (BuildingEditor buildingEditor in childrenBuildingEditor) {
 			if (buildingEditor.InUse ())
