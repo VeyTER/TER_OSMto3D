@@ -87,12 +87,21 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 		Vector3 targetPosition = buildingsTools.BuildingCenter (building);
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (90, 90, 0));
 
+		float cameraFOV = Camera.main.fieldOfView;
+		float buildingHeight = building.transform.localScale.y;
+		double buildingRadius = buildingsTools.BuildingRadius (building);
+		float cameraHeight = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
+
+//		GameObject cercle = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
+//		cercle.transform.position = new Vector3(buildingsTools.BuildingCenter (building).x, -0.4F, buildingsTools.BuildingCenter (building).z);
+//		cercle.transform.localScale = new Vector3 ((float) buildingsTools.BuildingRadius(building) * 2, 0.5F, (float) buildingsTools.BuildingRadius(building) * 2);
+
 		editionState = EditionStates.MOVING_TO_BUILDING;
 
 		for (double i = 0; i <= 1; i += 0.1F) {
-			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
+			float cursor = (float) Math.Sin (i * (Math.PI) / 2F);
 
-			Vector3 cameraCurrentPosition = Vector3.Lerp (cameraInitPosition, new Vector3(targetPosition.x, 1.242F, targetPosition.z), cursor);
+			Vector3 cameraCurrentPosition = Vector3.Lerp (cameraInitPosition, new Vector3(targetPosition.x, cameraHeight, targetPosition.z), cursor);
 			Quaternion cameraCurrentRotation = Quaternion.Lerp (cameraInitRotation, targetRotation, cursor);
 
 			mainCamera.transform.position = cameraCurrentPosition;
@@ -101,7 +110,7 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 			yield return new WaitForSeconds (0.01F);
 		}
 
-		mainCamera.transform.position = new Vector3(targetPosition.x, 1.242F, targetPosition.z);
+		mainCamera.transform.position = new Vector3(targetPosition.x, cameraHeight, targetPosition.z);
 		mainCamera.transform.rotation = targetRotation;
 
 		this.GetPreviousInitSituation ();
