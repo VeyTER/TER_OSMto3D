@@ -38,19 +38,6 @@ public class Main : MonoBehaviour {
 //			gf.readFileOSM (OSMFileName2, 1);
 //		}
 
-
-
-
-
-//		GlobalController gc = new 
-
-
-
-
-
-
-
-
 		// Test si aucun des nom des fichiers n'est egale a null
 		if (OSMFileName1 != null || OSMFileName2 != null) {
 			// Generation du SettingsFiles

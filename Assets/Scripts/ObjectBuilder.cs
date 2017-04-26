@@ -17,8 +17,6 @@ public class ObjectBuilder {
 	private GroundBuilder groundBuilder;
 	private DelauneyTriangulation triangulation;
 
-	private GameObject mainCamera;
-
 	private GameObject cityComponents;
 	private GameObject wallGroups;
 	private GameObject roofs;
@@ -149,15 +147,10 @@ public class ObjectBuilder {
 					wall.transform.localScale = new Vector3((float) length + 0.015f, floorHeight * etages, thickness);
 					wall.transform.position = new Vector3((float) x, (floorHeight / 2F) * (float) etages, (float) y);
 
-//					wall.AddComponent<GetInfos>();
-					wall.AddComponent<BuildingEditor>();
-
-
-
 					BoxCollider wallBoxColliser = wall.GetComponent<BoxCollider> ();
 					wallBoxColliser.isTrigger = true;
 
-
+					wall.AddComponent<BuildingEditor>();
 
 					wall.transform.parent = wallGroup.transform;
 
@@ -360,7 +353,7 @@ public class ObjectBuilder {
 	public void BuildMainCameraBG() {
 		double CamLat, CamLon;
 
-		mainCamera = GameObject.Find ("Camera");
+		GameObject mainCamera = Camera.main.gameObject;
 
 		// On centre la camera 
 		CamLat = (minlat * 1000d + maxlat * 1000d) / 2;
@@ -396,10 +389,6 @@ public class ObjectBuilder {
 
 	public ArrayList NodeGroups {
 		get { return nodeGroups; }
-	}
-
-	public GameObject MainCamera {
-		get { return mainCamera; }
 	}
 
 	public GameObject CityComponents {

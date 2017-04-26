@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 	private enum EditionStates { NONE_SELECTION, MOVING_TO_BUILDING, READY_TO_EDIT, RENAMING, TRANSLATING, TURNING, VERTICAL_SCALING, MOVING_TO_INITIAL_SITUATION }
@@ -17,16 +18,16 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 	private Vector3 cameraInitPosition;
 	private Quaternion cameraInitRotation;
 
-	public void OnPointerUp(PointerEventData eventData) {
-		print ("ok");
-	}
-
 	public void Start() {
 		this.editionState = EditionStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.WALL;
 
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 		this.buildingsTools = BuildingsTools.GetInstance ();
+	}
+
+	public void OnPointerUp(PointerEventData eventData) {
+		Debug.Log("Dans OnPointerUp de BuildingEditor");
 	}
 
 	public void OnMouseUp() {
@@ -53,14 +54,10 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 				buildingsTools.SelectedBuilding = transform.parent.gameObject;
 			}
 
-			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 			if (editionState == EditionStates.NONE_SELECTION/* && EventSystem.current.IsPointerOverGameObject()*/) {
-				GameObject mainCamera = objectBuilder.MainCamera;
-
+				GameObject mainCamera = Camera.main.gameObject;
 				UIManager UIManager = FindObjectOfType<UIManager> ();
 				UIManager.BuildingEditor = this;
-
 				this.StartCoroutine ("MoveToBuilding");
 			}
 		}
@@ -78,7 +75,7 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 	}
 
 	public IEnumerator MoveToBuilding() {
-		GameObject mainCamera = objectBuilder.MainCamera;
+		GameObject mainCamera = Camera.main.gameObject;
 		GameObject building = transform.parent.gameObject;
 
 		Vector3 cameraPosition = mainCamera.transform.position;
@@ -104,11 +101,28 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 			yield return new WaitForSeconds (0.01F);
 		}
 
+		mainCamera.transform.position = new Vector3(targetPosition.x, 1.242F, targetPosition.z);
+		mainCamera.transform.rotation = targetRotation;
+
+		this.GetPreviousInitSituation ();
+
 		editionState = EditionStates.READY_TO_EDIT;
 	}
 
+	private void GetPreviousInitSituation() {
+		GameObject wallGroups = objectBuilder.WallGroups;
+		BuildingEditor[] buildingEditors = wallGroups.GetComponentsInChildren<BuildingEditor> ();
+		foreach (BuildingEditor buildingEditor in buildingEditors) {
+			if (buildingEditor.InUse ()) {
+				cameraInitPosition = buildingEditor.CameraInitPosition;
+				cameraInitRotation = buildingEditor.CameraInitRotation;
+				buildingEditor.setInactive ();
+			}
+		}
+	}
+
 	public IEnumerator MoveToInitSituation() {
-		GameObject mainCamera = objectBuilder.MainCamera;
+		GameObject mainCamera = Camera.main.gameObject;
 		GameObject building = transform.parent.gameObject;
 
 		Vector3 buildingPosition = mainCamera.transform.position;
@@ -131,10 +145,27 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 			yield return new WaitForSeconds (0.01F);
 		}
 
+		mainCamera.transform.position = targetPosition;
+		mainCamera.transform.rotation = targetRotation;
+
 		editionState = EditionStates.NONE_SELECTION;
 	}
 
 	public bool InUse() {
 		return editionState != EditionStates.NONE_SELECTION;
+	}
+
+	public void setInactive() {
+		editionState = EditionStates.NONE_SELECTION;
+	}
+
+	public Vector3 CameraInitPosition {
+		get { return cameraInitPosition; }
+		set { cameraInitPosition = value; }
+	}
+
+	public Quaternion CameraInitRotation {
+		get { return cameraInitRotation; }
+		set { cameraInitRotation = value; }
 	}
 }

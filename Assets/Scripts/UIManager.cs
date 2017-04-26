@@ -37,8 +37,6 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 	public void OnPointerUp (PointerEventData eventData) {
 		string sourceElementName = eventData.selectedObject.gameObject.name;
 
-		Debug.Log (sourceElementName);
-
 		switch (sourceElementName) {
 		case UINames.BUILDING_NODES_BUTTON:
 			this.ToggleBuildingNodesVisibility ();

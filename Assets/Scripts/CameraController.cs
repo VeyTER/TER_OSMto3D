@@ -2,14 +2,10 @@
 using System.Collections;
 
 public class CameraController : MonoBehaviour {
-//	// Use this for initialization
-//	void Start () {
-//		this.name = "Main camera";
-//	}
-	
 	// Update is called once per frame
 	void Update () {
 		Vector3 localPosition = this.transform.localPosition;
+		Quaternion localRotation = this.transform.localRotation;
 
 		if (Input.GetKey (KeyCode.LeftControl)) {
 			if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
