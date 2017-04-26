@@ -34,8 +34,8 @@ public class BuildingsTools {
 	}
 
 	public void ColorAsSelected(GameObject building) {
-		Material wallMaterial = Resources.Load ("Materials/mur") as Material;
-		Material selectedElementMaterial = Resources.Load ("Materials/element_selectionne") as Material;
+		Material wallMaterial = Resources.Load ("Materials/Wall") as Material;
+		Material selectedElementMaterial = Resources.Load ("Materials/SelectedElement") as Material;
 
 		foreach (Transform wallGo in building.transform) {
 			Renderer meshRenderer = wallGo.GetComponent<Renderer> ();
@@ -49,7 +49,7 @@ public class BuildingsTools {
 	}
 
 	public int GetBuildingHeight(GameObject building) {
-		string resumeFilePath = Application.dataPath + @"/MapsResumed/mapResumed.osm";
+		string resumeFilePath = Application.dataPath + @"/Maps Resumed/map_resumed.osm";
 		XmlDocument mapResumeDocument = new XmlDocument(); 
 
 		XmlAttribute floorAttribute = this.BuildingAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");
@@ -72,7 +72,7 @@ public class BuildingsTools {
 	}
 
 	public void ChangeBuildingHeight(GameObject building, int nbFloors) {
-		string resumeFilePath = Application.dataPath + @"/MapsResumed/mapResumed.osm";
+		string resumeFilePath = Application.dataPath + @"/Maps Resumed/map_resumed.osm";
 		XmlDocument mapResumeDocument = new XmlDocument(); 
 		
 		XmlAttribute floorAttribute = this.BuildingAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");

@@ -212,7 +212,7 @@ public class FileManager {
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier resume a lire </param>
 	public void createSettingsFile() {
-		string pathString = path + "MapsSettings/mapSettings.osm";
+		string pathString = path + "Maps Settings/map_settings.osm";
 
 		pointEditor.EditPoint (objectBuilder.NodeGroups);
 
@@ -306,7 +306,7 @@ public class FileManager {
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier setting a lire </param>
 	public void readSettingsFile() {
-		string pathString = path + "MapsSettings/mapSettings.osm";
+		string pathString = path + "Maps Settings/map_settings.osm";
 		string line;
 
 		string country = "";
@@ -524,7 +524,7 @@ public class FileManager {
 				districts.Add(ngp.District);
 		}
 
-		string pathString = path + "MapsResumed/mapResumed.osm";
+		string pathString = path + "Maps Resumed/mapResumed.osm";
 		string buildingName;
 		string highwayName;
 		string typeRoof;
@@ -704,7 +704,7 @@ public class FileManager {
 		string strDis="district";
 
 		// Read the file and display it line by line.
-		StreamReader file = new StreamReader(path + "MapsResumed/mapResumed.osm");
+		StreamReader file = new StreamReader(path + "Maps Resumed/map_resumed.osm");
 		while ((line = file.ReadLine()) != null) {
 			
 			// Recuperation de limites de la carte

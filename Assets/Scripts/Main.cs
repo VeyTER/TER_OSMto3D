@@ -102,8 +102,8 @@ public class Main : MonoBehaviour {
 	// / </summary>
 	public void SetUpUI() {
 		GameObject uiManager = (GameObject) GameObject.Instantiate (Resources.Load("Game Objects/UIManagerScript"));
-		GameObject canvas = (GameObject) GameObject.Instantiate (Resources.Load("Game Objects/myCanvas"));
-		GameObject eventSystem = (GameObject) GameObject.Instantiate (Resources.Load("Game Objects/myEventSystem"));
+		GameObject canvas = (GameObject) GameObject.Instantiate (Resources.Load("Game Objects/MainCanvas"));
+		GameObject eventSystem = (GameObject) GameObject.Instantiate (Resources.Load("Game Objects/EventSystem"));
 	}
 
 	// / <summary>
