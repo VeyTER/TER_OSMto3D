@@ -524,7 +524,7 @@ public class FileManager {
 				districts.Add(ngp.District);
 		}
 
-		string pathString = path + "Maps Resumed/mapResumed.osm";
+		string pathString = path + "Maps Resumed/map_resumed.osm";
 		string buildingName;
 		string highwayName;
 		string typeRoof;

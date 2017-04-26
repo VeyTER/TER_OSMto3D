@@ -54,7 +54,7 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 				buildingsTools.SelectedBuilding = transform.parent.gameObject;
 			}
 
-			if (editionState == EditionStates.NONE_SELECTION/* && EventSystem.current.IsPointerOverGameObject()*/) {
+			if (editionState == EditionStates.NONE_SELECTION) {
 				GameObject mainCameraGo = Camera.main.gameObject;
 				UIManager UIManager = FindObjectOfType<UIManager> ();
 				UIManager.BuildingEditor = this;
