@@ -40,6 +40,8 @@ public class Main : MonoBehaviour {
 
 		// Test si aucun des nom des fichiers n'est egale a null
 		if (OSMFileName1 != null || OSMFileName2 != null) {
+			QualitySettings.antiAliasing = 8;
+
 			// Generation du SettingsFiles
 			fileManager.createSettingsFile ();
 
