@@ -46,18 +46,19 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 
 			if (buildingNgp != null) {
 				// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
-				Main.panel.SetActive (true);
+
+				if (Main.panel.activeInHierarchy == false)
+					this.StartCoroutine ("SlidePanelLeft");
+				//				93.7
+
 
 				InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
 
 				int i = 0;
 				for (; i < textInputs.Length && textInputs[i].name.Equals (UINames.BUILDING_NAME_TEXT_INPUT); i++);
 
-				if (i < textInputs.Length) {
-					InputField buildingNameTextInput = textInputs[i];
-					buildingNameTextInput.text = identifier;
-				}
-					
+				if (i < textInputs.Length)
+					textInputs[i].text = identifier;
 
 				this.ChangeBuildingsColor ();
 				buildingsTools.SelectedBuilding = transform.parent.gameObject;
@@ -101,21 +102,9 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 		double buildingRadius = buildingsTools.BuildingRadius (building);
 		float cameraHeight = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
 
-//		GameObject buildingTranslationHandle = GameObject.CreatePrimitive (PrimitiveType.Plane);
-
-//		GameObject buildingTranslationHandle = GameObject.CreatePrimitive (PrimitiveType.Cube);
-//		buildingTranslationHandle.transform.parent = mainCameraGo.transform;
-//		buildingTranslationHandle.transform.localPosition = new Vector3 (0, 0, 1F);
-//		buildingTranslationHandle.transform.localScale = new Vector3 (0.1F, 0.1F, 0.1F);
-//		buildingTranslationHandle.transform.localRotation = Quaternion.Euler (0, 0, 0);
-
-//		GameObject cercle = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
-//		cercle.transform.position = new Vector3(buildingsTools.BuildingCenter (building).x, -0.4F, buildingsTools.BuildingCenter (building).z);
-//		cercle.transform.localScale = new Vector3 ((float) buildingsTools.BuildingRadius(building) * 2, 0.5F, (float) buildingsTools.BuildingRadius(building) * 2);
-
 		editionState = EditionStates.MOVING_TO_BUILDING;
 
-		for (double i = 0; i <= 1; i += 0.1F) {
+		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float) Math.Sin (i * (Math.PI) / 2F);
 
 			Vector3 cameraCurrentPosition = Vector3.Lerp (cameraInitPosition, new Vector3(targetPosition.x, cameraHeight, targetPosition.z), cursor);
@@ -159,7 +148,7 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 
 		editionState = EditionStates.MOVING_TO_INITIAL_SITUATION;
 
-		for (double i = 0; i <= 1; i += 0.1F) {
+		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
 
 			Vector3 cameraCurrentPosition = Vector3.Lerp (buildingPosition, targetPosition, cursor);
@@ -175,6 +164,39 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 		mainCameraGo.transform.rotation = targetRotation;
 
 		editionState = EditionStates.NONE_SELECTION;
+	}
+
+	public IEnumerator SlidePanelLeft() {
+		Vector3 panelPosition = Main.panel.transform.localPosition;
+		Main.panel.transform.localPosition = new Vector3 (-93.7F, panelPosition.y, panelPosition.z);
+
+		Main.panel.SetActive (true);
+
+		for (double i = 0; i <= 1; i += 0.1) {
+			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
+
+			float currentPosX = (93.7F * 2) * cursor - 93.7F;
+			Main.panel.transform.localPosition = new Vector3 (currentPosX, panelPosition.y, panelPosition.z);
+
+			yield return new WaitForSeconds (0.01F);
+		}
+	}
+
+	// ATTENTION : BUG SI ON RE-OUVRE ALORS QU4IL SE FERME !!!
+	public IEnumerator SlidePanelRight() {
+		Vector3 panelPosition = Main.panel.transform.localPosition;
+		Main.panel.transform.position = new Vector3 (-93.7F, panelPosition.y, panelPosition.z);
+
+		for (double i = 0; i <= 1; i += 0.1) {
+			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
+
+			float currentPosX = 93.7F - (93.7F * 2) * cursor;
+			Main.panel.transform.localPosition = new Vector3 (currentPosX, panelPosition.y, panelPosition.z);
+
+			yield return new WaitForSeconds (0.01F);
+		}
+
+		Main.panel.SetActive (false);
 	}
 
 	public bool InUse() {

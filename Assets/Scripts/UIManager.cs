@@ -129,14 +129,14 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 
 		BuildingEditor[] childrenBuildingEditor = buildingsTools.SelectedBuilding.GetComponentsInChildren<BuildingEditor> ();
 		foreach (BuildingEditor buildingEditor in childrenBuildingEditor) {
-			if (buildingEditor.InUse ())
+			if (buildingEditor.InUse ()) {
 				buildingEditor.StartCoroutine ("MoveToInitSituation");
+				buildingEditor.StartCoroutine ("SlidePanelRight");
+			}
 		}
 		
 		buildingsTools.DiscolorAll ();
 		buildingsTools.SelectedBuilding = null;
-		
-		Main.panel.SetActive (false);
 	}
 
 	public BuildingEditor BuildingEditor {
