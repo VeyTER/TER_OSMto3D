@@ -62,10 +62,10 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 		case UINames.TREES_BUTTON:
 			this.ToggleTreesVisibility ();
 			break;
-		case UINames.TEST_BUTTON:
-			this.IncrementBuildingHeight ();
-			break;
-		case UINames.INFOS_PANEL_CLOSE_BUTTON:
+//		case UINames.TEST_BUTTON:
+//			this.IncrementBuildingHeight ();
+//			break;
+		case UINames.CANCEL_BUTTON:
 			this.SetPanelInnactive ();
 			break;
 		}

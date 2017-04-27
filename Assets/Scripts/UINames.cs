@@ -10,8 +10,10 @@ public class UINames {
 	public const string CYCLEWAYS_BUTTON = "CyclewaysButton";
 	public const string TREES_BUTTON = "TreesButton";
 
-	public const string INFOS_PANEL_CLOSE_BUTTON = "InfoPanelCloseButton";
-	public const string TEST_BUTTON = "TestButton";
+	public const string BUILDING_NAME_TEXT_INPUT = "BuildingNameText";
+
+	public const string VALIDATE_BUTTON = "ValidateButton";
+	public const string CANCEL_BUTTON = "CancelButton";
 
 	public const string INFO_PANEL = "InfoPanel";
 }

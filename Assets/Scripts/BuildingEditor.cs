@@ -47,8 +47,17 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 			if (buildingNgp != null) {
 				// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
 				Main.panel.SetActive (true);
-				Text buildingNameLabel = GameObject.Find ("Nom batiment").GetComponent<Text> ();
-				buildingNameLabel.text = identifier;
+
+				InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
+
+				int i = 0;
+				for (; i < textInputs.Length && textInputs[i].name.Equals (UINames.BUILDING_NAME_TEXT_INPUT); i++);
+
+				if (i < textInputs.Length) {
+					InputField buildingNameTextInput = textInputs[i];
+					buildingNameTextInput.text = identifier;
+				}
+					
 
 				this.ChangeBuildingsColor ();
 				buildingsTools.SelectedBuilding = transform.parent.gameObject;
