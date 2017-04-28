@@ -111,6 +111,7 @@ public class ObjectBuilder {
 	public void BuildWalls() {
 		wallGroups = new GameObject("Walls groups (buildings)");
 		wallGroups.transform.parent = cityComponents.transform;
+		wallGroups.AddComponent<BuildingEditor> ();
 
 		float thickness = 0.01f;
 
@@ -150,7 +151,8 @@ public class ObjectBuilder {
 					BoxCollider wallBoxColliser = wall.GetComponent<BoxCollider> ();
 					wallBoxColliser.isTrigger = true;
 
-					wall.AddComponent<BuildingEditor>();
+//					wall.AddComponent<BuildingEditor>();
+					wall.AddComponent<UIManager>();
 
 					wall.transform.parent = wallGroup.transform;
 

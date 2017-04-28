@@ -30,8 +30,17 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 //		this.busLanesActive = true;
 		this.highwayNodesActive = false;
 		this.buildingNodesActive = false;
+	}
 
-		this.buildingEditor = null;
+	public void OnMouseUp () {
+		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
+			objectBuilder = ObjectBuilder.GetInstance ();
+
+			GameObject wallGroups = objectBuilder.WallGroups;
+			BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
+
+			buildingEditor.ChangeBuilding (gameObject);
+		}
 	}
 
 	public void OnPointerUp (PointerEventData eventData) {
@@ -127,14 +136,14 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 	public void SetPanelInnactive() {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 
-		BuildingEditor[] childrenBuildingEditor = buildingsTools.SelectedBuilding.GetComponentsInChildren<BuildingEditor> ();
-		foreach (BuildingEditor buildingEditor in childrenBuildingEditor) {
-			if (buildingEditor.InUse ()) {
-				buildingEditor.StartCoroutine ("MoveToInitSituation");
-				buildingEditor.StartCoroutine ("ClosePanel");
-			}
+		GameObject wallGroups = objectBuilder.WallGroups;
+		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
+
+		if (buildingEditor.isUsed ()) {
+			buildingEditor.StartCoroutine ("MoveToInitSituation");
+			buildingEditor.StartCoroutine ("ClosePanel");
 		}
-		
+
 		buildingsTools.DiscolorAll ();
 		buildingsTools.SelectedBuilding = null;
 	}

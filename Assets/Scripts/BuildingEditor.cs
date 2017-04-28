@@ -5,9 +5,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
+public class BuildingEditor : MonoBehaviour {
 	private enum EditionStates { NONE_SELECTION, MOVING_TO_BUILDING, READY_TO_EDIT, RENAMING, TRANSLATING, TURNING, VERTICAL_SCALING, MOVING_TO_INITIAL_SITUATION }
 	private enum SelectionRanges { WALL, BUILDING }
+
+	private GameObject selectedWall;
 
 	private EditionStates editionState;
 	private SelectionRanges selectionRange;
@@ -18,7 +20,7 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 	private Vector3 cameraInitPosition;
 	private Quaternion cameraInitRotation;
 
-	public void Start() {
+	public BuildingEditor() {
 		this.editionState = EditionStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.WALL;
 
@@ -26,56 +28,48 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 		this.buildingsTools = BuildingsTools.GetInstance ();
 	}
 
-	public void OnPointerUp(PointerEventData eventData) {
-		Debug.Log("Dans OnPointerUp de BuildingEditor");
-	}
+	public void ChangeBuilding(GameObject selectedWall) {
+		this.selectedWall = selectedWall;
 
-	public void OnMouseUp() {
-		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
+		// Récupération du bâtiment correspondant au mur sélectionné
+		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
+		NodeGroup buildingNgp = buildingsTools.WallToBuildingNodeGroup (selectedWall);
 
-			// Récupération du bâtiment correspondant au mur sélectionné
-			BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-			NodeGroup buildingNgp = buildingsTools.WallToBuildingNodeGroup (this.gameObject);
+		string identifier = selectedWall.name.Substring (0, selectedWall.name.LastIndexOf ("_"));
 
-			string identifier = name.Substring (0, name.LastIndexOf ("_"));
+		// Si le bâtiment n'a pas de nom défini, ajouter un prefixe dans son affichage
+		double parsedValue = 0;
+		if (double.TryParse (identifier, out parsedValue))
+			identifier = "Bâtiment n°" + identifier;
 
-			// Si le bâtiment n'a pas de nom défini, ajouter un prefixe dans son affichage
-			double parsedValue = 0;
-			if (double.TryParse (identifier, out parsedValue))
-				identifier = "Bâtiment n°" + identifier;
+		if (buildingNgp != null) {
+			// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
 
-			if (buildingNgp != null) {
-				// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
+			if (Main.panel.activeInHierarchy == false)
+				this.StartCoroutine ("OpenPanel");
 
-				if (Main.panel.activeInHierarchy == false)
-					this.StartCoroutine ("OpenPanel");
+			InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
 
-				InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
+			int i = 0;
+			for (; i < textInputs.Length && textInputs[i].name.Equals (UINames.BUILDING_NAME_TEXT_INPUT); i++);
 
-				int i = 0;
-				for (; i < textInputs.Length && textInputs[i].name.Equals (UINames.BUILDING_NAME_TEXT_INPUT); i++);
+			if (i < textInputs.Length)
+				textInputs[i].text = identifier;
 
-				if (i < textInputs.Length)
-					textInputs[i].text = identifier;
-
-				this.ChangeBuildingsColor ();
-				buildingsTools.SelectedBuilding = transform.parent.gameObject;
-			}
-
-			if (editionState == EditionStates.NONE_SELECTION) {
-				GameObject mainCameraGo = Camera.main.gameObject;
-				UIManager UIManager = FindObjectOfType<UIManager> ();
-				UIManager.BuildingEditor = this;
-				this.StartCoroutine ("MoveToBuilding");
-			}
+			this.ChangeBuildingsColor ();
+			buildingsTools.SelectedBuilding = selectedWall.transform.parent.gameObject;
 		}
+
+		GameObject mainCameraGo = Camera.main.gameObject;
+		UIManager UIManager = FindObjectOfType<UIManager> ();
+		this.StartCoroutine ("MoveToBuilding");
 	}
 
 	/// <summary>
 	/// Change la couleur du bâtiment pointé.
 	/// </summary>
-	private void ChangeBuildingsColor () {
-		GameObject buildingGo = transform.parent.gameObject;
+	public void ChangeBuildingsColor () {
+		GameObject buildingGo = selectedWall.transform.parent.gameObject;
 
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 		buildingsTools.DiscolorAll ();
@@ -84,13 +78,17 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 
 	public IEnumerator MoveToBuilding() {
 		GameObject mainCameraGo = Camera.main.gameObject;
-		GameObject building = transform.parent.gameObject;
+		GameObject building = selectedWall.transform.parent.gameObject;
 
 		Vector3 cameraPosition = mainCameraGo.transform.position;
 		Quaternion cameraRotation = mainCameraGo.transform.rotation;
 
-		cameraInitPosition = new Vector3 (cameraPosition.x, cameraPosition.y, cameraPosition.z);
-		cameraInitRotation = new Quaternion (cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
+		if (editionState == EditionStates.NONE_SELECTION) {
+			cameraInitPosition = new Vector3 (cameraPosition.x, cameraPosition.y, cameraPosition.z);
+			cameraInitRotation = new Quaternion (cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
+		}
+
+
 
 		Vector3 targetPosition = buildingsTools.BuildingCenter (building);
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (90, 90, 0));
@@ -105,8 +103,8 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float) Math.Sin (i * (Math.PI) / 2F);
 
-			Vector3 cameraCurrentPosition = Vector3.Lerp (cameraInitPosition, new Vector3(targetPosition.x, cameraHeight, targetPosition.z), cursor);
-			Quaternion cameraCurrentRotation = Quaternion.Lerp (cameraInitRotation, targetRotation, cursor);
+			Vector3 cameraCurrentPosition = Vector3.Lerp (cameraPosition, new Vector3(targetPosition.x, cameraHeight, targetPosition.z), cursor);
+			Quaternion cameraCurrentRotation = Quaternion.Lerp (cameraRotation, targetRotation, cursor);
 
 			mainCameraGo.transform.position = cameraCurrentPosition;
 			mainCameraGo.transform.rotation = cameraCurrentRotation;
@@ -117,26 +115,12 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 		mainCameraGo.transform.position = new Vector3(targetPosition.x, cameraHeight, targetPosition.z);
 		mainCameraGo.transform.rotation = targetRotation;
 
-		this.GetPreviousInitSituation ();
-
 		editionState = EditionStates.READY_TO_EDIT;
-	}
-
-	private void GetPreviousInitSituation() {
-		GameObject wallGroups = objectBuilder.WallGroups;
-		BuildingEditor[] buildingEditors = wallGroups.GetComponentsInChildren<BuildingEditor> ();
-		foreach (BuildingEditor buildingEditor in buildingEditors) {
-			if (buildingEditor.InUse ()) {
-				cameraInitPosition = buildingEditor.CameraInitPosition;
-				cameraInitRotation = buildingEditor.CameraInitRotation;
-				buildingEditor.setInactive ();
-			}
-		}
 	}
 
 	public IEnumerator MoveToInitSituation() {
 		GameObject mainCameraGo = Camera.main.gameObject;
-		GameObject building = transform.parent.gameObject;
+		GameObject buildingGo = selectedWall.transform.parent.gameObject;
 
 		Vector3 buildingPosition = mainCameraGo.transform.position;
 		Quaternion buildingRotation = mainCameraGo.transform.rotation;
@@ -203,12 +187,13 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 		Main.panel.SetActive (false);
 	}
 
-	public bool InUse() {
+	public bool isUsed() {
 		return editionState != EditionStates.NONE_SELECTION;
 	}
 
-	public void setInactive() {
-		editionState = EditionStates.NONE_SELECTION;
+	public GameObject SelectedWall {
+		get { return selectedWall; }
+		set { selectedWall = value; }
 	}
 
 	public Vector3 CameraInitPosition {

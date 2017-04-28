@@ -6,12 +6,10 @@ using System.IO;
 
 public class BuildingsTools {
 	private GameObject selectedBuilding;
-
 	private ObjectBuilder objectBuilder;
 
 	private BuildingsTools () {
 		this.selectedBuilding = null;
-
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 	}
 
