@@ -7,42 +7,42 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	private ObjectBuilder objectBuilder;
 	private BuildingEditor buildingEditor;
 
-	private bool wallsActive;
-	private bool roofsActive;
-	private bool highwaysActive;
-	private bool treesActive;
-	private bool cyclewaysActive;
-	private bool footwaysActive;
-//	private bool busLanesActive = true;
-	private bool highwayNodesActive;
-	private bool buildingNodesActive;
+//	private bool wallsActive;
+//	private bool roofsActive;
+//	private bool highwaysActive;
+//	private bool treesActive;
+//	private bool cyclewaysActive;
+//	private bool footwaysActive;
+////	private bool busLanesActive = true;
+//	private bool highwayNodesActive;
+//	private bool buildingNodesActive;
 
 	public UIManager() {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
-		this.wallsActive = true;
-		this.roofsActive = false;
-		this.highwaysActive = true;
-		this.treesActive = true;
-		this.cyclewaysActive = true;
-		this.footwaysActive = true;
-//		this.busLanesActive = true;
-		this.highwayNodesActive = false;
-		this.buildingNodesActive = false;
+//		this.wallsActive = true;
+//		this.roofsActive = false;
+//		this.highwaysActive = true;
+//		this.treesActive = true;
+//		this.cyclewaysActive = true;
+//		this.footwaysActive = true;
+////		this.busLanesActive = true;
+//		this.highwayNodesActive = false;
+//		this.buildingNodesActive = false;
 	}
 
 	public void OnBeginDrag (PointerEventData eventData) {
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		buildingEditor.StartMoving ();
+		buildingEditor.StartMovingBuilding ();
 	}
 
 	public void OnDrag (PointerEventData eventData) {
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		buildingEditor.UpdateMoving ();
+		buildingEditor.UpdateMovingBuilding ();
 	}
 
 	public void OnMouseUp () {
@@ -111,6 +111,9 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UINames.CHANGE_COLOR_BUTTON:
 			this.SetPanelInactive ();
 			break;
+		case UINames.SLIDE_PANEL_BUTTON:
+			buildingEditor.TogglePanel (null);
+			break;
 		case UINames.VALIDATE_BUTTON:
 			this.SetPanelInactive ();
 			break;
@@ -122,50 +125,42 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void ToggleBuildingNodesVisibility() {
 		GameObject buildingNodes = objectBuilder.BuildingNodes;
-		buildingNodesActive = !buildingNodesActive;
-		buildingNodes.SetActive (buildingNodesActive);
+		buildingNodes.SetActive (!buildingNodes.activeInHierarchy);
 	}
 
 	public void ToggleHighwayNodesVisibility() {
 		GameObject highwayNodes = objectBuilder.HighwayNodes;
-		highwayNodesActive = !highwayNodesActive;
-		highwayNodes.SetActive (highwayNodesActive);
+		highwayNodes.SetActive (!highwayNodes.activeInHierarchy);
 	}
 
 	public void ToggleWallsVisibility() {
 		GameObject walls = objectBuilder.WallGroups;
-		wallsActive = !wallsActive;
-		walls.SetActive (wallsActive);
+		walls.SetActive (!walls.activeInHierarchy);
 	}
 
 	public void ToggleRoofsVisibility() {
 		GameObject roofs = objectBuilder.Roofs;
-		roofsActive = !roofsActive;
-		roofs.SetActive (roofsActive);
+		roofs.SetActive (!roofs.activeInHierarchy);
 	}
 
 	public void ToggleHighwaysVisibility() {
 		GameObject highways = objectBuilder.Highways;
-		highwaysActive = !highwaysActive;
-		highways.SetActive (highwaysActive);
+		highways.SetActive (!highways.activeInHierarchy);
 	}
 
 	public void ToggleFootwaysVisibility() {
 		GameObject footways = objectBuilder.Footways;
-		footwaysActive = !footwaysActive;
-		footways.SetActive (footwaysActive);
+		footways.SetActive (!footways.activeInHierarchy);
 	}
 
 	public void ToggleCyclewaysVisibility() {
 		GameObject cycleways = objectBuilder.Cycleways;
-		cyclewaysActive = !cyclewaysActive;
-		cycleways.SetActive (cyclewaysActive);
+		cycleways.SetActive (!cycleways.activeInHierarchy);
 	}
 
 	public void ToggleTreesVisibility() {
 		GameObject trees = objectBuilder.Trees;
-		treesActive = !treesActive;
-		trees.SetActive (treesActive);
+		trees.SetActive (!trees.activeInHierarchy);
 	}
 
 	public void IncrementBuildingHeight(GameObject selectedBuilding) {
@@ -186,11 +181,9 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 					buildingEditor.EditionState = BuildingEditor.EditionStates.NONE_SELECTION;
 				})
 			);
-			buildingEditor.StartCoroutine (
-				buildingEditor.ClosePanel(() => {
-					Main.panel.SetActive (false);
-				})
-			);
+			buildingEditor.ClosePanel (() => {
+				Main.panel.SetActive (false);
+			});
 			buildingEditor.SelectedBuilding = null;
 		}
 

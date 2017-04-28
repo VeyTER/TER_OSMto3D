@@ -148,7 +148,6 @@ public class ObjectBuilder {
 					BoxCollider wallBoxColliser = wall.GetComponent<BoxCollider> ();
 					wallBoxColliser.isTrigger = true;
 
-//					wall.AddComponent<BuildingEditor>();
 					wall.AddComponent<UIManager>();
 
 					wall.transform.parent = wallGroup.transform;

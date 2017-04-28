@@ -20,6 +20,7 @@ public class UINames {
 
 	public const string MOVE_HANDLER = "MoveHandler";
 
+	public const string SLIDE_PANEL_BUTTON = "SlidePanelButton";
 	public const string VALDIATE_EDITION_BUTTON = "ValidateEditionButton";
 	public const string CANCEL_EDITION_BUTTON = "CancelEditionButton";
 

@@ -91,11 +91,11 @@ public class Main : MonoBehaviour {
 			// NE FOCTIONNE PAS POUR LE MOMMENT
 			objectBuilder.BuildingNodes.SetActive (false);
 			objectBuilder.HighwayNodes.SetActive (false);
+			objectBuilder.Roofs.SetActive (false);
 		}
 
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find (UINames.INFO_PANEL);
-		panel.SetActive(false);
 
 		Vector3 panelPosition = panel.transform.localPosition;
 		RectTransform panelRectTransform = (RectTransform)panel.transform;
