@@ -63,9 +63,6 @@ public class BuildingsTools {
 		int nbFloors = GetBuildingHeight(buildingGo);
 		this.ChangeBuildingHeight (buildingGo, nbFloors + 1);
 	}
-	public void ChangeBuildingHeight(GameObject buildingGo, int nbFloors) {
-		this.ChangeBuildingHeight (buildingGo, nbFloors);
-	}
 
 	public void ChangeBuildingHeight(GameObject building, int nbFloors) {
 		string resumeFilePath = Application.dataPath + @"/Maps Resumed/map_resumed.osm";

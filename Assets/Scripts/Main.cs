@@ -59,7 +59,7 @@ public class Main : MonoBehaviour {
 			objectBuilder.ScaleNodes (1000D);
 			objectBuilder.SetLatLon (minlat, maxlat, minlon, maxlon);
 
-			GameObject cityComponents = new GameObject ("Ville");
+			GameObject cityComponents = new GameObject (CityNames.CITY);
 			objectBuilder.CityComponents = cityComponents;
 
 			// Contruction des noeuds

@@ -66,17 +66,13 @@ public class ObjectBuilder {
 		this.maxlon = maxlo;
 	}
 
-	public void InitializeCityGameObject() {
-		cityComponents = new GameObject ("City");
-	}
-
 	// place les nodes dans la scène
 	public void BuildNodes() {
-		highwayNodes = new GameObject("Highway nodes");
-		highwayNodes.transform.parent = cityComponents.transform;
-
-		buildingNodes = new GameObject("buildings nodes");
+		buildingNodes = new GameObject(CityNames.BUILDING_NODES);
 		buildingNodes.transform.parent = cityComponents.transform;
+
+		highwayNodes = new GameObject(CityNames.HIGHWAY_NODES);
+		highwayNodes.transform.parent = cityComponents.transform;
 
 		int i;
 		foreach (NodeGroup ngp in nodeGroups) {
@@ -110,7 +106,7 @@ public class ObjectBuilder {
 
 	// place les murs dans la scène
 	public void BuildWalls() {
-		wallGroups = new GameObject("Walls groups (buildings)");
+		wallGroups = new GameObject(CityNames.WALLS);
 		wallGroups.transform.parent = cityComponents.transform;
 		wallGroups.AddComponent<BuildingEditor> ();
 
@@ -194,7 +190,7 @@ public class ObjectBuilder {
 
 	// construction des toits
 	public void BuildRoofs() {
-		roofs = new GameObject("Roofs");
+		roofs = new GameObject(CityNames.ROOFS);
 		roofs.transform.parent = cityComponents.transform;
 
 		foreach(NodeGroup ngp in nodeGroups) {
@@ -212,13 +208,13 @@ public class ObjectBuilder {
 
 	// construction des routes
 	public void BuildRoads() {
-		highways = new GameObject("Highways");
+		highways = new GameObject(CityNames.HIGHWAYS);
 		highways.transform.parent = cityComponents.transform;
 
-		cycleways = new GameObject("Cycleways");
+		cycleways = new GameObject(CityNames.CYCLEWAYS);
 		cycleways.transform.parent = cityComponents.transform;
 
-		footways = new GameObject("Footways");
+		footways = new GameObject(CityNames.FOOTWAYS);
 		footways.transform.parent = cityComponents.transform;
 
 		double x, y;
@@ -276,7 +272,7 @@ public class ObjectBuilder {
 
 	// construction des arbres
 	public void BuildTrees() {
-		trees = new GameObject("Trees");
+		trees = new GameObject(CityNames.TREES);
 		trees.transform.parent = cityComponents.transform;
 
 		double x, z;

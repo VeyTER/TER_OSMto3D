@@ -49,10 +49,10 @@
      <Compile Include="Assets\Scripts\BuildingEditor.cs" />
      <Compile Include="Assets\Scripts\BuildingsTools.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
+     <Compile Include="Assets\Scripts\CityNames.cs" />
      <Compile Include="Assets\Scripts\DelauneyTriangulation.cs" />
      <Compile Include="Assets\Scripts\FileManager.cs" />
      <Compile Include="Assets\Scripts\GroundBuilder.cs" />
-     <Compile Include="Assets\Scripts\HandlerControler.cs" />
      <Compile Include="Assets\Scripts\HighwayBuilder.cs" />
      <Compile Include="Assets\Scripts\Main.cs" />
      <Compile Include="Assets\Scripts\Node.cs" />

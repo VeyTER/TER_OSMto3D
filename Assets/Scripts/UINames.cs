@@ -18,6 +18,11 @@ public class UINames {
 	public const string CHANGE_HEIGHT_BUTTON = "ChangeHeightButton";
 	public const string CHANGE_COLOR_BUTTON = "ChangeColorButton";
 
+	public const string MOVE_HANDLER = "MoveHandler";
+
+	public const string VALDIATE_EDITION_BUTTON = "ValidateEditionButton";
+	public const string CANCEL_EDITION_BUTTON = "CancelEditionButton";
+
 	public const string VALIDATE_BUTTON = "ValidateButton";
 	public const string CANCEL_BUTTON = "CancelButton";
 

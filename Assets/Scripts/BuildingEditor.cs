@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 
 public class BuildingEditor : MonoBehaviour {
-	private enum EditionStates {
+	public enum EditionStates {
 		NONE_SELECTION,
 		MOVING_TO_BUILDING,
 		READY_TO_EDIT,
@@ -17,26 +17,33 @@ public class BuildingEditor : MonoBehaviour {
 		CHANGING_COLOR_MDOE,
 		MOVING_TO_INITIAL_SITUATION
 	}
-	private enum SelectionRanges { WALL, BUILDING }
-
-	private GameObject selectedWall;
-	private GameObject selectedBuilding;
+	public enum SelectionRanges { WALL, BUILDING }
 
 	private EditionStates editionState;
 	private SelectionRanges selectionRange;
 
+	private GameObject selectedWall;
+	private GameObject selectedBuilding;
+	
 	private ObjectBuilder objectBuilder;
 	private BuildingsTools buildingsTools;
 
 	private Vector3 cameraInitPosition;
 	private Quaternion cameraInitRotation;
 
-	public BuildingEditor() {
-		this.editionState = EditionStates.NONE_SELECTION;
-		this.selectionRange = SelectionRanges.WALL;
+	private GameObject moveHandler;
+	private Vector2 moveHandlerInitPosition;
+	private Vector2 moveHandlerInitOffset;
 
-		this.objectBuilder = ObjectBuilder.GetInstance ();
-		this.buildingsTools = BuildingsTools.GetInstance ();
+	public void Start() {
+		editionState = EditionStates.NONE_SELECTION;
+		selectionRange = SelectionRanges.WALL;
+
+		objectBuilder = ObjectBuilder.GetInstance ();
+		buildingsTools = BuildingsTools.GetInstance ();
+
+		moveHandler = GameObject.Find(UINames.MOVE_HANDLER);
+		moveHandler.SetActive (false);
 	}
 
 	public void ChangeBuilding(GameObject selectedWall) {
@@ -56,8 +63,9 @@ public class BuildingEditor : MonoBehaviour {
 		if (buildingNgp != null) {
 			// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
 
-			if (Main.panel.activeInHierarchy == false)
+			if (Main.panel.activeInHierarchy == false) {
 				this.StartCoroutine ("OpenPanel");
+			}
 
 			InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
 
@@ -73,7 +81,21 @@ public class BuildingEditor : MonoBehaviour {
 
 		GameObject mainCameraGo = Camera.main.gameObject;
 		UIManager UIManager = FindObjectOfType<UIManager> ();
-		this.StartCoroutine ("MoveToBuilding");
+
+		if (editionState == EditionStates.NONE_SELECTION) {
+			Vector3 cameraPosition = mainCameraGo.transform.position;
+			Quaternion cameraRotation = mainCameraGo.transform.rotation;
+
+			cameraInitPosition = new Vector3 (cameraPosition.x, cameraPosition.y, cameraPosition.z);
+			cameraInitRotation = new Quaternion (cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
+		}
+
+		editionState = EditionStates.MOVING_TO_BUILDING;
+		this.StartCoroutine (
+			this.MoveToBuilding(() => {
+				editionState = EditionStates.READY_TO_EDIT;
+			})
+		);
 	}
 
 	/// <summary>
@@ -87,17 +109,12 @@ public class BuildingEditor : MonoBehaviour {
 		buildingsTools.ColorAsSelected (buildingGo);
 	}
 
-	public IEnumerator MoveToBuilding() {
+	public IEnumerator MoveToBuilding(Action finalAction) {
 		GameObject mainCameraGo = Camera.main.gameObject;
 		GameObject building = selectedWall.transform.parent.gameObject;
 
 		Vector3 cameraPosition = mainCameraGo.transform.position;
 		Quaternion cameraRotation = mainCameraGo.transform.rotation;
-
-		if (editionState == EditionStates.NONE_SELECTION) {
-			cameraInitPosition = new Vector3 (cameraPosition.x, cameraPosition.y, cameraPosition.z);
-			cameraInitRotation = new Quaternion (cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
-		}
 
 		Vector3 targetPosition = buildingsTools.BuildingCenter (building);
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (90, 90, 0));
@@ -106,8 +123,6 @@ public class BuildingEditor : MonoBehaviour {
 		float buildingHeight = building.transform.localScale.y;
 		double buildingRadius = buildingsTools.BuildingRadius (building);
 		float cameraHeight = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
-
-		editionState = EditionStates.MOVING_TO_BUILDING;
 
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float) Math.Sin (i * (Math.PI) / 2F);
@@ -124,10 +139,11 @@ public class BuildingEditor : MonoBehaviour {
 		mainCameraGo.transform.position = new Vector3(targetPosition.x, cameraHeight, targetPosition.z);
 		mainCameraGo.transform.rotation = targetRotation;
 
-		editionState = EditionStates.READY_TO_EDIT;
+		if(finalAction != null)
+			finalAction ();
 	}
 
-	public IEnumerator MoveToInitSituation() {
+	public IEnumerator MoveToInitSituation(Action finalAction) {
 		GameObject mainCameraGo = Camera.main.gameObject;
 		GameObject buildingGo = selectedWall.transform.parent.gameObject;
 
@@ -136,8 +152,6 @@ public class BuildingEditor : MonoBehaviour {
 
 		Vector3 targetPosition = cameraInitPosition;
 		Quaternion targetRotation = cameraInitRotation;
-
-		editionState = EditionStates.MOVING_TO_INITIAL_SITUATION;
 
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
@@ -154,7 +168,8 @@ public class BuildingEditor : MonoBehaviour {
 		mainCameraGo.transform.position = targetPosition;
 		mainCameraGo.transform.rotation = targetRotation;
 
-		editionState = EditionStates.NONE_SELECTION;
+		if(finalAction != null)
+			finalAction ();
 	}
 
 	public IEnumerator OpenPanel() {
@@ -177,7 +192,7 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	// ATTENTION : BUG SI ON RE-OUVRE ALORS QU'IL SE FERME
-	public IEnumerator ClosePanel() {
+	public IEnumerator ClosePanel(Action finalAction) {
 		Vector3 panelPosition = Main.panel.transform.localPosition;
 		RectTransform panelRectTransform = (RectTransform)Main.panel.transform;
 
@@ -193,21 +208,31 @@ public class BuildingEditor : MonoBehaviour {
 			yield return new WaitForSeconds (0.01F);
 		}
 
-		Main.panel.SetActive (false);
+		if(finalAction != null)
+			finalAction ();
 	}
 
 	public void EnterMovingMode() {
 		editionState = EditionStates.MOVING_MODE;
-
-
+		this.StartCoroutine (
+			this.ClosePanel(null)
+		);
+		moveHandler.SetActive (true);
 	}
 
-	public bool IsUsed() {
-		return editionState != EditionStates.NONE_SELECTION;
+	public void StartMoving() {
+		moveHandlerInitPosition = moveHandler.transform.position;
+		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
+		moveHandlerInitOffset = mousePosition - moveHandlerInitPosition;
+	}
+	public void UpdateMoving() {
+		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
+		moveHandler.transform.position = mousePosition - moveHandlerInitOffset;
 	}
 
-	public bool ReadyToEdit() {
-		return editionState == EditionStates.READY_TO_EDIT;
+	public EditionStates EditionState {
+		get { return editionState; }
+		set { editionState = value; }
 	}
 
 	public GameObject SelectedWall {

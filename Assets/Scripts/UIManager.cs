@@ -3,8 +3,9 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class UIManager : MonoBehaviour, IPointerUpHandler {
+public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, IDragHandler {
 	private ObjectBuilder objectBuilder;
+	private BuildingEditor buildingEditor;
 
 	private bool wallsActive;
 	private bool roofsActive;
@@ -16,13 +17,11 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 	private bool highwayNodesActive;
 	private bool buildingNodesActive;
 
-	private BuildingEditor buildingEditor;
-
 	public UIManager() {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
 		this.wallsActive = true;
-		this.roofsActive = true;
+		this.roofsActive = false;
 		this.highwaysActive = true;
 		this.treesActive = true;
 		this.cyclewaysActive = true;
@@ -32,12 +31,27 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 		this.buildingNodesActive = false;
 	}
 
-	public void OnMouseUp () {
-		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
-			objectBuilder = ObjectBuilder.GetInstance ();
+	public void OnBeginDrag (PointerEventData eventData) {
+		GameObject wallGroups = objectBuilder.WallGroups;
+		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-			GameObject wallGroups = objectBuilder.WallGroups;
-			BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
+		buildingEditor.StartMoving ();
+	}
+
+	public void OnDrag (PointerEventData eventData) {
+		GameObject wallGroups = objectBuilder.WallGroups;
+		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
+
+		buildingEditor.UpdateMoving ();
+	}
+
+	public void OnMouseUp () {
+		GameObject wallGroups = objectBuilder.WallGroups;
+		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
+
+		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()
+			&& (buildingEditor.EditionState == BuildingEditor.EditionStates.NONE_SELECTION || buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT)) {
+			objectBuilder = ObjectBuilder.GetInstance ();
 
 			buildingEditor.ChangeBuilding (gameObject);
 		}
@@ -76,32 +90,32 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 			break;
 
 		case UINames.BUILDING_NAME_TEXT_INPUT:
-			if (buildingEditor.ReadyToEdit ())
-				buildingEditor.EnterMovingMode ();
+			this.SetPanelInactive ();
 			break;
 		case UINames.TEMPERATURE_INDICATOR_TEXT_INPUT:
-			this.SetPanelInnactive ();
+			this.SetPanelInactive ();
 			break;
 		case UINames.HUMIDITY_INDICATOR_TEXT_INPUT:
-			this.SetPanelInnactive ();
+			this.SetPanelInactive ();
 			break;
 		case UINames.MOVE_BUTTON:
-			this.SetPanelInnactive ();
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT)
+				buildingEditor.EnterMovingMode ();
 			break;
 		case UINames.TURN_BUTTON:
-			this.SetPanelInnactive ();
+			this.SetPanelInactive ();
 			break;
 		case UINames.CHANGE_HEIGHT_BUTTON:
-			this.SetPanelInnactive ();
+			this.SetPanelInactive ();
 			break;
 		case UINames.CHANGE_COLOR_BUTTON:
-			this.SetPanelInnactive ();
+			this.SetPanelInactive ();
 			break;
 		case UINames.VALIDATE_BUTTON:
-			this.SetPanelInnactive ();
+			this.SetPanelInactive ();
 			break;
 		case UINames.CANCEL_BUTTON:
-			this.SetPanelInnactive ();
+			this.SetPanelInactive ();
 			break;
 		}
 	}
@@ -159,15 +173,24 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 		buildingsTools.IncrementBuildingHeight (selectedBuilding);
 	}
 
-	public void SetPanelInnactive() {
+	public void SetPanelInactive() {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		if (buildingEditor.IsUsed ()) {
-			buildingEditor.StartCoroutine ("MoveToInitSituation");
-			buildingEditor.StartCoroutine ("ClosePanel");
+		if (buildingEditor.EditionState != BuildingEditor.EditionStates.NONE_SELECTION) {
+			buildingEditor.EditionState = BuildingEditor.EditionStates.MOVING_TO_INITIAL_SITUATION;
+			buildingEditor.StartCoroutine (
+				buildingEditor.MoveToInitSituation(() => {
+					buildingEditor.EditionState = BuildingEditor.EditionStates.NONE_SELECTION;
+				})
+			);
+			buildingEditor.StartCoroutine (
+				buildingEditor.ClosePanel(() => {
+					Main.panel.SetActive (false);
+				})
+			);
 			buildingEditor.SelectedBuilding = null;
 		}
 
