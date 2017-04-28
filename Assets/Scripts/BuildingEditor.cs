@@ -48,9 +48,7 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 				// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
 
 				if (Main.panel.activeInHierarchy == false)
-					this.StartCoroutine ("SlidePanelLeft");
-				//				93.7
-
+					this.StartCoroutine ("OpenPanel");
 
 				InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
 
@@ -166,31 +164,37 @@ public class BuildingEditor : MonoBehaviour, IPointerUpHandler  {
 		editionState = EditionStates.NONE_SELECTION;
 	}
 
-	public IEnumerator SlidePanelLeft() {
+	public IEnumerator OpenPanel() {
 		Vector3 panelPosition = Main.panel.transform.localPosition;
-		Main.panel.transform.localPosition = new Vector3 (-93.7F, panelPosition.y, panelPosition.z);
+		RectTransform panelRectTransform = (RectTransform)Main.panel.transform;
+
+		float initPosition = panelPosition.x;
+		float targetPosX = panelPosition.x - panelRectTransform.rect.width;
 
 		Main.panel.SetActive (true);
 
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
 
-			float currentPosX = (93.7F * 2) * cursor - 93.7F;
+			float currentPosX = initPosition - (initPosition - targetPosX) * cursor;
 			Main.panel.transform.localPosition = new Vector3 (currentPosX, panelPosition.y, panelPosition.z);
 
 			yield return new WaitForSeconds (0.01F);
 		}
 	}
 
-	// ATTENTION : BUG SI ON RE-OUVRE ALORS QU4IL SE FERME !!!
-	public IEnumerator SlidePanelRight() {
+	// ATTENTION : BUG SI ON RE-OUVRE ALORS QU'IL SE FERME
+	public IEnumerator ClosePanel() {
 		Vector3 panelPosition = Main.panel.transform.localPosition;
-		Main.panel.transform.position = new Vector3 (-93.7F, panelPosition.y, panelPosition.z);
+		RectTransform panelRectTransform = (RectTransform)Main.panel.transform;
+
+		float initPosition = panelPosition.x;
+		float targetPosX = panelPosition.x + panelRectTransform.rect.width;
 
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
 
-			float currentPosX = 93.7F - (93.7F * 2) * cursor;
+			float currentPosX = initPosition - (initPosition - targetPosX) * cursor;
 			Main.panel.transform.localPosition = new Vector3 (currentPosX, panelPosition.y, panelPosition.z);
 
 			yield return new WaitForSeconds (0.01F);

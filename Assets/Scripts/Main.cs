@@ -96,6 +96,10 @@ public class Main : MonoBehaviour {
 		// on recupere la reference du panneau et on le desactive
 		panel = GameObject.Find (UINames.INFO_PANEL);
 		panel.SetActive(false);
+
+		Vector3 panelPosition = panel.transform.localPosition;
+		RectTransform panelRectTransform = (RectTransform)panel.transform;
+		panel.transform.localPosition = new Vector3 (panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
 	}
 
 	// / <summary>

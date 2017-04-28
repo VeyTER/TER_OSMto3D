@@ -131,7 +131,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 		foreach (BuildingEditor buildingEditor in childrenBuildingEditor) {
 			if (buildingEditor.InUse ()) {
 				buildingEditor.StartCoroutine ("MoveToInitSituation");
-				buildingEditor.StartCoroutine ("SlidePanelRight");
+				buildingEditor.StartCoroutine ("ClosePanel");
 			}
 		}
 		
