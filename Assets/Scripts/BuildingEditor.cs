@@ -6,10 +6,21 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 
 public class BuildingEditor : MonoBehaviour {
-	private enum EditionStates { NONE_SELECTION, MOVING_TO_BUILDING, READY_TO_EDIT, RENAMING, TRANSLATING, TURNING, VERTICAL_SCALING, MOVING_TO_INITIAL_SITUATION }
+	private enum EditionStates {
+		NONE_SELECTION,
+		MOVING_TO_BUILDING,
+		READY_TO_EDIT,
+		RENAMING_MODE,
+		MOVING_MODE,
+		TURNING_MODE,
+		CHANGING_HEIGHT_MDOE,
+		CHANGING_COLOR_MDOE,
+		MOVING_TO_INITIAL_SITUATION
+	}
 	private enum SelectionRanges { WALL, BUILDING }
 
 	private GameObject selectedWall;
+	private GameObject selectedBuilding;
 
 	private EditionStates editionState;
 	private SelectionRanges selectionRange;
@@ -57,7 +68,7 @@ public class BuildingEditor : MonoBehaviour {
 				textInputs[i].text = identifier;
 
 			this.ChangeBuildingsColor ();
-			buildingsTools.SelectedBuilding = selectedWall.transform.parent.gameObject;
+			selectedBuilding = selectedWall.transform.parent.gameObject;
 		}
 
 		GameObject mainCameraGo = Camera.main.gameObject;
@@ -87,8 +98,6 @@ public class BuildingEditor : MonoBehaviour {
 			cameraInitPosition = new Vector3 (cameraPosition.x, cameraPosition.y, cameraPosition.z);
 			cameraInitRotation = new Quaternion (cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
 		}
-
-
 
 		Vector3 targetPosition = buildingsTools.BuildingCenter (building);
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (90, 90, 0));
@@ -187,13 +196,28 @@ public class BuildingEditor : MonoBehaviour {
 		Main.panel.SetActive (false);
 	}
 
-	public bool isUsed() {
+	public void EnterMovingMode() {
+		editionState = EditionStates.MOVING_MODE;
+
+
+	}
+
+	public bool IsUsed() {
 		return editionState != EditionStates.NONE_SELECTION;
+	}
+
+	public bool ReadyToEdit() {
+		return editionState == EditionStates.READY_TO_EDIT;
 	}
 
 	public GameObject SelectedWall {
 		get { return selectedWall; }
 		set { selectedWall = value; }
+	}
+
+	public GameObject SelectedBuilding {
+		get { return selectedBuilding; }
+		set { selectedBuilding = value; }
 	}
 
 	public Vector3 CameraInitPosition {

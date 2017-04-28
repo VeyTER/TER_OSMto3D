@@ -44,6 +44,9 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 	}
 
 	public void OnPointerUp (PointerEventData eventData) {
+		GameObject wallGroups = objectBuilder.WallGroups;
+		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
+
 		string sourceElementName = eventData.selectedObject.gameObject.name;
 
 		switch (sourceElementName) {
@@ -71,9 +74,32 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 		case UINames.TREES_BUTTON:
 			this.ToggleTreesVisibility ();
 			break;
-//		case UINames.TEST_BUTTON:
-//			this.IncrementBuildingHeight ();
-//			break;
+
+		case UINames.BUILDING_NAME_TEXT_INPUT:
+			if (buildingEditor.ReadyToEdit ())
+				buildingEditor.EnterMovingMode ();
+			break;
+		case UINames.TEMPERATURE_INDICATOR_TEXT_INPUT:
+			this.SetPanelInnactive ();
+			break;
+		case UINames.HUMIDITY_INDICATOR_TEXT_INPUT:
+			this.SetPanelInnactive ();
+			break;
+		case UINames.MOVE_BUTTON:
+			this.SetPanelInnactive ();
+			break;
+		case UINames.TURN_BUTTON:
+			this.SetPanelInnactive ();
+			break;
+		case UINames.CHANGE_HEIGHT_BUTTON:
+			this.SetPanelInnactive ();
+			break;
+		case UINames.CHANGE_COLOR_BUTTON:
+			this.SetPanelInnactive ();
+			break;
+		case UINames.VALIDATE_BUTTON:
+			this.SetPanelInnactive ();
+			break;
 		case UINames.CANCEL_BUTTON:
 			this.SetPanelInnactive ();
 			break;
@@ -128,9 +154,9 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 		trees.SetActive (treesActive);
 	}
 
-	public void IncrementBuildingHeight() {
+	public void IncrementBuildingHeight(GameObject selectedBuilding) {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-		buildingsTools.IncrementSelectedBuildingHeight ();
+		buildingsTools.IncrementBuildingHeight (selectedBuilding);
 	}
 
 	public void SetPanelInnactive() {
@@ -139,13 +165,13 @@ public class UIManager : MonoBehaviour, IPointerUpHandler {
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		if (buildingEditor.isUsed ()) {
+		if (buildingEditor.IsUsed ()) {
 			buildingEditor.StartCoroutine ("MoveToInitSituation");
 			buildingEditor.StartCoroutine ("ClosePanel");
+			buildingEditor.SelectedBuilding = null;
 		}
 
 		buildingsTools.DiscolorAll ();
-		buildingsTools.SelectedBuilding = null;
 	}
 
 	public BuildingEditor BuildingEditor {

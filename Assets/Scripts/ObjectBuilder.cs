@@ -91,7 +91,8 @@ public class ObjectBuilder {
 					buildingNodeGo.transform.parent = buildingNodes.transform;
 				}
 			}
-			if ( (ngp.IsHighway () && ((ngp.IsPrimary() || ngp.IsSecondary() || ngp.IsTertiary() || ngp.IsUnclassified() || ngp.IsResidential ()|| ngp.IsService()) || ngp.IsCycleWay() || ngp.IsFootway())) || ngp.IsWaterway()) {
+			if ( (ngp.IsHighway () && ((ngp.IsPrimary() || ngp.IsSecondary() || ngp.IsTertiary() || ngp.IsUnclassified()
+			   || ngp.IsResidential ()|| ngp.IsService()) || ngp.IsCycleWay() || ngp.IsFootway())) || ngp.IsWaterway()) {
 				// on construit les nodes des highways
 				i =  - 1;
 				foreach (Node n in ngp.Nodes) {

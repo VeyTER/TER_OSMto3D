@@ -11,6 +11,12 @@ public class UINames {
 	public const string TREES_BUTTON = "TreesButton";
 
 	public const string BUILDING_NAME_TEXT_INPUT = "BuildingNameText";
+	public const string TEMPERATURE_INDICATOR_TEXT_INPUT = "TemperatureInputText";
+	public const string HUMIDITY_INDICATOR_TEXT_INPUT = "HumidityInputText";
+	public const string MOVE_BUTTON = "MoveButton";
+	public const string TURN_BUTTON = "TurnButton";
+	public const string CHANGE_HEIGHT_BUTTON = "ChangeHeightButton";
+	public const string CHANGE_COLOR_BUTTON = "ChangeColorButton";
 
 	public const string VALIDATE_BUTTON = "ValidateButton";
 	public const string CANCEL_BUTTON = "CancelButton";

@@ -5,11 +5,9 @@ using System.Xml.Serialization;
 using System.IO;
 
 public class BuildingsTools {
-	private GameObject selectedBuilding;
 	private ObjectBuilder objectBuilder;
 
 	private BuildingsTools () {
-		this.selectedBuilding = null;
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 	}
 
@@ -57,16 +55,16 @@ public class BuildingsTools {
 			return -1;
 	}
 
-	public void DecrementSelectedBuildingHeight() {
-		int nbFloors = GetBuildingHeight(SelectedBuilding);
-		this.ChangeBuildingHeight (SelectedBuilding, nbFloors - 1);
+	public void DecrementBuildingHeight(GameObject buildingGo) {
+		int nbFloors = GetBuildingHeight(buildingGo);
+		this.ChangeBuildingHeight (buildingGo, nbFloors - 1);
 	}
-	public void IncrementSelectedBuildingHeight() {
-		int nbFloors = GetBuildingHeight(selectedBuilding);
-		this.ChangeBuildingHeight (SelectedBuilding, nbFloors + 1);
+	public void IncrementBuildingHeight(GameObject buildingGo) {
+		int nbFloors = GetBuildingHeight(buildingGo);
+		this.ChangeBuildingHeight (buildingGo, nbFloors + 1);
 	}
-	public void ChangeSelectedBuildingHeight(int nbFloors) {
-		this.ChangeBuildingHeight (selectedBuilding, nbFloors);
+	public void ChangeBuildingHeight(GameObject buildingGo, int nbFloors) {
+		this.ChangeBuildingHeight (buildingGo, nbFloors);
 	}
 
 	public void ChangeBuildingHeight(GameObject building, int nbFloors) {
@@ -179,11 +177,6 @@ public class BuildingsTools {
 		}
 
 		return maxDistance;
-	}
-
-	public GameObject SelectedBuilding {
-		get { return selectedBuilding; }
-		set { selectedBuilding = value; }
 	}
 
 	public static class BuildingsToolsInstanceHolder {
