@@ -349,16 +349,31 @@ public class BuildingEditor : MonoBehaviour {
 		editionState = EditionStates.MOVING_MODE;
 		this.ClosePanel (null);
 		this.StartCoroutine ("ToggleEditionButtons");
-
-		Camera mainCamera = Camera.main;
-		Vector3 buildingPosition = selectedBuilding.transform.position;
-		Vector3 buildingScreenPosition = mainCamera.WorldToScreenPoint (buildingPosition);
-
-		moveHandler.transform.position = new Vector3 (buildingScreenPosition.x, buildingScreenPosition.y, 0);
-		float buildingHeight = selectedBuilding.transform.localScale.y;
-		selectedBuildingInitPos = selectedBuilding.transform.position;
-
 		moveHandler.SetActive (true);
+	}
+
+	public void InitialiseMovingMode() {
+		Camera mainCamera = Camera.main;
+
+		Vector3 objectPosition = Vector3.zero;
+		Vector3 objectScale = Vector3.zero;
+
+		if (selectionRange == SelectionRanges.WALL) {
+			objectPosition = selectedWall.transform.position;
+			objectScale = selectedWall.transform.localScale;
+		} else if (selectionRange == SelectionRanges.BUILDING) {
+			objectPosition = selectedBuilding.transform.position;
+			objectScale = selectedBuilding.transform.localScale;
+		}
+
+		Vector3 objectScreenPosition = mainCamera.WorldToScreenPoint (objectPosition);
+		moveHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
+
+		float objectHeight = objectScale.y;
+		if (selectionRange == SelectionRanges.WALL)
+			selectedWallInitPos = objectPosition;
+		else if (selectionRange == SelectionRanges.BUILDING)
+			selectedBuildingInitPos = objectPosition;
 	}
 
 	public void ExitMovingMode() {
@@ -376,7 +391,7 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	// TODO : Faire aussi pour les murs
-	public void StartBuildingMoving() {
+	public void StartObjectMoving() {
 		moveHandlerInitPosition = moveHandler.transform.position;
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandlerInitOffset = mousePosition - moveHandlerInitPosition;
@@ -388,7 +403,7 @@ public class BuildingEditor : MonoBehaviour {
 		movingState = MovingStates.MOVING;
 	}
 
-	public void UpdateBuildingMoving() {
+	public void UpdateObjectMoving() {
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandler.transform.position = mousePosition - moveHandlerInitOffset;
 
@@ -400,7 +415,7 @@ public class BuildingEditor : MonoBehaviour {
 		selectedBuilding.transform.position = selectedBuildingCurrentPos;
 	}
 
-	public void EndBuildingMoving() {
+	public void EndObjectMoving() {
 		movingState = MovingStates.MOTIONLESS;
 	}
 

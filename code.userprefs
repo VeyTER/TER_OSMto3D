@@ -1,11 +1,10 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\BuildingEditor.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UIManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\Main.cs" Line="99" Column="1" />
-      <File FileName="Assets\Scripts\BuildingEditor.cs" Line="307" Column="151" />
-      <File FileName="Assets\Scripts\UIManager.cs" Line="115" Column="27" />
-      <File FileName="Assets\Scripts\UINames.cs" Line="15" Column="54" />
+      <File FileName="Assets\Scripts\Main.cs" Line="84" Column="27" />
+      <File FileName="Assets\Scripts\BuildingEditor.cs" Line="376" Column="45" />
+      <File FileName="Assets\Scripts\UIManager.cs" Line="146" Column="43" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

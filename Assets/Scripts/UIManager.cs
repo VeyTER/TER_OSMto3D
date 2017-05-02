@@ -18,7 +18,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		switch (name) {
 		case UINames.MOVE_HANDLER:
 			if (Input.GetMouseButton (0) && buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING) {
-				buildingEditor.UpdateBuildingMoving ();
+				buildingEditor.UpdateObjectMoving ();
 				buildingEditor.ShiftCamera ();
 			}
 			break;
@@ -32,7 +32,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		switch (name) {
 		case UINames.MOVE_HANDLER:
 			if(buildingEditor.MovingState == BuildingEditor.MovingStates.MOTIONLESS)
-				buildingEditor.StartBuildingMoving ();
+				buildingEditor.StartObjectMoving ();
 			break;
 		}
 	}
@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		switch (name) {
 		case UINames.MOVE_HANDLER:
 			if(buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
-				buildingEditor.UpdateBuildingMoving ();
+				buildingEditor.UpdateObjectMoving ();
 			break;
 		}
 	}
@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		switch (name) {
 		case UINames.MOVE_HANDLER:
 			if(buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
-				buildingEditor.EndBuildingMoving ();
+				buildingEditor.EndObjectMoving ();
 			break;
 		}
 	}
@@ -113,8 +113,10 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			this.SetPanelInactive ();
 			break;
 		case UINames.MOVE_BUTTON:
-			if (buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT)
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT) {
 				buildingEditor.EnterMovingMode ();
+				buildingEditor.InitialiseMovingMode ();
+			}
 			break;
 		case UINames.TURN_BUTTON:
 			this.SetPanelInactive ();
@@ -136,11 +138,13 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 		case UINames.WALL_RANGE_BUTTON:
 			buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.WALL;
+			buildingEditor.InitialiseMovingMode ();
 			this.enableWallRangeButton ();
 			break;
 		case UINames.BUILDING_RANGE_BUTTON:
-			this.enableBuildingRangeButton ();
 			buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.BUILDING;
+			buildingEditor.InitialiseMovingMode ();
+			this.enableBuildingRangeButton ();
 			break;
 		case UINames.VALDIATE_EDITION_BUTTON:
 			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE) {
