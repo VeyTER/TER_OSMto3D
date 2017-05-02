@@ -110,6 +110,8 @@ public class ObjectBuilder {
 		wallGroups.transform.parent = cityComponents.transform;
 		wallGroups.AddComponent<BuildingEditor> ();
 
+		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
+
 		float thickness = 0.01f;
 
 		foreach (NodeGroup ngp in nodeGroups) {
@@ -169,6 +171,11 @@ public class ObjectBuilder {
 					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
 					meshRenderer.material = Resources.Load ("Materials/Wall") as Material;
 				}
+
+				Vector3 wallBroupCenter = buildingsTools.BuildingCenter(wallGroup);
+				wallGroup.transform.position = new Vector3 (wallBroupCenter.x, 0, wallBroupCenter.z);
+				foreach (Transform wallTransform in wallGroup.transform)
+					wallTransform.transform.position -= wallGroup.transform.position;
 
 				if(ngp.Name == "unknown")
 					wallGroup.name = ngp.Id + "";

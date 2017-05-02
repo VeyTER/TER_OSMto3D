@@ -356,10 +356,7 @@ public class BuildingEditor : MonoBehaviour {
 
 		moveHandler.transform.position = new Vector3 (buildingCenterScreenPosition.x, buildingCenterScreenPosition.y, 0);
 		float buildingHeight = selectedBuilding.transform.localScale.y;
-		selectedBuildingInitPos = mainCamera.ScreenToWorldPoint(new Vector3(buildingCenterScreenPosition.x, buildingCenterScreenPosition.y + buildingHeight, mainCamera.transform.position.y));
-//		selectedBuildingInitPos = selectedBuilding.transform.localPosition;
-
-		print (selectedBuildingInitPos);
+		selectedBuildingInitPos = selectedBuilding.transform.position;
 
 		moveHandler.SetActive (true);
 	}
@@ -400,7 +397,7 @@ public class BuildingEditor : MonoBehaviour {
 		Vector3 modeHandlerPosition = moveHandler.transform.position;
 
 		selectedBuildingCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(modeHandlerPosition.x, modeHandlerPosition.y, mainCamera.transform.position.y));
-		selectedBuilding.transform.position = selectedBuildingCurrentPos - selectedBuildingInitPos;
+		selectedBuilding.transform.position = selectedBuildingCurrentPos;
 	}
 
 	public void EndBuildingMoving() {
