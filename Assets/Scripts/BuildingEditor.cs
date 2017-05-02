@@ -23,9 +23,12 @@ public class BuildingEditor : MonoBehaviour {
 	// TODO : Faire le même chose mais pour la caméra
 	public enum PanelStates { CLOSED, CLOSED_TO_OPEN, OPEN, OPEN_TO_CLOSED }
 
+	public enum MovingStates { MOTIONLESS, MOTIONLESS_TO_MOVING, MOVING, MOVING_TO_MOTIONLESS}
+
 	private EditionStates editionState;
 	private SelectionRanges selectionRange;
 	private PanelStates panelState;
+	private MovingStates movingState;
 
 	private GameObject selectedWall;
 	private GameObject selectedBuilding;
@@ -291,7 +294,10 @@ public class BuildingEditor : MonoBehaviour {
 		moveHandlerInitOffset = mousePosition - moveHandlerInitPosition;
 
 		selectedBuildingCurrentPos = selectedBuildingInitPos;
+
+		movingState = MovingStates.MOVING;
 	}
+
 	public void UpdateBuildingMoving() {
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandler.transform.position = mousePosition - moveHandlerInitOffset;
@@ -302,16 +308,42 @@ public class BuildingEditor : MonoBehaviour {
 
 		selectedBuildingCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(modeHandlerPosition.x, modeHandlerPosition.y, mainCamera.transform.position.y));
 		selectedBuilding.transform.position = selectedBuildingCurrentPos - selectedBuildingInitPos;
+	}
 
-		Vector3 cameraPosition = mainCamera.transform.position;
-		if (mousePosition.x > Screen.width * 0.9F && mousePosition.x < Screen.width) {
-			mainCamera.transform.position = new Vector3 (cameraPosition.x + 0.5F, cameraPosition.y, cameraPosition.z);
-		}
+	public void EndBuildingMoving() {
+		movingState = MovingStates.MOTIONLESS;
+	}
+
+	public void ShiftCamera() {
+		float cameraAngle = Mathf.Deg2Rad * transform.rotation.eulerAngles.y;
+		float cosOffset = 0.1F * (float)Math.Cos (cameraAngle);
+		float sinOffset = 0.1F * (float)Math.Sin (cameraAngle);
+
+		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
+		Camera mainCamera = Camera.main;
+		Vector3 newCameraPosition = mainCamera.transform.localPosition;
+
+		if (mousePosition.x > Screen.width * 0.8F)
+			newCameraPosition = new Vector3 (newCameraPosition.x - sinOffset, newCameraPosition.y, newCameraPosition.z - cosOffset);
+		else if (mousePosition.x < Screen.width * 0.2F)
+			newCameraPosition = new Vector3 (newCameraPosition.x + sinOffset, newCameraPosition.y, newCameraPosition.z + cosOffset);
+
+		if (mousePosition.y > Screen.height * 0.8F)
+			newCameraPosition = new Vector3 (newCameraPosition.x + cosOffset, newCameraPosition.y, newCameraPosition.z - sinOffset);
+		else if (mousePosition.y < Screen.height * 0.2F)
+			newCameraPosition = new Vector3 (newCameraPosition.x - cosOffset, newCameraPosition.y, newCameraPosition.z + sinOffset);
+
+		mainCamera.transform.localPosition = newCameraPosition;
 	}
 
 	public EditionStates EditionState {
 		get { return editionState; }
 		set { editionState = value; }
+	}
+
+	public MovingStates MovingState {
+		get { return movingState; }
+		set { movingState = value; }
 	}
 
 	public GameObject SelectedWall {

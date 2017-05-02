@@ -2,47 +2,63 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
-public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, IDragHandler {
+public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	private ObjectBuilder objectBuilder;
-	private BuildingEditor buildingEditor;
-
-//	private bool wallsActive;
-//	private bool roofsActive;
-//	private bool highwaysActive;
-//	private bool treesActive;
-//	private bool cyclewaysActive;
-//	private bool footwaysActive;
-////	private bool busLanesActive = true;
-//	private bool highwayNodesActive;
-//	private bool buildingNodesActive;
 
 	public UIManager() {
-		this.objectBuilder = ObjectBuilder.GetInstance ();
+		objectBuilder = ObjectBuilder.GetInstance ();
+	}
 
-//		this.wallsActive = true;
-//		this.roofsActive = false;
-//		this.highwaysActive = true;
-//		this.treesActive = true;
-//		this.cyclewaysActive = true;
-//		this.footwaysActive = true;
-////		this.busLanesActive = true;
-//		this.highwayNodesActive = false;
-//		this.buildingNodesActive = false;
+	public void Update() {
+		GameObject wallGroups = objectBuilder.WallGroups;
+		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
+
+		switch (name) {
+		case UINames.MOVE_HANDLER:
+			if (Input.GetMouseButton (0) && buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING) {
+				buildingEditor.UpdateBuildingMoving ();
+				buildingEditor.ShiftCamera ();
+			}
+			break;
+		}
 	}
 
 	public void OnBeginDrag (PointerEventData eventData) {
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		buildingEditor.StartBuildingMoving ();
+		switch (name) {
+		case UINames.MOVE_HANDLER:
+			if(buildingEditor.MovingState == BuildingEditor.MovingStates.MOTIONLESS)
+				buildingEditor.StartBuildingMoving ();
+			break;
+		}
 	}
 
 	public void OnDrag (PointerEventData eventData) {
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		buildingEditor.UpdateBuildingMoving ();
+		switch (name) {
+		case UINames.MOVE_HANDLER:
+			if(buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
+				buildingEditor.UpdateBuildingMoving ();
+			break;
+		}
+	}
+
+	public void OnEndDrag (PointerEventData eventData) {
+		GameObject wallGroups = objectBuilder.WallGroups;
+		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
+
+		switch (name) {
+		case UINames.MOVE_HANDLER:
+			if(buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
+				buildingEditor.EndBuildingMoving ();
+			break;
+		}
 	}
 
 	public void OnMouseUp () {
@@ -62,7 +78,6 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
 		string sourceElementName = eventData.selectedObject.gameObject.name;
-
 		switch (sourceElementName) {
 		case UINames.BUILDING_NODES_BUTTON:
 			this.ToggleBuildingNodesVisibility ();
@@ -188,10 +203,5 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		}
 
 		buildingsTools.DiscolorAll ();
-	}
-
-	public BuildingEditor BuildingEditor {
-		get { return buildingEditor; }
-		set { buildingEditor = value; }
 	}
 }

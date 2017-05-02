@@ -13,7 +13,6 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Vector3 localPosition = transform.localPosition;
-		Quaternion localRotation = transform.localRotation;
 
 		if(buildingEditor.EditionState == BuildingEditor.EditionStates.NONE_SELECTION) {
 			if (Input.GetKey (KeyCode.LeftControl)) {
@@ -36,24 +35,21 @@ public class CameraController : MonoBehaviour {
 					transform.Translate(new Vector3(0, -0.1f, 0));
 			} else {
 				float cameraAngle = Mathf.Deg2Rad * transform.rotation.eulerAngles.y;
-
 				float cosOffset = 0.1F * (float)Math.Cos (cameraAngle);
 				float sinOffset = 0.1F * (float)Math.Sin (cameraAngle);
 
 				if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
-					localPosition = new Vector3 (localPosition.x + sinOffset, localPosition.y, localPosition.z + cosOffset);
+					transform.localPosition = new Vector3 (localPosition.x + sinOffset, localPosition.y, localPosition.z + cosOffset);
 
 				if (Input.GetKey ("down") || Input.GetKey (KeyCode.S))
-					localPosition = new Vector3(localPosition.x - sinOffset, localPosition.y, localPosition.z - cosOffset);
+					transform.localPosition = new Vector3(localPosition.x - sinOffset, localPosition.y, localPosition.z - cosOffset);
 
 				if (Input.GetKey ("left") || Input.GetKey (KeyCode.Q))
-					localPosition = new Vector3(localPosition.x - cosOffset, localPosition.y, localPosition.z + sinOffset);
+					transform.localPosition = new Vector3(localPosition.x - cosOffset, localPosition.y, localPosition.z + sinOffset);
 
 				if (Input.GetKey ("right") || Input.GetKey (KeyCode.D))
-					localPosition = new Vector3(localPosition.x + cosOffset, localPosition.y, localPosition.z - sinOffset);
+					transform.localPosition = new Vector3(localPosition.x + cosOffset, localPosition.y, localPosition.z - sinOffset);
 			}
-
-			transform.localPosition = localPosition;
 		}
 	}
 }
