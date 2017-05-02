@@ -173,7 +173,7 @@ public class BuildingEditor : MonoBehaviour {
 		Vector3 cameraPosition = mainCameraGo.transform.position;
 		Quaternion cameraRotation = mainCameraGo.transform.rotation;
 
-		Vector3 targetPosition = buildingsTools.BuildingCenter (building);
+		Vector3 targetPosition = building.transform.position;
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (90, 90, 0));
 
 		float cameraFOV = Camera.main.fieldOfView;
@@ -351,10 +351,10 @@ public class BuildingEditor : MonoBehaviour {
 		this.StartCoroutine ("ToggleEditionButtons");
 
 		Camera mainCamera = Camera.main;
-		Vector3 buildingCenterPosition = buildingsTools.BuildingCenter (selectedBuilding);
-		Vector3 buildingCenterScreenPosition = mainCamera.WorldToScreenPoint (buildingCenterPosition);
+		Vector3 buildingPosition = selectedBuilding.transform.position;
+		Vector3 buildingScreenPosition = mainCamera.WorldToScreenPoint (buildingPosition);
 
-		moveHandler.transform.position = new Vector3 (buildingCenterScreenPosition.x, buildingCenterScreenPosition.y, 0);
+		moveHandler.transform.position = new Vector3 (buildingScreenPosition.x, buildingScreenPosition.y, 0);
 		float buildingHeight = selectedBuilding.transform.localScale.y;
 		selectedBuildingInitPos = selectedBuilding.transform.position;
 
