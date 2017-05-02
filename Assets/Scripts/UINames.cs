@@ -24,6 +24,9 @@ public class UINames {
 	public const string VALDIATE_EDITION_BUTTON = "ValidateEditionButton";
 	public const string CANCEL_EDITION_BUTTON = "CancelEditionButton";
 
+	public const string WALL_RANGE_BUTTON = "WallRangeButton";
+	public const string BUILDING_RANGE_BUTTON = "BuildingRangeButton";
+
 	public const string VALIDATE_BUTTON = "ValidateButton";
 	public const string CANCEL_BUTTON = "CancelButton";
 

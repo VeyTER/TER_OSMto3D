@@ -134,12 +134,25 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UINames.CANCEL_BUTTON:
 			this.SetPanelInactive ();
 			break;
+		case UINames.WALL_RANGE_BUTTON:
+			buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.WALL;
+			this.enableWallRangeButton ();
+			break;
+		case UINames.BUILDING_RANGE_BUTTON:
+			this.enableBuildingRangeButton ();
+			buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.BUILDING;
+			break;
 		case UINames.VALDIATE_EDITION_BUTTON:
-			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE)
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE) {
+				buildingEditor.ValidateEdit ();
 				buildingEditor.ExitMovingMode ();
+			}
 			break;
 		case UINames.CANCEL_EDITION_BUTTON:
-			this.SetPanelInactive ();
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE) {
+				buildingEditor.CancelEdit ();
+				buildingEditor.ExitMovingMode ();
+			}
 			break;
 		}
 	}
@@ -182,6 +195,26 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	public void ToggleTreesVisibility() {
 		GameObject trees = objectBuilder.Trees;
 		trees.SetActive (!trees.activeInHierarchy);
+	}
+
+	public void enableWallRangeButton() {
+		GameObject buildingRangeButton = GameObject.Find (UINames.BUILDING_RANGE_BUTTON);
+
+		Button buildingButtonComponent = buildingRangeButton.GetComponent<Button> ();
+		Button wallButtonComponent = GetComponent<Button> ();
+
+		buildingButtonComponent.interactable = true;
+		wallButtonComponent.interactable = false;
+	}
+
+	public void enableBuildingRangeButton() {
+		GameObject wallRangeButton = GameObject.Find (UINames.WALL_RANGE_BUTTON);
+
+		Button wallButtonComponent = wallRangeButton.GetComponent<Button> ();
+		Button buildingButtonComponent = GetComponent<Button> ();
+
+		wallButtonComponent.interactable = true;
+		buildingButtonComponent.interactable = false;
 	}
 
 	public void IncrementBuildingHeight(GameObject selectedBuilding) {
