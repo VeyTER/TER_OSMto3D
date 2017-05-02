@@ -23,7 +23,7 @@ public class BuildingEditor : MonoBehaviour {
 	// TODO : Faire le même chose mais pour la caméra
 	public enum PanelStates { CLOSED, CLOSED_TO_OPEN, OPEN, OPEN_TO_CLOSED }
 
-	public enum MovingStates { MOTIONLESS, MOTIONLESS_TO_MOVING, MOVING, MOVING_TO_MOTIONLESS}
+	public enum MovingStates { MOTIONLESS, MOVING}
 
 	private EditionStates editionState;
 	private SelectionRanges selectionRange;
@@ -32,6 +32,9 @@ public class BuildingEditor : MonoBehaviour {
 
 	private GameObject selectedWall;
 	private GameObject selectedBuilding;
+
+	private ArrayList movedObjects;
+	private ArrayList turnedObjects;
 
 	private Vector3 selectedWallInitPos;
 	private Vector3 selectedWallCurentPos;
@@ -69,8 +72,8 @@ public class BuildingEditor : MonoBehaviour {
 		validateEditionButton = GameObject.Find(UINames.VALDIATE_EDITION_BUTTON);
 		cancelEditionButton = GameObject.Find(UINames.CANCEL_EDITION_BUTTON);
 
-		validateEditionButton.SetActive (false);
-		cancelEditionButton.SetActive (false);
+		validateEditionButton.transform.localScale = Vector3.zero;
+		cancelEditionButton.transform.localScale = Vector3.zero;
 
 		Main.panel.SetActive(false);
 	}
@@ -271,9 +274,41 @@ public class BuildingEditor : MonoBehaviour {
 			finalAction ();
 	}
 
+	private IEnumerator ToggleEditionButtons() {
+		Vector3 validateButtonInitScale = validateEditionButton.transform.localScale;
+		Vector3 cancelButtonInitScale = cancelEditionButton.transform.localScale;
+		Vector3 targetScale = Vector3.zero;
+
+		if (validateButtonInitScale == Vector3.one)
+			targetScale = Vector3.zero;
+		else if (validateButtonInitScale == Vector3.zero)
+			targetScale = Vector3.one;
+
+		Transform validateButtonTransform = validateEditionButton.transform;
+		Transform cancelButtonTransform = cancelEditionButton.transform;
+
+		for (double i = 0; i <= 1; i += 0.1) {
+			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
+
+			if (validateButtonInitScale.x == 1) {
+				validateButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
+				cancelButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);;
+			} else if (validateButtonInitScale.x == 0) {
+				validateButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);;
+				cancelButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);;
+			}
+
+			yield return new WaitForSeconds (0.01F);
+		}
+
+		validateButtonTransform.localScale = targetScale;
+		cancelButtonTransform.localScale = targetScale;
+	}
+
 	public void EnterMovingMode() {
 		editionState = EditionStates.MOVING_MODE;
 		this.ClosePanel (null);
+		this.StartCoroutine ("ToggleEditionButtons");
 
 		Camera mainCamera = Camera.main;
 		Vector3 buildingCenterPosition = buildingsTools.BuildingCenter (selectedBuilding);
@@ -281,10 +316,25 @@ public class BuildingEditor : MonoBehaviour {
 
 		moveHandler.transform.position = new Vector3 (buildingCenterScreenPosition.x, buildingCenterScreenPosition.y, 0);
 		float buildingHeight = selectedBuilding.transform.localScale.y;
-
 		selectedBuildingInitPos = mainCamera.ScreenToWorldPoint(new Vector3(buildingCenterScreenPosition.x, buildingCenterScreenPosition.y + buildingHeight, mainCamera.transform.position.y));
 
 		moveHandler.SetActive (true);
+	}
+
+	public void ExitMovingMode() {
+		editionState = EditionStates.MOVING_TO_BUILDING;
+
+		this.StartCoroutine (this.MoveToBuilding (() => {
+				editionState = EditionStates.READY_TO_EDIT;
+			})
+		);
+
+		this.OpenPanel (null);
+		this.StartCoroutine ("ToggleEditionButtons");
+
+		movedObjects.Add (selectedBuilding);
+
+		moveHandler.SetActive (false);
 	}
 
 	// TODO : Faire aussi pour les murs
@@ -344,6 +394,14 @@ public class BuildingEditor : MonoBehaviour {
 	public MovingStates MovingState {
 		get { return movingState; }
 		set { movingState = value; }
+	}
+
+	public ArrayList MovedObjects {
+		get { return movedObjects; }
+	}
+
+	public ArrayList TurnedObjects {
+		get { return turnedObjects; }
 	}
 
 	public GameObject SelectedWall {

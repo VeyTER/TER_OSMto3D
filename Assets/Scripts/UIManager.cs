@@ -77,8 +77,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		string sourceElementName = eventData.selectedObject.gameObject.name;
-		switch (sourceElementName) {
+		switch (name) {
 		case UINames.BUILDING_NODES_BUTTON:
 			this.ToggleBuildingNodesVisibility ();
 			break;
@@ -133,6 +132,13 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			this.SetPanelInactive ();
 			break;
 		case UINames.CANCEL_BUTTON:
+			this.SetPanelInactive ();
+			break;
+		case UINames.VALDIATE_EDITION_BUTTON:
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE)
+				buildingEditor.ExitMovingMode ();
+			break;
+		case UINames.CANCEL_EDITION_BUTTON:
 			this.SetPanelInactive ();
 			break;
 		}
