@@ -277,26 +277,22 @@ public class BuildingEditor : MonoBehaviour {
 		Vector3 buildingCenterScreenPosition = mainCamera.WorldToScreenPoint (buildingCenterPosition);
 
 		moveHandler.transform.position = new Vector3 (buildingCenterScreenPosition.x, buildingCenterScreenPosition.y, 0);
+		float buildingHeight = selectedBuilding.transform.localScale.y;
+
+		selectedBuildingInitPos = mainCamera.ScreenToWorldPoint(new Vector3(buildingCenterScreenPosition.x, buildingCenterScreenPosition.y + buildingHeight, mainCamera.transform.position.y));
 
 		moveHandler.SetActive (true);
 	}
 
 	// TODO : Faire aussi pour les murs
-	public void StartMovingBuilding() {
+	public void StartBuildingMoving() {
 		moveHandlerInitPosition = moveHandler.transform.position;
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandlerInitOffset = mousePosition - moveHandlerInitPosition;
 
-		float buildingHeight = selectedBuilding.transform.localScale.y;
-		Camera mainCamera = Camera.main;
-		Vector3 modeHandlerPosition = moveHandler.transform.position;
-
-		selectedBuildingInitPos = mainCamera.ScreenToWorldPoint(new Vector3(modeHandlerPosition.x, modeHandlerPosition.y, mainCamera.transform.position.y));
 		selectedBuildingCurrentPos = selectedBuildingInitPos;
-
-//		selectedWallCurentPos;
 	}
-	public void UpdateMovingBuilding() {
+	public void UpdateBuildingMoving() {
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandler.transform.position = mousePosition - moveHandlerInitOffset;
 
@@ -306,21 +302,12 @@ public class BuildingEditor : MonoBehaviour {
 
 		selectedBuildingCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(modeHandlerPosition.x, modeHandlerPosition.y, mainCamera.transform.position.y));
 		selectedBuilding.transform.position = selectedBuildingCurrentPos - selectedBuildingInitPos;
+
+		Vector3 cameraPosition = mainCamera.transform.position;
+		if (mousePosition.x > Screen.width * 0.9F && mousePosition.x < Screen.width) {
+			mainCamera.transform.position = new Vector3 (cameraPosition.x + 0.5F, cameraPosition.y, cameraPosition.z);
+		}
 	}
-
-
-	/*
-		selectedWallInitPos;
-		selectedWallCurentPos;
-		selectedWallInitRot;
-		selectedWallCurrentRot;
-
-		selectedBuildingInitPos;
-		selectedBuildingCurrentPos;
-		selectedBuildingInitRot;
-		selectedBuildingCurrentRot;
-	*/
-
 
 	public EditionStates EditionState {
 		get { return editionState; }

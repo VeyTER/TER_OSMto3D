@@ -35,14 +35,14 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		buildingEditor.StartMovingBuilding ();
+		buildingEditor.StartBuildingMoving ();
 	}
 
 	public void OnDrag (PointerEventData eventData) {
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		buildingEditor.UpdateMovingBuilding ();
+		buildingEditor.UpdateBuildingMoving ();
 	}
 
 	public void OnMouseUp () {

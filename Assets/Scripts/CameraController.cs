@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class CameraController : MonoBehaviour {
 	private BuildingEditor buildingEditor;
@@ -11,43 +12,48 @@ public class CameraController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		Vector3 localPosition = this.transform.localPosition;
-		Quaternion localRotation = this.transform.localRotation;
+		Vector3 localPosition = transform.localPosition;
+		Quaternion localRotation = transform.localRotation;
 
 		if(buildingEditor.EditionState == BuildingEditor.EditionStates.NONE_SELECTION) {
 			if (Input.GetKey (KeyCode.LeftControl)) {
 				if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
-					this.transform.Rotate (new Vector3 (-1, 0, 0));
+					transform.Rotate (new Vector3 (-1, 0, 0));
 
 				if (Input.GetKey ("down") || Input.GetKey (KeyCode.S))
-					this.transform.Rotate (new Vector3 (1, 0, 0));
+					transform.Rotate (new Vector3 (1, 0, 0));
 
 				if (Input.GetKey ("left") || Input.GetKey (KeyCode.Q))
-					this.transform.RotateAround (Vector3.zero, Vector3.up, -1);
+					transform.RotateAround (localPosition, Vector3.up, -1);
 
 				if (Input.GetKey ("right") || Input.GetKey (KeyCode.D))
-					this.transform.RotateAround (Vector3.zero, Vector3.up, 1);
+					transform.RotateAround (localPosition, Vector3.up, 1);
 			} else if (Input.GetKey (KeyCode.LeftShift)) {
 				if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
-					localPosition.y += 0.1f;
+					transform.Translate(new Vector3(0, 0.1f, 0));
 
 				if (Input.GetKey ("down") || Input.GetKey (KeyCode.S))
-					localPosition.y -= 0.1f;
+					transform.Translate(new Vector3(0, -0.1f, 0));
 			} else {
+				float cameraAngle = Mathf.Deg2Rad * transform.rotation.eulerAngles.y;
+
+				float cosOffset = 0.1F * (float)Math.Cos (cameraAngle);
+				float sinOffset = 0.1F * (float)Math.Sin (cameraAngle);
+
 				if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
-					localPosition.x += 0.1f;
+					localPosition = new Vector3 (localPosition.x + sinOffset, localPosition.y, localPosition.z + cosOffset);
 
 				if (Input.GetKey ("down") || Input.GetKey (KeyCode.S))
-					localPosition.x -= 0.1f;
+					localPosition = new Vector3(localPosition.x - sinOffset, localPosition.y, localPosition.z - cosOffset);
 
 				if (Input.GetKey ("left") || Input.GetKey (KeyCode.Q))
-					localPosition.z += 0.1f;
+					localPosition = new Vector3(localPosition.x - cosOffset, localPosition.y, localPosition.z + sinOffset);
 
 				if (Input.GetKey ("right") || Input.GetKey (KeyCode.D))
-					localPosition.z -= 0.1f;
+					localPosition = new Vector3(localPosition.x + cosOffset, localPosition.y, localPosition.z - sinOffset);
 			}
-		}
 
-		this.transform.localPosition = localPosition;
+			transform.localPosition = localPosition;
+		}
 	}
 }
