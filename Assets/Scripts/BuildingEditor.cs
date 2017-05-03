@@ -38,14 +38,10 @@ public class BuildingEditor : MonoBehaviour {
 	private GameObject selectedBuilding;
 
 	private Vector3 selectedWallInitPos;
-	private Vector3 selectedWallCurentPos;
 	private Quaternion selectedWallInitRot;
-	private Quaternion selectedWallCurrentRot;
 
 	private Vector3 selectedBuildingInitPos;
-	private Vector3 selectedBuildingCurrentPos;
 	private Quaternion selectedBuildingInitRot;
-	private Quaternion selectedBuildingCurrentRot;
 
 	private ObjectBuilder objectBuilder;
 	private BuildingsTools buildingsTools;
@@ -68,7 +64,7 @@ public class BuildingEditor : MonoBehaviour {
 
 	public void Start() {
 		editionState = EditionStates.NONE_SELECTION;
-		selectionRange = SelectionRanges.WALL;
+		selectionRange = SelectionRanges.BUILDING;
 		panelState = PanelStates.CLOSED;
 		movingState = MovingStates.MOTIONLESS;
 
@@ -103,7 +99,8 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	public void ChangeBuilding(GameObject selectedWall) {
-		this.selectedWall = selectedWall;
+		selectedWall = selectedWall;
+		selectedBuilding = selectedWall.transform.parent.gameObject;
 
 		// Récupération du bâtiment correspondant au mur sélectionné
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
@@ -133,7 +130,6 @@ public class BuildingEditor : MonoBehaviour {
 				textInputs[i].text = identifier;
 
 			this.ChangeBuildingsColor ();
-			selectedBuilding = selectedWall.transform.parent.gameObject;
 
 			GameObject mainCameraGo = Camera.main.gameObject;
 			UIManager UIManager = FindObjectOfType<UIManager> ();
@@ -396,9 +392,8 @@ public class BuildingEditor : MonoBehaviour {
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandlerInitOffset = mousePosition - moveHandlerInitPosition;
 
-		selectedBuildingCurrentPos = selectedBuildingInitPos;
-
-		buildingEdited = true;
+		wallEdited = selectionRange == SelectionRanges.WALL;
+		buildingEdited = selectionRange == SelectionRanges.BUILDING;
 
 		movingState = MovingStates.MOVING;
 	}
@@ -407,12 +402,21 @@ public class BuildingEditor : MonoBehaviour {
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandler.transform.position = mousePosition - moveHandlerInitOffset;
 
-		float buildingHeight = selectedBuilding.transform.localScale.y;
+		float objectHeight = -1;
+		if (selectionRange == SelectionRanges.WALL)
+			objectHeight = selectedWall.transform.localScale.y;
+		else if(selectionRange == SelectionRanges.BUILDING)
+			objectHeight = selectedBuilding.transform.localScale.y;
+
 		Camera mainCamera = Camera.main;
 		Vector3 modeHandlerPosition = moveHandler.transform.position;
 
-		selectedBuildingCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(modeHandlerPosition.x, modeHandlerPosition.y, mainCamera.transform.position.y));
-		selectedBuilding.transform.position = selectedBuildingCurrentPos;
+		Vector3 selectedObjectCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(modeHandlerPosition.x, modeHandlerPosition.y, mainCamera.transform.position.y));
+
+		if (selectionRange == SelectionRanges.WALL)
+			selectedWall.transform.position = selectedObjectCurrentPos;
+		else if(selectionRange == SelectionRanges.BUILDING)
+			selectedBuilding.transform.position = selectedObjectCurrentPos;
 	}
 
 	public void EndObjectMoving() {
@@ -442,16 +446,22 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	public void ValidateEdit() {
-		movedObjects.Add (selectedWall);
-		movedObjects.Add (selectedBuilding);
+		if (wallEdited && movedObjects.Contains(selectedWall))
+			movedObjects.Add (selectedWall);
+
+		if (buildingEdited && movedObjects.Contains(SelectedBuilding))
+			movedObjects.Add (selectedBuilding);
 
 		wallEdited = false;
 		buildingEdited = false;
 	}
 
 	public void CancelEdit() {
-		selectedBuilding.transform.position = selectedBuildingInitPos;
-		selectedBuilding.transform.rotation = selectedBuildingInitRot;
+		if(wallEdited)
+			selectedWall.transform.position = selectedWallInitPos;
+
+		if(buildingEdited)
+			selectedBuilding.transform.rotation = selectedBuildingInitRot;
 
 		wallEdited = false;
 		buildingEdited = false;
