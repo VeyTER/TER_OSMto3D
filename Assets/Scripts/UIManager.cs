@@ -17,7 +17,9 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		switch (name) {
 		case UINames.MOVE_HANDLER:
-			if (Input.GetMouseButton (0) && buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING) {
+			if (Input.GetMouseButton (0)
+			&& buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE
+			&& buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING) {
 				buildingEditor.UpdateObjectMoving ();
 				buildingEditor.ShiftCamera ();
 			}
@@ -31,7 +33,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		switch (name) {
 		case UINames.MOVE_HANDLER:
-			if(buildingEditor.MovingState == BuildingEditor.MovingStates.MOTIONLESS)
+			if(buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE && buildingEditor.MovingState == BuildingEditor.MovingStates.MOTIONLESS)
 				buildingEditor.StartObjectMoving ();
 			break;
 		}
@@ -43,7 +45,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		switch (name) {
 		case UINames.MOVE_HANDLER:
-			if(buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
+			if(buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE && buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
 				buildingEditor.UpdateObjectMoving ();
 			break;
 		}
@@ -55,7 +57,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		switch (name) {
 		case UINames.MOVE_HANDLER:
-			if(buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
+			if(buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE && buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
 				buildingEditor.EndObjectMoving ();
 			break;
 		}
@@ -68,7 +70,6 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()
 			&& (buildingEditor.EditionState == BuildingEditor.EditionStates.NONE_SELECTION || buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT)) {
 			objectBuilder = ObjectBuilder.GetInstance ();
-
 			buildingEditor.SwitchBuilding (gameObject);
 		}
 	}
@@ -104,13 +105,10 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 
 		case UINames.BUILDING_NAME_TEXT_INPUT:
-			this.SetPanelInactive ();
 			break;
 		case UINames.TEMPERATURE_INDICATOR_TEXT_INPUT:
-			this.SetPanelInactive ();
 			break;
 		case UINames.HUMIDITY_INDICATOR_TEXT_INPUT:
-			this.SetPanelInactive ();
 			break;
 		case UINames.MOVE_BUTTON:
 			if (buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT) {
@@ -119,32 +117,39 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			}
 			break;
 		case UINames.TURN_BUTTON:
-			this.SetPanelInactive ();
 			break;
 		case UINames.CHANGE_HEIGHT_BUTTON:
-			this.SetPanelInactive ();
 			break;
 		case UINames.CHANGE_COLOR_BUTTON:
-			this.SetPanelInactive ();
 			break;
 		case UINames.SLIDE_PANEL_BUTTON:
-			buildingEditor.TogglePanel (null);
+			if (buildingEditor.EditionState != BuildingEditor.EditionStates.NONE_SELECTION) {
+				if (buildingEditor.PanelState == BuildingEditor.PanelStates.CLOSED)
+					buildingEditor.TogglePanel (null);
+				else if (buildingEditor.PanelState == BuildingEditor.PanelStates.OPEN)
+					buildingEditor.TogglePanel (null);
+			}
 			break;
 		case UINames.VALIDATE_BUTTON:
-			this.SetPanelInactive ();
 			break;
 		case UINames.CANCEL_BUTTON:
-			this.SetPanelInactive ();
+			if (buildingEditor.EditionState != BuildingEditor.EditionStates.READY_TO_EDIT) {
+				buildingEditor.ExitBuilding ();
+			}
 			break;
 		case UINames.WALL_RANGE_BUTTON:
-			buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.WALL;
-			buildingEditor.InitialiseMovingMode ();
-			this.enableWallRangeButton ();
+			if (buildingEditor.EditionState != BuildingEditor.EditionStates.NONE_SELECTION) {
+				buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.WALL;
+				buildingEditor.InitialiseMovingMode ();
+				this.enableWallRangeButton ();
+			}
 			break;
 		case UINames.BUILDING_RANGE_BUTTON:
-			buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.BUILDING;
-			buildingEditor.InitialiseMovingMode ();
-			this.enableBuildingRangeButton ();
+			if (buildingEditor.EditionState != BuildingEditor.EditionStates.NONE_SELECTION) {
+				buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.BUILDING;
+				buildingEditor.InitialiseMovingMode ();
+				this.enableBuildingRangeButton ();
+			}
 			break;
 		case UINames.VALDIATE_EDITION_BUTTON:
 			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE) {
@@ -224,32 +229,5 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	public void IncrementBuildingHeight(GameObject selectedBuilding) {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 		buildingsTools.IncrementBuildingHeight (selectedBuilding);
-	}
-
-	public void SetPanelInactive() {
-		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-
-		GameObject wallGroups = objectBuilder.WallGroups;
-		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
-
-		if (buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT) {
-			buildingEditor.SelectedBuilding = null;
-			buildingEditor.SelectedWall = null;
-
-			buildingEditor.EditionState = BuildingEditor.EditionStates.MOVING_TO_INITIAL_SITUATION;
-			buildingEditor.CameraState = BuildingEditor.CameraStates.FLYING;
-
-			buildingsTools.DiscolorAllBuildings ();
-
-			buildingEditor.StartCoroutine (
-				buildingEditor.MoveToInitSituation(() => {
-					buildingEditor.EditionState = BuildingEditor.EditionStates.NONE_SELECTION;
-					buildingEditor.CameraState = BuildingEditor.CameraStates.FREE;
-				})
-			);
-			buildingEditor.ClosePanel (() => {
-				buildingEditor.LateralPanel.SetActive (false);
-			});
-		}
 	}
 }

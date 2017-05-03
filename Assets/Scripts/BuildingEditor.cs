@@ -150,7 +150,7 @@ public class BuildingEditor : MonoBehaviour {
 		);
 	}
 
-	public IEnumerator MoveToBuilding(Action finalAction) {
+	private IEnumerator MoveToBuilding(Action finalAction) {
 		GameObject mainCameraGo = Camera.main.gameObject;
 
 		Vector3 cameraPosition = mainCameraGo.transform.position;
@@ -183,7 +183,27 @@ public class BuildingEditor : MonoBehaviour {
 			finalAction ();
 	}
 
-	public IEnumerator MoveToInitSituation(Action finalAction) {
+	public void ExitBuilding() {
+		selectedBuilding = null;
+		selectedWall = null;
+
+		editionState = BuildingEditor.EditionStates.MOVING_TO_INITIAL_SITUATION;
+		cameraState = BuildingEditor.CameraStates.FLYING;
+
+		buildingsTools.DiscolorAllBuildings ();
+
+		this.StartCoroutine (
+			this.MoveToInitSituation(() => {
+				editionState = BuildingEditor.EditionStates.NONE_SELECTION;
+				cameraState = BuildingEditor.CameraStates.FREE;
+			})
+		);
+		this.ClosePanel (() => {
+			lateralPanel.SetActive (false);
+		});
+	}
+
+	private IEnumerator MoveToInitSituation(Action finalAction) {
 		GameObject mainCameraGo = Camera.main.gameObject;
 
 		Vector3 buildingPosition = mainCameraGo.transform.position;
@@ -222,17 +242,13 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	public void OpenPanel(Action finalAction) {
-		if(panelState == PanelStates.CLOSED) {
-			this.StartCoroutine ( this.SlidePanel(finalAction, -1) );
-			panelState = PanelStates.CLOSED_TO_OPEN;
-		}
+		this.StartCoroutine ( this.SlidePanel(finalAction, -1) );
+		panelState = PanelStates.CLOSED_TO_OPEN;
 	}
 
 	public void ClosePanel(Action finalAction) {
-		if(panelState == PanelStates.OPEN) {
-			this.StartCoroutine ( this.SlidePanel(finalAction, 1) );
-			panelState = PanelStates.OPEN_TO_CLOSED;
-		}
+		this.StartCoroutine ( this.SlidePanel(finalAction, 1) );
+		panelState = PanelStates.OPEN_TO_CLOSED;
 	}
 
 	private IEnumerator SlidePanel(Action finalAction, int direction) {
@@ -279,7 +295,7 @@ public class BuildingEditor : MonoBehaviour {
 			finalAction ();
 	}
 
-	private IEnumerator ToggleEditionButtons() {
+	private IEnumerator ToggleFloattingButtons() {
 		Vector3 validateButtonInitScale = validateEditionButton.transform.localScale;
 		Vector3 cancelButtonInitScale = cancelEditionButton.transform.localScale;
 
@@ -302,13 +318,13 @@ public class BuildingEditor : MonoBehaviour {
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
 
-			if (validateButtonInitScale.x == 1) {
+			if (validateButtonInitScale.x == 0) {
 				validateButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
 				cancelButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
 
 				wallRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
 				buildingRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
-			} else if (validateButtonInitScale.x == 0) {
+			} else if (validateButtonInitScale.x == 1) {
 				validateButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
 				cancelButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
 
@@ -328,7 +344,7 @@ public class BuildingEditor : MonoBehaviour {
 
 	public void EnterMovingMode() {
 		this.ClosePanel (null);
-		this.StartCoroutine ("ToggleEditionButtons");
+		this.StartCoroutine ("ToggleFloattingButtons");
 		moveHandler.SetActive (true);
 		editionState = EditionStates.MOVING_MODE;
 	}
@@ -360,8 +376,10 @@ public class BuildingEditor : MonoBehaviour {
 	public void ExitMovingMode() {
 		moveHandler.SetActive (false);
 
-		this.OpenPanel (null);
-		this.StartCoroutine ("ToggleEditionButtons");
+		if(panelState == PanelStates.CLOSED)
+			this.OpenPanel (null);
+
+		this.StartCoroutine ("ToggleFloattingButtons");
 
 		editionState = EditionStates.MOVING_TO_BUILDING;
 		cameraState = CameraStates.FLYING;
@@ -467,6 +485,7 @@ public class BuildingEditor : MonoBehaviour {
 		set { movingState = value; }
 	}
 
+
 	public SelectionRanges SelectionRange {
 		get { return selectionRange; }
 		set { selectionRange = value; }
@@ -475,6 +494,11 @@ public class BuildingEditor : MonoBehaviour {
 	public CameraStates CameraState {
 		get { return cameraState; }
 		set { cameraState = value; }
+	}
+
+	public PanelStates PanelState {
+		get { return panelState; }
+		set { panelState = value; }
 	}
 
 	public ArrayList MovedObjects {

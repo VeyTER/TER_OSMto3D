@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour {
 	void Update () {
 		Vector3 localPosition = transform.localPosition;
 
-		if(buildingEditor.EditionState == BuildingEditor.EditionStates.NONE_SELECTION) {
+		if(buildingEditor.CameraState == BuildingEditor.CameraStates.FREE) {
 			if (Input.GetKey (KeyCode.LeftControl)) {
 				if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
 					transform.Rotate (new Vector3 (-1, 0, 0));
