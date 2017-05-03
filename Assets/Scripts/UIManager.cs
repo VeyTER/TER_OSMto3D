@@ -33,8 +33,14 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		switch (name) {
 		case UINames.MOVE_HANDLER:
-			if(buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE && buildingEditor.MovingState == BuildingEditor.MovingStates.MOTIONLESS)
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE && buildingEditor.MovingState == BuildingEditor.MovingStates.MOTIONLESS) {
 				buildingEditor.StartObjectMoving ();
+			}
+			break;
+		case UINames.TURN_HANDLER:
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.TURNING_MODE && buildingEditor.TurningState == BuildingEditor.TurningStates.MOTIONLESS) {
+				buildingEditor.StartObjectTurning ();
+			}
 			break;
 		}
 	}
@@ -45,8 +51,14 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		switch (name) {
 		case UINames.MOVE_HANDLER:
-			if(buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE && buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE && buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING) {
 				buildingEditor.UpdateObjectMoving ();
+			}
+			break;
+		case UINames.TURN_HANDLER:
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.TURNING_MODE && buildingEditor.TurningState == BuildingEditor.TurningStates.TURNING) {
+				buildingEditor.UpdateObjectTurning ();
+			}
 			break;
 		}
 	}
@@ -57,8 +69,14 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		switch (name) {
 		case UINames.MOVE_HANDLER:
-			if(buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE && buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING)
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE && buildingEditor.MovingState == BuildingEditor.MovingStates.MOVING) {
 				buildingEditor.EndObjectMoving ();
+			}
+			break;
+		case UINames.TURN_HANDLER:
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.TURNING_MODE && buildingEditor.TurningState == BuildingEditor.TurningStates.TURNING) {
+				buildingEditor.EndObjectTurning ();
+			}
 			break;
 		}
 	}
@@ -105,10 +123,13 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 
 		case UINames.BUILDING_NAME_TEXT_INPUT:
+			
 			break;
 		case UINames.TEMPERATURE_INDICATOR_TEXT_INPUT:
+			
 			break;
 		case UINames.HUMIDITY_INDICATOR_TEXT_INPUT:
+			
 			break;
 		case UINames.MOVE_BUTTON:
 			if (buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT) {
@@ -117,10 +138,16 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			}
 			break;
 		case UINames.TURN_BUTTON:
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT) {
+				buildingEditor.EnterTurningMode ();
+				buildingEditor.InitialiseTurningMode ();
+			}
 			break;
 		case UINames.CHANGE_HEIGHT_BUTTON:
+			
 			break;
 		case UINames.CHANGE_COLOR_BUTTON:
+			
 			break;
 		case UINames.SLIDE_PANEL_BUTTON:
 			if (buildingEditor.EditionState != BuildingEditor.EditionStates.NONE_SELECTION) {
@@ -131,9 +158,10 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			}
 			break;
 		case UINames.VALIDATE_BUTTON:
+			
 			break;
 		case UINames.CANCEL_BUTTON:
-			if (buildingEditor.EditionState != BuildingEditor.EditionStates.READY_TO_EDIT) {
+			if (buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT) {
 				buildingEditor.ExitBuilding ();
 			}
 			break;
@@ -141,6 +169,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (buildingEditor.EditionState != BuildingEditor.EditionStates.NONE_SELECTION) {
 				buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.WALL;
 				buildingEditor.InitialiseMovingMode ();
+				buildingEditor.InitialiseTurningMode ();
 				this.enableWallRangeButton ();
 			}
 			break;
@@ -148,6 +177,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (buildingEditor.EditionState != BuildingEditor.EditionStates.NONE_SELECTION) {
 				buildingEditor.SelectionRange = BuildingEditor.SelectionRanges.BUILDING;
 				buildingEditor.InitialiseMovingMode ();
+				buildingEditor.InitialiseTurningMode ();
 				this.enableBuildingRangeButton ();
 			}
 			break;
@@ -155,12 +185,18 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE) {
 				buildingEditor.ValidateEdit ();
 				buildingEditor.ExitMovingMode ();
+			} else if (buildingEditor.EditionState == BuildingEditor.EditionStates.TURNING_MODE) {
+				buildingEditor.ValidateEdit ();
+				buildingEditor.ExitTurningMode ();
 			}
 			break;
 		case UINames.CANCEL_EDITION_BUTTON:
 			if (buildingEditor.EditionState == BuildingEditor.EditionStates.MOVING_MODE) {
 				buildingEditor.CancelEdit ();
 				buildingEditor.ExitMovingMode ();
+			} if (buildingEditor.EditionState == BuildingEditor.EditionStates.TURNING_MODE) {
+				buildingEditor.CancelEdit ();
+				buildingEditor.ExitTurningMode ();
 			}
 			break;
 		}

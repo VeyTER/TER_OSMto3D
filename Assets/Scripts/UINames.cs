@@ -19,6 +19,7 @@ public class UINames {
 	public const string CHANGE_COLOR_BUTTON = "ChangeColorButton";
 
 	public const string MOVE_HANDLER = "MoveHandler";
+	public const string TURN_HANDLER = "TurnHandler";
 
 	public const string SLIDE_PANEL_BUTTON = "SlidePanelButton";
 	public const string VALDIATE_EDITION_BUTTON = "ValidateEditionButton";

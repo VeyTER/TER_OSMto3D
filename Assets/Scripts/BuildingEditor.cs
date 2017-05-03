@@ -24,6 +24,7 @@ public class BuildingEditor : MonoBehaviour {
 	public enum PanelStates { CLOSED, CLOSED_TO_OPEN, OPEN, OPEN_TO_CLOSED }
 
 	public enum MovingStates { MOTIONLESS, MOVING}
+	public enum TurningStates { MOTIONLESS, TURNING}
 
 	private EditionStates editionState;
 	private SelectionRanges selectionRange;
@@ -33,28 +34,31 @@ public class BuildingEditor : MonoBehaviour {
 	private PanelStates panelState;
 
 	private MovingStates movingState;
+	private TurningStates turningState;
 
 	private ObjectBuilder objectBuilder;
 	private BuildingsTools buildingsTools;
 
-	private ArrayList movedObjects;
+	private ArrayList editedObjects;
 	private ArrayList turnedObjects;
 
 	private GameObject selectedWall;
 	private GameObject selectedBuilding;
 
 	private Vector3 selectedWallInitPos;
-	private Quaternion selectedWallInitRot;
+	private float selectedWallInitAngle;
 
 	private Vector3 selectedBuildingInitPos;
-	private Quaternion selectedBuildingInitRot;
+	private float selectedBuildingInitAngle;
 
 	private Vector3 cameraInitPosition;
 	private Quaternion cameraInitRotation;
 
 	private GameObject moveHandler;
-	private Vector2 moveHandlerInitPosition;
 	private Vector2 moveHandlerInitOffset;
+
+	private GameObject turnHandler;
+	private float turnHandlerInitOffset;
 
 	private GameObject slidePanelButton;
 	private GameObject validateEditionButton;
@@ -65,9 +69,6 @@ public class BuildingEditor : MonoBehaviour {
 
 	private GameObject lateralPanel;
 
-	private bool wallEdited;
-	private bool buildingEdited;
-
 	public void Start() {
 		this.editionState = EditionStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.BUILDING;
@@ -76,15 +77,19 @@ public class BuildingEditor : MonoBehaviour {
 		this.panelState = PanelStates.CLOSED;
 
 		this.movingState = MovingStates.MOTIONLESS;
+		this.turningState = TurningStates.MOTIONLESS;
 
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 		this.buildingsTools = BuildingsTools.GetInstance ();
 
-		this.movedObjects = new ArrayList ();
+		this.editedObjects = new ArrayList ();
 		this.turnedObjects = new ArrayList ();
 
 		this.moveHandler = GameObject.Find(UINames.MOVE_HANDLER);
 		this.moveHandler.SetActive (false);
+
+		this.turnHandler = GameObject.Find(UINames.TURN_HANDLER);
+		this.turnHandler.SetActive (false);
 
 		this.validateEditionButton = GameObject.Find(UINames.VALDIATE_EDITION_BUTTON);
 		this.cancelEditionButton = GameObject.Find(UINames.CANCEL_EDITION_BUTTON);
@@ -104,9 +109,6 @@ public class BuildingEditor : MonoBehaviour {
 
 		this.lateralPanel = GameObject.Find (UINames.LATERAL_PANEL);
 		this.lateralPanel.SetActive(false);
-
-		this.wallEdited = false;
-		this.buildingEdited = false;
 	}
 
 	public void SwitchBuilding(GameObject selectedWall) {
@@ -366,7 +368,6 @@ public class BuildingEditor : MonoBehaviour {
 		Vector3 objectScreenPosition = mainCamera.WorldToScreenPoint (objectPosition);
 		moveHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
 
-		float objectHeight = objectScale.y;
 		if (selectionRange == SelectionRanges.WALL)
 			selectedWallInitPos = objectPosition;
 		else if (selectionRange == SelectionRanges.BUILDING)
@@ -392,12 +393,9 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	public void StartObjectMoving() {
-		moveHandlerInitPosition = moveHandler.transform.position;
+		Vector2 moveHandlerInitPosition = moveHandler.transform.position;
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandlerInitOffset = mousePosition - moveHandlerInitPosition;
-
-		wallEdited = selectionRange == SelectionRanges.WALL;
-		buildingEdited = selectionRange == SelectionRanges.BUILDING;
 
 		this.MoveObject ();
 
@@ -411,16 +409,10 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	private void MoveObject() {
-		float objectHeight = -1;
-		if (selectionRange == SelectionRanges.WALL)
-			objectHeight = selectedWall.transform.localScale.y;
-		else if(selectionRange == SelectionRanges.BUILDING)
-			objectHeight = selectedBuilding.transform.localScale.y;
-
 		Camera mainCamera = Camera.main;
-		Vector3 modeHandlerPosition = moveHandler.transform.position;
+		Vector3 moveHandlerPosition = moveHandler.transform.position;
 
-		Vector3 selectedObjectCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(modeHandlerPosition.x, modeHandlerPosition.y, mainCamera.transform.position.y));
+		Vector3 selectedObjectCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(moveHandlerPosition.x, moveHandlerPosition.y, mainCamera.transform.position.y));
 		if (selectionRange == SelectionRanges.WALL)
 			selectedWall.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedWall.transform.position.y, selectedObjectCurrentPos.z);
 		else if (selectionRange == SelectionRanges.BUILDING)
@@ -453,26 +445,172 @@ public class BuildingEditor : MonoBehaviour {
 		mainCamera.transform.localPosition = newCameraPosition;
 	}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	public void EnterTurningMode() {
+		this.ClosePanel (null);
+		this.StartCoroutine ("ToggleFloattingButtons");
+		turnHandler.SetActive (true);
+		editionState = EditionStates.TURNING_MODE;
+	}
+
+	public void InitialiseTurningMode() {
+		Camera mainCamera = Camera.main;
+
+		Vector3 objectPosition = Vector3.zero;
+		float objectAngle = 0;
+		Vector3 objectScale = Vector3.zero;
+
+		if (selectionRange == SelectionRanges.WALL) {
+			objectPosition = selectedWall.transform.position;
+			objectAngle = selectedWall.transform.rotation.y;
+			objectScale = selectedWall.transform.localScale;
+		} else if (selectionRange == SelectionRanges.BUILDING) {
+			objectPosition = selectedBuilding.transform.position;
+			objectAngle = selectedBuilding.transform.rotation.y;
+			objectScale = selectedBuilding.transform.localScale;
+		}
+
+		Vector3 objectScreenPosition = mainCamera.WorldToScreenPoint (objectPosition);
+		turnHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
+
+		Quaternion turnHandlerRotation = turnHandler.transform.rotation;
+		if (selectionRange == SelectionRanges.WALL) {
+			selectedWallInitAngle = objectAngle;
+			turnHandler.transform.rotation = Quaternion.Euler (turnHandlerRotation.x, turnHandlerRotation.z, 360 - selectedWall.transform.localRotation.eulerAngles.y); 
+		} else if (selectionRange == SelectionRanges.BUILDING) {
+			selectedBuildingInitAngle = objectAngle;
+			turnHandler.transform.rotation = Quaternion.Euler (turnHandlerRotation.x, turnHandlerRotation.z,  360 - selectedBuilding.transform.rotation.eulerAngles.y); 
+		}
+	}
+
+	public void ExitTurningMode() {
+		turnHandler.SetActive (false);
+
+		if(panelState == PanelStates.CLOSED)
+			this.OpenPanel (null);
+
+		this.StartCoroutine ("ToggleFloattingButtons");
+
+		editionState = EditionStates.MOVING_TO_BUILDING;
+		cameraState = CameraStates.FLYING;
+
+		this.StartCoroutine (this.MoveToBuilding (() => {
+				editionState = EditionStates.READY_TO_EDIT;
+				cameraState = CameraStates.FIXED;
+			})
+		);
+	}
+
+	public void StartObjectTurning() {
+		Vector3 turnHandlerPosition = turnHandler.transform.position;
+		float turnHandlerAngle = 360 - selectedBuilding.transform.rotation.eulerAngles.y;
+
+		Vector2 relativeMousePosition = new Vector2(turnHandlerPosition.x, turnHandlerPosition.y) - new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
+		float mouseAngle = (float)((2 * Math.PI) - (Math.Atan2 (relativeMousePosition.x, relativeMousePosition.y) + Math.PI));
+
+		turnHandlerInitOffset = mouseAngle - turnHandlerAngle * Mathf.Deg2Rad;
+
+		this.TurnObject ();
+
+		turningState = TurningStates.TURNING;
+	}
+
+	public void UpdateObjectTurning() {
+		Vector3 turnHandlerPosition = turnHandler.transform.position;
+
+		Vector2 relativeMousePosition = new Vector2(turnHandlerPosition.x, turnHandlerPosition.y) - new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
+		float mouseAngle = (float)((2 * Math.PI) - (Math.Atan2 (relativeMousePosition.x, relativeMousePosition.y) + Math.PI));
+
+		Quaternion turnHandlerRotation = turnHandler.transform.rotation;
+		turnHandler.transform.rotation = Quaternion.Euler(turnHandlerRotation.eulerAngles.x, turnHandlerRotation.eulerAngles.y, (mouseAngle - turnHandlerInitOffset) * Mathf.Rad2Deg);
+
+		this.TurnObject ();
+	}
+
+	private void TurnObject() {
+		Camera mainCamera = Camera.main;
+		float turnHandlerAngle = 360 - turnHandler.transform.rotation.eulerAngles.z;
+
+		if (selectionRange == SelectionRanges.WALL) {
+			Quaternion selectedWallRotation = selectedWall.transform.rotation;
+			selectedWall.transform.rotation = Quaternion.Euler (selectedWallRotation.eulerAngles.x, turnHandlerAngle, selectedWallRotation.eulerAngles.z);
+		} else if (selectionRange == SelectionRanges.BUILDING) {
+			Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
+			selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.eulerAngles.x, turnHandlerAngle, selectedBuildingRotation.eulerAngles.z);
+		}
+	}
+
+	public void EndObjectTurning() {
+		turningState = TurningStates.MOTIONLESS;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	public void ValidateEdit() {
-		if (wallEdited && movedObjects.Contains(selectedWall))
-			movedObjects.Add (selectedWall);
+		if (selectionRange == SelectionRanges.WALL && editedObjects.Contains(selectedWall))
+			editedObjects.Add (selectedWall);
 
-		if (buildingEdited && movedObjects.Contains(SelectedBuilding))
-			movedObjects.Add (selectedBuilding);
-
-		wallEdited = false;
-		buildingEdited = false;
+		if (selectionRange == SelectionRanges.BUILDING && editedObjects.Contains(SelectedBuilding))
+			editedObjects.Add (selectedBuilding);
 	}
 
 	public void CancelEdit() {
-		if(wallEdited)
-			selectedWall.transform.position = selectedWallInitPos;
+		if (selectionRange == SelectionRanges.WALL) {
+			if (editionState == EditionStates.MOVING_MODE) {
+				selectedWall.transform.position = selectedWallInitPos;
+			} else if (editionState == EditionStates.TURNING_MODE) {
+				Quaternion selectedWallRotation = selectedWall.transform.rotation;
+				selectedWall.transform.rotation = Quaternion.Euler (selectedWallRotation.eulerAngles.x, selectedWallInitAngle * Mathf.Rad2Deg, selectedWallRotation.eulerAngles.z);
+			}
+		}
 
-		if(buildingEdited)
-			selectedBuilding.transform.rotation = selectedBuildingInitRot;
-
-		wallEdited = false;
-		buildingEdited = false;
+		if (selectionRange == SelectionRanges.BUILDING) {
+			if (editionState == EditionStates.MOVING_MODE) {
+				selectedBuilding.transform.position = selectedBuildingInitPos;
+			} else if (editionState == EditionStates.TURNING_MODE) {
+				Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
+				selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.eulerAngles.x, selectedBuildingInitAngle * Mathf.Rad2Deg, selectedBuildingRotation.eulerAngles.z);
+			}
+		}
 	}
 
 	public EditionStates EditionState {
@@ -485,6 +623,10 @@ public class BuildingEditor : MonoBehaviour {
 		set { movingState = value; }
 	}
 
+	public TurningStates TurningState {
+		get { return turningState; }
+		set { turningState = value; }
+	}
 
 	public SelectionRanges SelectionRange {
 		get { return selectionRange; }
@@ -502,7 +644,7 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	public ArrayList MovedObjects {
-		get { return movedObjects; }
+		get { return editedObjects; }
 	}
 
 	public ArrayList TurnedObjects {
