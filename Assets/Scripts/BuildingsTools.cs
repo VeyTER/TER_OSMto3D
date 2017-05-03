@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using UnityEngine.UI;
 
 public class BuildingsTools {
 	private ObjectBuilder objectBuilder;
@@ -15,7 +16,16 @@ public class BuildingsTools {
 		return BuildingsToolsInstanceHolder.instance;
 	}
 
-	public void DiscolorAll() {
+	public void ChangeBuildingName(string newName) {
+		InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
+
+		int i = 0;
+		for (; i < textInputs.Length && textInputs[i].name.Equals (UINames.BUILDING_NAME_TEXT_INPUT); i++);
+		if (i < textInputs.Length)
+			textInputs[i].text = newName;
+	}
+
+	public void DiscolorAllBuildings() {
 		foreach (Transform currentBuildingGo in objectBuilder.WallGroups.transform) {
 			foreach (Transform currentWallGo in currentBuildingGo.transform) {
 				Renderer meshRenderer = currentWallGo.GetComponent<Renderer> ();

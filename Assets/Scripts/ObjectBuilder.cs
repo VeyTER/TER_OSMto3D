@@ -173,7 +173,7 @@ public class ObjectBuilder {
 				}
 
 				Vector3 wallBroupCenter = buildingsTools.BuildingCenter(wallGroup);
-				wallGroup.transform.position = new Vector3 (wallBroupCenter.x, 0, wallBroupCenter.z);
+				wallGroup.transform.position = wallBroupCenter;
 				foreach (Transform wallTransform in wallGroup.transform)
 					wallTransform.transform.position -= wallGroup.transform.position;
 

@@ -12,7 +12,7 @@ public class Main : MonoBehaviour {
 	private string OSMFileName1;
 	private string OSMFileName2;
 
-	public static GameObject panel = null;
+	private GameObject lateralPanel;
 
 	// création d'une instance de GestFile
 	private FileManager fileManager;
@@ -22,8 +22,8 @@ public class Main : MonoBehaviour {
 
 	// Fonction lancée à l'initialisation de la scene
 	public void Start() {
-		this.objectBuilder = ObjectBuilder.GetInstance();
-		this.fileManager = new FileManager();
+		objectBuilder = ObjectBuilder.GetInstance();
+		fileManager = new FileManager();
 
 		this.SetUpUI ();
 
@@ -95,11 +95,11 @@ public class Main : MonoBehaviour {
 		}
 
 		// on recupere la reference du panneau et on le desactive
-		panel = GameObject.Find (UINames.INFO_PANEL);
+		lateralPanel = GameObject.Find (UINames.LATERAL_PANEL);
 
-		Vector3 panelPosition = panel.transform.localPosition;
-		RectTransform panelRectTransform = (RectTransform)panel.transform;
-		panel.transform.localPosition = new Vector3 (panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
+		Vector3 panelPosition = lateralPanel.transform.localPosition;
+		RectTransform panelRectTransform = (RectTransform)lateralPanel.transform;
+		lateralPanel.transform.localPosition = new Vector3 (panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
 	}
 
 	// / <summary>

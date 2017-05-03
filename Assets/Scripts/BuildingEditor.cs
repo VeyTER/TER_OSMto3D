@@ -20,7 +20,7 @@ public class BuildingEditor : MonoBehaviour {
 
 	public enum SelectionRanges { WALL, BUILDING }
 
-	// TODO : Faire le même chose mais pour la caméra
+	public enum CameraStates { FREE, FIXED, FLYING}
 	public enum PanelStates { CLOSED, CLOSED_TO_OPEN, OPEN, OPEN_TO_CLOSED }
 
 	public enum MovingStates { MOTIONLESS, MOVING}
@@ -28,8 +28,14 @@ public class BuildingEditor : MonoBehaviour {
 	private EditionStates editionState;
 	private SelectionRanges selectionRange;
 
+	private CameraStates cameraState;
+
 	private PanelStates panelState;
+
 	private MovingStates movingState;
+
+	private ObjectBuilder objectBuilder;
+	private BuildingsTools buildingsTools;
 
 	private ArrayList movedObjects;
 	private ArrayList turnedObjects;
@@ -43,9 +49,6 @@ public class BuildingEditor : MonoBehaviour {
 	private Vector3 selectedBuildingInitPos;
 	private Quaternion selectedBuildingInitRot;
 
-	private ObjectBuilder objectBuilder;
-	private BuildingsTools buildingsTools;
-
 	private Vector3 cameraInitPosition;
 	private Quaternion cameraInitRotation;
 
@@ -53,59 +56,65 @@ public class BuildingEditor : MonoBehaviour {
 	private Vector2 moveHandlerInitPosition;
 	private Vector2 moveHandlerInitOffset;
 
+	private GameObject slidePanelButton;
 	private GameObject validateEditionButton;
 	private GameObject cancelEditionButton;
 
 	private GameObject wallRangeButton;
 	private GameObject buildingRangeButton;
 
+	private GameObject lateralPanel;
+
 	private bool wallEdited;
 	private bool buildingEdited;
 
 	public void Start() {
-		editionState = EditionStates.NONE_SELECTION;
-		selectionRange = SelectionRanges.BUILDING;
-		panelState = PanelStates.CLOSED;
-		movingState = MovingStates.MOTIONLESS;
+		this.editionState = EditionStates.NONE_SELECTION;
+		this.selectionRange = SelectionRanges.BUILDING;
 
-		objectBuilder = ObjectBuilder.GetInstance ();
-		buildingsTools = BuildingsTools.GetInstance ();
+		this.cameraState = CameraStates.FREE;
+		this.panelState = PanelStates.CLOSED;
 
-		moveHandler = GameObject.Find(UINames.MOVE_HANDLER);
-		moveHandler.SetActive (false);
+		this.movingState = MovingStates.MOTIONLESS;
 
-		validateEditionButton = GameObject.Find(UINames.VALDIATE_EDITION_BUTTON);
-		cancelEditionButton = GameObject.Find(UINames.CANCEL_EDITION_BUTTON);
+		this.objectBuilder = ObjectBuilder.GetInstance ();
+		this.buildingsTools = BuildingsTools.GetInstance ();
 
-		validateEditionButton.transform.localScale = Vector3.zero;
-		cancelEditionButton.transform.localScale = Vector3.zero;
+		this.movedObjects = new ArrayList ();
+		this.turnedObjects = new ArrayList ();
 
-		wallRangeButton = GameObject.Find(UINames.WALL_RANGE_BUTTON);
-		buildingRangeButton = GameObject.Find(UINames.BUILDING_RANGE_BUTTON);
+		this.moveHandler = GameObject.Find(UINames.MOVE_HANDLER);
+		this.moveHandler.SetActive (false);
 
-		wallRangeButton.transform.localScale = Vector3.zero;
-		buildingRangeButton.transform.localScale = Vector3.zero;
+		this.validateEditionButton = GameObject.Find(UINames.VALDIATE_EDITION_BUTTON);
+		this.cancelEditionButton = GameObject.Find(UINames.CANCEL_EDITION_BUTTON);
+
+		this.slidePanelButton = GameObject.Find (UINames.SLIDE_PANEL_BUTTON);
+		this.validateEditionButton.transform.localScale = Vector3.zero;
+		this.cancelEditionButton.transform.localScale = Vector3.zero;
+
+		this.wallRangeButton = GameObject.Find(UINames.WALL_RANGE_BUTTON);
+		this.buildingRangeButton = GameObject.Find(UINames.BUILDING_RANGE_BUTTON);
+
+		this.wallRangeButton.transform.localScale = Vector3.zero;
+		this.buildingRangeButton.transform.localScale = Vector3.zero;
 
 		Button wallrangeButtonComponent = buildingRangeButton.GetComponent<Button> ();
 		wallrangeButtonComponent.interactable = false;
 
-		movedObjects = new ArrayList ();
-		turnedObjects = new ArrayList ();
+		this.lateralPanel = GameObject.Find (UINames.LATERAL_PANEL);
+		this.lateralPanel.SetActive(false);
 
-		wallEdited = false;
-		buildingEdited = false;
-
-		Main.panel.SetActive(false);
+		this.wallEdited = false;
+		this.buildingEdited = false;
 	}
 
-	public void ChangeBuilding(GameObject selectedWall) {
-		selectedWall = selectedWall;
+	public void SwitchBuilding(GameObject selectedWall) {
+		this.selectedWall = selectedWall;
 		selectedBuilding = selectedWall.transform.parent.gameObject;
 
 		// Récupération du bâtiment correspondant au mur sélectionné
-		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 		NodeGroup buildingNgp = buildingsTools.WallToBuildingNodeGroup (selectedWall);
-
 		string identifier = selectedWall.name.Substring (0, selectedWall.name.LastIndexOf ("_"));
 
 		// Si le bâtiment n'a pas de nom défini, ajouter un prefixe dans son affichage
@@ -113,74 +122,52 @@ public class BuildingEditor : MonoBehaviour {
 		if (double.TryParse (identifier, out parsedValue))
 			identifier = "Bâtiment n°" + identifier;
 
-		if (buildingNgp != null) {
-			// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
-
-			if (Main.panel.activeInHierarchy == false) {
-				Main.panel.SetActive (true);
-				this.OpenPanel (null);
-			}
-
-			InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
-
-			int i = 0;
-			for (; i < textInputs.Length && textInputs[i].name.Equals (UINames.BUILDING_NAME_TEXT_INPUT); i++);
-
-			if (i < textInputs.Length)
-				textInputs[i].text = identifier;
-
-			this.ChangeBuildingsColor ();
-
-			GameObject mainCameraGo = Camera.main.gameObject;
-			UIManager UIManager = FindObjectOfType<UIManager> ();
-
-			if (editionState == EditionStates.NONE_SELECTION) {
-				Vector3 cameraPosition = mainCameraGo.transform.position;
-				Quaternion cameraRotation = mainCameraGo.transform.rotation;
-
-				cameraInitPosition = new Vector3 (cameraPosition.x, cameraPosition.y, cameraPosition.z);
-				cameraInitRotation = new Quaternion (cameraRotation.x, cameraRotation.y, cameraRotation.z, cameraRotation.w);
-			}
-
-			editionState = EditionStates.MOVING_TO_BUILDING;
-			this.StartCoroutine (
-				this.MoveToBuilding(() => {
-					editionState = EditionStates.READY_TO_EDIT;
-				})
-			);
+		if (lateralPanel.activeInHierarchy == false) {
+			lateralPanel.SetActive (true);
+			this.OpenPanel (null);
 		}
-	}
 
-	/// <summary>
-	/// Change la couleur du bâtiment pointé.
-	/// </summary>
-	public void ChangeBuildingsColor () {
-		GameObject buildingGo = selectedWall.transform.parent.gameObject;
+		// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
+		buildingsTools.ChangeBuildingName(identifier);
 
-		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-		buildingsTools.DiscolorAll ();
-		buildingsTools.ColorAsSelected (buildingGo);
+		buildingsTools.DiscolorAllBuildings ();
+		buildingsTools.ColorAsSelected (selectedBuilding);
+
+		if (editionState == EditionStates.NONE_SELECTION) {
+			GameObject mainCameraGo = Camera.main.gameObject;
+			cameraInitPosition = mainCameraGo.transform.position;
+			cameraInitRotation = mainCameraGo.transform.rotation;
+		}
+
+		editionState = EditionStates.MOVING_TO_BUILDING;
+		cameraState = CameraStates.FLYING;
+
+		this.StartCoroutine (
+			this.MoveToBuilding(() => {
+				editionState = EditionStates.READY_TO_EDIT;
+				cameraState = CameraStates.FIXED;
+			})
+		);
 	}
 
 	public IEnumerator MoveToBuilding(Action finalAction) {
 		GameObject mainCameraGo = Camera.main.gameObject;
-		GameObject building = selectedWall.transform.parent.gameObject;
 
 		Vector3 cameraPosition = mainCameraGo.transform.position;
 		Quaternion cameraRotation = mainCameraGo.transform.rotation;
 
-		Vector3 targetPosition = building.transform.position;
+		Vector3 targetPosition = selectedBuilding.transform.position;
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (90, 90, 0));
 
 		float cameraFOV = Camera.main.fieldOfView;
-		float buildingHeight = building.transform.localScale.y;
-		double buildingRadius = buildingsTools.BuildingRadius (building);
-		float cameraHeight = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
+		float buildingHeight = selectedBuilding.transform.localScale.y;
+		double buildingRadius = buildingsTools.BuildingRadius (selectedBuilding);
+		float cameraPosZ = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
 
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float) Math.Sin (i * (Math.PI) / 2F);
 
-			Vector3 cameraCurrentPosition = Vector3.Lerp (cameraPosition, new Vector3(targetPosition.x, cameraHeight, targetPosition.z), cursor);
+			Vector3 cameraCurrentPosition = Vector3.Lerp (cameraPosition, new Vector3(targetPosition.x, cameraPosZ, targetPosition.z), cursor);
 			Quaternion cameraCurrentRotation = Quaternion.Lerp (cameraRotation, targetRotation, cursor);
 
 			mainCameraGo.transform.position = cameraCurrentPosition;
@@ -189,7 +176,7 @@ public class BuildingEditor : MonoBehaviour {
 			yield return new WaitForSeconds (0.01F);
 		}
 
-		mainCameraGo.transform.position = new Vector3(targetPosition.x, cameraHeight, targetPosition.z);
+		mainCameraGo.transform.position = new Vector3(targetPosition.x, cameraPosZ, targetPosition.z);
 		mainCameraGo.transform.rotation = targetRotation;
 
 		if(finalAction != null)
@@ -198,7 +185,6 @@ public class BuildingEditor : MonoBehaviour {
 
 	public IEnumerator MoveToInitSituation(Action finalAction) {
 		GameObject mainCameraGo = Camera.main.gameObject;
-		GameObject buildingGo = selectedWall.transform.parent.gameObject;
 
 		Vector3 buildingPosition = mainCameraGo.transform.position;
 		Quaternion buildingRotation = mainCameraGo.transform.rotation;
@@ -227,35 +213,34 @@ public class BuildingEditor : MonoBehaviour {
 
 	public void TogglePanel(Action finalAction) {
 		if (panelState == PanelStates.CLOSED) {
-			panelState = PanelStates.CLOSED_TO_OPEN;
 			this.StartCoroutine ( this.SlidePanel (finalAction, -1) );
+			panelState = PanelStates.CLOSED_TO_OPEN;
 		} else if (panelState == PanelStates.OPEN) {
-			panelState = PanelStates.OPEN_TO_CLOSED;
 			this.StartCoroutine ( this.SlidePanel (finalAction, 1) );
+			panelState = PanelStates.OPEN_TO_CLOSED;
 		}
 	}
 
 	public void OpenPanel(Action finalAction) {
 		if(panelState == PanelStates.CLOSED) {
-			panelState = PanelStates.CLOSED_TO_OPEN;
 			this.StartCoroutine ( this.SlidePanel(finalAction, -1) );
+			panelState = PanelStates.CLOSED_TO_OPEN;
 		}
 	}
 
 	public void ClosePanel(Action finalAction) {
 		if(panelState == PanelStates.OPEN) {
-			panelState = PanelStates.OPEN_TO_CLOSED;
 			this.StartCoroutine ( this.SlidePanel(finalAction, 1) );
+			panelState = PanelStates.OPEN_TO_CLOSED;
 		}
 	}
 
 	private IEnumerator SlidePanel(Action finalAction, int direction) {
 		direction = direction > 0 ? 1 : -1;
 
-		Vector3 panelPosition = Main.panel.transform.localPosition;
-		RectTransform panelRectTransform = (RectTransform)Main.panel.transform;
+		Vector3 panelPosition = lateralPanel.transform.localPosition;
+		RectTransform panelRectTransform = (RectTransform)lateralPanel.transform;
 
-		GameObject slidePanelButton = GameObject.Find (UINames.SLIDE_PANEL_BUTTON);
 		Vector3 panelButtonPosition = slidePanelButton.transform.localPosition;
 		Quaternion panelButtonRotation = slidePanelButton.transform.localRotation;
 
@@ -268,7 +253,7 @@ public class BuildingEditor : MonoBehaviour {
 		float panelButtonInitRotZ = panelButtonRotation.eulerAngles.z;
 		float targetPanelButtonRotZ = panelButtonRotation.eulerAngles.z + (direction * 180);
 
-		Transform panelTransform = Main.panel.transform;
+		Transform panelTransform = lateralPanel.transform;
 		Transform panelButtonTransform = slidePanelButton.transform;
 
 		for (double i = 0; i <= 1; i += 0.1) {
@@ -342,10 +327,10 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	public void EnterMovingMode() {
-		editionState = EditionStates.MOVING_MODE;
 		this.ClosePanel (null);
 		this.StartCoroutine ("ToggleEditionButtons");
 		moveHandler.SetActive (true);
+		editionState = EditionStates.MOVING_MODE;
 	}
 
 	public void InitialiseMovingMode() {
@@ -373,20 +358,21 @@ public class BuildingEditor : MonoBehaviour {
 	}
 
 	public void ExitMovingMode() {
-		editionState = EditionStates.MOVING_TO_BUILDING;
-
-		this.StartCoroutine (this.MoveToBuilding (() => {
-				editionState = EditionStates.READY_TO_EDIT;
-			})
-		);
+		moveHandler.SetActive (false);
 
 		this.OpenPanel (null);
 		this.StartCoroutine ("ToggleEditionButtons");
 
-		moveHandler.SetActive (false);
+		editionState = EditionStates.MOVING_TO_BUILDING;
+		cameraState = CameraStates.FLYING;
+
+		this.StartCoroutine (this.MoveToBuilding (() => {
+				editionState = EditionStates.READY_TO_EDIT;
+				cameraState = CameraStates.FIXED;
+			})
+		);
 	}
 
-	// TODO : Faire aussi pour les murs
 	public void StartObjectMoving() {
 		moveHandlerInitPosition = moveHandler.transform.position;
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
@@ -395,13 +381,18 @@ public class BuildingEditor : MonoBehaviour {
 		wallEdited = selectionRange == SelectionRanges.WALL;
 		buildingEdited = selectionRange == SelectionRanges.BUILDING;
 
+		this.MoveObject ();
+
 		movingState = MovingStates.MOVING;
 	}
 
 	public void UpdateObjectMoving() {
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandler.transform.position = mousePosition - moveHandlerInitOffset;
+		this.MoveObject ();
+	}
 
+	private void MoveObject() {
 		float objectHeight = -1;
 		if (selectionRange == SelectionRanges.WALL)
 			objectHeight = selectedWall.transform.localScale.y;
@@ -412,11 +403,10 @@ public class BuildingEditor : MonoBehaviour {
 		Vector3 modeHandlerPosition = moveHandler.transform.position;
 
 		Vector3 selectedObjectCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(modeHandlerPosition.x, modeHandlerPosition.y, mainCamera.transform.position.y));
-
 		if (selectionRange == SelectionRanges.WALL)
-			selectedWall.transform.position = selectedObjectCurrentPos;
-		else if(selectionRange == SelectionRanges.BUILDING)
-			selectedBuilding.transform.position = selectedObjectCurrentPos;
+			selectedWall.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedWall.transform.position.y, selectedObjectCurrentPos.z);
+		else if (selectionRange == SelectionRanges.BUILDING)
+			selectedBuilding.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuilding.transform.position.y, selectedObjectCurrentPos.z);
 	}
 
 	public void EndObjectMoving() {
@@ -482,6 +472,11 @@ public class BuildingEditor : MonoBehaviour {
 		set { selectionRange = value; }
 	}
 
+	public CameraStates CameraState {
+		get { return cameraState; }
+		set { cameraState = value; }
+	}
+
 	public ArrayList MovedObjects {
 		get { return movedObjects; }
 	}
@@ -508,5 +503,9 @@ public class BuildingEditor : MonoBehaviour {
 	public Quaternion CameraInitRotation {
 		get { return cameraInitRotation; }
 		set { cameraInitRotation = value; }
+	}
+
+	public GameObject LateralPanel {
+		get { return lateralPanel; }
 	}
 }

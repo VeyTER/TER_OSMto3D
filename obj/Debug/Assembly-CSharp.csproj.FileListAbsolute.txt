@@ -48,3 +48,7 @@ D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debu
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.dll
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.pdb
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Advertisements.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Purchasing.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Advertisements.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Purchasing.xml

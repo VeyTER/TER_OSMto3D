@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	private ObjectBuilder objectBuilder;
 
 	public UIManager() {
-		objectBuilder = ObjectBuilder.GetInstance ();
+		this.objectBuilder = ObjectBuilder.GetInstance ();
 	}
 
 	public void Update() {
@@ -69,7 +69,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			&& (buildingEditor.EditionState == BuildingEditor.EditionStates.NONE_SELECTION || buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT)) {
 			objectBuilder = ObjectBuilder.GetInstance ();
 
-			buildingEditor.ChangeBuilding (gameObject);
+			buildingEditor.SwitchBuilding (gameObject);
 		}
 	}
 
@@ -232,19 +232,24 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		GameObject wallGroups = objectBuilder.WallGroups;
 		BuildingEditor buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
 
-		if (buildingEditor.EditionState != BuildingEditor.EditionStates.NONE_SELECTION) {
+		if (buildingEditor.EditionState == BuildingEditor.EditionStates.READY_TO_EDIT) {
+			buildingEditor.SelectedBuilding = null;
+			buildingEditor.SelectedWall = null;
+
 			buildingEditor.EditionState = BuildingEditor.EditionStates.MOVING_TO_INITIAL_SITUATION;
+			buildingEditor.CameraState = BuildingEditor.CameraStates.FLYING;
+
+			buildingsTools.DiscolorAllBuildings ();
+
 			buildingEditor.StartCoroutine (
 				buildingEditor.MoveToInitSituation(() => {
 					buildingEditor.EditionState = BuildingEditor.EditionStates.NONE_SELECTION;
+					buildingEditor.CameraState = BuildingEditor.CameraStates.FREE;
 				})
 			);
 			buildingEditor.ClosePanel (() => {
-				Main.panel.SetActive (false);
+				buildingEditor.LateralPanel.SetActive (false);
 			});
-			buildingEditor.SelectedBuilding = null;
 		}
-
-		buildingsTools.DiscolorAll ();
 	}
 }

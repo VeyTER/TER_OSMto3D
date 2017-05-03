@@ -30,5 +30,5 @@ public class UINames {
 	public const string VALIDATE_BUTTON = "ValidateButton";
 	public const string CANCEL_BUTTON = "CancelButton";
 
-	public const string INFO_PANEL = "InfoPanel";
+	public const string LATERAL_PANEL = "LateralPanel";
 }
