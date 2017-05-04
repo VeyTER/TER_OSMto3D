@@ -48,7 +48,7 @@ public class FileManager {
 	/// Permet d'extraire les données de fichier ".osm" et de les stocker dans des objet "node" et "nodeGroup". 
 	/// </summary>
 	/// <param name="nameMap"> nom du fichier ".osm" dont on doit extraire les infos </param>
-	public void readFileOSM(string nameMap, int numMap) {
+	public void readOSMFile(string nameMap, int numMap) {
 		ArrayList nodes = new ArrayList();
 
 		string line;
@@ -152,9 +152,8 @@ public class FileManager {
 
 						foreach (Node n in nodes) {
 							// on ajoute le node a la liste de ceux qui compose le node groupe
-							if (n.Id == reference) {
+							if (n.Id == reference)
 								current.AddNode(n);
-							}
 						}
 					}
 
@@ -183,23 +182,20 @@ public class FileManager {
 						current.AddTag(key, value);
 
 						//Si la clé est un type de toit, on le rentre directement dans les valeurs du NodeGroup
-						if (key.Equals("roof:shape")) {
+						if (key.Equals("roof:shape"))
 							current.RoofType = value;
-						}
 
 						//Si la clé est le nom du batiment /de la route, on le rentre directement dans les valeurs du NodeGroup
-						if (key.Equals("name")) {
+						if (key.Equals("name"))
 							current.Name = value;
-						}
 					}
 
 					//On lit une nouvelle ligne
 					line = file.ReadLine();
 				}
 
-				if ((current.IsBuilding() || current.IsHighway()) || current.IsWaterway() ) {
+				if ((current.IsBuilding() || current.IsHighway()) || current.IsWaterway())
 					objectBuilder.NodeGroups.Add(current);
-				}             
 			}
 		}
 

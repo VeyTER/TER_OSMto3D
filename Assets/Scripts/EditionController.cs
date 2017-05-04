@@ -126,18 +126,18 @@ public class EditionController : MonoBehaviour {
 		selectedBuilding = null;
 		selectedWall = null;
 
-		editionState = EditionController.EditionStates.MOVING_TO_INITIAL_SITUATION;
-
 		buildingsTools.DiscolorAllBuildings ();
 
+		this.ClosePanel (() => {
+			lateralPanel.SetActive (false);
+		});
+
+		editionState = EditionController.EditionStates.MOVING_TO_INITIAL_SITUATION;
 		cameraController.StartCoroutine (
 			cameraController.MoveToSituation(cameraController.InitPosition, cameraController.InitRotation, () => {
 				editionState = EditionController.EditionStates.NONE_SELECTION;
 			})
 		);
-		this.ClosePanel (() => {
-			lateralPanel.SetActive (false);
-		});
 	}
 
 	public void TogglePanel(Action finalAction) {

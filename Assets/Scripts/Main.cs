@@ -32,7 +32,7 @@ public class Main : MonoBehaviour {
 
 		// Teste si un nom de fichier est renseigné sur l'interface de Unity
 		if (OSMFileName1 != null)
-			fileManager.readFileOSM (OSMFileName1, 0);
+			fileManager.readOSMFile (OSMFileName1, 0);
 
 //		if (OSMFileName2 != "null") {
 //			gf.readFileOSM (OSMFileName2, 1);
