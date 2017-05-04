@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	<earth>
-		<Info nf="1" roof="15" type="pitched"/>
-		<country c="France">
-			<Info lat="47.3833300" lon="0.6833300" dst="5" nf="1" roof="15" type="pitched"/>
-			<region r="Midi-Pyrenees">
-				<Info lat="43.600000" lon="1.433333" dst="1.1" nf="1" roof="15" type="pitched"/>
-				<town t="Toulouse">
-					<Info lat="43.600000" lon="1.433333" dst="0.8" nf="3" roof="15" type="pitched"/>
-					<district d="UPS">
-						<Info lat="43.560397" lon="1.468820" dst="0.03" nf="4" roof="0" type="flat"/>
-						<building b="IRIT">
-							<Info lat="43.561988" lon="1.467984" dst="0.0005" nf="4" roof="0" type="flat"/>
+		<info nf="1" roof="15" type="pitched"/>
+		<country designation="France">
+			<info lat="47.3833300" lon="0.6833300" dst="5" nf="1" roof="15" type="pitched"/>
+			<region designation="Midi-Pyrenees">
+				<info lat="43.600000" lon="1.433333" dst="1.1" nf="1" roof="15" type="pitched"/>
+				<town designation="Toulouse">
+					<info lat="43.600000" lon="1.433333" dst="0.8" nf="3" roof="15" type="pitched"/>
+					<district designation="UPS">
+						<info lat="43.560397" lon="1.468820" dst="0.03" nf="4" roof="0" type="flat"/>
+						<building designation="IRIT">
+							<info lat="43.561988" lon="1.467984" dst="0.0005" nf="4" roof="0" type="flat"/>
 						</building>
-						<building b="U1">
-							<Info lat="43.560284" lon="1.470247" dst="0.0005" nf="1" roof="0" type="flat"/>
+						<building designation="U1">
+							<info lat="43.560284" lon="1.470247" dst="0.0005" nf="1" roof="0" type="flat"/>
 						</building>
-						<building b="U2">
-							<Info lat="43.561316" lon="1.470514" dst="0.0006" nf="2" roof="0" type="flat"/>
+						<building designation="U2">
+							<info lat="43.561316" lon="1.470514" dst="0.0006" nf="2" roof="0" type="flat"/>
 						</building>
-						<building b="U3">
-							<Info lat="43.561982" lon="1.470014" dst="0.00045" nf="5" roof="0" type="flat"/>
+						<building designation="U3">
+							<info lat="43.561982" lon="1.470014" dst="0.00045" nf="5" roof="0" type="flat"/>
 						</building>
-						<building b="U4">
-							<Info lat="43.562723" lon="1.469149" dst="0.0005" nf="5" roof="0" type="flat"/>
+						<building designation="U4">
+							<info lat="43.562723" lon="1.469149" dst="0.0005" nf="5" roof="0" type="flat"/>
 						</building>
-						<building b="E4-SCUIO">
-							<Info lat="43.561877" lon="1.469263" dst="0.0003" nf="1" roof="0" type="flat"/>
+						<building designation="E4-SCUIO">
+							<info lat="43.561877" lon="1.469263" dst="0.0003" nf="1" roof="0" type="flat"/>
 						</building>
-						<building b="3 TP2">
-							<Info lat="43.561010" lon="1.467793" dst="0.0005" nf="1" roof="0" type="flat"/>
+						<building designation="3 TP2">
+							<info lat="43.561010" lon="1.467793" dst="0.0005" nf="1" roof="0" type="flat"/>
 						</building>
-						<building b="Administration">
-							<Info lat="43.562995" lon="1.466057" dst="0.0006" nf="3" roof="0" type="flat"/>
+						<building designation="Administration">
+							<info lat="43.562995" lon="1.466057" dst="0.0006" nf="3" roof="0" type="flat"/>
 						</building>
 					</district>
-					<district d="Centre-Ville">
-						<Info lat="43.603236" lon="1.444659" dst="0.03" nf="3" roof="15" type="pitched"/>
+					<district designation="Centre-Ville">
+						<info lat="43.603236" lon="1.444659" dst="0.03" nf="3" roof="15" type="pitched"/>
 					</district>
 				</town>
 			</region>

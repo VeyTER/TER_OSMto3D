@@ -95,7 +95,7 @@ public class BuildingsTools {
 
 		if (File.Exists (filePath)) {
 			xmlDocument.Load (filePath); 
-			XmlNodeList infosList = xmlDocument.GetElementsByTagName ("Info");
+			XmlNodeList infosList = xmlDocument.GetElementsByTagName ("info");
 
 			foreach (XmlNode infosNode in infosList) {
 				string nodeGroupId = infosNode.Attributes.GetNamedItem ("id").InnerText;

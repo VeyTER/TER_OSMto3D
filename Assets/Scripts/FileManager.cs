@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 
 public class FileManager {
 	private ObjectBuilder objectBuilder;
@@ -48,7 +49,11 @@ public class FileManager {
 	/// Permet d'extraire les données de fichier ".osm" et de les stocker dans des objet "node" et "nodeGroup". 
 	/// </summary>
 	/// <param name="nameMap"> nom du fichier ".osm" dont on doit extraire les infos </param>
-	public void readOSMFile(string nameMap, int numMap) {
+	public void readOSMFile(string mapName, int mapNum) {
+		string OSMFilePath = Application.dataPath + @"/Maps/" + mapName + ".osm";
+		XmlDocument OSMDocument = new XmlDocument(); 
+
+
 		ArrayList nodes = new ArrayList();
 
 		string line;
@@ -58,14 +63,14 @@ public class FileManager {
 		double lon = 0d;
 
 		// Read the file and display it line by line.
-		StreamReader file = new StreamReader(path + "Maps/" + nameMap + ".osm");
+		StreamReader file = new StreamReader(path + "Maps/" + mapName + ".osm");
 
 		// on commence par repertorier toutes les nodes de la  carte
 		while ((line = file.ReadLine()) != null) {
-			
+
 			// on recupère les extremites
 			if (line.Contains("<bounds")) {
-				if (numMap == 0) {
+				if (mapNum == 0) {
 					Main.minlat = double.Parse (line.Substring (line.IndexOf ("minlat=") + 8, line.IndexOf ("\" minlon=") - line.IndexOf ("minlat=") - 8));
 					Main.maxlat = double.Parse (line.Substring (line.IndexOf ("maxlat=") + 8, line.IndexOf ("\" maxlon=") - line.IndexOf ("maxlat=") - 8));
 					Main.minlon = double.Parse (line.Substring (line.IndexOf ("minlon=") + 8, line.IndexOf ("\" maxlat=") - line.IndexOf ("minlon=") - 8));
@@ -218,63 +223,63 @@ public class FileManager {
 
 		//On crée les caractéristiques par défaut dans le monde
 		file.WriteLine("\t<earth>");
-		file.WriteLine("\t\t<Info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+		file.WriteLine("\t\t<info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
 
 		//On crée les caractéristiques par défaut en France
-		file.WriteLine("\t\t<country c=\"France\">");
-		file.WriteLine("\t\t\t<Info lat=\"47.3833300\" lon=\"0.6833300\" dst=\"5\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+		file.WriteLine("\t\t<country " + Attributes.DESIGNATION + "=\"France\">");
+		file.WriteLine("\t\t\t<info lat=\"47.3833300\" lon=\"0.6833300\" dst=\"5\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
 
 		//On crée les caractéristiques par défaut en Midi-Pyrenees
-		file.WriteLine("\t\t\t<region r=\"Midi-Pyrenees\">");
-		file.WriteLine("\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"1.1\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
+		file.WriteLine("\t\t\t<region " + Attributes.DESIGNATION + "=\"Midi-Pyrenees\">");
+		file.WriteLine("\t\t\t\t<info lat=\"43.600000\" lon=\"1.433333\" dst=\"1.1\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
 
 		//On crée les caractéristiques par défaut à Toulouse
-		file.WriteLine("\t\t\t\t<town t=\"Toulouse\">");
-		file.WriteLine("\t\t\t\t\t<Info lat=\"43.600000\" lon=\"1.433333\" dst=\"0.8\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
+		file.WriteLine("\t\t\t\t<town " + Attributes.DESIGNATION + "=\"Toulouse\">");
+		file.WriteLine("\t\t\t\t\t<info lat=\"43.600000\" lon=\"1.433333\" dst=\"0.8\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
 
 		//On crée les caractéristiques par défaut à l'UPS
-		file.WriteLine("\t\t\t\t\t<district d=\"UPS\">");
-		file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.560397\" lon=\"1.468820\" dst=\"0.03\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
+		file.WriteLine("\t\t\t\t\t<district " + Attributes.DESIGNATION + "=\"UPS\">");
+		file.WriteLine("\t\t\t\t\t\t<info lat=\"43.560397\" lon=\"1.468820\" dst=\"0.03\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
 
 		//Ici on crée les caractéristiques des différents buildings de l'UPS si nous les avons
-		file.WriteLine("\t\t\t\t\t\t<building b=\"IRIT\">");
-		file.WriteLine("\t\t\t\t\t\t\t<Info lat=\"43.561988\" lon=\"1.467984\" dst=\"0.0005\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
+		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"IRIT\">");
+		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561988\" lon=\"1.467984\" dst=\"0.0005\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building b=\"U1\">");
-		file.WriteLine("\t\t\t\t\t\t\t<Info lat=\"43.560284\" lon=\"1.470247\" dst=\"0.0005\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
+		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"U1\">");
+		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.560284\" lon=\"1.470247\" dst=\"0.0005\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building b=\"U2\">");
-		file.WriteLine("\t\t\t\t\t\t\t<Info lat=\"43.561316\" lon=\"1.470514\" dst=\"0.0006\" nf=\"2\" roof=\"0\" type=\"flat\"/>");
+		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"U2\">");
+		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561316\" lon=\"1.470514\" dst=\"0.0006\" nf=\"2\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building b=\"U3\">");
-		file.WriteLine("\t\t\t\t\t\t\t<Info lat=\"43.561982\" lon=\"1.470014\" dst=\"0.00045\" nf=\"5\" roof=\"0\" type=\"flat\"/>");
+		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"U3\">");
+		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561982\" lon=\"1.470014\" dst=\"0.00045\" nf=\"5\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building b=\"U4\">");
-		file.WriteLine("\t\t\t\t\t\t\t<Info lat=\"43.562723\" lon=\"1.469149\" dst=\"0.0005\" nf=\"5\" roof=\"0\" type=\"flat\"/>");
+		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"U4\">");
+		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.562723\" lon=\"1.469149\" dst=\"0.0005\" nf=\"5\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building b=\"E4-SCUIO\">");
-		file.WriteLine("\t\t\t\t\t\t\t<Info lat=\"43.561877\" lon=\"1.469263\" dst=\"0.0003\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
+		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"E4-SCUIO\">");
+		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561877\" lon=\"1.469263\" dst=\"0.0003\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building b=\"3 TP2\">");
-		file.WriteLine("\t\t\t\t\t\t\t<Info lat=\"43.561010\" lon=\"1.467793\" dst=\"0.0005\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
+		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"3 TP2\">");
+		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561010\" lon=\"1.467793\" dst=\"0.0005\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building b=\"Administration\">");
-		file.WriteLine("\t\t\t\t\t\t\t<Info lat=\"43.562995\" lon=\"1.466057\" dst=\"0.0006\" nf=\"3\" roof=\"0\" type=\"flat\"/>");
+		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"Administration\">");
+		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.562995\" lon=\"1.466057\" dst=\"0.0006\" nf=\"3\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
 		//Si on veut rajouter des caractéristiques pour un batiment précis de l'UPS, le faire ici
 		file.WriteLine("\t\t\t\t\t</district>");
 
 		//On crée les caractéristiques par défaut à l'UPS
-		file.WriteLine("\t\t\t\t\t<district d=\"Centre-Ville\">");
-		file.WriteLine("\t\t\t\t\t\t<Info lat=\"43.603236\" lon=\"1.444659\" dst=\"0.03\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
+		file.WriteLine("\t\t\t\t\t<district " + Attributes.DESIGNATION + "=\"Centre-Ville\">");
+		file.WriteLine("\t\t\t\t\t\t<info lat=\"43.603236\" lon=\"1.444659\" dst=\"0.03\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
 
 		file.WriteLine("\t\t\t\t\t</district>");
 		//Si on veut rajouter un quartier de la ville de Toulouse, le faire ici
@@ -326,7 +331,7 @@ public class FileManager {
 			if (line.Contains("<earth ")) {
 				line = mapSettingsFile.ReadLine();
 
-				if (line.Contains("<Info ")) {
+				if (line.Contains("<info ")) {
 					nbFloor = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
 					roofAngle = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
 					roofType = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
@@ -347,7 +352,7 @@ public class FileManager {
 
 				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
 				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<Info ")) {
+				if (line.Contains("<info ")) {
 					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
 					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
 					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
@@ -370,7 +375,7 @@ public class FileManager {
 				}
 			}
 
-			//REGIONS
+			//regionS
 			if (line.Contains("<region ")) {
 				
 				//On récupère la region de la ligne
@@ -378,7 +383,7 @@ public class FileManager {
 
 				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
 				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<Info ")) {
+				if (line.Contains("<info ")) {
 					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
 					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
 					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
@@ -407,7 +412,7 @@ public class FileManager {
 
 				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
 				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<Info ")) {
+				if (line.Contains("<info ")) {
 					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
 					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
 					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
@@ -436,7 +441,7 @@ public class FileManager {
 
 				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
 				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<Info ")) {
+				if (line.Contains("<info ")) {
 					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
 					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
 					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
@@ -466,7 +471,7 @@ public class FileManager {
 
 				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
 				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<Info ")) {
+				if (line.Contains("<info ")) {
 					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
 					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
 					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
@@ -544,16 +549,16 @@ public class FileManager {
 
 		//ecriture des locations
 		foreach (string str1 in countries) {
-			file.WriteLine("\t\t<Country c=\"" + str1 + "\">");
+			file.WriteLine("\t\t<country " + Attributes.DESIGNATION + "=\"" + str1 + "\">");
 
 			foreach (string str2 in regions) {
-				file.WriteLine("\t\t\t<Region r=\"" + str2 + "\">");
+				file.WriteLine("\t\t\t<region " + Attributes.DESIGNATION + "=\"" + str2 + "\">");
 
 				foreach (string str3 in towns) {
-					file.WriteLine("\t\t\t\t<Town t=\"" + str3 + "\">");
+					file.WriteLine("\t\t\t\t<town " + Attributes.DESIGNATION + "=\"" + str3 + "\">");
 
 					foreach (string str4 in districts) {
-						file.WriteLine("\t\t\t\t\t<District d=\"" + str4 + "\">");
+						file.WriteLine("\t\t\t\t\t<district " + Attributes.DESIGNATION + "=\"" + str4 + "\">");
 
 						foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
 							if ((ngp.Country == str1) && (ngp.Region == str2) && (ngp.Town == str3) && (ngp.District== str4)) {
@@ -568,12 +573,11 @@ public class FileManager {
 
 									//On écrit ces infos sur le ...Resumed
 									file.WriteLine("\t\t\t\t\t\t<building>");
-									file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\" name=\"" + buildingName + "\" nbFloor=\"" + nbFloor + "\" type=\"" + typeRoof + "\" angle=\"" + angleRoof + "\"/>");
+									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\" name=\"" + buildingName + "\" nbFloor=\"" + nbFloor + "\" type=\"" + typeRoof + "\" angle=\"" + angleRoof + "\"/>");
 
 									//ecriture des nodes
-									foreach (Node n in ngp.Nodes) {
+									foreach (Node n in ngp.Nodes)
 										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-									}
 
 									//ecriture balise fin de building
 									file.WriteLine("\t\t\t\t\t\t</building>");
@@ -586,12 +590,11 @@ public class FileManager {
 
 									//On écrit ces infos sur le ...Resumed
 									file.WriteLine("\t\t\t\t\t\t<tree>");
-									file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\"/>");
+									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\"/>");
 
 									//ecriture des nodes
-									foreach (Node n in ngp.Nodes) {
+									foreach (Node n in ngp.Nodes)
 										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-									}
 
 									//ecriture balise fin d'arbre
 									file.WriteLine("\t\t\t\t\t\t</tree>");
@@ -604,12 +607,11 @@ public class FileManager {
 
 									//On écrit ces infos sur le ...Resumed
 									file.WriteLine("\t\t\t\t\t\t<feuTri>");
-									file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\"/>");
+									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\"/>");
 
 									//ecriture des nodes
-									foreach (Node n in ngp.Nodes) {
+									foreach (Node n in ngp.Nodes)
 										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-									}
 
 									//ecriture balise fin d'arbre
 									file.WriteLine("\t\t\t\t\t\t</feuTri>");
@@ -623,12 +625,11 @@ public class FileManager {
 
 									//On écrit ces infos sur le ...Resumed
 									file.WriteLine("\t\t\t\t\t\t<waterway>");
-									file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\"/>");
+									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\"/>");
 
 									//ecriture des nodes
-									foreach (Node n in ngp.Nodes) {
+									foreach (Node n in ngp.Nodes)
 										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-									}
 
 									//ecriture balise fin d'arbre
 									file.WriteLine("\t\t\t\t\t\t</waterway>");
@@ -645,25 +646,24 @@ public class FileManager {
 
 									//On écrit ces infos sur le ...Resumed
 									file.WriteLine("\t\t\t\t\t\t<highway>");
-									file.WriteLine("\t\t\t\t\t\t\t<Info id=\"" + ID + "\" type=\"" + typeRoute + "\" name=\"" + highwayName + "\" nbVoie=\"" + nbVoie + "\" maxspd=\"" + maxspeed + "\"/>");
+									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\" type=\"" + typeRoute + "\" name=\"" + highwayName + "\" nbVoie=\"" + nbVoie + "\" maxspd=\"" + maxspeed + "\"/>");
 
 									//ecriture des nodes
-									foreach (Node n in ngp.Nodes) {
+									foreach (Node n in ngp.Nodes)
 										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-									}
 
 									//ecriture balise fin de la route
 									file.WriteLine("\t\t\t\t\t\t</highway>");
 								}
 							}
 						}
-						file.WriteLine("\t\t\t\t\t</District>");
+						file.WriteLine("\t\t\t\t\t</district>");
 					}
-					file.WriteLine("\t\t\t\t</Town>");
+					file.WriteLine("\t\t\t\t</town>");
 				}
-				file.WriteLine("\t\t\t</Region>");
+				file.WriteLine("\t\t\t</region>");
 			}
-			file.WriteLine("\t\t</Country>");
+			file.WriteLine("\t\t</country>");
 		}
 
 		//Fermeture de le balise earth
@@ -712,17 +712,17 @@ public class FileManager {
 			}
 
 			// Recuperation des balises
-			if (line.Contains("<Country"))
-				strCou = line.Substring(line.IndexOf("c=") + 3, line.IndexOf("\">") - line.IndexOf("c=") - 3);
+			if (line.Contains("<country"))
+				strCou = line.Substring(line.IndexOf(Attributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(Attributes.DESIGNATION + "=") - 3);
 
-			if (line.Contains("<Region"))
-				strReg = line.Substring(line.IndexOf("r=") + 3, line.IndexOf("\">") - line.IndexOf("r=") - 3);
+			if (line.Contains("<region"))
+				strReg = line.Substring(line.IndexOf(Attributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(Attributes.DESIGNATION + "=") - 3);
 
-			if (line.Contains("<Town"))
-				strTow = line.Substring(line.IndexOf("t=") + 3, line.IndexOf("\">") - line.IndexOf("t=") - 3);
+			if (line.Contains("<town"))
+				strTow = line.Substring(line.IndexOf(Attributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(Attributes.DESIGNATION + "=") - 3);
 
-			if (line.Contains("<District"))
-				strDis = line.Substring(line.IndexOf("d=") + 3, line.IndexOf("\">") - line.IndexOf("d=") - 3);
+			if (line.Contains("<district"))
+				strDis = line.Substring(line.IndexOf(Attributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(Attributes.DESIGNATION + "=") - 3);
 
 			//Recuparation des batiments
 			if (line.Contains("<building")) {
