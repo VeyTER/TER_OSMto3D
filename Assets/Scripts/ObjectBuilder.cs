@@ -108,7 +108,8 @@ public class ObjectBuilder {
 	public void BuildWalls() {
 		wallGroups = new GameObject(CityNames.WALLS);
 		wallGroups.transform.parent = cityComponents.transform;
-		wallGroups.AddComponent<BuildingEditor> ();
+		wallGroups.AddComponent<EditionController> ();
+		UIManager.editionController = wallGroups.GetComponent<EditionController>();
 
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 

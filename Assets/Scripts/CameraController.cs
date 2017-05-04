@@ -3,18 +3,17 @@ using System.Collections;
 using System;
 
 public class CameraController : MonoBehaviour {
-	private BuildingEditor buildingEditor;
+	private EditionController editionController;
 
 	public void Start() {
-		GameObject wallGroups = GameObject.Find (CityNames.WALLS);
-		buildingEditor = wallGroups.GetComponent<BuildingEditor> ();
+		editionController = UIManager.editionController;
 	}
 
 	// Update is called once per frame
 	void Update () {
 		Vector3 localPosition = transform.localPosition;
 
-		if(buildingEditor.CameraState == BuildingEditor.CameraStates.FREE) {
+		if(editionController.CameraState == EditionController.CameraStates.FREE) {
 			if (Input.GetKey (KeyCode.LeftControl)) {
 				if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
 					transform.Rotate (new Vector3 (-1, 0, 0));

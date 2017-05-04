@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class BuildingEditor : MonoBehaviour {
+public class EditionController : MonoBehaviour {
 	public enum EditionStates {
 		NONE_SELECTION,
 		MOVING_TO_BUILDING,
@@ -72,6 +72,12 @@ public class BuildingEditor : MonoBehaviour {
 	private bool wallEdited;
 	private bool buildingEdited;
 
+	private EditionController() { }
+
+	public static EditionController GetInstance() {
+		return EditionControllerHolder.instance;
+	}
+
 	public void Start() {
 		this.editionState = EditionStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.BUILDING;
@@ -116,6 +122,7 @@ public class BuildingEditor : MonoBehaviour {
 		this.wallEdited = false;
 		this.buildingEdited = false;
 	}
+
 
 	public void SwitchBuilding(GameObject selectedWall) {
 		this.selectedWall = selectedWall;
@@ -195,15 +202,15 @@ public class BuildingEditor : MonoBehaviour {
 		selectedBuilding = null;
 		selectedWall = null;
 
-		editionState = BuildingEditor.EditionStates.MOVING_TO_INITIAL_SITUATION;
-		cameraState = BuildingEditor.CameraStates.FLYING;
+		editionState = EditionController.EditionStates.MOVING_TO_INITIAL_SITUATION;
+		cameraState = EditionController.CameraStates.FLYING;
 
 		buildingsTools.DiscolorAllBuildings ();
 
 		this.StartCoroutine (
 			this.MoveToInitSituation(() => {
-				editionState = BuildingEditor.EditionStates.NONE_SELECTION;
-				cameraState = BuildingEditor.CameraStates.FREE;
+				editionState = EditionController.EditionStates.NONE_SELECTION;
+				cameraState = EditionController.CameraStates.FREE;
 			})
 		);
 		this.ClosePanel (() => {
@@ -395,9 +402,9 @@ public class BuildingEditor : MonoBehaviour {
 		cameraState = CameraStates.FLYING;
 
 		this.StartCoroutine (this.MoveToBuilding (() => {
-				editionState = EditionStates.READY_TO_EDIT;
-				cameraState = CameraStates.FIXED;
-			})
+			editionState = EditionStates.READY_TO_EDIT;
+			cameraState = CameraStates.FIXED;
+		})
 		);
 	}
 
@@ -500,9 +507,9 @@ public class BuildingEditor : MonoBehaviour {
 		cameraState = CameraStates.FLYING;
 
 		this.StartCoroutine (this.MoveToBuilding (() => {
-				editionState = EditionStates.READY_TO_EDIT;
-				cameraState = CameraStates.FIXED;
-			})
+			editionState = EditionStates.READY_TO_EDIT;
+			cameraState = CameraStates.FIXED;
+		})
 		);
 	}
 
@@ -642,5 +649,9 @@ public class BuildingEditor : MonoBehaviour {
 
 	public GameObject LateralPanel {
 		get { return lateralPanel; }
+	}
+
+	public static class EditionControllerHolder {
+		public static EditionController instance = new EditionController();
 	}
 }
