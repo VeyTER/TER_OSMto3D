@@ -20,17 +20,15 @@ public class EditionController : MonoBehaviour {
 
 	public enum SelectionRanges { WALL, BUILDING }
 
-	public enum CameraStates { FREE, FLYING, FIXED}
 	public enum PanelStates { CLOSED, CLOSED_TO_OPEN, OPEN, OPEN_TO_CLOSED }
 
 	private EditionStates editionState;
 	private SelectionRanges selectionRange;
 
+	private PanelStates panelState;
+
 	private MovingEditor movingEditor;
 	private TurningEditor turningEditor;
-
-	private CameraStates cameraState;
-	private PanelStates panelState;
 
 	private BuildingsTools buildingsTools;
 
@@ -39,8 +37,7 @@ public class EditionController : MonoBehaviour {
 	private GameObject selectedWall;
 	private GameObject selectedBuilding;
 
-	private Vector3 cameraInitPosition;
-	private Quaternion cameraInitRotation;
+	private CameraController cameraController;
 
 	private GameObject slidePanelButton;
 	private GameObject validateEditionButton;
@@ -55,7 +52,6 @@ public class EditionController : MonoBehaviour {
 		this.editionState = EditionStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.BUILDING;
 
-		this.cameraState = CameraStates.FREE;
 		this.panelState = PanelStates.CLOSED;
 
 		this.movingEditor = new MovingEditor (GameObject.Find(UINames.MOVE_HANDLER));
@@ -67,6 +63,8 @@ public class EditionController : MonoBehaviour {
 
 		this.validateEditionButton = GameObject.Find(UINames.VALDIATE_EDITION_BUTTON);
 		this.cancelEditionButton = GameObject.Find(UINames.CANCEL_EDITION_BUTTON);
+
+		this.cameraController = Camera.main.GetComponent<CameraController> ();
 
 		this.slidePanelButton = GameObject.Find (UINames.SLIDE_PANEL_BUTTON);
 		this.validateEditionButton.transform.localScale = Vector3.zero;
@@ -112,53 +110,16 @@ public class EditionController : MonoBehaviour {
 
 		if (editionState == EditionStates.NONE_SELECTION) {
 			GameObject mainCameraGo = Camera.main.gameObject;
-			cameraInitPosition = mainCameraGo.transform.position;
-			cameraInitRotation = mainCameraGo.transform.rotation;
+			cameraController.InitPosition = mainCameraGo.transform.position;
+			cameraController.InitRotation = mainCameraGo.transform.rotation;
 		}
 
 		editionState = EditionStates.MOVING_TO_BUILDING;
-		cameraState = CameraStates.FLYING;
-
-		this.StartCoroutine (
-			this.MoveToBuilding(() => {
+		cameraController.StartCoroutine (
+			cameraController.MoveToBuilding(selectedBuilding, () => {
 				editionState = EditionStates.READY_TO_EDIT;
-				cameraState = CameraStates.FIXED;
 			})
 		);
-	}
-
-	// A mettre dans CameraController
-	private IEnumerator MoveToBuilding(Action finalAction) {
-		GameObject mainCameraGo = Camera.main.gameObject;
-
-		Vector3 cameraPosition = mainCameraGo.transform.position;
-		Quaternion cameraRotation = mainCameraGo.transform.rotation;
-
-		Vector3 targetPosition = selectedBuilding.transform.position;
-		Quaternion targetRotation = Quaternion.Euler (new Vector3 (90, 90, 0));
-
-		float cameraFOV = Camera.main.fieldOfView;
-		float buildingHeight = selectedBuilding.transform.localScale.y;
-		double buildingRadius = buildingsTools.BuildingRadius (selectedBuilding);
-		float cameraPosZ = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
-
-		for (double i = 0; i <= 1; i += 0.1) {
-			float cursor = (float) Math.Sin (i * (Math.PI) / 2F);
-
-			Vector3 cameraCurrentPosition = Vector3.Lerp (cameraPosition, new Vector3(targetPosition.x, cameraPosZ, targetPosition.z), cursor);
-			Quaternion cameraCurrentRotation = Quaternion.Lerp (cameraRotation, targetRotation, cursor);
-
-			mainCameraGo.transform.position = cameraCurrentPosition;
-			mainCameraGo.transform.rotation = cameraCurrentRotation;
-
-			yield return new WaitForSeconds (0.01F);
-		}
-
-		mainCameraGo.transform.position = new Vector3(targetPosition.x, cameraPosZ, targetPosition.z);
-		mainCameraGo.transform.rotation = targetRotation;
-
-		if(finalAction != null)
-			finalAction ();
 	}
 
 	public void ExitBuilding() {
@@ -166,48 +127,17 @@ public class EditionController : MonoBehaviour {
 		selectedWall = null;
 
 		editionState = EditionController.EditionStates.MOVING_TO_INITIAL_SITUATION;
-		cameraState = EditionController.CameraStates.FLYING;
 
 		buildingsTools.DiscolorAllBuildings ();
 
-		this.StartCoroutine (
-			this.MoveToInitSituation(() => {
+		cameraController.StartCoroutine (
+			cameraController.MoveToSituation(cameraController.InitPosition, cameraController.InitRotation, () => {
 				editionState = EditionController.EditionStates.NONE_SELECTION;
-				cameraState = EditionController.CameraStates.FREE;
 			})
 		);
 		this.ClosePanel (() => {
 			lateralPanel.SetActive (false);
 		});
-	}
-
-	// A mettre dans CameraController
-	private IEnumerator MoveToInitSituation(Action finalAction) {
-		GameObject mainCameraGo = Camera.main.gameObject;
-
-		Vector3 buildingPosition = mainCameraGo.transform.position;
-		Quaternion buildingRotation = mainCameraGo.transform.rotation;
-
-		Vector3 targetPosition = cameraInitPosition;
-		Quaternion targetRotation = cameraInitRotation;
-
-		for (double i = 0; i <= 1; i += 0.1) {
-			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
-
-			Vector3 cameraCurrentPosition = Vector3.Lerp (buildingPosition, targetPosition, cursor);
-			Quaternion cameraCurrentRotation = Quaternion.Lerp (buildingRotation, targetRotation, cursor);
-
-			mainCameraGo.transform.position = cameraCurrentPosition;
-			mainCameraGo.transform.rotation = cameraCurrentRotation;
-
-			yield return new WaitForSeconds (0.01F);
-		}
-
-		mainCameraGo.transform.position = targetPosition;
-		mainCameraGo.transform.rotation = targetRotation;
-
-		if(finalAction != null)
-			finalAction ();
 	}
 
 	public void TogglePanel(Action finalAction) {
@@ -361,11 +291,9 @@ public class EditionController : MonoBehaviour {
 		this.StartCoroutine ("ToggleFloattingButtons");
 
 		editionState = EditionStates.MOVING_TO_BUILDING;
-		cameraState = CameraStates.FLYING;
-
-		this.StartCoroutine (this.MoveToBuilding (() => {
+		cameraController.StartCoroutine (
+			cameraController.MoveToBuilding (selectedBuilding, () => {
 				editionState = EditionStates.READY_TO_EDIT;
-				cameraState = CameraStates.FIXED;
 			})
 		);
 	}
@@ -398,11 +326,11 @@ public class EditionController : MonoBehaviour {
 		}
 	}
 
-	public bool WallEdited() {
+	private bool WallEdited() {
 		return editionState == EditionStates.MOVING_MODE && movingEditor.WallEdited || editionState == EditionStates.TURNING_MODE && turningEditor.WallEdited;
 	}
 
-	public bool BuildingEdited() {
+	private bool BuildingEdited() {
 		return editionState == EditionStates.MOVING_MODE && movingEditor.BuildingEdited || editionState == EditionStates.TURNING_MODE && turningEditor.BuildingEdited;
 	}
 
@@ -426,11 +354,6 @@ public class EditionController : MonoBehaviour {
 		set { turningEditor = value; }
 	}
 
-	public CameraStates CameraState {
-		get { return cameraState; }
-		set { cameraState = value; }
-	}
-
 	public PanelStates PanelState {
 		get { return panelState; }
 		set { panelState = value; }
@@ -448,16 +371,6 @@ public class EditionController : MonoBehaviour {
 	public GameObject SelectedBuilding {
 		get { return selectedBuilding; }
 		set { selectedBuilding = value; }
-	}
-
-	public Vector3 CameraInitPosition {
-		get { return cameraInitPosition; }
-		set { cameraInitPosition = value; }
-	}
-
-	public Quaternion CameraInitRotation {
-		get { return cameraInitRotation; }
-		set { cameraInitRotation = value; }
 	}
 
 	public GameObject LateralPanel {
