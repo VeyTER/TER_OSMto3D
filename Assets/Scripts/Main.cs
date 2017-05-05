@@ -80,7 +80,6 @@ public class Main : MonoBehaviour {
 			// Mise en place du background
 			objectBuilder.BuildGround ();
 
-
 			// Mise en place de panneaux d'information
 			// NE FOCTIONNE PAS POUR LE MOMMENT
 			objectBuilder.BuildingNodes.SetActive (false);

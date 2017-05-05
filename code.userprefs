@@ -2,16 +2,18 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\FileManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\FileManager.cs" Line="180" Column="30" />
-      <File FileName="Assets\Scripts\XMLKeys.cs" Line="5" Column="29" />
-      <File FileName="Assets\Scripts\NodeGroup.cs" Line="128" Column="2" />
-      <File FileName="Assets\Scripts\BuildingsTools.cs" Line="101" Column="36" NotebookId="1" />
-      <File FileName="Assets\Scripts\XMLTags.cs" Line="10" Column="32" NotebookId="1" />
-      <File FileName="Assets\Scripts\XMLAttributes.cs" Line="7" Column="44" NotebookId="1" />
+      <File FileName="Assets\Scripts\Main.cs" Line="44" Column="1" />
+      <File FileName="Assets\Scripts\FileManager.cs" Line="269" Column="1" />
+      <File FileName="Assets\Scripts\XMLValues.cs" Line="6" Column="2" NotebookId="1" />
+      <File FileName="Assets\Scripts\XMLTags.cs" Line="21" Column="1" NotebookId="1" />
+      <File FileName="Assets\Scripts\XMLKeys.cs" Line="6" Column="24" NotebookId="1" />
+      <File FileName="Assets\Scripts\XMLAttributes.cs" Line="31" Column="1" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Assets\Scripts\FileManager.cs" line="172" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

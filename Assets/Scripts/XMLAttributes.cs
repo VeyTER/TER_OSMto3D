@@ -18,13 +18,13 @@ public class XMLAttributes {
 	public const string MAX_LATITUDE = "maxlat";
 	public const string MAX_LONGIUDE = "maxlon";
 
-	public const string DISTANCE = "dst";
+	public const string DISTANCE = "dist";
 
 	public const string NAME = "name";
 
 	public const string DESIGNATION = "designation";
 	public const string NB_FLOOR = "nbfloor";
-	public const string ROOF_ANGLE = "roof";
+	public const string ROOF_ANGLE = "roofangle";
 	public const string ROOF_TYPE = "rooftype";
 
 	public const string ROAD_TYPE = "roadtype";

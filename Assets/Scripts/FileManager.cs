@@ -169,91 +169,43 @@ public class FileManager {
 			mapsSettingsDocument.Load (mapSettingsFilePath);
 
 			XmlNodeList earthNodes = mapsSettingsDocument.GetElementsByTagName (XMLTags.EARTH);
-
 			if (earthNodes.Count > 0) {
-				XmlNode earthInfosNode = earthNodes [0].FirstChild;
 
+				XmlNode earthInfosNode = earthNodes [0].FirstChild;
 				if (earthInfosNode != null && earthInfosNode.Name.Equals (XMLTags.INFO)) {
 					string[] earthBuildingInfos = this.AttributeBuildingInfo (earthInfosNode);
+					this.SetupAreaNodeGroups (null, new double[] {0, 0, 0}, earthBuildingInfos, XMLTags.EARTH);
 
-					this.SetupAreaNodes (null, null, earthBuildingInfos, XMLTags.EARTH);
+					string[] areas = new string[] {
+						XMLTags.COUNTRY,
+						XMLTags.REGION,
+						XMLTags.TOWN,
+						XMLTags.DISTRICT,
+						XMLTags.BUILDING
+					};
 
-					for (int i = 1; i < earthNodes.Count; i++) {
-						if (earthNodes[i].Name.Equals (XMLTags.COUNTRY)) {
-							XmlNode countryNode = earthNodes [i];
-
-							XmlNode countryDesignationAttribute = countryNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
-							string countryDesignation = countryDesignationAttribute.InnerText;
-
-							XmlNode countryInfosNode = countryNode.FirstChild;
-							double[] countryLocationInfos = this.AttributeLocationInfo(countryNode);
-							string[] countryBuildingInfos = this.AttributeBuildingInfo (countryNode);
-
-							this.SetupAreaNodes (countryDesignation, countryLocationInfos, countryBuildingInfos, XMLTags.COUNTRY);
-
-							for (int j = 1; j < countryNode.ChildNodes.Count; j++) {
-								if (countryNode.ChildNodes[j].Name.Equals (XMLTags.REGION)) {
-									XmlNode regionNode = earthNodes [j];
-
-									XmlNode regionDesignationAttribute = regionNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
-									string regionDesignation = regionDesignationAttribute.InnerText;
-
-									XmlNode regionInfosNode = regionNode.FirstChild;
-									double[] regionLocationInfos = this.AttributeLocationInfo(regionNode);
-									string[] regionBuildingInfos = this.AttributeBuildingInfo (regionNode);
-
-									this.SetupAreaNodes (regionDesignation, regionLocationInfos, regionBuildingInfos, XMLTags.REGION);
-
-									for (int k = 1; k < countryNode.ChildNodes.Count; k++) {
-										if (countryNode.ChildNodes[k].Name.Equals (XMLTags.TOWN)) {
-											XmlNode townNode = earthNodes [k];
-
-											XmlNode townDesignationAttribute = townNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
-											string townDesignation = townDesignationAttribute.InnerText;
-
-											XmlNode townInfosNode = townNode.FirstChild;
-											double[] townLocationInfos = this.AttributeLocationInfo(townNode);
-											string[] townBuildingInfos = this.AttributeBuildingInfo (townNode);
-
-											this.SetupAreaNodes (townDesignation, townLocationInfos, townBuildingInfos, XMLTags.TOWN);
-
-											for (int l = 1; l < countryNode.ChildNodes.Count; l++) {
-												if (countryNode.ChildNodes[l].Name.Equals (XMLTags.DISTRICT)) {
-													XmlNode districtNode = earthNodes [l];
-
-													XmlNode districtDesignationAttribute = districtNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
-													string districtDesignation = districtDesignationAttribute.InnerText;
-
-													XmlNode districtInfosNode = districtNode.FirstChild;
-													double[] districtLocationInfos = this.AttributeLocationInfo(districtNode);
-													string[] districtBuildingInfos = this.AttributeBuildingInfo (districtNode);
-
-													this.SetupAreaNodes (districtDesignation, districtLocationInfos, districtBuildingInfos, XMLTags.DISTRICT);
-
-												}
-
-												for (int m = 1; m < countryNode.ChildNodes.Count; m++) {
-													if (countryNode.ChildNodes[m].Name.Equals (XMLTags.BUILDING)) {
-														XmlNode buildingNode = earthNodes [m];
-
-														XmlNode buildingDesignationAttribute = buildingNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
-														string buildingDesignation = buildingDesignationAttribute.InnerText;
-
-														XmlNode districtInfosNode = buildingNode.FirstChild;
-														double[] districtLocationInfos = this.AttributeLocationInfo(buildingNode);
-														string[] districtBuildingInfos = this.AttributeBuildingInfo (buildingNode);
-
-														this.SetupAreaNodes (buildingDesignation, districtLocationInfos, districtBuildingInfos, XMLTags.BUILDING);
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
+					this.FillNodeGroups (earthNodes [0], areas, 0);
 				}
+			}
+		}
+	}
+
+	private void FillNodeGroups(XmlNode boundingAreaNode, string[] areas, int areaIndex) {
+		for (int i = 1; i < boundingAreaNode.ChildNodes.Count; i++) {
+			if (boundingAreaNode.ChildNodes[i].Name.Equals (areas[areaIndex])) {
+				XmlNode areaNode = boundingAreaNode.ChildNodes [i];
+
+				XmlNode areaDesignationAttribute = areaNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
+				string areaDesignation = areaDesignationAttribute.InnerText;
+
+				XmlNode areaInfosNode = areaNode.FirstChild;
+				double[] areaLocationInfos = this.AttributeLocationInfo(areaInfosNode);
+				string[] areaBuildingInfos = this.AttributeBuildingInfo (areaInfosNode);
+
+				this.SetupAreaNodeGroups (areaDesignation, areaLocationInfos, areaBuildingInfos, areas[areaIndex]);
+
+				if (areaIndex < areas.Length)
+					this.FillNodeGroups (areaNode, areas, areaIndex + 1);
 			}
 		}
 	}
@@ -286,7 +238,7 @@ public class FileManager {
 		return res;
 	}
 
-	private void SetupAreaNodes(string designation, double[] locationData, string[] buildingData, string tagName) {
+	private void SetupAreaNodeGroups(string designation, double[] locationData, string[] buildingData, string tagName) {
 		foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
 			double nodeGroupDistance = Math.Sqrt (Math.Pow (locationData [0] - (nodeGroup.GetNode (0).Latitude), 2) + Math.Pow (locationData [1] - (nodeGroup.GetNode (0).Longitude), 2));
 			if (tagName.Equals(XMLTags.EARTH) || nodeGroupDistance < locationData[2]) {
@@ -318,172 +270,224 @@ public class FileManager {
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier ou l'on inscrit les informations </param>
 	public void createResumeFile() {
-		// listing des balises de location "country,region,town,district"
-		foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-			if (!countries.Contains(ngp.Country))
-				countries.Add(ngp.Country);
+		string mapSettingsFilePath = path + "Maps Resumed/map_settings.osm";
+		string mapResumedFilePath = path + "Maps Resumed/map_resumed.osm";
 
-			if (!regions.Contains(ngp.Region))
-				regions.Add(ngp.Region);
+		XmlDocument mapSettingsDocument = new XmlDocument(); 
+		XmlDocument mapResumedDocument = new XmlDocument(); 
 
-			if (!towns.Contains(ngp.Town))
-				towns.Add(ngp.Town);
+		if (File.Exists (mapSettingsFilePath) && File.Exists (mapResumedFilePath)) {
+			mapSettingsDocument.Load (mapSettingsFilePath);
+			mapResumedDocument.Load (mapResumedFilePath);
 
-			if (!districts.Contains(ngp.District))
-				districts.Add(ngp.District);
-		}
+			foreach (XmlNode mapSettingsNode in mapSettingsDocument.ChildNodes) {
+				if (!mapSettingsNode.Name.Equals (XMLTags.INFO)) {
+					XmlNode mapResumedNode = mapSettingsNode.Clone;
+					mapResumedDocument.AppendChild (mapResumedNode, mapResumedNode);
 
-		string pathString = path + "Maps Resumed/map_resumed.osm";
-		string buildingName;
-		string highwayName;
-		string typeRoof;
-		int angleRoof;
-		int nbFloor;
-		double ID;
-		string typeRoute;
-		int nbVoie;
-		int maxspeed;
-
-		//on créé le fichier et on va écrire dedans
-		System.IO.StreamWriter file = new System.IO.StreamWriter(pathString);
-		file.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-		file.WriteLine("<root>");
-
-		file.WriteLine("\t<bounds minlat=\"" +Main.minlat + "\" minlon=\"" + Main.minlon + "\" maxlat=\"" + Main.maxlat + "\" maxlon=\"" + Main.maxlon + "\"/>");
-
-		//Ecriture premiere balise earth
-		file.WriteLine("\t<earth>");
-
-		//ecriture des locations
-		foreach (string str1 in countries) {
-			file.WriteLine("\t\t<country " + XMLAttributes.DESIGNATION + "=\"" + str1 + "\">");
-
-			foreach (string str2 in regions) {
-				file.WriteLine("\t\t\t<region " + XMLAttributes.DESIGNATION + "=\"" + str2 + "\">");
-
-				foreach (string str3 in towns) {
-					file.WriteLine("\t\t\t\t<town " + XMLAttributes.DESIGNATION + "=\"" + str3 + "\">");
-
-					foreach (string str4 in districts) {
-						file.WriteLine("\t\t\t\t\t<district " + XMLAttributes.DESIGNATION + "=\"" + str4 + "\">");
-
-						foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-							if ((ngp.Country == str1) && (ngp.Region == str2) && (ngp.Town == str3) && (ngp.District== str4)) {
-								//Si c'est un bâtiment 
-								if (ngp.IsBuilding()) {
-									//on récupère le nom du batiment et ses caractéristiques
-									buildingName = ngp.Name;
-									nbFloor = ngp.NbFloor;
-									typeRoof = ngp.RoofType;
-									angleRoof = ngp.RoofAngle;
-									ID = ngp.Id;
-
-									//On écrit ces infos sur le ...Resumed
-									file.WriteLine("\t\t\t\t\t\t<building>");
-									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\" name=\"" + buildingName + "\" nbFloor=\"" + nbFloor + "\" type=\"" + typeRoof + "\" angle=\"" + angleRoof + "\"/>");
-
-									//ecriture des nodes
-									foreach (Node n in ngp.Nodes)
-										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-
-									//ecriture balise fin de building
-									file.WriteLine("\t\t\t\t\t\t</building>");
-								}
-
-								//Si c'est un arbre
-								if (ngp.IsTree()) {
-									//On récupère les caractéristiques de l'arbre
-									ID = ngp.Id;
-
-									//On écrit ces infos sur le ...Resumed
-									file.WriteLine("\t\t\t\t\t\t<tree>");
-									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\"/>");
-
-									//ecriture des nodes
-									foreach (Node n in ngp.Nodes)
-										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-
-									//ecriture balise fin d'arbre
-									file.WriteLine("\t\t\t\t\t\t</tree>");
-								}
-
-								//Si c'est un feu tricolore
-								if (ngp.IsTrafficLight()) {
-									//On récupère les caractéristiques du feu tricolore
-									ID = ngp.Id;
-
-									//On écrit ces infos sur le ...Resumed
-									file.WriteLine("\t\t\t\t\t\t<feuTri>");
-									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\"/>");
-
-									//ecriture des nodes
-									foreach (Node n in ngp.Nodes)
-										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-
-									//ecriture balise fin d'arbre
-									file.WriteLine("\t\t\t\t\t\t</feuTri>");
-								}
-
-								//Si c'est une voie d'eau
-								if (ngp.IsWaterway()) {
-									
-									//On récupère les caractéristiques de la voie d'eau
-									ID = ngp.Id;
-
-									//On écrit ces infos sur le ...Resumed
-									file.WriteLine("\t\t\t\t\t\t<waterway>");
-									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\"/>");
-
-									//ecriture des nodes
-									foreach (Node n in ngp.Nodes)
-										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-
-									//ecriture balise fin d'arbre
-									file.WriteLine("\t\t\t\t\t\t</waterway>");
-								}
-
-								// Si c'est une route
-								if (ngp.IsHighway() && !(ngp.IsTrafficLight())){
-									//on recupère les données sur la route
-									ID = ngp.Id;
-									typeRoute = ngp.GetTagValue("highway");
-									highwayName = ngp.Name;
-									nbVoie = ngp.NbWay;
-									maxspeed = ngp.MaxSpeed;
-
-									//On écrit ces infos sur le ...Resumed
-									file.WriteLine("\t\t\t\t\t\t<highway>");
-									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\" type=\"" + typeRoute + "\" name=\"" + highwayName + "\" nbVoie=\"" + nbVoie + "\" maxspd=\"" + maxspeed + "\"/>");
-
-									//ecriture des nodes
-									foreach (Node n in ngp.Nodes)
-										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
-
-									//ecriture balise fin de la route
-									file.WriteLine("\t\t\t\t\t\t</highway>");
-								}
-							}
-						}
-						file.WriteLine("\t\t\t\t\t</district>");
-					}
-					file.WriteLine("\t\t\t\t</town>");
+					this.Transfert (mapSettingsNode);
 				}
-				file.WriteLine("\t\t\t</region>");
 			}
-			file.WriteLine("\t\t</country>");
 		}
 
-		//Fermeture de le balise earth
-		file.WriteLine("\t</earth>");
 
-		// AJOUT
-		file.WriteLine("</root>");
 
-		// Fermeture du fichier 
-		file.Close();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//		// listing des balises de location "country,region,town,district"
+//		foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
+//			if (!countries.Contains(ngp.Country))
+//				countries.Add(ngp.Country);
+//
+//			if (!regions.Contains(ngp.Region))
+//				regions.Add(ngp.Region);
+//
+//			if (!towns.Contains(ngp.Town))
+//				towns.Add(ngp.Town);
+//
+//			if (!districts.Contains(ngp.District))
+//				districts.Add(ngp.District);
+//		}
+//
+//		string pathString = path + "Maps Resumed/map_resumed.osm";
+//		string buildingName;
+//		string highwayName;
+//		string typeRoof;
+//		int angleRoof;
+//		int nbFloor;
+//		double ID;
+//		string typeRoute;
+//		int nbVoie;
+//		int maxspeed;
+//
+//		//on créé le fichier et on va écrire dedans
+//		System.IO.StreamWriter file = new System.IO.StreamWriter(pathString);
+//		file.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+//
+//		file.WriteLine("<root>");
+//
+//		file.WriteLine("\t<bounds minlat=\"" +Main.minlat + "\" minlon=\"" + Main.minlon + "\" maxlat=\"" + Main.maxlat + "\" maxlon=\"" + Main.maxlon + "\"/>");
+//
+//		//Ecriture premiere balise earth
+//		file.WriteLine("\t<earth>");
+//
+//
+//
+//		//ecriture des locations
+//		foreach (string str1 in countries) {
+//			file.WriteLine("\t\t<country " + XMLAttributes.DESIGNATION + "=\"" + str1 + "\">");
+//
+//			foreach (string str2 in regions) {
+//				file.WriteLine("\t\t\t<region " + XMLAttributes.DESIGNATION + "=\"" + str2 + "\">");
+//
+//				foreach (string str3 in towns) {
+//					file.WriteLine("\t\t\t\t<town " + XMLAttributes.DESIGNATION + "=\"" + str3 + "\">");
+//
+//					foreach (string str4 in districts) {
+//						file.WriteLine("\t\t\t\t\t<district " + XMLAttributes.DESIGNATION + "=\"" + str4 + "\">");
+//
+//						foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
+//							if ((ngp.Country == str1) && (ngp.Region == str2) && (ngp.Town == str3) && (ngp.District== str4)) {
+//								//Si c'est un bâtiment 
+//								if (ngp.IsBuilding()) {
+//									//on récupère le nom du batiment et ses caractéristiques
+//									buildingName = ngp.Name;
+//									nbFloor = ngp.NbFloor;
+//									typeRoof = ngp.RoofType;
+//									angleRoof = ngp.RoofAngle;
+//									ID = ngp.Id;
+//
+//									//On écrit ces infos sur le ...Resumed
+//									file.WriteLine("\t\t\t\t\t\t<building>");
+//									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\" name=\"" + buildingName + "\" nbFloor=\"" + nbFloor + "\" type=\"" + typeRoof + "\" angle=\"" + angleRoof + "\"/>");
+//
+//									//ecriture des nodes
+//									foreach (Node n in ngp.Nodes)
+//										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
+//
+//									//ecriture balise fin de building
+//									file.WriteLine("\t\t\t\t\t\t</building>");
+//								}
+//
+//								//Si c'est un arbre
+//								if (ngp.IsTree()) {
+//									//On récupère les caractéristiques de l'arbre
+//									ID = ngp.Id;
+//
+//									//On écrit ces infos sur le ...Resumed
+//									file.WriteLine("\t\t\t\t\t\t<tree>");
+//									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\"/>");
+//
+//									//ecriture des nodes
+//									foreach (Node n in ngp.Nodes)
+//										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
+//
+//									//ecriture balise fin d'arbre
+//									file.WriteLine("\t\t\t\t\t\t</tree>");
+//								}
+//
+//								//Si c'est un feu tricolore
+//								if (ngp.IsTrafficLight()) {
+//									//On récupère les caractéristiques du feu tricolore
+//									ID = ngp.Id;
+//
+//									//On écrit ces infos sur le ...Resumed
+//									file.WriteLine("\t\t\t\t\t\t<feuTri>");
+//									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\"/>");
+//
+//									//ecriture des nodes
+//									foreach (Node n in ngp.Nodes)
+//										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
+//
+//									//ecriture balise fin d'arbre
+//									file.WriteLine("\t\t\t\t\t\t</feuTri>");
+//								}
+//
+//								//Si c'est une voie d'eau
+//								if (ngp.IsWaterway()) {
+//									
+//									//On récupère les caractéristiques de la voie d'eau
+//									ID = ngp.Id;
+//
+//									//On écrit ces infos sur le ...Resumed
+//									file.WriteLine("\t\t\t\t\t\t<waterway>");
+//									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\"/>");
+//
+//									//ecriture des nodes
+//									foreach (Node n in ngp.Nodes)
+//										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
+//
+//									//ecriture balise fin d'arbre
+//									file.WriteLine("\t\t\t\t\t\t</waterway>");
+//								}
+//
+//								// Si c'est une route
+//								if (ngp.IsHighway() && !(ngp.IsTrafficLight())){
+//									//on recupère les données sur la route
+//									ID = ngp.Id;
+//									typeRoute = ngp.GetTagValue("highway");
+//									highwayName = ngp.Name;
+//									nbVoie = ngp.NbWay;
+//									maxspeed = ngp.MaxSpeed;
+//
+//									//On écrit ces infos sur le ...Resumed
+//									file.WriteLine("\t\t\t\t\t\t<highway>");
+//									file.WriteLine("\t\t\t\t\t\t\t<info id=\"" + ID + "\" type=\"" + typeRoute + "\" name=\"" + highwayName + "\" nbVoie=\"" + nbVoie + "\" maxspd=\"" + maxspeed + "\"/>");
+//
+//									//ecriture des nodes
+//									foreach (Node n in ngp.Nodes)
+//										file.WriteLine("\t\t\t\t\t\t\t<node id=\"" + n.Id + "\" lat=\"" + n.Latitude + "\" lon=\"" + n.Longitude + "\"/>");
+//
+//									//ecriture balise fin de la route
+//									file.WriteLine("\t\t\t\t\t\t</highway>");
+//								}
+//							}
+//						}
+//						file.WriteLine("\t\t\t\t\t</district>");
+//					}
+//					file.WriteLine("\t\t\t\t</town>");
+//				}
+//				file.WriteLine("\t\t\t</region>");
+//			}
+//			file.WriteLine("\t\t</country>");
+//		}
+//
+//		//Fermeture de le balise earth
+//		file.WriteLine("\t</earth>");
+//
+//		// AJOUT
+//		file.WriteLine("</root>");
+//
+//		// Fermeture du fichier 
+//		file.Close();
 	}
 
+	private void Transfert (XmlNode mapSettingsBoundingNode, XmlNode mapResumedBoundingNode) {
+		foreach (XmlNode mapSettingsNode in mapSettingsBoundingNode) {
+			if (!mapSettingsNode.Name.Equals (XMLTags.INFO)) {
+				XmlNode mapResumedNode = mapSettingsNode.Clone;
+				mapResumedBoundingNode.AppendChild (mapResumedNode);
+
+				this.Transfert (mapSettingsNode, mapResumedNode);
+			}
+		}
+	}
 
 	/// <summary>
 	/// Metode readSettingFile :
