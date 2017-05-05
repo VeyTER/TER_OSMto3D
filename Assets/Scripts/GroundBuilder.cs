@@ -6,11 +6,11 @@ public class GroundBuilder {
 	//Fonction qui créé le background. Appelle toutes les autres fonctions privées de la classe
 	public void BuildGround(float x, float z, float length, float width, float angle, float minlat, float minlon) {
 		//Création du GameObject (GO)
-		GameObject bg = new GameObject ("Background", typeof(MeshFilter), typeof(MeshRenderer));
+		GameObject ground = new GameObject ("Ground", typeof(MeshFilter), typeof(MeshRenderer));
 
 		//Position et rotation du GO
-		bg.transform.position = new Vector3 (minlon * 1000f, -0.02f, minlat * 1000f);
-		bg.transform.rotation = Quaternion.Euler (0, angle, 0);
+		ground.transform.position = new Vector3 (minlon * 1000f, -0.02f, minlat * 1000f);
+		ground.transform.rotation = Quaternion.Euler (0, angle, 0);
 
 		//Création d'un Mesh
 		Mesh mesh = new Mesh ();
@@ -25,11 +25,11 @@ public class GroundBuilder {
 		mesh.normals = BakeGroundNormals ();
 
 		//On associe le mesh créé au GO
-		MeshFilter mesh_filter = bg.GetComponent<MeshFilter> ();
+		MeshFilter mesh_filter = ground.GetComponent<MeshFilter> ();
 		mesh_filter.mesh = mesh;
 
 		//On charge le matériel du background et on l'associe au GO
-		MeshRenderer mesh_renderer = bg.GetComponent<MeshRenderer> ();
+		MeshRenderer mesh_renderer = ground.GetComponent<MeshRenderer> ();
 		mesh_renderer.material = Resources.Load ("Materials/Ground") as Material;
 	}
 

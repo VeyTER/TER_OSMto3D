@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<bounds minlat="43.6028" minlon="43.6028" maxlat="1.4466" maxlon="1.4466"/>
+	<bounds minlat="43.6028" minlon="1.4406" maxlat="43.6064" maxlon="1.4466"/>
 	<earth>
 		<country designation="<country designation="France">
 			<region designation="	<region designation="Midi-Pyrenees">

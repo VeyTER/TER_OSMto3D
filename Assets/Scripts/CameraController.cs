@@ -80,7 +80,7 @@ public class CameraController : MonoBehaviour {
 		transform.position = targetPosition;
 		transform.rotation = targetRotation;
 
-		cameraState = CameraStates.FIXED;
+		cameraState = CameraStates.FREE;
 
 		if(finalAction != null)
 			finalAction ();
@@ -117,7 +117,7 @@ public class CameraController : MonoBehaviour {
 		transform.position = new Vector3(targetPosition.x, targetPosZ, targetPosition.z);
 		transform.rotation = targetRotation;
 
-		cameraState = CameraStates.FREE;
+		cameraState = CameraStates.FIXED;
 
 		if(finalAction != null)
 			finalAction ();
