@@ -23,13 +23,6 @@ public class XMLAttributes {
 	public const string NAME = "name";
 
 	public const string DESIGNATION = "designation";
-
-//	public const string COUNTRY = "country";
-//	public const string REGION = "region";
-//	public const string TOWN = "town";
-//	public const string DISTRICT = "district";
-//	public const string BUILDING = "building";
-
 	public const string NB_FLOOR = "nbfloor";
 	public const string ROOF_ANGLE = "roof";
 	public const string ROOF_TYPE = "rooftype";

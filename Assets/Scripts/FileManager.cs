@@ -55,6 +55,7 @@ public class FileManager {
 
 		if (File.Exists (OSMFilePath)) {
 			OSMDocument.Load (OSMFilePath);
+
 			XmlNodeList boundsNodes = OSMDocument.GetElementsByTagName (XMLTags.BOUNDS);
 			XmlNodeList nodeNodes = OSMDocument.GetElementsByTagName (XMLTags.NODE);
 			XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XMLTags.WAY);
@@ -156,300 +157,159 @@ public class FileManager {
 	}
 		
 	/// <summary>
-	/// Metode createSettingFile :
-	/// Crée le fichier Setting contenant les paramètres de construction du mapResume
-	/// </summary>
-	/// <param name="nameFile"> nom du fichier resume a lire </param>
-	public void createSettingsFile() {
-		string pathString = path + "Maps Settings/map_settings.osm";
-
-		pointEditor.EditPoint (objectBuilder.NodeGroups);
-
-		//on créé le fichier et on va écrire dedans
-		StreamWriter file = new StreamWriter(pathString);
-		file.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-		//On crée les caractéristiques par défaut dans le monde
-		file.WriteLine("\t<earth>");
-		file.WriteLine("\t\t<info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
-
-		//On crée les caractéristiques par défaut en France
-		file.WriteLine("\t\t<country " + XMLAttributes.DESIGNATION + "=\"France\">");
-		file.WriteLine("\t\t\t<info lat=\"47.3833300\" lon=\"0.6833300\" dst=\"5\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
-
-		//On crée les caractéristiques par défaut en Midi-Pyrenees
-		file.WriteLine("\t\t\t<region " + XMLAttributes.DESIGNATION + "=\"Midi-Pyrenees\">");
-		file.WriteLine("\t\t\t\t<info lat=\"43.600000\" lon=\"1.433333\" dst=\"1.1\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
-
-		//On crée les caractéristiques par défaut à Toulouse
-		file.WriteLine("\t\t\t\t<town " + XMLAttributes.DESIGNATION + "=\"Toulouse\">");
-		file.WriteLine("\t\t\t\t\t<info lat=\"43.600000\" lon=\"1.433333\" dst=\"0.8\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
-
-		//On crée les caractéristiques par défaut à l'UPS
-		file.WriteLine("\t\t\t\t\t<district " + XMLAttributes.DESIGNATION + "=\"UPS\">");
-		file.WriteLine("\t\t\t\t\t\t<info lat=\"43.560397\" lon=\"1.468820\" dst=\"0.03\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
-
-		//Ici on crée les caractéristiques des différents buildings de l'UPS si nous les avons
-		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"IRIT\">");
-		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561988\" lon=\"1.467984\" dst=\"0.0005\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
-		file.WriteLine("\t\t\t\t\t\t</building>");
-
-		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"U1\">");
-		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.560284\" lon=\"1.470247\" dst=\"0.0005\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
-		file.WriteLine("\t\t\t\t\t\t</building>");
-
-		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"U2\">");
-		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561316\" lon=\"1.470514\" dst=\"0.0006\" nf=\"2\" roof=\"0\" type=\"flat\"/>");
-		file.WriteLine("\t\t\t\t\t\t</building>");
-
-		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"U3\">");
-		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561982\" lon=\"1.470014\" dst=\"0.00045\" nf=\"5\" roof=\"0\" type=\"flat\"/>");
-		file.WriteLine("\t\t\t\t\t\t</building>");
-
-		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"U4\">");
-		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.562723\" lon=\"1.469149\" dst=\"0.0005\" nf=\"5\" roof=\"0\" type=\"flat\"/>");
-		file.WriteLine("\t\t\t\t\t\t</building>");
-
-		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"E4-SCUIO\">");
-		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561877\" lon=\"1.469263\" dst=\"0.0003\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
-		file.WriteLine("\t\t\t\t\t\t</building>");
-
-		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"3 TP2\">");
-		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561010\" lon=\"1.467793\" dst=\"0.0005\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
-		file.WriteLine("\t\t\t\t\t\t</building>");
-
-		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"Administration\">");
-		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.562995\" lon=\"1.466057\" dst=\"0.0006\" nf=\"3\" roof=\"0\" type=\"flat\"/>");
-		file.WriteLine("\t\t\t\t\t\t</building>");
-
-		//Si on veut rajouter des caractéristiques pour un batiment précis de l'UPS, le faire ici
-		file.WriteLine("\t\t\t\t\t</district>");
-
-		//On crée les caractéristiques par défaut à l'UPS
-		file.WriteLine("\t\t\t\t\t<district " + XMLAttributes.DESIGNATION + "=\"Centre-Ville\">");
-		file.WriteLine("\t\t\t\t\t\t<info lat=\"43.603236\" lon=\"1.444659\" dst=\"0.03\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
-
-		file.WriteLine("\t\t\t\t\t</district>");
-		//Si on veut rajouter un quartier de la ville de Toulouse, le faire ici
-
-		file.WriteLine("\t\t\t\t</town>");
-		//Si on veut rajouter une ville de la région Midi-Pyrenees, le faire ici
-
-		file.WriteLine("\t\t\t</region>");
-		//Si on veut rajouter une région de France, le faire ici
-
-		file.WriteLine("\t\t</country>");
-		//Si on veut rajouter des pays, les ajouter à partir d'ici
-
-		file.WriteLine("\t</earth>");
-
-		//Si on veut changer de planète, pourquoi pas le faire ici :D
-		file.WriteLine("</xml>");
-
-		file.Close();
-	}
-
-	/// <summary>
 	/// Methode readSettingsFile :
 	/// Lit un fichier setting
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier setting a lire </param>
 	public void readSettingsFile() {
-		string pathString = path + "Maps Settings/map_settings.osm";
-		string line;
+		string mapSettingsFilePath = path + "Maps Settings/map_settings.osm";
+		XmlDocument mapsSettingsDocument = new XmlDocument(); 
 
-		string country = "";
-		string region = "";
-		string town = "";
-		string district = "";
-		string build = "";
+		if (File.Exists (mapSettingsFilePath)) {
+			mapsSettingsDocument.Load (mapSettingsFilePath);
 
-		double lat = 0;
-		double lon = 0;
-		double dist = 0;
+			XmlNodeList earthNodes = mapsSettingsDocument.GetElementsByTagName (XMLTags.EARTH);
 
-		int nbFloor = 0;
-		int roofAngle = 0;
-		string roofType = "";
+			if (earthNodes.Count > 0) {
+				XmlNode earthInfosNode = earthNodes [0].FirstChild;
 
-		//on lit le fichier de configuration
-		StreamReader mapSettingsFile = new StreamReader(pathString);
+				if (earthInfosNode != null && earthInfosNode.Name.Equals (XMLTags.INFO)) {
+					string[] earthBuildingInfos = this.AttributeBuildingInfo (earthInfosNode);
 
-		while ((line = mapSettingsFile.ReadLine()) != null) {
-			if (line.Contains("<earth ")) {
-				line = mapSettingsFile.ReadLine();
+					this.SetupAreaNodes (null, null, earthBuildingInfos, XMLTags.EARTH);
 
-				if (line.Contains("<info ")) {
-					nbFloor = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
-					roofAngle = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
-					roofType = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
-				}
+					for (int i = 1; i < earthNodes.Count; i++) {
+						if (earthNodes[i].Name.Equals (XMLTags.COUNTRY)) {
+							XmlNode countryNode = earthNodes [i];
 
-				//On donne aux nodegroup les attributs par défaut de la planète Terre
-				foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-					ngp.NbFloor = nbFloor;
-					ngp.RoofAngle = roofAngle;
-					ngp.RoofType = roofType;
-				}
-			}
+							XmlNode countryDesignationAttribute = countryNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
+							string countryDesignation = countryDesignationAttribute.InnerText;
 
-			//PAYS
-			if (line.Contains("<country ")) {
-				//On récupère le pays de la ligne
-				country = line.Substring(line.IndexOf("c=") + 3, line.IndexOf("\">") - line.IndexOf("c=") - 3);
+							XmlNode countryInfosNode = countryNode.FirstChild;
+							double[] countryLocationInfos = this.AttributeLocationInfo(countryNode);
+							string[] countryBuildingInfos = this.AttributeBuildingInfo (countryNode);
 
-				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
-				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<info ")) {
-					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
-					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
-					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
+							this.SetupAreaNodes (countryDesignation, countryLocationInfos, countryBuildingInfos, XMLTags.COUNTRY);
 
-					nbFloor = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
-					roofAngle = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
-					roofType = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
-				}
+							for (int j = 1; j < countryNode.ChildNodes.Count; j++) {
+								if (countryNode.ChildNodes[j].Name.Equals (XMLTags.REGION)) {
+									XmlNode regionNode = earthNodes [j];
 
-				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
-				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-					if (Math.Sqrt(Math.Pow(lat - (ngp.GetNode(0).Latitude), 2) + Math.Pow(lon - (ngp.GetNode(0).Longitude), 2)) < dist) {
-						ngp.Country = country;
-						ngp.NbFloor = nbFloor;
-						ngp.RoofAngle = roofAngle;
-						ngp.RoofType = roofType;
+									XmlNode regionDesignationAttribute = regionNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
+									string regionDesignation = regionDesignationAttribute.InnerText;
 
-					}
-				}
-			}
+									XmlNode regionInfosNode = regionNode.FirstChild;
+									double[] regionLocationInfos = this.AttributeLocationInfo(regionNode);
+									string[] regionBuildingInfos = this.AttributeBuildingInfo (regionNode);
 
-			//regionS
-			if (line.Contains("<region ")) {
-				
-				//On récupère la region de la ligne
-				region = line.Substring(line.IndexOf("r=") + 3, line.IndexOf("\">") - line.IndexOf("r=") - 3);
+									this.SetupAreaNodes (regionDesignation, regionLocationInfos, regionBuildingInfos, XMLTags.REGION);
 
-				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
-				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<info ")) {
-					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
-					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
-					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
+									for (int k = 1; k < countryNode.ChildNodes.Count; k++) {
+										if (countryNode.ChildNodes[k].Name.Equals (XMLTags.TOWN)) {
+											XmlNode townNode = earthNodes [k];
 
-					nbFloor = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
-					roofAngle = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
-					roofType = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
-				}
+											XmlNode townDesignationAttribute = townNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
+											string townDesignation = townDesignationAttribute.InnerText;
 
-				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
-				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-					if (Math.Sqrt(Math.Pow(lat - (ngp.GetNode(0).Latitude), 2) + Math.Pow(lon - (ngp.GetNode(0).Longitude), 2)) < dist) {
-						ngp.Region = region;
-						ngp.NbFloor = nbFloor;
-						ngp.RoofAngle = roofAngle;
-						ngp.RoofType = roofType;
-					}
-				}
-			}
+											XmlNode townInfosNode = townNode.FirstChild;
+											double[] townLocationInfos = this.AttributeLocationInfo(townNode);
+											string[] townBuildingInfos = this.AttributeBuildingInfo (townNode);
 
-			//VILLES
-			if (line.Contains("<town ")) {
-				//On récupère la ville de la ligne
-				town = line.Substring(line.IndexOf("t=") + 3, line.IndexOf("\">") - line.IndexOf("t=") - 3);
+											this.SetupAreaNodes (townDesignation, townLocationInfos, townBuildingInfos, XMLTags.TOWN);
 
-				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
-				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<info ")) {
-					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
-					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
-					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
+											for (int l = 1; l < countryNode.ChildNodes.Count; l++) {
+												if (countryNode.ChildNodes[l].Name.Equals (XMLTags.DISTRICT)) {
+													XmlNode districtNode = earthNodes [l];
 
-					nbFloor = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
-					roofAngle = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
-					roofType = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
-				}
+													XmlNode districtDesignationAttribute = districtNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
+													string districtDesignation = districtDesignationAttribute.InnerText;
 
-				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
-				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-					if (Math.Sqrt(Math.Pow(lat - (ngp.GetNode(0).Latitude), 2) + Math.Pow(lon - (ngp.GetNode(0).Longitude), 2)) < dist) {
-						ngp.Town = town;
-						ngp.NbFloor = nbFloor;
-						ngp.RoofAngle = roofAngle;
-						ngp.RoofType = roofType;
-					}
-				}
-			}
+													XmlNode districtInfosNode = districtNode.FirstChild;
+													double[] districtLocationInfos = this.AttributeLocationInfo(districtNode);
+													string[] districtBuildingInfos = this.AttributeBuildingInfo (districtNode);
 
-			//QUARTIERS
-			if (line.Contains("<district ")) {
-				//On récupère le quartier de la ligne
-				district = line.Substring(line.IndexOf("d=") + 3, line.IndexOf("\">") - line.IndexOf("d=") - 3);
+													this.SetupAreaNodes (districtDesignation, districtLocationInfos, districtBuildingInfos, XMLTags.DISTRICT);
 
-				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
-				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<info ")) {
-					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
-					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
-					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
+												}
 
-					nbFloor = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
-					roofAngle = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
-					roofType = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
-				}
+												for (int m = 1; m < countryNode.ChildNodes.Count; m++) {
+													if (countryNode.ChildNodes[m].Name.Equals (XMLTags.BUILDING)) {
+														XmlNode buildingNode = earthNodes [m];
 
-				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
-				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-					if (Math.Sqrt(Math.Pow(lat - (ngp.GetNode(0).Latitude), 2) + Math.Pow(lon - (ngp.GetNode(0).Longitude), 2)) < dist) {
-						ngp.District = district;
-						ngp.NbFloor = nbFloor;
-						ngp.RoofAngle = roofAngle;
-						ngp.RoofType = roofType;
-					}
-				}
-			}
+														XmlNode buildingDesignationAttribute = buildingNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
+														string buildingDesignation = buildingDesignationAttribute.InnerText;
 
-			//BATIMENTS SPECIFIQUES
-			if (line.Contains("<building ")) {
-				
-				//On récupère le batiment de la ligne
-				build = line.Substring(line.IndexOf("b=") + 3, line.IndexOf("\">") - line.IndexOf("b=") - 3);
+														XmlNode districtInfosNode = buildingNode.FirstChild;
+														double[] districtLocationInfos = this.AttributeLocationInfo(buildingNode);
+														string[] districtBuildingInfos = this.AttributeBuildingInfo (buildingNode);
 
-				//On récupère les paramètres longitude, latitude du centre du pays et distance au centre du pays
-				line = mapSettingsFile.ReadLine();
-				if (line.Contains("<info ")) {
-					lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon") - line.IndexOf("lat=") - 5));
-					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\" dst") - line.IndexOf("lon=") - 5));
-					dist = double.Parse(line.Substring(line.IndexOf("dst=") + 5, line.IndexOf("\" nf") - line.IndexOf("dst=") - 5));
-
-					nbFloor = int.Parse(line.Substring(line.IndexOf("nf=") + 4, line.IndexOf("\" roof") - line.IndexOf("nf=") - 4));
-					roofAngle = int.Parse(line.Substring(line.IndexOf("roof=") + 6, line.IndexOf("\" type") - line.IndexOf("roof=") - 6));
-					roofType = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\"/>") - line.IndexOf("type=") - 6);
-				}
-
-				//Ici on regarde si la distance entre les coos d'un des points du nodegroup et le centre du pays est < distance
-				//Si c'est le cas, alors ce nodegroup appartient au pays (on peut lui mettre country comme attribut de ngp.country
-				foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-					if (Math.Sqrt(Math.Pow(lat - (ngp.GetNode(0).Latitude), 2) + Math.Pow(lon - (ngp.GetNode(0).Longitude), 2)) < dist) {
-						if (ngp.Name == "unknown") {
-							ngp.Name = build;
+														this.SetupAreaNodes (buildingDesignation, districtLocationInfos, districtBuildingInfos, XMLTags.BUILDING);
+													}
+												}
+											}
+										}
+									}
+								}
+							}
 						}
-
-						ngp.NbFloor = nbFloor;
-						ngp.RoofAngle = roofAngle;
-
-						if (ngp.RoofType == "unknown") {
-							ngp.RoofType = roofType;
-						}
-
 					}
 				}
 			}
 		}
+	}
 
-		mapSettingsFile.Close();
+	private string[] AttributeBuildingInfo(XmlNode infoNode) {
+		string[] res = new string[3];
+
+		XmlNode nbFloorAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.NB_FLOOR);
+		XmlNode roofAngleAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.ROOF_ANGLE);
+		XmlNode roofTypeAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.ROOF_TYPE);
+
+		res[0] = nbFloorAttribute.InnerText;
+		res[1] = roofAngleAttribute.InnerText;
+		res[2] = roofTypeAttribute.InnerText.Equals("unknown") ? "" : roofTypeAttribute.InnerText;
+
+		return res;
+	}
+
+	private double[] AttributeLocationInfo(XmlNode infoNode) {
+		double[] res = new double[3];
+
+		XmlNode latitudeAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.LATITUDE);
+		XmlNode longitudeAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.LONGIUDE);
+		XmlNode distanceAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.DISTANCE);
+
+		res[0] = double.Parse (latitudeAttribute.InnerText);
+		res[1] = double.Parse (longitudeAttribute.InnerText);
+		res[2] = double.Parse (distanceAttribute.InnerText);
+
+		return res;
+	}
+
+	private void SetupAreaNodes(string designation, double[] locationData, string[] buildingData, string tagName) {
+		foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
+			double nodeGroupDistance = Math.Sqrt (Math.Pow (locationData [0] - (nodeGroup.GetNode (0).Latitude), 2) + Math.Pow (locationData [1] - (nodeGroup.GetNode (0).Longitude), 2));
+			if (tagName.Equals(XMLTags.EARTH) || nodeGroupDistance < locationData[2]) {
+				switch (tagName) {
+				case XMLTags.COUNTRY:
+					nodeGroup.Country = designation;
+					break;
+				case XMLTags.REGION:
+					nodeGroup.Region = designation;
+					break;
+				case XMLTags.TOWN:
+					nodeGroup.Town = designation;
+					break;
+				case XMLTags.DISTRICT:
+					nodeGroup.District = designation;
+					break;
+				}
+
+				nodeGroup.NbFloor = int.Parse(buildingData[0]);
+				nodeGroup.RoofAngle = int.Parse(buildingData[1]);
+				nodeGroup.RoofType = buildingData[2];
+			}
+		}
 	}
 
 	/// <summary>

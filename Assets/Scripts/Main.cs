@@ -41,9 +41,6 @@ public class Main : MonoBehaviour {
 		if (OSMFileName1 != null || OSMFileName2 != null) {
 			QualitySettings.antiAliasing = 8;
 
-			// Generation du SettingsFiles
-			fileManager.createSettingsFile ();
-
 			// Lecture de SettingsFiles
 			fileManager.readSettingsFile ();
 
