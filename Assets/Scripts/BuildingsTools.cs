@@ -95,15 +95,15 @@ public class BuildingsTools {
 
 		if (File.Exists (filePath)) {
 			xmlDocument.Load (filePath); 
-			XmlNodeList infosList = xmlDocument.GetElementsByTagName ("info");
+			XmlNodeList infoNodes = xmlDocument.GetElementsByTagName ("info");
 
-			foreach (XmlNode infosNode in infosList) {
-				string nodeGroupId = infosNode.Attributes.GetNamedItem ("id").InnerText;
-				XmlNode nameAttribute = infosNode.Attributes.GetNamedItem ("name");
+			foreach (XmlNode infoNode in infoNodes) {
+				string nodeGroupId = infoNode.Attributes.GetNamedItem ("id").InnerText;
+				XmlNode nameAttribute = infoNode.Attributes.GetNamedItem ("name");
 				if (nameAttribute != null) {
 					string nodeGroupName = nameAttribute.InnerText;
 					if (nodeGroupId.Equals (buildingIdentifier) || nodeGroupName.Equals (buildingIdentifier)) {
-						res = infosNode;
+						res = infoNode;
 						break;
 					}
 				}

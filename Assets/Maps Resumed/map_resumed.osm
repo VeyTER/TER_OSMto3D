@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<bounds minlat="43.6028" minlon="1.4406" maxlat="43.6064" maxlon="1.4466"/>
+	<bounds minlat="43.6028" minlon="43.6028" maxlat="1.4466" maxlon="1.4466"/>
 	<earth>
 		<country designation="<country designation="France">
 			<region designation="	<region designation="Midi-Pyrenees">
@@ -49,6 +49,18 @@
 						<highway>
 							<info id="2138977106" type="crossing" name="unknown" nbVoie="1" maxspd="50"/>
 							<node id="2138977106" lat="43.6030398" lon="1.4420235"/>
+						</highway>
+						<highway>
+							<info id="4177236889" type="bus_stop" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="4177236889" lat="43.5969811" lon="1.4261377"/>
+						</highway>
+						<highway>
+							<info id="2483297512" type="bus_stop" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2483297512" lat="43.605236" lon="1.443796"/>
+						</highway>
+						<highway>
+							<info id="2483309109" type="bus_stop" name="unknown" nbVoie="1" maxspd="50"/>
+							<node id="2483309109" lat="43.603353" lon="1.442168"/>
 						</highway>
 						<tree>
 							<info id="2979069269"/>

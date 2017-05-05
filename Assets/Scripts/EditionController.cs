@@ -253,37 +253,29 @@ public class EditionController : MonoBehaviour {
 
 	public void EnterMovingMode() {
 		this.EnterEditMode ();
+		movingEditor.Initialise(selectedWall, selectedBuilding);
 		movingEditor.MoveHandler.SetActive (true);
 		editionState = EditionStates.MOVING_MODE;
 	}
-
 	public void EnterTurningMode() {
 		this.EnterEditMode ();
+		turningEditor.Initialise(selectedWall, selectedBuilding);
 		turningEditor.TurnHandler.SetActive (true);
 		editionState = EditionStates.TURNING_MODE;
 	}
-
 	private void EnterEditMode() {
 		this.ClosePanel (null);
 		this.StartCoroutine ("ToggleFloattingButtons");
-
-		movingEditor.SelectedWall = selectedWall;
-		movingEditor.SelectedBuilding = selectedBuilding;
-
-		movingEditor.WallEdited = false;
-		movingEditor.BuildingEdited = false;
 	}
 
 	public void ExitMovingMode() {
 		movingEditor.MoveHandler.SetActive (false);
 		this.ExitEditMode ();
 	}
-
 	public void ExitTurningMode() {
 		turningEditor.TurnHandler.SetActive (false);
 		this.ExitEditMode ();
 	}
-
 	private void ExitEditMode() {
 		if(panelState == PanelStates.CLOSED)
 			this.OpenPanel (null);

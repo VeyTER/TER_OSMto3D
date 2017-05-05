@@ -50,161 +50,109 @@ public class FileManager {
 	/// </summary>
 	/// <param name="nameMap"> nom du fichier ".osm" dont on doit extraire les infos </param>
 	public void readOSMFile(string mapName, int mapNum) {
-		string OSMFilePath = Application.dataPath + @"/Maps/" + mapName + ".osm";
+		string OSMFilePath = path + "Maps/" + mapName + ".osm";
 		XmlDocument OSMDocument = new XmlDocument(); 
 
+		if (File.Exists (OSMFilePath)) {
+			OSMDocument.Load (OSMFilePath);
+			XmlNodeList boundsNodes = OSMDocument.GetElementsByTagName (XMLTags.BOUNDS);
+			XmlNodeList nodeNodes = OSMDocument.GetElementsByTagName (XMLTags.NODE);
+			XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XMLTags.WAY);
 
-		ArrayList nodes = new ArrayList();
+			if (boundsNodes.Count > 0) {
+				XmlNode minLatAttribute = boundsNodes [0].Attributes.GetNamedItem (XMLAttributes.MIN_LATITUDE);
+				XmlNode minLonAttribute = boundsNodes [0].Attributes.GetNamedItem (XMLAttributes.MIN_LONGITUTE);
+				XmlNode maxLatAttribute = boundsNodes [0].Attributes.GetNamedItem (XMLAttributes.MAX_LATITUDE);
+				XmlNode maxLonAttribute = boundsNodes [0].Attributes.GetNamedItem (XMLAttributes.MAX_LONGIUDE);
 
-		string line;
-
-		double id = 0;
-		double lat = 0d;
-		double lon = 0d;
-
-		// Read the file and display it line by line.
-		StreamReader file = new StreamReader(path + "Maps/" + mapName + ".osm");
-
-		// on commence par repertorier toutes les nodes de la  carte
-		while ((line = file.ReadLine()) != null) {
-
-			// on recupère les extremites
-			if (line.Contains("<bounds")) {
-				if (mapNum == 0) {
-					Main.minlat = double.Parse (line.Substring (line.IndexOf ("minlat=") + 8, line.IndexOf ("\" minlon=") - line.IndexOf ("minlat=") - 8));
-					Main.maxlat = double.Parse (line.Substring (line.IndexOf ("maxlat=") + 8, line.IndexOf ("\" maxlon=") - line.IndexOf ("maxlat=") - 8));
-					Main.minlon = double.Parse (line.Substring (line.IndexOf ("minlon=") + 8, line.IndexOf ("\" maxlat=") - line.IndexOf ("minlon=") - 8));
-					Main.maxlon = double.Parse (line.Substring (line.IndexOf ("maxlon=") + 8, line.IndexOf ("\"/>") - line.IndexOf ("maxlon=") - 8));
-				} else {
-					Main.minlat2 = double.Parse (line.Substring (line.IndexOf ("minlat=") + 8, line.IndexOf ("\" minlon=") - line.IndexOf ("minlat=") - 8));
-					Main.maxlat2 = double.Parse (line.Substring (line.IndexOf ("maxlat=") + 8, line.IndexOf ("\" maxlon=") - line.IndexOf ("maxlat=") - 8));
-					Main.minlon2 = double.Parse (line.Substring (line.IndexOf ("minlon=") + 8, line.IndexOf ("\" maxlat=") - line.IndexOf ("minlon=") - 8));
-					Main.maxlon2 = double.Parse (line.Substring (line.IndexOf ("maxlon=") + 8, line.IndexOf ("\"/>") - line.IndexOf ("maxlon=") - 8));
-				}
+				Main.minlat = double.Parse (minLatAttribute.InnerText);
+				Main.minlon = double.Parse (minLonAttribute.InnerText);
+				Main.maxlat = double.Parse (maxLatAttribute.InnerText);
+				Main.maxlon = double.Parse (maxLonAttribute.InnerText);
 			}
 
-			// on recupère les nodes
-			if (line.Contains("<node")) {
-				id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" visible") - line.IndexOf("id=") - 4));
-				lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
+			ArrayList nodes = new ArrayList();
+			foreach (XmlNode nodeNode in nodeNodes) {
+				XmlNode idAttribute = nodeNode.Attributes.GetNamedItem (XMLAttributes.ID);
+				XmlNode latitudeAttribute = nodeNode.Attributes.GetNamedItem (XMLAttributes.LATITUDE);
+				XmlNode longitudeAttribute = nodeNode.Attributes.GetNamedItem (XMLAttributes.LONGIUDE);
 
-				//le dernier node sur osm a une baliste defin "> au lieux de "/> 
-				if (line.Contains("\"/>")) {
-					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
-				} else {
-					lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\">") - line.IndexOf("lon=") - 5));
+				double id = double.Parse (idAttribute.InnerText);
+				double latitude = double.Parse(latitudeAttribute.InnerText);
+				double longitude = double.Parse(longitudeAttribute.InnerText);
 
-					//Test pour trouver des caractéristiques de ce node
-					line = file.ReadLine();
+				XmlNodeList tagNodes = nodeNode.ChildNodes;
+				for (int i = 0; i < tagNodes.Count; i++) {
+					if(tagNodes [i].Name.Equals(XMLTags.TAG)) {
+						XmlNode tagNode = tagNodes [i];
 
-					if (line.Contains("<tag")) {
-						string key = line.Substring(line.IndexOf("k=") + 3, line.IndexOf("\" v=") - line.IndexOf("k=") - 3);
-						string value = line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3);
+						XmlNode keyAttribute = tagNode.Attributes.GetNamedItem (XMLAttributes.KEY);
+						XmlNode valueAttribute = tagNode.Attributes.GetNamedItem (XMLAttributes.VALUE);
 
-						// On regarde si c'est la key Natural qui contient les arbres
-						if (key.Equals("natural")) {
-							NodeGroup current = new NodeGroup(id);
+						string key = keyAttribute.InnerText;
+						string value = valueAttribute.InnerText;
 
-							current.AddTag(key, value);
+						if (key.Equals (XMLKeys.NATURAL) || key.Equals (XMLKeys.HIGHWAY)) {
+							NodeGroup nodeGroup = new NodeGroup (id);
+							nodeGroup.AddTag (key, value);
 
-							if (current.IsTree())
-								current.Name = value;
+							if (nodeGroup.IsTree() || nodeGroup.IsTrafficLight())
+								nodeGroup.Name = value;
 
-							//On ajoute le node de cet arbre au NodeGroup de l'arbre.
-							current.AddNode(new Node(id, lon, lat));
-
-							//On ajoute le NodeGroup à la liste des nodeGroup du Main.
-							objectBuilder.NodeGroups.Add(current);
-						}
-
-						//On regarde si c'est la key highway qui contient les feux tricolores
-						if (key.Equals("highway")) {
-							NodeGroup current = new NodeGroup(id);
-
-							current.AddTag(key, value);
-
-							if (current.IsFeuTri()) {
-								current.Name = value;
-							}
-
-							//On ajoute le node de ce feu tricolore au NodeGroup de ce feu tricolore.
-							current.AddNode(new Node(id, lon, lat));
-
-							//On ajoute le NodeGroup à la liste des nodeGroup du Main.
-							objectBuilder.NodeGroups.Add(current);
+							nodeGroup.AddNode (new Node (id, longitude, latitude));
+							objectBuilder.NodeGroups.Add (nodeGroup);
 						}
 					}
 				}
-
-				// création d'un point 
-				nodes.Add(new Node(id, lon, lat));
+				nodes.Add(new Node(id, longitude, latitude));
 			}
 
-			// on recupere les batiments
-			if (line.Contains("<way")) {
-				// on créé un nouveau groupement de nodes
-				NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" visible") - line.IndexOf("id=") - 4)));
+			foreach (XmlNode wayNode in wayNodes) {
+				XmlNode idAttribute = wayNode.Attributes.GetNamedItem (XMLAttributes.ID);
+				double id = double.Parse (idAttribute.InnerText);
 
-				//lecture d'une nouvelle ligne
-				line = file.ReadLine();
+				NodeGroup nodeGroup = new NodeGroup (id);
+				XmlNodeList ndNodes = wayNode.ChildNodes;
+				for (int i = 0; i < ndNodes.Count; i++) {
+					if(ndNodes[i].Name.Equals(XMLTags.ND)) {
+						XmlNode ndNode = ndNodes [i];
 
-				// on remplit ce groupement de node
-				while (!line.Contains("</way>")) {
-					// cas d'ajout d'un node
-					if (line.Contains("<nd")) {
-						// on recupere l'id du node
-						double reference = double.Parse(line.Substring(line.IndexOf("ref=") + 5, line.IndexOf("\"/>") - line.IndexOf("ref=") - 5));
+						XmlNode referenceAttribute = ndNode.Attributes.GetNamedItem (XMLAttributes.REFERENCE);
+						double reference = double.Parse (referenceAttribute.InnerText);
 
-						foreach (Node n in nodes) {
-							// on ajoute le node a la liste de ceux qui compose le node groupe
-							if (n.Id == reference)
-								current.AddNode(n);
-						}
+						int j = 0;
+						for (; j < nodes.Count && ((Node)nodes [j]).Id != reference; j++);
+						if(j < nodes.Count)
+							nodeGroup.AddNode ((Node)nodes[j]);
+					} else if(ndNodes[i].Name.Equals(XMLTags.TAG)) {
+						XmlNode tagNode = ndNodes [i];
+
+						XmlNode keyAttribute = tagNode.Attributes.GetNamedItem (XMLAttributes.KEY);
+						XmlNode valueAttibute = tagNode.Attributes.GetNamedItem (XMLAttributes.VALUE);
+
+						string key = keyAttribute.InnerText;
+						string value = valueAttibute.InnerText;
+
+						if (key.Equals (XMLValues.LANES))
+							nodeGroup.NbWay = int.Parse (value);
+
+						if (key.Equals (XMLValues.MAX_SPEED))
+							nodeGroup.MaxSpeed = int.Parse (value);
+
+						nodeGroup.AddTag(key, value);
+
+						if (key.Equals(XMLKeys.ROOF_SHAPE))
+							nodeGroup.RoofType = value;
+
+						if (key.Equals(XMLKeys.NAME))
+							nodeGroup.Name = value;
 					}
-
-					if (line.Contains("<tag")) {
-						//On récupère la clé du tag sous forme de string
-						string key = line.Substring(line.IndexOf("k=") + 3, line.IndexOf("\" v=") - line.IndexOf("k=") - 3);
-
-						//Si on a une route alors, on a peut être un nombre de voie et on la récupère
-						if (key.Equals("lanes")) {
-							//On récupère la valeur du tag sous forme d'entier
-							int value2 = int.Parse(line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3));
-							current.NbWay = value2;
-						}
-
-						//Si on a une vitesse maximum, on la récupère aussi
-						if (key.Equals("maxspeed")) {
-							//On récupère la valeur du tag sous forme d'entier
-							int value2 = int.Parse(line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3));
-							current.MaxSpeed = value2;
-						}
-
-						//On récupère la valeur du tag sous forme de string
-						string value = line.Substring(line.IndexOf("v=") + 3, line.IndexOf("\"/>") - line.IndexOf("v=") - 3);
-
-						// on ajoute le tag
-						current.AddTag(key, value);
-
-						//Si la clé est un type de toit, on le rentre directement dans les valeurs du NodeGroup
-						if (key.Equals("roof:shape"))
-							current.RoofType = value;
-
-						//Si la clé est le nom du batiment /de la route, on le rentre directement dans les valeurs du NodeGroup
-						if (key.Equals("name"))
-							current.Name = value;
-					}
-
-					//On lit une nouvelle ligne
-					line = file.ReadLine();
 				}
 
-				if ((current.IsBuilding() || current.IsHighway()) || current.IsWaterway())
-					objectBuilder.NodeGroups.Add(current);
+				if ((nodeGroup.IsBuilding() || nodeGroup.IsHighway()) || nodeGroup.IsWaterway())
+					objectBuilder.NodeGroups.Add(nodeGroup);
 			}
 		}
-
-		file.Close();
 	}
 		
 	/// <summary>
@@ -226,51 +174,51 @@ public class FileManager {
 		file.WriteLine("\t\t<info nf=\"1\" roof=\"15\" type=\"pitched\"/>");
 
 		//On crée les caractéristiques par défaut en France
-		file.WriteLine("\t\t<country " + Attributes.DESIGNATION + "=\"France\">");
+		file.WriteLine("\t\t<country " + XMLAttributes.DESIGNATION + "=\"France\">");
 		file.WriteLine("\t\t\t<info lat=\"47.3833300\" lon=\"0.6833300\" dst=\"5\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
 
 		//On crée les caractéristiques par défaut en Midi-Pyrenees
-		file.WriteLine("\t\t\t<region " + Attributes.DESIGNATION + "=\"Midi-Pyrenees\">");
+		file.WriteLine("\t\t\t<region " + XMLAttributes.DESIGNATION + "=\"Midi-Pyrenees\">");
 		file.WriteLine("\t\t\t\t<info lat=\"43.600000\" lon=\"1.433333\" dst=\"1.1\" nf=\"1\" roof=\"15\" type=\"pitched\"/>");
 
 		//On crée les caractéristiques par défaut à Toulouse
-		file.WriteLine("\t\t\t\t<town " + Attributes.DESIGNATION + "=\"Toulouse\">");
+		file.WriteLine("\t\t\t\t<town " + XMLAttributes.DESIGNATION + "=\"Toulouse\">");
 		file.WriteLine("\t\t\t\t\t<info lat=\"43.600000\" lon=\"1.433333\" dst=\"0.8\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
 
 		//On crée les caractéristiques par défaut à l'UPS
-		file.WriteLine("\t\t\t\t\t<district " + Attributes.DESIGNATION + "=\"UPS\">");
+		file.WriteLine("\t\t\t\t\t<district " + XMLAttributes.DESIGNATION + "=\"UPS\">");
 		file.WriteLine("\t\t\t\t\t\t<info lat=\"43.560397\" lon=\"1.468820\" dst=\"0.03\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
 
 		//Ici on crée les caractéristiques des différents buildings de l'UPS si nous les avons
-		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"IRIT\">");
+		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"IRIT\">");
 		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561988\" lon=\"1.467984\" dst=\"0.0005\" nf=\"4\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"U1\">");
+		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"U1\">");
 		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.560284\" lon=\"1.470247\" dst=\"0.0005\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"U2\">");
+		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"U2\">");
 		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561316\" lon=\"1.470514\" dst=\"0.0006\" nf=\"2\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"U3\">");
+		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"U3\">");
 		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561982\" lon=\"1.470014\" dst=\"0.00045\" nf=\"5\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"U4\">");
+		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"U4\">");
 		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.562723\" lon=\"1.469149\" dst=\"0.0005\" nf=\"5\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"E4-SCUIO\">");
+		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"E4-SCUIO\">");
 		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561877\" lon=\"1.469263\" dst=\"0.0003\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"3 TP2\">");
+		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"3 TP2\">");
 		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.561010\" lon=\"1.467793\" dst=\"0.0005\" nf=\"1\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
-		file.WriteLine("\t\t\t\t\t\t<building " + Attributes.DESIGNATION + "=\"Administration\">");
+		file.WriteLine("\t\t\t\t\t\t<building " + XMLAttributes.DESIGNATION + "=\"Administration\">");
 		file.WriteLine("\t\t\t\t\t\t\t<info lat=\"43.562995\" lon=\"1.466057\" dst=\"0.0006\" nf=\"3\" roof=\"0\" type=\"flat\"/>");
 		file.WriteLine("\t\t\t\t\t\t</building>");
 
@@ -278,7 +226,7 @@ public class FileManager {
 		file.WriteLine("\t\t\t\t\t</district>");
 
 		//On crée les caractéristiques par défaut à l'UPS
-		file.WriteLine("\t\t\t\t\t<district " + Attributes.DESIGNATION + "=\"Centre-Ville\">");
+		file.WriteLine("\t\t\t\t\t<district " + XMLAttributes.DESIGNATION + "=\"Centre-Ville\">");
 		file.WriteLine("\t\t\t\t\t\t<info lat=\"43.603236\" lon=\"1.444659\" dst=\"0.03\" nf=\"3\" roof=\"15\" type=\"pitched\"/>");
 
 		file.WriteLine("\t\t\t\t\t</district>");
@@ -549,16 +497,16 @@ public class FileManager {
 
 		//ecriture des locations
 		foreach (string str1 in countries) {
-			file.WriteLine("\t\t<country " + Attributes.DESIGNATION + "=\"" + str1 + "\">");
+			file.WriteLine("\t\t<country " + XMLAttributes.DESIGNATION + "=\"" + str1 + "\">");
 
 			foreach (string str2 in regions) {
-				file.WriteLine("\t\t\t<region " + Attributes.DESIGNATION + "=\"" + str2 + "\">");
+				file.WriteLine("\t\t\t<region " + XMLAttributes.DESIGNATION + "=\"" + str2 + "\">");
 
 				foreach (string str3 in towns) {
-					file.WriteLine("\t\t\t\t<town " + Attributes.DESIGNATION + "=\"" + str3 + "\">");
+					file.WriteLine("\t\t\t\t<town " + XMLAttributes.DESIGNATION + "=\"" + str3 + "\">");
 
 					foreach (string str4 in districts) {
-						file.WriteLine("\t\t\t\t\t<district " + Attributes.DESIGNATION + "=\"" + str4 + "\">");
+						file.WriteLine("\t\t\t\t\t<district " + XMLAttributes.DESIGNATION + "=\"" + str4 + "\">");
 
 						foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
 							if ((ngp.Country == str1) && (ngp.Region == str2) && (ngp.Town == str3) && (ngp.District== str4)) {
@@ -601,7 +549,7 @@ public class FileManager {
 								}
 
 								//Si c'est un feu tricolore
-								if (ngp.IsFeuTri()) {
+								if (ngp.IsTrafficLight()) {
 									//On récupère les caractéristiques du feu tricolore
 									ID = ngp.Id;
 
@@ -636,7 +584,7 @@ public class FileManager {
 								}
 
 								// Si c'est une route
-								if (ngp.IsHighway() && !(ngp.IsFeuTri())){
+								if (ngp.IsHighway() && !(ngp.IsTrafficLight())){
 									//on recupère les données sur la route
 									ID = ngp.Id;
 									typeRoute = ngp.GetTagValue("highway");
@@ -713,16 +661,16 @@ public class FileManager {
 
 			// Recuperation des balises
 			if (line.Contains("<country"))
-				strCou = line.Substring(line.IndexOf(Attributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(Attributes.DESIGNATION + "=") - 3);
+				strCou = line.Substring(line.IndexOf(XMLAttributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(XMLAttributes.DESIGNATION + "=") - 3);
 
 			if (line.Contains("<region"))
-				strReg = line.Substring(line.IndexOf(Attributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(Attributes.DESIGNATION + "=") - 3);
+				strReg = line.Substring(line.IndexOf(XMLAttributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(XMLAttributes.DESIGNATION + "=") - 3);
 
 			if (line.Contains("<town"))
-				strTow = line.Substring(line.IndexOf(Attributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(Attributes.DESIGNATION + "=") - 3);
+				strTow = line.Substring(line.IndexOf(XMLAttributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(XMLAttributes.DESIGNATION + "=") - 3);
 
 			if (line.Contains("<district"))
-				strDis = line.Substring(line.IndexOf(Attributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(Attributes.DESIGNATION + "=") - 3);
+				strDis = line.Substring(line.IndexOf(XMLAttributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(XMLAttributes.DESIGNATION + "=") - 3);
 
 			//Recuparation des batiments
 			if (line.Contains("<building")) {

@@ -1,8 +1,10 @@
 ﻿using System;
 
-public class Attributes {
+public class XMLAttributes {
 	public const string ID = "id";
+
 	public const string VISIBILITY = "visible";
+	public const string REFERENCE = "ref";
 
 	public const string KEY = "k";
 	public const string VALUE = "v";

@@ -324,7 +324,7 @@ public class ObjectBuilder {
 		float height=0.03f, diameter=0.015f;
 
 		foreach (NodeGroup ngp in nodeGroups) {
-			if ( ngp.IsHighway() && ngp.IsFeuTri() ) {
+			if ( ngp.IsHighway() && ngp.IsTrafficLight() ) {
 				for (int i = 0; i < ngp.NodeCount(); i++) {
 					z = ngp.GetNode (i).Latitude;
 					x = ngp.GetNode (i).Longitude;

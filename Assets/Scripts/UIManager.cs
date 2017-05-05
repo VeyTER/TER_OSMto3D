@@ -162,16 +162,20 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UINames.WALL_RANGE_BUTTON:
 			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
 				editionController.SelectionRange = EditionController.SelectionRanges.WALL;
-				movingEditor.InitialiseMovingMode (editionController.SelectionRange);
-				turningEditor.InitialiseTurningMode (editionController.SelectionRange);
+				if(editionController.EditionState == EditionController.EditionStates.MOVING_MODE)
+					movingEditor.InitialiseMovingMode (editionController.SelectionRange);
+				else if(editionController.EditionState == EditionController.EditionStates.TURNING_MODE)
+					turningEditor.InitialiseTurningMode (editionController.SelectionRange);
 				this.enableWallRangeButton ();
 			}
 			break;
 		case UINames.BUILDING_RANGE_BUTTON:
 			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
 				editionController.SelectionRange = EditionController.SelectionRanges.BUILDING;
-				movingEditor.InitialiseMovingMode (editionController.SelectionRange);
-				turningEditor.InitialiseTurningMode (editionController.SelectionRange);
+				if(editionController.EditionState == EditionController.EditionStates.MOVING_MODE)
+					movingEditor.InitialiseMovingMode (editionController.SelectionRange);
+				else if(editionController.EditionState == EditionController.EditionStates.TURNING_MODE)
+					turningEditor.InitialiseTurningMode (editionController.SelectionRange);
 				this.enableBuildingRangeButton ();
 			}
 			break;

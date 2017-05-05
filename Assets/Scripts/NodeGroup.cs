@@ -127,7 +127,7 @@ public class NodeGroup {
 	}
 
 	// retourne vrai si le NodeGroup correspond à un feu tricolore
-	public bool IsFeuTri() {
+	public bool IsTrafficLight() {
 		return this.tags.ContainsValue("traffic_signals");
 	}
 
