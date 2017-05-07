@@ -16,7 +16,7 @@ public class ObjectEditor {
 		this.buildingEdited = false;
 	}
 
-	public void Initialise(GameObject selectedWall, GameObject selectedBuilding) {
+	public void Initialize(GameObject selectedWall, GameObject selectedBuilding) {
 		this.SelectedWall = selectedWall;
 		this.SelectedBuilding = selectedBuilding;
 

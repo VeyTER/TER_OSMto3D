@@ -30,5 +30,4 @@ public class XMLAttributes {
 	public const string ROAD_TYPE = "roadtype";
 	public const string NB_WAY = "nbWay";
 	public const string MAX_SPEED = "maxspeed";
-
 }

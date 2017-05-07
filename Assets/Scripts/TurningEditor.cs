@@ -21,7 +21,7 @@ public class TurningEditor : ObjectEditor{
 		this.turnHandler.SetActive (false);
 	}
 
-	public void InitialiseTurningMode(EditionController.SelectionRanges selectionRange) {
+	public void InitializeTurningMode(EditionController.SelectionRanges selectionRange) {
 		Camera mainCamera = Camera.main;
 		Quaternion turnHandlerRotation = turnHandler.transform.rotation;
 		Vector3 objectScreenPosition = Vector3.zero;

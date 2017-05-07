@@ -253,13 +253,13 @@ public class EditionController : MonoBehaviour {
 
 	public void EnterMovingMode() {
 		this.EnterEditMode ();
-		movingEditor.Initialise(selectedWall, selectedBuilding);
+		movingEditor.Initialize(selectedWall, selectedBuilding);
 		movingEditor.MoveHandler.SetActive (true);
 		editionState = EditionStates.MOVING_MODE;
 	}
 	public void EnterTurningMode() {
 		this.EnterEditMode ();
-		turningEditor.Initialise(selectedWall, selectedBuilding);
+		turningEditor.Initialize(selectedWall, selectedBuilding);
 		turningEditor.TurnHandler.SetActive (true);
 		editionState = EditionStates.TURNING_MODE;
 	}

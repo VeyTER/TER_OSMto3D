@@ -404,6 +404,38 @@ public class NodeGroup {
 		}
 	}
 
+	public string ObjectType() {
+		if (this.IsBuilding ()) {
+			return XMLTags.BUILDING;
+		} else if (this.IsTree ()) {
+			return XMLTags.TREE;
+		} else if (this.IsTrafficLight ()) {
+			return XMLTags.TRAFFIC_LIGHT;
+		} else if (this.IsHighway ()) {
+			return XMLTags.HIGHWAY;
+		} else if (this.IsWaterway ()) {
+			return XMLTags.WATERWAY;
+		} else if (this.IsBusWayLane ()) {
+			return XMLTags.BUS_LANE_WAY;
+		} else if (this.IsFootway ()) {
+			return XMLTags.FOOTWAY;
+		} else if (this.IsCycleWay ()) {
+			return XMLTags.CYCLEWAY;
+		} else if (this.IsPrimary ()) {
+			return XMLTags.PRIMARY;
+		} else if (this.IsSecondary ()) {
+			return XMLTags.SECONDARY;
+		} else if (this.IsTertiary ()) {
+			return XMLTags.TERTIARY;
+		} else if (this.IsService ()) {
+			return XMLTags.SERVICE;
+		} else if (this.IsUnclassified ()) {
+			return XMLTags.UNCLASSIFIED;
+		} else {
+			return "unknown";
+		}
+	}
+
 	public double Id {
 		get { return id; }
 		set { id = value; }

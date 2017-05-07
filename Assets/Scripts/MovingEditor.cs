@@ -21,7 +21,7 @@ public class MovingEditor : ObjectEditor{
 		this.moveHandler.SetActive (false);
 	}
 
-	public void InitialiseMovingMode(EditionController.SelectionRanges selectionRange) {
+	public void InitializeMovingMode(EditionController.SelectionRanges selectionRange) {
 		Camera mainCamera = Camera.main;
 
 		Vector3 objectPosition = Vector3.zero;

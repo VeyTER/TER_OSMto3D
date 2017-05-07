@@ -128,13 +128,13 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UINames.MOVE_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
 				editionController.EnterMovingMode ();
-				movingEditor.InitialiseMovingMode (editionController.SelectionRange);
+				movingEditor.InitializeMovingMode (editionController.SelectionRange);
 			}
 			break;
 		case UINames.TURN_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
 				editionController.EnterTurningMode ();
-				turningEditor.InitialiseTurningMode (editionController.SelectionRange);
+				turningEditor.InitializeTurningMode (editionController.SelectionRange);
 			}
 			break;
 		case UINames.CHANGE_HEIGHT_BUTTON:
@@ -163,9 +163,9 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
 				editionController.SelectionRange = EditionController.SelectionRanges.WALL;
 				if(editionController.EditionState == EditionController.EditionStates.MOVING_MODE)
-					movingEditor.InitialiseMovingMode (editionController.SelectionRange);
+					movingEditor.InitializeMovingMode (editionController.SelectionRange);
 				else if(editionController.EditionState == EditionController.EditionStates.TURNING_MODE)
-					turningEditor.InitialiseTurningMode (editionController.SelectionRange);
+					turningEditor.InitializeTurningMode (editionController.SelectionRange);
 				this.enableWallRangeButton ();
 			}
 			break;
@@ -173,9 +173,9 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
 				editionController.SelectionRange = EditionController.SelectionRanges.BUILDING;
 				if(editionController.EditionState == EditionController.EditionStates.MOVING_MODE)
-					movingEditor.InitialiseMovingMode (editionController.SelectionRange);
+					movingEditor.InitializeMovingMode (editionController.SelectionRange);
 				else if(editionController.EditionState == EditionController.EditionStates.TURNING_MODE)
-					turningEditor.InitialiseTurningMode (editionController.SelectionRange);
+					turningEditor.InitializeTurningMode (editionController.SelectionRange);
 				this.enableBuildingRangeButton ();
 			}
 			break;
