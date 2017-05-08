@@ -4,9 +4,6 @@ using UnityEngine.UI;
 using System;
 
 public class Main : MonoBehaviour {
-	// coordonnées min et max de la carte
-	public static double minlat = 0, maxlat = 0, minlon = 0, maxlon = 0;
-
 	// Les fileName sont instancie via l'interfce de Unity
 	private string OSMFileName1;
 	private string OSMFileName2;
@@ -26,7 +23,7 @@ public class Main : MonoBehaviour {
 
 		this.SetUpUI ();
 
-		OSMFileName1 = "campus";
+		OSMFileName1 = "capitole";
 		OSMFileName2 = null;
 
 		// Teste si un nom de fichier est renseigné sur l'interface de Unity
@@ -51,7 +48,7 @@ public class Main : MonoBehaviour {
 			fileManager.ReadResumeFile ();
 
 			objectBuilder.ScaleNodes (1000D);
-			objectBuilder.SetLatLon (minlat, maxlat, minlon, maxlon);
+			objectBuilder.SetLatLon (fileManager.Minlat, fileManager.Minlon, fileManager.Maxlat, fileManager.Maxlon);
 
 			GameObject cityComponents = new GameObject (CityNames.CITY);
 			objectBuilder.CityComponents = cityComponents;

@@ -16,17 +16,23 @@ public class FileManager {
 	// chemin d'acces et nom du fichier par defaut
 	private string path = @"./Assets/";
 
-	// Arraylist permettant de stocker les balises
-	private ArrayList countries = new ArrayList();
-	private ArrayList regions = new ArrayList();
-	private ArrayList towns = new ArrayList();
-	private ArrayList districts = new ArrayList();
+	// coordonnées min et max de la carte
+	private double minlat;
+	private double minlon;
+	private double maxlat;
+	private double maxlon;
 
 	//creation d'une instance de ModificationPoint
 	private PointEditor pointEditor;
 
 	public FileManager() {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
+
+		this.minlat = 0;
+		this.minlon = 0;
+		this.maxlat = 0;
+		this.maxlon = 0;
+
 		this.pointEditor = new PointEditor();
 	}
 
@@ -36,10 +42,10 @@ public class FileManager {
 
 		this.path = path;
 
-		this.countries = new ArrayList();
-		this.regions = new ArrayList();
-		this.towns = new ArrayList();
-		this.districts = new ArrayList();
+		this.minlat = 0;
+		this.minlon = 0;
+		this.maxlat = 0;
+		this.maxlon = 0;
 
 		this.pointEditor = new PointEditor();
 	}
@@ -61,37 +67,25 @@ public class FileManager {
 			XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XMLTags.WAY);
 
 			if (boundsNodes.Count > 0) {
-				XmlNode minLatAttribute = boundsNodes [0].Attributes.GetNamedItem (XMLAttributes.MIN_LATITUDE);
-				XmlNode minLonAttribute = boundsNodes [0].Attributes.GetNamedItem (XMLAttributes.MIN_LONGITUTE);
-				XmlNode maxLatAttribute = boundsNodes [0].Attributes.GetNamedItem (XMLAttributes.MAX_LATITUDE);
-				XmlNode maxLonAttribute = boundsNodes [0].Attributes.GetNamedItem (XMLAttributes.MAX_LONGIUDE);
-
-				Main.minlat = double.Parse (minLatAttribute.InnerText);
-				Main.minlon = double.Parse (minLonAttribute.InnerText);
-				Main.maxlat = double.Parse (maxLatAttribute.InnerText);
-				Main.maxlon = double.Parse (maxLonAttribute.InnerText);
+				minlat = double.Parse (this.AttributeValue (boundsNodes [0], XMLAttributes.MIN_LATITUDE));
+				minlon = double.Parse (this.AttributeValue (boundsNodes [0], XMLAttributes.MIN_LONGITUDE));
+				maxlat = double.Parse (this.AttributeValue (boundsNodes [0], XMLAttributes.MAX_LATITUDE));
+				maxlon = double.Parse (this.AttributeValue (boundsNodes [0], XMLAttributes.MAX_LONGITUDE));
 			}
 
 			ArrayList nodes = new ArrayList();
 			foreach (XmlNode nodeNode in nodeNodes) {
-				XmlNode idAttribute = nodeNode.Attributes.GetNamedItem (XMLAttributes.ID);
-				XmlNode latitudeAttribute = nodeNode.Attributes.GetNamedItem (XMLAttributes.LATITUDE);
-				XmlNode longitudeAttribute = nodeNode.Attributes.GetNamedItem (XMLAttributes.LONGIUDE);
-
-				double id = double.Parse (idAttribute.InnerText);
-				double latitude = double.Parse(latitudeAttribute.InnerText);
-				double longitude = double.Parse(longitudeAttribute.InnerText);
+				double id = double.Parse (this.AttributeValue (nodeNode, XMLAttributes.ID));
+				double latitude = double.Parse(this.AttributeValue (nodeNode, XMLAttributes.LATITUDE));
+				double longitude = double.Parse(this.AttributeValue (nodeNode, XMLAttributes.LONGIUDE));
 
 				XmlNodeList tagNodes = nodeNode.ChildNodes;
 				for (int i = 0; i < tagNodes.Count; i++) {
 					if(tagNodes [i].Name.Equals(XMLTags.TAG)) {
 						XmlNode tagNode = tagNodes [i];
 
-						XmlNode keyAttribute = tagNode.Attributes.GetNamedItem (XMLAttributes.KEY);
-						XmlNode valueAttribute = tagNode.Attributes.GetNamedItem (XMLAttributes.VALUE);
-
-						string key = keyAttribute.InnerText;
-						string value = valueAttribute.InnerText;
+						string key = this.AttributeValue (tagNode, XMLAttributes.KEY);
+						string value = this.AttributeValue (tagNode, XMLAttributes.VALUE);
 
 						if (key.Equals (XMLKeys.NATURAL) || key.Equals (XMLKeys.HIGHWAY)) {
 							NodeGroup nodeGroup = new NodeGroup (id);
@@ -100,17 +94,16 @@ public class FileManager {
 							if (nodeGroup.IsTree() || nodeGroup.IsTrafficLight())
 								nodeGroup.Name = value;
 
-							nodeGroup.AddNode (new Node (id, longitude, latitude));
+							nodeGroup.AddNode (new Node (id, latitude, longitude));
 							objectBuilder.NodeGroups.Add (nodeGroup);
 						}
 					}
 				}
-				nodes.Add(new Node(id, longitude, latitude));
+				nodes.Add(new Node(id, latitude, longitude));
 			}
 
 			foreach (XmlNode wayNode in wayNodes) {
-				XmlNode idAttribute = wayNode.Attributes.GetNamedItem (XMLAttributes.ID);
-				double id = double.Parse (idAttribute.InnerText);
+				double id = double.Parse (this.AttributeValue (wayNode, XMLAttributes.ID));
 
 				NodeGroup nodeGroup = new NodeGroup (id);
 				XmlNodeList ndNodes = wayNode.ChildNodes;
@@ -118,8 +111,7 @@ public class FileManager {
 					if(ndNodes[i].Name.Equals(XMLTags.ND)) {
 						XmlNode ndNode = ndNodes [i];
 
-						XmlNode referenceAttribute = ndNode.Attributes.GetNamedItem (XMLAttributes.REFERENCE);
-						double reference = double.Parse (referenceAttribute.InnerText);
+						double reference = double.Parse (this.AttributeValue(ndNode, XMLAttributes.REFERENCE));
 
 						int j = 0;
 						for (; j < nodes.Count && ((Node)nodes [j]).Id != reference; j++);
@@ -128,11 +120,8 @@ public class FileManager {
 					} else if(ndNodes[i].Name.Equals(XMLTags.TAG)) {
 						XmlNode tagNode = ndNodes [i];
 
-						XmlNode keyAttribute = tagNode.Attributes.GetNamedItem (XMLAttributes.KEY);
-						XmlNode valueAttibute = tagNode.Attributes.GetNamedItem (XMLAttributes.VALUE);
-
-						string key = keyAttribute.InnerText;
-						string value = valueAttibute.InnerText;
+						string key = this.AttributeValue (tagNode, XMLAttributes.KEY);
+						string value = this.AttributeValue (tagNode, XMLAttributes.VALUE);
 
 						if (key.Equals (XMLValues.LANES))
 							nodeGroup.NbWay = int.Parse (value);
@@ -190,22 +179,20 @@ public class FileManager {
 		}
 	}
 
-	private void FillNodeGroups(XmlNode boundingAreaNode, string[] areas, int areaIndex) {
+	private void FillNodeGroups(XmlNode boundingAreaNode, string[] areaTypes, int areaTypeIndex) {
 		for (int i = 1; i < boundingAreaNode.ChildNodes.Count; i++) {
-			if (boundingAreaNode.ChildNodes[i].Name.Equals (areas[areaIndex])) {
+			if (boundingAreaNode.ChildNodes[i].Name.Equals (areaTypes[areaTypeIndex])) {
 				XmlNode areaNode = boundingAreaNode.ChildNodes [i];
-
-				XmlNode areaDesignationAttribute = areaNode.Attributes.GetNamedItem (XMLAttributes.DESIGNATION);
-				string areaDesignation = areaDesignationAttribute.InnerText;
+				string areaDesignation = this.AttributeValue (areaNode, XMLAttributes.DESIGNATION);
 
 				XmlNode areaInfosNode = areaNode.FirstChild;
-				double[] areaLocationInfos = this.AttributeLocationInfo(areaInfosNode);
+				double[] areaLocationInfos = this.AttributeLocationInfo (areaInfosNode);
 				string[] areaBuildingInfos = this.AttributeBuildingInfo (areaInfosNode);
 
-				this.SetupAreaNodeGroups (areaDesignation, areaLocationInfos, areaBuildingInfos, areas[areaIndex]);
+				this.SetupAreaNodeGroups (areaDesignation, areaLocationInfos, areaBuildingInfos, areaTypes[areaTypeIndex]);
 
-				if (areaIndex < areas.Length)
-					this.FillNodeGroups (areaNode, areas, areaIndex + 1);
+				if (areaTypeIndex < areaTypes.Length)
+					this.FillNodeGroups (areaNode, areaTypes, areaTypeIndex + 1);
 			}
 		}
 	}
@@ -213,29 +200,37 @@ public class FileManager {
 	private string[] AttributeBuildingInfo(XmlNode infoNode) {
 		string[] res = new string[3];
 
-		XmlNode nbFloorAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.NB_FLOOR);
-		XmlNode roofAngleAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.ROOF_ANGLE);
-		XmlNode roofTypeAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.ROOF_TYPE);
+		res [0] = this.AttributeValue(infoNode, XMLAttributes.NB_FLOOR);
+		res [1] = this.AttributeValue (infoNode, XMLAttributes.ROOF_ANGLE);
 
-		res[0] = nbFloorAttribute.InnerText;
-		res[1] = roofAngleAttribute.InnerText;
-		res[2] = roofTypeAttribute.InnerText.Equals("unknown") ? "" : roofTypeAttribute.InnerText;
+		string roofType = this.AttributeValue (infoNode, XMLAttributes.ROOF_TYPE);
+		res [2] = roofType.Equals("unknown") ? "" : roofType;
 
+		return res;
+	}
+
+	private string[] AttributeHighwayInfo(XmlNode infoNode) {
+		string[] res = new string[3];
+		res [0] = this.AttributeValue (infoNode, XMLAttributes.ROAD_TYPE);
+		res [1] = this.AttributeValue(infoNode, XMLAttributes.NB_WAY);
+		res [2] = this.AttributeValue (infoNode, XMLAttributes.MAX_SPEED);
 		return res;
 	}
 
 	private double[] AttributeLocationInfo(XmlNode infoNode) {
 		double[] res = new double[3];
-
-		XmlNode latitudeAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.LATITUDE);
-		XmlNode longitudeAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.LONGIUDE);
-		XmlNode distanceAttribute = infoNode.Attributes.GetNamedItem (XMLAttributes.DISTANCE);
-
-		res[0] = double.Parse (latitudeAttribute.InnerText);
-		res[1] = double.Parse (longitudeAttribute.InnerText);
-		res[2] = double.Parse (distanceAttribute.InnerText);
-
+		res[0] = double.Parse (this.AttributeValue(infoNode, XMLAttributes.LATITUDE));
+		res[1] = double.Parse (this.AttributeValue(infoNode, XMLAttributes.LONGIUDE));
+		res[2] = double.Parse (this.AttributeValue(infoNode, XMLAttributes.DISTANCE));
 		return res;
+	}
+
+	private string AttributeValue(XmlNode containerNode, string attributeName) {
+		XmlNode attribute = containerNode.Attributes.GetNamedItem (attributeName);
+		if (attribute != null)
+			return attribute.InnerText;
+		else
+			return null;
 	}
 
 	private void SetupAreaNodeGroups(string designation, double[] locationData, string[] buildingData, string tagName) {
@@ -283,56 +278,74 @@ public class FileManager {
 			mapResumedDocument.AppendChild (mapResumedDeclaration);
 			this.TransfertNodes (mapResumedDocument, mapSettingsDocument, mapResumedDocument);
 
-			foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
-				string locationXPath = "";
-				locationXPath += "/" + XMLTags.EARTH;
-				locationXPath += "/" + XMLTags.COUNTRY + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
-				locationXPath += "/" + XMLTags.REGION + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
-				locationXPath += "/" + XMLTags.TOWN + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
-				locationXPath += "/" + XMLTags.DISTRICT + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
+			XmlNode earthNode = mapResumedDocument.ChildNodes[1];
 
-				XmlNode locationNode = mapResumedDocument.SelectSingleNode (locationXPath);
+			if (earthNode != null) {
+				XmlNode boundsNode = this.NewBoundsNode (mapResumedDocument);
+				earthNode.InsertBefore (boundsNode, earthNode.FirstChild);
 
-				if (locationNode != null) {
-					string customObjectXPath = locationXPath + "/" + nodeGroup.Type () + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Name + "\"]";
-					XmlNode customObjectNode = mapResumedDocument.SelectSingleNode (customObjectXPath);
+				foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
+					string locationXPath = "";
+					locationXPath += "/" + XMLTags.EARTH;
+					locationXPath += "/" + XMLTags.COUNTRY + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
+					locationXPath += "/" + XMLTags.REGION + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
+					locationXPath += "/" + XMLTags.TOWN + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
+					locationXPath += "/" + XMLTags.DISTRICT + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
 
-					XmlNode objectNode = null;
-					XmlNode objectInfoNode = null;
+					XmlNode locationNode = mapResumedDocument.SelectSingleNode (locationXPath);
 
-					if (customObjectNode == null) {
-						objectNode = mapResumedDocument.CreateElement (nodeGroup.Type ());
-						objectInfoNode = mapResumedDocument.CreateElement (XMLTags.INFO);
-						objectNode.AppendChild (objectInfoNode);
-					} else {
-						objectNode = customObjectNode;
-						objectInfoNode = customObjectNode.FirstChild;
+					if (locationNode != null) {
+						string customObjectXPath = locationXPath + "/" + nodeGroup.Type () + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Name + "\"]";
+						XmlNode customObjectNode = mapResumedDocument.SelectSingleNode (customObjectXPath);
+
+						XmlNode objectNode = null;
+						XmlNode objectInfoNode = null;
+
+						if (customObjectNode == null) {
+							objectNode = mapResumedDocument.CreateElement (nodeGroup.Type ());
+							objectInfoNode = mapResumedDocument.CreateElement (XMLTags.INFO);
+							objectNode.AppendChild (objectInfoNode);
+						} else {
+							objectNode = customObjectNode;
+							objectInfoNode = customObjectNode.FirstChild;
+						}
+
+						XmlAttribute objectIdAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.ID);
+						objectIdAttribute.Value = nodeGroup.Id + "";
+						objectInfoNode.Attributes.Append (objectIdAttribute);
+
+						this.AddInternalNodes (mapResumedDocument, nodeGroup, objectNode);
+
+						if (nodeGroup.IsBuilding ())
+							this.AddBuildingNodeInfo (mapResumedDocument, nodeGroup, objectNode, objectInfoNode);
+						else if (nodeGroup.IsHighway () && !nodeGroup.IsTrafficLight ())
+							this.AddHighwayNodeInfo (mapResumedDocument, nodeGroup, objectNode, objectInfoNode);
+
+						locationNode.AppendChild (objectNode);
 					}
-
-					XmlAttribute objectIdAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.ID);
-					objectIdAttribute.Value = nodeGroup.Id + "";
-					objectInfoNode.Attributes.Append (objectIdAttribute);
-
-					this.AddInternalNodes (mapResumedDocument, nodeGroup, objectNode);
-
-					if (nodeGroup.IsBuilding ())
-						this.AddBuildingNodeInfo (mapResumedDocument, nodeGroup, objectNode, objectInfoNode);
-					else if (nodeGroup.IsHighway () && !nodeGroup.IsTrafficLight ())
-						this.AddHighwayNodeInfo (mapResumedDocument, nodeGroup, objectNode, objectInfoNode);
-
-					locationNode.AppendChild (objectNode);
 				}
-			}
 
-			mapResumedDocument.Save (mapResumedFilePath);
+				this.RemoveUnusedNodes (mapResumedDocument);
+
+				mapResumedDocument.Save (mapResumedFilePath);
+			}
 		}
 	}
 
-	private void TransfertNodes (XmlDocument targetDocument, XmlNode mapSettingsBoundingElement, XmlNode mapResumedBoundingElement) {
-		foreach (XmlNode mapSettingsNode in mapSettingsBoundingElement) {
+	private XmlNode NewBoundsNode(XmlDocument document) {
+		XmlNode res = document.CreateElement (XMLTags.BOUNDS);
+		this.AppendAttribute (document, res, XMLAttributes.MIN_LATITUDE, minlat + "");
+		this.AppendAttribute (document, res, XMLAttributes.MIN_LONGITUDE, minlon + "");
+		this.AppendAttribute (document, res, XMLAttributes.MAX_LATITUDE, maxlat + "");
+		this.AppendAttribute (document, res, XMLAttributes.MAX_LONGITUDE, maxlon + "");
+		return res;
+	}
+
+	private void TransfertNodes (XmlDocument targetDocument, XmlNode mapSettingsParentElement, XmlNode mapResumedParentElement) {
+		foreach (XmlNode mapSettingsNode in mapSettingsParentElement) {
 			XmlNode mapResumedNode = targetDocument.ImportNode (mapSettingsNode, true);
-			if ((!mapSettingsNode.Name.Equals (XMLTags.INFO) || mapSettingsBoundingElement.Name.Equals(XMLTags.BUILDING)) && !mapResumedNode.Name.Equals (XMLTags.XML)) {
-				mapResumedBoundingElement.AppendChild (mapResumedNode);
+			if ((!mapSettingsNode.Name.Equals (XMLTags.INFO) || mapSettingsParentElement.Name.Equals(XMLTags.BUILDING)) && !mapResumedNode.Name.Equals (XMLTags.XML)) {
+				mapResumedParentElement.AppendChild (mapResumedNode);
 				mapResumedNode.InnerText = "";
 				mapResumedNode.InnerXml = "";
 				this.TransfertNodes (targetDocument, mapSettingsNode, mapResumedNode);
@@ -340,12 +353,29 @@ public class FileManager {
 		}
 	}
 
+	private void RemoveUnusedNodes(XmlNode parentElement) {
+		ArrayList oldNodes = new ArrayList(); 
+		foreach(XmlNode dataNode in parentElement.ChildNodes) {
+			if (!dataNode.Name.Equals(XMLTags.XML) && !dataNode.Name.Equals(XMLTags.BOUNDS)) {
+				if (dataNode.ChildNodes.Count > 0 && dataNode.FirstChild.Name.Equals (XMLTags.INFO)) {
+					if(dataNode.ChildNodes.Count == 1) {
+						oldNodes.Add(dataNode);
+					}
+				} else {
+					this.RemoveUnusedNodes(dataNode);
+				}
+			}
+		}
+		foreach(XmlNode oldNode in oldNodes)
+			parentElement.RemoveChild (oldNode);
+	}
+
 	private void AddInternalNodes(XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectNode) {
 		foreach (Node node in nodeGroup.Nodes) {
 			XmlNode objectNd = mapResumedDocument.CreateElement (XMLTags.ND);
 			objectNode.AppendChild (objectNd);
 
-			this.AppendAttribute (mapResumedDocument, objectNd, XMLAttributes.LATITUDE, node.Id + "");
+			this.AppendAttribute (mapResumedDocument, objectNd, XMLAttributes.ID, node.Id + "");
 			this.AppendAttribute (mapResumedDocument, objectNd, XMLAttributes.LATITUDE, node.Latitude + "");
 			this.AppendAttribute (mapResumedDocument, objectNd, XMLAttributes.LONGIUDE, node.Longitude + "");
 		}
@@ -377,248 +407,110 @@ public class FileManager {
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier resume a lire </param>
 	public void ReadResumeFile() {
-		ArrayList nodes = new ArrayList();
+		string mapResumedFilePath = path + "Maps Resumed/map_resumed.osm";
+		XmlDocument mapsSettingsDocument = new XmlDocument (); 
 
+		ArrayList extractedNodes = new ArrayList ();
 		objectBuilder.NodeGroups.Clear ();
+		if (File.Exists (mapResumedFilePath)) {
+			mapsSettingsDocument.Load (mapResumedFilePath);
 
-		string line;
-	
-		double id = 0d;
-		double lat = 0d;
-		double lon = 0d;
+			XmlNode earthNode = mapsSettingsDocument.ChildNodes[1];
+			if (earthNode != null) {
+				
+				XmlNode boundsNode = earthNode.FirstChild;
+				if (boundsNode != null) {
+					minlat = double.Parse (this.AttributeValue (boundsNode, XMLAttributes.MIN_LATITUDE));
+					minlon = double.Parse (this.AttributeValue (boundsNode, XMLAttributes.MIN_LONGITUDE));
+					maxlat = double.Parse (this.AttributeValue (boundsNode, XMLAttributes.MAX_LATITUDE));
+					maxlon = double.Parse (this.AttributeValue (boundsNode, XMLAttributes.MAX_LONGITUDE));
 
-		//Variables permettant de recuperer les balises
-		string strCou="country";
-		string strReg="region";
-		string strTow="town";
-		string strDis="district";
+					string[] areas = new string[4] {
+						XMLTags.COUNTRY,
+						XMLTags.REGION,
+						XMLTags.TOWN,
+						XMLTags.DISTRICT,
+					};
 
-		// Read the file and display it line by line.
-		StreamReader file = new StreamReader(path + "Maps Resumed/map_resumed.osm");
-		while ((line = file.ReadLine()) != null) {
-			
-			// Recuperation de limites de la carte
-			if (line.Contains("<bounds")) {
-				Main.minlat = double.Parse(line.Substring(line.IndexOf("minlat=") + 8, line.IndexOf("\" minlon=") - line.IndexOf("minlat=") - 8));
-				Main.maxlat = double.Parse(line.Substring(line.IndexOf("maxlat=") + 8, line.IndexOf("\" maxlon=") - line.IndexOf("maxlat=") - 8));
-				Main.minlon = double.Parse(line.Substring(line.IndexOf("minlon=") + 8, line.IndexOf("\" maxlat=") - line.IndexOf("minlon=") - 8));
-				Main.maxlon = double.Parse(line.Substring(line.IndexOf("maxlon=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxlon=") - 8));
-			}
-
-			// Recuperation des balises
-			if (line.Contains("<country"))
-				strCou = line.Substring(line.IndexOf(XMLAttributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(XMLAttributes.DESIGNATION + "=") - 3);
-
-			if (line.Contains("<region"))
-				strReg = line.Substring(line.IndexOf(XMLAttributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(XMLAttributes.DESIGNATION + "=") - 3);
-
-			if (line.Contains("<town"))
-				strTow = line.Substring(line.IndexOf(XMLAttributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(XMLAttributes.DESIGNATION + "=") - 3);
-
-			if (line.Contains("<district"))
-				strDis = line.Substring(line.IndexOf(XMLAttributes.DESIGNATION + "=") + 3, line.IndexOf("\">") - line.IndexOf(XMLAttributes.DESIGNATION + "=") - 3);
-
-			//Recuparation des batiments
-			if (line.Contains("<building")) {
-				line = file.ReadLine();
-
-				// Creation d'un nouveau nodegroup
-				NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" name=") - line.IndexOf("id=") - 4)));
-
-				// Ajout des caractéristiques du batiment
-				current.Name = line.Substring(line.IndexOf("name=") + 6, line.IndexOf("\" nbFloor") - line.IndexOf("name=") - 6);
-				current.NbFloor = int.Parse(line.Substring(line.IndexOf("nbFloor=") + 9, line.IndexOf("\" type") - line.IndexOf("nbFloor=") - 9));
-				current.RoofType = line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\" angle") - line.IndexOf("type=") - 6);
-				current.RoofAngle = int.Parse(line.Substring(line.IndexOf("angle=") + 7, line.IndexOf("\"/>") - line.IndexOf("angle=") - 7));
-
-				// Lecture d'une nouvelle ligne
-				line = file.ReadLine();
-				while (!line.Contains("</building")) {
-					if (line.Contains("<node")) {
-						
-						// Recuperation des nodes
-						id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
-						lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
-						lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
-
-						nodes.Add(new Node(id, lon, lat));
-
-						// Ajout du nouveau node au nodegroup
-						current.AddNode(new Node(id, lon, lat));
-
-					}
-
-					// Changement de ligne
-					line = file.ReadLine();
-				}
-
-				// Ajout des balises de location dans le nodegroup
-				current.Country = strCou;
-				current.Region = strReg;
-				current.Town = strTow;
-				current.District = strDis;
-
-				//Ajout du tag 
-				current.AddTag("building", "yes");
-
-				//Ajout du nodeGroup courent à la liste main.nodeGroups
-				objectBuilder.NodeGroups.Add(current);
-			}
-
-			//Récupération des routes
-			if (line.Contains("<highway")) {
-				line = file.ReadLine();
-
-				// Creation d'un nouveau nodegroup
-				NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" type=") - line.IndexOf("id=") - 4)));
-
-				// Ajout des caractéristiques de la route
-				current.AddTag("highway", line.Substring(line.IndexOf("type=") + 6, line.IndexOf("\" name") - line.IndexOf("type=") - 6));
-				current.Name = line.Substring(line.IndexOf("name=") + 6, line.IndexOf("\" nbVoie") - line.IndexOf("name=")-6);
-				current.NbWay = int.Parse(line.Substring(line.IndexOf("nbVoie=") + 8, line.IndexOf("\" maxspd") - line.IndexOf("nbVoie=") - 8));
-				current.MaxSpeed = int.Parse(line.Substring(line.IndexOf("maxspd=") + 8, line.IndexOf("\"/>") - line.IndexOf("maxspd=") - 8));
-
-				// Lecture d'une nouvelle ligne
-				line = file.ReadLine();
-
-				while (!line.Contains("</highway")) {
-					if (line.Contains("<node")) {
-						// Recuperation des nodes
-						id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
-						lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
-						lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
-
-						// Ajout du nouveau node au nodegroup
-						current.AddNode(new Node(id, lon, lat));
-					}
-
-					// Changement de ligne
-					line = file.ReadLine();
-				}
-
-				// Ajout des balises de location dans le nodegroup
-				current.Country = strCou;
-				current.Region = strReg;
-				current.Town = strTow;
-				current.District = strDis;
-
-				//Ajout du nodeGroup courent à la liste main.nodeGroups
-				objectBuilder.NodeGroups.Add(current);
-			}
-
-			// Récupération des routes
-			if (line.Contains("<waterway")) {
-				line = file.ReadLine();
-
-				// Creation d'un nouveau nodegroup
-				NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\"/>") - line.IndexOf("id=") - 4)));
-
-				current.AddTag("waterway", "");
-
-				// Lecture d'une nouvelle ligne
-				line = file.ReadLine();
-
-				while (!line.Contains("</waterway")) {
-					if (line.Contains("<node")) {
-						
-						// Recuperation des nodes
-						id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
-						lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
-						lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
-
-						// Ajout du nouveau node au nodegroup
-						current.AddNode(new Node(id, lon, lat));
-					}
-
-					// Changement de ligne
-					line = file.ReadLine();
-				}
-
-				// Ajout des balises de location dans le nodegroup
-				current.Country = strCou;
-				current.Region = strReg;
-				current.Town = strTow;
-				current.District = strDis;
-
-				//Ajout du nodeGroup courent à la liste main.nodeGroups
-				objectBuilder.NodeGroups.Add(current);
-			}
-
-			//Recuparation des arbres
-			if (line.Contains("<tree")) {
-				line = file.ReadLine();
-
-				// Creation d'un nouveau nodegroup
-				NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\"/>") - line.IndexOf("id=") - 4)));
-
-				// Lecture d'une nouvelle ligne
-				line = file.ReadLine();
-				while (!line.Contains("</tree")) {
-					if (line.Contains("<node")) {
-						
-						// Recuperation des nodes
-						id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
-						lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
-						lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
-
-						// Ajout du nouveau node au nodegroup
-						current.AddNode(new Node(id, lon, lat));
-					}
-
-					// Changement de ligne
-					line = file.ReadLine();
-				}
-
-				// Ajout des balises de location dans le nodegroup
-				current.Country = strCou;
-				current.Region = strReg;
-				current.Town = strTow;
-				current.District = strDis;
-
-				//Ajout du tag 
-				current.AddTag("natural", "tree");
-
-				//Ajout du nodeGroup courent à la liste main.nodeGroups
-				objectBuilder.NodeGroups.Add(current);
-			}
-
-			//Recuparation des feux tricolores
-			if (line.Contains("<feuTri")) {
-				line = file.ReadLine();
-
-				// Creation d'un nouveau nodegroup
-				NodeGroup current = new NodeGroup(double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\"/>") - line.IndexOf("id=") -  4)));
-
-				// Lecture d'une nouvelle ligne
-				line = file.ReadLine();
-				while (!line.Contains("</feuTri")) {
-					if (line.Contains("<node")) {
-						
-						// Recuperation des nodes
-						id = double.Parse(line.Substring(line.IndexOf("id=") + 4, line.IndexOf("\" lat=") - line.IndexOf("id=") - 4));
-						lat = double.Parse(line.Substring(line.IndexOf("lat=") + 5, line.IndexOf("\" lon=") - line.IndexOf("lat=") - 5));
-						lon = double.Parse(line.Substring(line.IndexOf("lon=") + 5, line.IndexOf("\"/>") - line.IndexOf("lon=") - 5));
-
-						// Ajout du nouveau node au nodegroup
-						current.AddNode(new Node(id, lon, lat));
-					}
-
-					// Changement de ligne
-					line = file.ReadLine();
-				}
-
-				// Ajout des balises de location dans le nodegroup
-				current.Country = strCou;
-				current.Region = strReg;
-				current.Town = strTow;
-				current.District = strDis;
-
-				//Ajout du tag 
-				current.AddTag("highway", "traffic_signals");
-
-				//Ajout du nodeGroup courent à la liste main.nodeGroups
-				objectBuilder.NodeGroups.Add(current);
+					earthNode.RemoveChild (earthNode.FirstChild);
+					this.ExtractNodes (earthNode, new string[4], areas, 0);
+				}		
 			}
 		}
+	}
+
+	private void ExtractNodes(XmlNode parentAreaNode, string[] areaDesignations, string[] areaTypes, int areaTypeIndex) {
+		foreach (XmlNode dataNode in parentAreaNode.ChildNodes) {
+			if (areaTypeIndex < areaTypes.Length) {
+				areaDesignations [areaTypeIndex] = this.AttributeValue (dataNode, XMLAttributes.DESIGNATION);
+				this.ExtractNodes (dataNode, areaDesignations, areaTypes, areaTypeIndex + 1);
+			} else {
+				XmlNode areaInfosNode = dataNode.FirstChild;
+
+				double id = double.Parse(this.AttributeValue (areaInfosNode, XMLAttributes.ID));
+
+				NodeGroup nodeGroup = new NodeGroup (id);
+				for (int i = 1; i < dataNode.ChildNodes.Count; i++) {
+					XmlNode ndNode = dataNode.ChildNodes[i];
+
+					double latitude = double.Parse (this.AttributeValue(ndNode, XMLAttributes.LATITUDE));
+					double longitude = double.Parse (this.AttributeValue(ndNode, XMLAttributes.LONGIUDE));
+					Node node = new Node (id, latitude, longitude);
+					nodeGroup.AddNode (node);
+				}
+
+				nodeGroup.Country = areaDesignations [0];
+				nodeGroup.Region = areaDesignations [1];
+				nodeGroup.Town = areaDesignations [2];
+				nodeGroup.District = areaDesignations [3];
+
+				if (dataNode.Name.Equals (XMLTags.BUILDING)) {
+					nodeGroup.Name = this.AttributeValue (areaInfosNode, XMLAttributes.NAME);
+
+					string[] areaBuildingInfos = this.AttributeBuildingInfo (areaInfosNode);
+					nodeGroup.NbFloor = int.Parse(areaBuildingInfos [0]);
+					nodeGroup.RoofAngle = int.Parse(areaBuildingInfos [1]);
+					nodeGroup.RoofType = areaBuildingInfos [2];
+
+					nodeGroup.AddTag("building", "yes");
+				} else if (dataNode.Name.Equals (XMLTags.HIGHWAY)) {
+					nodeGroup.Name = this.AttributeValue (areaInfosNode, XMLAttributes.NAME);
+
+					string[] areaHighwayInfos = this.AttributeHighwayInfo (areaInfosNode);
+					nodeGroup.NbWay = int.Parse (areaHighwayInfos[1]);
+					nodeGroup.MaxSpeed = int.Parse (areaHighwayInfos[2]);
+
+					nodeGroup.AddTag("highway", areaHighwayInfos[0]);
+				} else if (dataNode.Name.Equals (XMLTags.WATERWAY)) {
+
+				} else if (dataNode.Name.Equals (XMLTags.TREE)) {
+					nodeGroup.AddTag("natural", XMLTags.TREE);
+				} else if (dataNode.Name.Equals (XMLTags.TRAFFIC_LIGHT)) {
+					nodeGroup.AddTag("highway", XMLTags.TRAFFIC_LIGHT);
+				}
+
+				objectBuilder.NodeGroups.Add(nodeGroup);
+			}
+		}
+	}
+
+	public double Minlat {
+		get { return minlat; }
+		set { minlat = value; }
+	}
+
+	public double Minlon {
+		get { return minlon; }
+		set { minlon = value; }
+	}
+
+	public double Maxlat {
+		get { return maxlat; }
+		set { maxlat = value; }
+	}
+
+	public double Maxlon {
+		get { return maxlon; }
+		set { maxlon = value; }
 	}
 }

@@ -59,11 +59,11 @@ public class ObjectBuilder {
 	}
 
 	// copie des coordonnées en latitude et longitude
-	public void SetLatLon(double minla, double maxla, double minlo, double maxlo) {
-		this.minlat = minla;
-		this.maxlat = maxla;
-		this.minlon = minlo;
-		this.maxlon = maxlo;
+	public void SetLatLon(double minlat, double minlon, double maxlat, double maxlon) {
+		this.minlat = minlat;
+		this.minlon = minlon;
+		this.maxlat = maxlat;
+		this.maxlon = maxlon;
 	}
 
 	// place les nodes dans la scène

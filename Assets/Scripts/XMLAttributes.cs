@@ -13,10 +13,10 @@ public class XMLAttributes {
 	public const string LONGIUDE = "lon";
 
 	public const string MIN_LATITUDE = "minlat";
-	public const string MIN_LONGITUTE = "minlon";
+	public const string MIN_LONGITUDE = "minlon";
 
 	public const string MAX_LATITUDE = "maxlat";
-	public const string MAX_LONGIUDE = "maxlon";
+	public const string MAX_LONGITUDE = "maxlon";
 
 	public const string DISTANCE = "dist";
 

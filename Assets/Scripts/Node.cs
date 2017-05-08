@@ -6,18 +6,16 @@ public class Node {
 	private double latitude;
 	private double longitude;
 
-	//Constructeur
-	public Node(double id, double lon, double lat){
+	public Node(double id, double latitude, double longitude){
 		this.id = id;
-		this.longitude = lon;
-		this.latitude = lat;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
-	//Constructeur
-	public Node(double lon, double lat){
+	public Node(double latitude, double longitude){
 		this.id = 0;
-		this.longitude = lon;
-		this.latitude = lat;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	public double Id {
