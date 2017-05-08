@@ -49,7 +49,7 @@ public class FileManager {
 	/// Permet d'extraire les données de fichier ".osm" et de les stocker dans des objet "node" et "nodeGroup". 
 	/// </summary>
 	/// <param name="nameMap"> nom du fichier ".osm" dont on doit extraire les infos </param>
-	public void readOSMFile(string mapName, int mapNum) {
+	public void ReadOSMFile(string mapName, int mapNum) {
 		string OSMFilePath = path + "Maps/" + mapName + ".osm";
 		XmlDocument OSMDocument = new XmlDocument(); 
 
@@ -161,7 +161,7 @@ public class FileManager {
 	/// Lit un fichier setting
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier setting a lire </param>
-	public void readSettingsFile() {
+	public void ReadSettingsFile() {
 		string mapSettingsFilePath = path + "Maps Settings/map_settings.osm";
 		XmlDocument mapsSettingsDocument = new XmlDocument(); 
 
@@ -269,7 +269,7 @@ public class FileManager {
 	/// Cree un fichier propre ou les informations sont resumees
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier ou l'on inscrit les informations </param>
-	public void createResumeFile() {
+	public void CreateResumeFile() {
 		string mapSettingsFilePath = path + "Maps Settings/map_settings.osm";
 		string mapResumedFilePath = path + "Maps Resumed/map_resumed.osm";
 
@@ -284,20 +284,30 @@ public class FileManager {
 			this.TransfertNodes (mapResumedDocument, mapSettingsDocument, mapResumedDocument);
 
 			foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
-				string xPath = "";
-				xPath += "/" + XMLTags.EARTH;
-				xPath += "/" + XMLTags.COUNTRY + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
-				xPath += "/" + XMLTags.REGION + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
-				xPath += "/" + XMLTags.TOWN + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
-				xPath += "/" + XMLTags.DISTRICT + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
-//				xPath += "/" + XMLTags.BUILDING;
+				string locationXPath = "";
+				locationXPath += "/" + XMLTags.EARTH;
+				locationXPath += "/" + XMLTags.COUNTRY + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
+				locationXPath += "/" + XMLTags.REGION + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
+				locationXPath += "/" + XMLTags.TOWN + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
+				locationXPath += "/" + XMLTags.DISTRICT + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
 
-				XmlNode locationNode = mapResumedDocument.SelectSingleNode (xPath);
+				XmlNode locationNode = mapResumedDocument.SelectSingleNode (locationXPath);
 
 				if (locationNode != null) {
-					XmlNode objectNode = mapResumedDocument.CreateElement (nodeGroup.ObjectType ());
-					XmlNode objectInfoNode = mapResumedDocument.CreateElement (XMLTags.INFO);
-					objectNode.AppendChild (objectInfoNode);
+					string customObjectXPath = locationXPath + "/" + nodeGroup.Type () + "[@" + XMLAttributes.DESIGNATION + "=\"" + nodeGroup.Name + "\"]";
+					XmlNode customObjectNode = mapResumedDocument.SelectSingleNode (customObjectXPath);
+
+					XmlNode objectNode = null;
+					XmlNode objectInfoNode = null;
+
+					if (customObjectNode == null) {
+						objectNode = mapResumedDocument.CreateElement (nodeGroup.Type ());
+						objectInfoNode = mapResumedDocument.CreateElement (XMLTags.INFO);
+						objectNode.AppendChild (objectInfoNode);
+					} else {
+						objectNode = customObjectNode;
+						objectInfoNode = customObjectNode.FirstChild;
+					}
 
 					XmlAttribute objectIdAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.ID);
 					objectIdAttribute.Value = nodeGroup.Id + "";
@@ -335,52 +345,30 @@ public class FileManager {
 			XmlNode objectNd = mapResumedDocument.CreateElement (XMLTags.ND);
 			objectNode.AppendChild (objectNd);
 
-			XmlAttribute objectNdIdAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.ID);
-			XmlAttribute objectNdLatitudeAttibute = mapResumedDocument.CreateAttribute (XMLAttributes.LATITUDE);
-			XmlAttribute objectNdLongitudeAttibute = mapResumedDocument.CreateAttribute (XMLAttributes.LONGIUDE);
-
-			objectNdIdAttribute.Value = node.Id + "";
-			objectNdLatitudeAttibute.Value = node.Latitude + "";
-			objectNdLongitudeAttibute.Value = node.Longitude + "";
-
-			objectNd.Attributes.Append (objectNdIdAttribute);
-			objectNd.Attributes.Append (objectNdLatitudeAttibute);
-			objectNd.Attributes.Append (objectNdLongitudeAttibute);
+			this.AppendAttribute (mapResumedDocument, objectNd, XMLAttributes.LATITUDE, node.Id + "");
+			this.AppendAttribute (mapResumedDocument, objectNd, XMLAttributes.LATITUDE, node.Latitude + "");
+			this.AppendAttribute (mapResumedDocument, objectNd, XMLAttributes.LONGIUDE, node.Longitude + "");
 		}
 	}
 
 	private void AddBuildingNodeInfo (XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectNode, XmlNode objectInfoNode) {
-		XmlAttribute buildingNameAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.NAME);
-		XmlAttribute buildingNbFloorAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.NB_FLOOR);
-		XmlAttribute buildingRoofAngleAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.ROOF_ANGLE);
-		XmlAttribute buildingRoofTypeAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.ROOF_TYPE);
-
-		buildingNameAttribute.Value = nodeGroup.Name;
-		buildingNbFloorAttribute.Value = nodeGroup.NbFloor + "";
-		buildingRoofAngleAttribute.Value = nodeGroup.RoofAngle + "";
-		buildingRoofTypeAttribute.Value = nodeGroup.RoofType;
-
-		objectInfoNode.Attributes.Append (buildingNameAttribute);
-		objectInfoNode.Attributes.Append (buildingNbFloorAttribute);
-		objectInfoNode.Attributes.Append (buildingRoofAngleAttribute);
-		objectInfoNode.Attributes.Append (buildingRoofTypeAttribute);
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XMLAttributes.NAME, nodeGroup.Name);
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XMLAttributes.NB_FLOOR, nodeGroup.NbFloor + "");
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XMLAttributes.ROOF_ANGLE, nodeGroup.RoofAngle + "");
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XMLAttributes.ROOF_TYPE, nodeGroup.RoofType);
 	}
 
 	private void AddHighwayNodeInfo (XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectNode, XmlNode objectInfoNode) {
-		XmlAttribute highwayNameAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.NAME);
-		XmlAttribute highwayTypeAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.ROAD_TYPE);
-		XmlAttribute highwayNbWayAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.NB_WAY);
-		XmlAttribute highwayMaxSpeedAttribute = mapResumedDocument.CreateAttribute (XMLAttributes.MAX_SPEED);
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XMLAttributes.NAME, nodeGroup.Name);
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XMLAttributes.ROAD_TYPE, nodeGroup.GetTagValue ("highway"));
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XMLAttributes.NB_WAY, nodeGroup.NbWay + "");
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XMLAttributes.MAX_SPEED, nodeGroup.MaxSpeed + "");
+	}
 
-		highwayNameAttribute.Value = nodeGroup.Name;
-		highwayTypeAttribute.Value = nodeGroup.GetTagValue ("highway");
-		highwayNbWayAttribute.Value = nodeGroup.NbWay + "";
-		highwayMaxSpeedAttribute.Value = nodeGroup.MaxSpeed + "";
-
-		objectInfoNode.Attributes.Append (highwayNameAttribute);
-		objectInfoNode.Attributes.Append (highwayTypeAttribute);
-		objectInfoNode.Attributes.Append (highwayNbWayAttribute);
-		objectInfoNode.Attributes.Append (highwayMaxSpeedAttribute);
+	private void AppendAttribute(XmlDocument boundingDocument, XmlNode containerNode, string attributeName, string attributeValue) {
+		XmlAttribute attribute = boundingDocument.CreateAttribute (attributeName);
+		attribute.Value = attributeValue;
+		containerNode.Attributes.Append (attribute);
 	}
 
 	/// <summary>
@@ -388,7 +376,7 @@ public class FileManager {
 	/// Lit un fichier resume
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier resume a lire </param>
-	public void readResumeFile() {
+	public void ReadResumeFile() {
 		ArrayList nodes = new ArrayList();
 
 		objectBuilder.NodeGroups.Clear ();

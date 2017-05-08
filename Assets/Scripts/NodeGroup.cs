@@ -404,7 +404,7 @@ public class NodeGroup {
 		}
 	}
 
-	public string ObjectType() {
+	public string Type() {
 		if (this.IsBuilding ()) {
 			return XMLTags.BUILDING;
 		} else if (this.IsTree ()) {

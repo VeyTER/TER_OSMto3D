@@ -4,30 +4,6 @@
     <region designation="Midi-Pyrenees">
       <town designation="Toulouse">
         <district designation="UPS">
-          <building designation="IRIT">
-            <info lat="43.561988" lon="1.467984" dist="0.0005" nbfloor="4" roofangle="0" rooftype="flat" />
-          </building>
-          <building designation="U1">
-            <info lat="43.560284" lon="1.470247" dist="0.0005" nbfloor="1" roofangle="0" rooftype="flat" />
-          </building>
-          <building designation="U2">
-            <info lat="43.561316" lon="1.470514" dist="0.0006" nbfloor="2" roofangle="0" rooftype="flat" />
-          </building>
-          <building designation="U3">
-            <info lat="43.561982" lon="1.470014" dist="0.00045" nbfloor="5" roofangle="0" rooftype="flat" />
-          </building>
-          <building designation="U4">
-            <info lat="43.562723" lon="1.469149" dist="0.0005" nbfloor="5" roofangle="0" rooftype="flat" />
-          </building>
-          <building designation="E4-SCUIO">
-            <info lat="43.561877" lon="1.469263" dist="0.0003" nbfloor="1" roofangle="0" rooftype="flat" />
-          </building>
-          <building designation="3 TP2">
-            <info lat="43.561010" lon="1.467793" dist="0.0005" nbfloor="1" roofangle="0" rooftype="flat" />
-          </building>
-          <building designation="Administration">
-            <info lat="43.562995" lon="1.466057" dist="0.0006" nbfloor="3" roofangle="0" rooftype="flat" />
-          </building>
           <highway>
             <info id="192177213" name="unknown" roadtype="turning_circle" nbWay="1" maxspeed="50" />
             <nd id="192177213" lat="43.5594158" lon="1.4713519" />
@@ -530,8 +506,8 @@
             <nd id="259096203" lat="43.562446" lon="1.4668663" />
             <nd id="259096200" lat="43.5625207" lon="1.4670142" />
           </building>
-          <building>
-            <info id="23905163" name="IRIT" nbfloor="4" roofangle="0" rooftype="flat" />
+          <building designation="IRIT">
+            <info lat="43.561988" lon="1.467984" dist="0.0005" id="23905163" name="IRIT" nbfloor="4" roofangle="0" rooftype="flat" />
             <nd id="259096615" lat="43.5623036" lon="1.4676494" />
             <nd id="4413157464" lat="43.5618683" lon="1.4680782" />
             <nd id="259096616" lat="43.5617293" lon="1.468215" />
@@ -1170,8 +1146,8 @@
             <nd id="287931714" lat="43.5608691" lon="1.4726244" />
             <nd id="287691378" lat="43.5608217" lon="1.4726665" />
           </highway>
-          <building>
-            <info id="18628306" name="U4" nbfloor="5" roofangle="0" rooftype="flat" />
+          <building designation="U4">
+            <info lat="43.562723" lon="1.469149" dist="0.0005" id="18628306" name="U4" nbfloor="5" roofangle="0" rooftype="flat" />
             <nd id="192180799" lat="43.5626961" lon="1.468748" />
             <nd id="2689506257" lat="43.5627436" lon="1.4688401" />
             <nd id="192180801" lat="43.5628541" lon="1.4690545" />
@@ -1367,8 +1343,8 @@
             <nd id="286216603" lat="43.5580877" lon="1.4682929" />
             <nd id="891064580" lat="43.5573107" lon="1.4690421" />
           </highway>
-          <building>
-            <info id="18628158" name="U1" nbfloor="1" roofangle="0" rooftype="flat" />
+          <building designation="U1">
+            <info lat="43.560284" lon="1.470247" dist="0.0005" id="18628158" name="U1" nbfloor="1" roofangle="0" rooftype="flat" />
             <nd id="192178847" lat="43.5604134" lon="1.4698823" />
             <nd id="1566445025" lat="43.5601188" lon="1.4701742" />
             <nd id="192178848" lat="43.5601116" lon="1.4702438" />
@@ -1377,8 +1353,8 @@
             <nd id="192178852" lat="43.5604947" lon="1.4700337" />
             <nd id="192178847" lat="43.5604134" lon="1.4698823" />
           </building>
-          <building>
-            <info id="26138225" name="E4-SCUIO" nbfloor="1" roofangle="0" rooftype="flat" />
+          <building designation="E4-SCUIO">
+            <info lat="43.561877" lon="1.469263" dist="0.0003" id="26138225" name="E4-SCUIO" nbfloor="1" roofangle="0" rooftype="flat" />
             <nd id="286216322" lat="43.5618616" lon="1.4694503" />
             <nd id="1566445203" lat="43.5619213" lon="1.4693922" />
             <nd id="1566445199" lat="43.5619162" lon="1.4693822" />
@@ -1393,8 +1369,8 @@
             <nd id="286216328" lat="43.5617235" lon="1.469182" />
             <nd id="286216322" lat="43.5618616" lon="1.4694503" />
           </building>
-          <building>
-            <info id="18628236" name="U3" nbfloor="5" roofangle="0" rooftype="flat" />
+          <building designation="U3">
+            <info lat="43.561982" lon="1.470014" dist="0.00045" id="18628236" name="U3" nbfloor="5" roofangle="0" rooftype="flat" />
             <nd id="192180106" lat="43.5616274" lon="1.4698086" />
             <nd id="1566445164" lat="43.5617306" lon="1.4700086" />
             <nd id="1566445176" lat="43.5617791" lon="1.4699612" />
@@ -1461,8 +1437,8 @@
             <nd id="193544431" lat="43.5612626" lon="1.4719245" />
             <nd id="193544427" lat="43.5610974" lon="1.4716041" />
           </building>
-          <building>
-            <info id="18628167" name="U2" nbfloor="2" roofangle="0" rooftype="flat" />
+          <building designation="U2">
+            <info lat="43.561316" lon="1.470514" dist="0.0006" id="18628167" name="U2" nbfloor="2" roofangle="0" rooftype="flat" />
             <nd id="192179298" lat="43.5615226" lon="1.4699952" />
             <nd id="192179299" lat="43.5612455" lon="1.4702701" />
             <nd id="192179301" lat="43.5609207" lon="1.4701943" />
@@ -1819,8 +1795,8 @@
             <nd id="192184936" lat="43.559136" lon="1.4693934" />
             <nd id="192184932" lat="43.5605128" lon="1.4680425" />
           </building>
-          <building>
-            <info id="18628822" name="3 TP2" nbfloor="1" roofangle="0" rooftype="flat" />
+          <building designation="3 TP2">
+            <info lat="43.561010" lon="1.467793" dist="0.0005" id="18628822" name="3 TP2" nbfloor="1" roofangle="0" rooftype="flat" />
             <nd id="192186974" lat="43.5610172" lon="1.4674364" />
             <nd id="192186975" lat="43.5612386" lon="1.4678657" />
             <nd id="192186976" lat="43.5609504" lon="1.4681472" />
@@ -1839,8 +1815,8 @@
             <nd id="2361869572" lat="43.5628391" lon="1.4658946" />
             <nd id="2361869580" lat="43.562857" lon="1.4659283" />
           </highway>
-          <building>
-            <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" />
+          <building designation="Administration">
+            <info lat="43.562995" lon="1.466057" dist="0.0006" id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" />
             <nd id="176599804" lat="43.5633293" lon="1.4659036" />
             <nd id="176599805" lat="43.56261" lon="1.4666246" />
             <nd id="176599806" lat="43.5624554" lon="1.4663308" />
