@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	public static EditionController editionController;
 
 	public static MovingEditor movingEditor;
@@ -12,7 +12,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	private ObjectBuilder objectBuilder;
 
-	public UIManager() {
+	public UiManager() {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 	}
 
@@ -25,10 +25,9 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void Update() {
 		switch (name) {
-		case UINames.MOVE_HANDLER:
+		case UiNames.MOVE_HANDLER:
 			if (Input.GetMouseButton (0)
-			&& editionController.EditionState == EditionController.EditionStates.MOVING_MODE
-				&& movingEditor.IsMoving()) {
+			&& editionController.EditionState == EditionController.EditionStates.MOVING_MODE && movingEditor.IsMoving()) {
 				movingEditor.UpdateObjectMoving (editionController.SelectionRange);
 				movingEditor.ShiftCamera ();
 			}
@@ -36,14 +35,23 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		}
 	}
 
+	public void OnValueChanged(InputField originText) {
+		print (originText.text);
+		editionController.RenameBuilding (editionController.SelectedBuilding, originText.text);
+	}
+
+	public void OnEndChanged(InputField originText) {
+		editionController.RenameBuilding (editionController.SelectedBuilding, originText.text);
+	}
+
 	public void OnBeginDrag (PointerEventData eventData) {
 		switch (name) {
-		case UINames.MOVE_HANDLER:
+		case UiNames.MOVE_HANDLER:
 			if (editionController.EditionState == EditionController.EditionStates.MOVING_MODE && movingEditor.IsMotionless()) {
 				movingEditor.StartObjectMoving (editionController.SelectionRange);
 			}
 			break;
-		case UINames.TURN_HANDLER:
+		case UiNames.TURN_HANDLER:
 			if (editionController.EditionState == EditionController.EditionStates.TURNING_MODE && turningEditor.IsMotionless()) {
 				turningEditor.StartObjectTurning (editionController.SelectionRange);
 			}
@@ -53,12 +61,12 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void OnDrag (PointerEventData eventData) {
 		switch (name) {
-		case UINames.MOVE_HANDLER:
+		case UiNames.MOVE_HANDLER:
 			if (editionController.EditionState == EditionController.EditionStates.MOVING_MODE && movingEditor.IsMoving()) {
 				movingEditor.UpdateObjectMoving (editionController.SelectionRange);
 			}
 			break;
-		case UINames.TURN_HANDLER:
+		case UiNames.TURN_HANDLER:
 			if (editionController.EditionState == EditionController.EditionStates.TURNING_MODE && turningEditor.IsTurning()) {
 				turningEditor.UpdateObjectTurning (editionController.SelectionRange);
 			}
@@ -68,12 +76,12 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void OnEndDrag (PointerEventData eventData) {
 		switch (name) {
-		case UINames.MOVE_HANDLER:
+		case UiNames.MOVE_HANDLER:
 			if (editionController.EditionState == EditionController.EditionStates.MOVING_MODE && movingEditor.IsMoving()) {
 				movingEditor.EndObjectMoving ();
 			}
 			break;
-		case UINames.TURN_HANDLER:
+		case UiNames.TURN_HANDLER:
 			if (editionController.EditionState == EditionController.EditionStates.TURNING_MODE && turningEditor.IsTurning()) {
 				turningEditor.EndObjectTurning ();
 			}
@@ -91,59 +99,59 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void OnPointerUp (PointerEventData eventData) {
 		switch (name) {
-		case UINames.BUILDING_NODES_BUTTON:
+		case UiNames.BUILDING_NODES_BUTTON:
 			this.ToggleBuildingNodesVisibility ();
 			break;
-		case UINames.HIGHWAY_NODES_BUTTON:
+		case UiNames.HIGHWAY_NODES_BUTTON:
 			this.ToggleHighwayNodesVisibility ();
 			break;
-		case UINames.WALLS_BUTTON:
+		case UiNames.WALLS_BUTTON:
 			this.ToggleWallsVisibility ();
 			break;
-		case UINames.ROOFS_BUTTON:
+		case UiNames.ROOFS_BUTTON:
 			this.ToggleRoofsVisibility ();
 			break;
-		case UINames.HIGHWAYS_BUTTON:
+		case UiNames.HIGHWAYS_BUTTON:
 			this.ToggleHighwaysVisibility ();
 			break;
-		case UINames.FOOTWAYS_BUTTON:
+		case UiNames.FOOTWAYS_BUTTON:
 			this.ToggleFootwaysVisibility ();
 			break;
-		case UINames.CYCLEWAYS_BUTTON:
+		case UiNames.CYCLEWAYS_BUTTON:
 			this.ToggleCyclewaysVisibility ();
 			break;
-		case UINames.TREES_BUTTON:
+		case UiNames.TREES_BUTTON:
 			this.ToggleTreesVisibility ();
 			break;
 
-		case UINames.BUILDING_NAME_TEXT_INPUT:
+		case UiNames.BUILDING_NAME_TEXT_INPUT:
 			
 			break;
-		case UINames.TEMPERATURE_INDICATOR_TEXT_INPUT:
+		case UiNames.TEMPERATURE_INDICATOR_TEXT_INPUT:
 			
 			break;
-		case UINames.HUMIDITY_INDICATOR_TEXT_INPUT:
+		case UiNames.HUMIDITY_INDICATOR_TEXT_INPUT:
 			
 			break;
-		case UINames.MOVE_BUTTON:
+		case UiNames.MOVE_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
 				editionController.EnterMovingMode ();
 				movingEditor.InitializeMovingMode (editionController.SelectionRange);
 			}
 			break;
-		case UINames.TURN_BUTTON:
+		case UiNames.TURN_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
 				editionController.EnterTurningMode ();
 				turningEditor.InitializeTurningMode (editionController.SelectionRange);
 			}
 			break;
-		case UINames.CHANGE_HEIGHT_BUTTON:
+		case UiNames.CHANGE_HEIGHT_BUTTON:
 			
 			break;
-		case UINames.CHANGE_COLOR_BUTTON:
+		case UiNames.CHANGE_COLOR_BUTTON:
 			
 			break;
-		case UINames.SLIDE_PANEL_BUTTON:
+		case UiNames.SLIDE_PANEL_BUTTON:
 			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
 				if (editionController.PanelState == EditionController.PanelStates.CLOSED)
 					editionController.TogglePanel (null);
@@ -151,15 +159,19 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 					editionController.TogglePanel (null);
 			}
 			break;
-		case UINames.VALIDATE_BUTTON:
-			
-			break;
-		case UINames.CANCEL_BUTTON:
+		case UiNames.VALIDATE_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
+				editionController.ValidateEdit ();
 				editionController.ExitBuilding ();
 			}
 			break;
-		case UINames.WALL_RANGE_BUTTON:
+		case UiNames.CANCEL_BUTTON:
+			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
+				editionController.CancelEdit ();
+				editionController.ExitBuilding ();
+			}
+			break;
+		case UiNames.WALL_RANGE_BUTTON:
 			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
 				editionController.SelectionRange = EditionController.SelectionRanges.WALL;
 				if(editionController.EditionState == EditionController.EditionStates.MOVING_MODE)
@@ -169,7 +181,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				this.enableWallRangeButton ();
 			}
 			break;
-		case UINames.BUILDING_RANGE_BUTTON:
+		case UiNames.BUILDING_RANGE_BUTTON:
 			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
 				editionController.SelectionRange = EditionController.SelectionRanges.BUILDING;
 				if(editionController.EditionState == EditionController.EditionStates.MOVING_MODE)
@@ -179,21 +191,21 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				this.enableBuildingRangeButton ();
 			}
 			break;
-		case UINames.VALDIATE_EDITION_BUTTON:
+		case UiNames.VALDIATE_EDITION_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.MOVING_MODE) {
-				editionController.ValidateEdit ();
+				editionController.ValidateTransform ();
 				editionController.ExitMovingMode ();
 			} else if (editionController.EditionState == EditionController.EditionStates.TURNING_MODE) {
-				editionController.ValidateEdit ();
+				editionController.ValidateTransform ();
 				editionController.ExitTurningMode ();
 			}
 			break;
-		case UINames.CANCEL_EDITION_BUTTON:
+		case UiNames.CANCEL_EDITION_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.MOVING_MODE) {
-				editionController.CancelEdit ();
+				editionController.CancelTransform ();
 				editionController.ExitMovingMode ();
 			} if (editionController.EditionState == EditionController.EditionStates.TURNING_MODE) {
-				editionController.CancelEdit ();
+				editionController.CancelTransform ();
 				editionController.ExitTurningMode ();
 			}
 			break;
@@ -241,7 +253,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	}
 
 	public void enableWallRangeButton() {
-		GameObject buildingRangeButton = GameObject.Find (UINames.BUILDING_RANGE_BUTTON);
+		GameObject buildingRangeButton = GameObject.Find (UiNames.BUILDING_RANGE_BUTTON);
 
 		Button buildingButtonComponent = buildingRangeButton.GetComponent<Button> ();
 		Button wallButtonComponent = GetComponent<Button> ();
@@ -251,7 +263,7 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	}
 
 	public void enableBuildingRangeButton() {
-		GameObject wallRangeButton = GameObject.Find (UINames.WALL_RANGE_BUTTON);
+		GameObject wallRangeButton = GameObject.Find (UiNames.WALL_RANGE_BUTTON);
 
 		Button wallButtonComponent = wallRangeButton.GetComponent<Button> ();
 		Button buildingButtonComponent = GetComponent<Button> ();

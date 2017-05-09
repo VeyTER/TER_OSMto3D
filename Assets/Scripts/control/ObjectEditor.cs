@@ -20,8 +20,8 @@ public class ObjectEditor {
 		this.SelectedWall = selectedWall;
 		this.SelectedBuilding = selectedBuilding;
 
-		this.WallEdited = false;
-		this.BuildingEdited = false;
+		this.WallTransformed = false;
+		this.BuildingTransformed = false;
 	}
 
 	public GameObject SelectedWall {
@@ -34,12 +34,12 @@ public class ObjectEditor {
 		set { selectedBuilding = value; }
 	}
 
-	public bool WallEdited {
+	public bool WallTransformed {
 		get { return wallEdited; }
 		set { wallEdited = value; }
 	}
 
-	public bool BuildingEdited {
+	public bool BuildingTransformed {
 		get { return buildingEdited; }
 		set { buildingEdited = value; }
 	}

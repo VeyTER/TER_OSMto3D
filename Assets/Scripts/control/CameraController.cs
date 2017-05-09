@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour {
 
 	public void Start() {
 		this.cameraState = CameraStates.FREE;
-		this.editionController = UIManager.editionController;
+		this.editionController = UiManager.editionController;
 	}
 
 	// Update is called once per frame

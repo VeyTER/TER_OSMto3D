@@ -85,7 +85,7 @@ public class Main : MonoBehaviour {
 		}
 
 		// on recupere la reference du panneau et on le desactive
-		lateralPanel = GameObject.Find (UINames.LATERAL_PANEL);
+		lateralPanel = GameObject.Find (UiNames.LATERAL_PANEL);
 
 		Vector3 panelPosition = lateralPanel.transform.localPosition;
 		RectTransform panelRectTransform = (RectTransform)lateralPanel.transform;
@@ -97,8 +97,8 @@ public class Main : MonoBehaviour {
 	// / mise en place de l'interface
 	// / </summary>
 	public void SetUpUI() {
-		GameObject uiManager = (GameObject) GameObject.Instantiate (Resources.Load("Game Objects/UIManagerScript"));
-		GameObject canvas = (GameObject) GameObject.Instantiate (Resources.Load("Game Objects/MainCanvas"));
-		GameObject eventSystem = (GameObject) GameObject.Instantiate (Resources.Load("Game Objects/EventSystem"));
+		GameObject uiManager = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/UIManagerScript"));
+		GameObject canvas = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/MainCanvas"));
+		GameObject eventSystem = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/EventSystem"));
 	}
 }

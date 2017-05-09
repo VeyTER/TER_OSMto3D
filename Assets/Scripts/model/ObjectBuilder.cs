@@ -6,6 +6,7 @@ using System;
 /*Classe contentant toutes les fonctions de construction de GameObject*/
 public class ObjectBuilder {
 	private ArrayList nodeGroups;
+	private Hashtable idTable;
 
 	private double minlat;
 	private double maxlat;
@@ -32,6 +33,7 @@ public class ObjectBuilder {
 	// constructeur
 	private ObjectBuilder() {
 		this.nodeGroups = new ArrayList();
+		this.idTable = new Hashtable ();
 
 		this.roadBuilder = new RoadBuilder();
 		this.roofBuilder = new RoofBuilder();
@@ -109,7 +111,7 @@ public class ObjectBuilder {
 		wallGroups = new GameObject(ObjectNames.WALLS);
 		wallGroups.transform.parent = cityComponents.transform;
 		wallGroups.AddComponent<EditionController> ();
-		UIManager.editionController = wallGroups.GetComponent<EditionController>();
+		UiManager.editionController = wallGroups.GetComponent<EditionController>();
 
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 
@@ -129,15 +131,15 @@ public class ObjectBuilder {
 
 				// Construction du bâtiment courant
 				for(int i = 0; i < ngp.NodeCount() - 1; i++) {
-					Node curentNode = ngp.GetNode (i);
+					Node currentNode = ngp.GetNode (i);
 					Node nextNode = ngp.GetNode (i + 1);
 
 					// on recup les coordonées utiles
-					x = (curentNode.Longitude + nextNode.Longitude) / 2;
-					y = (curentNode.Latitude + nextNode.Latitude) / 2;
+					x = (currentNode.Longitude + nextNode.Longitude) / 2;
+					y = (currentNode.Latitude + nextNode.Latitude) / 2;
 
-					length = Math.Sqrt(Math.Pow(nextNode.Latitude - curentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - curentNode.Longitude, 2));
-					adj = Math.Abs(nextNode.Latitude - curentNode.Latitude);
+					length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
+					adj = Math.Abs(nextNode.Latitude - currentNode.Latitude);
 					angle = (Math.Acos(adj / length) * 180 / Math.PI);
 
 					// on positionne le mur
@@ -151,13 +153,13 @@ public class ObjectBuilder {
 					BoxCollider wallBoxColliser = wall.GetComponent<BoxCollider> ();
 					wallBoxColliser.isTrigger = true;
 
-					wall.AddComponent<UIManager>();
+					wall.AddComponent<UiManager>();
 
 					wall.transform.parent = wallGroup.transform;
 
 					// on modifie l'angle en fonction de l'ordre des points
-					if((curentNode.Latitude > nextNode.Latitude && curentNode.Longitude < nextNode.Longitude) 
-					|| (curentNode.Latitude < nextNode.Latitude && curentNode.Longitude > nextNode.Longitude)) {
+					if((currentNode.Latitude > nextNode.Latitude && currentNode.Longitude < nextNode.Longitude) 
+					|| (currentNode.Latitude < nextNode.Latitude && currentNode.Longitude > nextNode.Longitude)) {
 						wall.transform.localEulerAngles = new Vector3(0, 90 - (float) angle, 0);
 					} else {
 						wall.transform.localEulerAngles = new Vector3(0, (float) angle + 90, 0);
@@ -165,9 +167,11 @@ public class ObjectBuilder {
 
 					// Si on ne connait pas le nom du batiment on utilise l'id
 					if(ngp.Name == "unknown")
-						wall.name = ngp.Id  + "_Mur" + i;
+						wall.name = currentNode.Id  + "_mur_" + i;
 					else
-						wall.name = ngp.Name + "_Mur" + i;
+						wall.name = ngp.Name + "_mur_" + i;
+
+					idTable [(int)currentNode.Id] = wall.GetInstanceID();
 
 					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
 					meshRenderer.material = Resources.Load ("Materials/Wall") as Material;
@@ -179,9 +183,11 @@ public class ObjectBuilder {
 					wallTransform.transform.position -= wallGroup.transform.position;
 
 				if(ngp.Name == "unknown")
-					wallGroup.name = ngp.Id + "";
+					wallGroup.name = ngp.Id.ToString();
 				else
 					wallGroup.name = ngp.Name;
+
+				idTable [(int)ngp.Id] = wallGroup.GetInstanceID();
 
 				wallGroup.transform.parent = wallGroups.transform;
 			}
@@ -208,7 +214,7 @@ public class ObjectBuilder {
 
 				GameObject newRoof = roofBuilder.BuildRoof(triangulation, ngp.NbFloor, floorHeight);
 				newRoof.transform.parent = roofs.transform;
-				newRoof.name = ngp.Id + "";
+				newRoof.name = ngp.Id.ToString();
 			}
 		}
 	}
@@ -310,7 +316,7 @@ public class ObjectBuilder {
 				MeshRenderer mesh_renderer2 = foliage.GetComponent<MeshRenderer> ();
 				mesh_renderer2.material = Resources.Load ("Materials/TreeLeaf") as Material;
 
-				GameObject tree = new GameObject (ngp.Id + "");
+				GameObject tree = new GameObject (ngp.Id.ToString());
 				trunk.transform.parent = tree.transform;
 				foliage.transform.parent = tree.transform;
 
@@ -349,7 +355,7 @@ public class ObjectBuilder {
 					MeshRenderer meshRenderer2 = lights.GetComponent<MeshRenderer> ();
 					meshRenderer2.material = Resources.Load ("Materials/TrafficLight") as Material;
 
-					GameObject trafficLight = new GameObject (ngp.Id + "");
+					GameObject trafficLight = new GameObject (ngp.Id.ToString());
 					mount.transform.parent = trafficLight.transform;
 					lights.transform.parent = trafficLight.transform;
 				}
@@ -397,6 +403,10 @@ public class ObjectBuilder {
 
 	public ArrayList NodeGroups {
 		get { return nodeGroups; }
+	}
+
+	public Hashtable IdTable {
+		get { return idTable; }
 	}
 
 	public GameObject CityComponents {

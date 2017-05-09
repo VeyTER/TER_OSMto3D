@@ -4,25 +4,23 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using UnityEngine.UI;
+using System.Collections;
 
 public class BuildingsTools {
 	private ObjectBuilder objectBuilder;
 
+	private string resumeFilePath;
+	private XmlDocument mapResumeDocument;
+
 	private BuildingsTools () {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
+
+		this.resumeFilePath = Application.dataPath + @"/Maps resumed/map_resumed.osm";
+		this.mapResumeDocument = new XmlDocument();
 	}
 
 	public static BuildingsTools GetInstance() {
 		return BuildingsToolsInstanceHolder.instance;
-	}
-
-	public void SetName(string newName) {
-		InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
-
-		int i = 0;
-		for (; i < textInputs.Length && textInputs[i].name.Equals (UINames.BUILDING_NAME_TEXT_INPUT); i++);
-		if (i < textInputs.Length)
-			textInputs[i].text = newName;
 	}
 
 	public void DiscolorAll() {
@@ -54,11 +52,22 @@ public class BuildingsTools {
 		}
 	}
 
-	public int GetHeight(GameObject building) {
-		string resumeFilePath = Application.dataPath + @"/Maps Resumed/map_resumed.osm";
-		XmlDocument mapResumeDocument = new XmlDocument(); 
+	public void SetName(GameObject building, string newName) {
+		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
+		XmlAttribute nameAttribute = this.GetNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
 
-		XmlAttribute floorAttribute = this.GetAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");
+		nodeGroup.Name = newName;
+		building.name = newName;
+		for (int i = 0; i < building.transform.childCount; i++)
+			building.transform.GetChild (i).name = newName + "_mur_" + i;
+		
+		nameAttribute.Value = newName;
+		mapResumeDocument.Save (resumeFilePath);
+	}
+
+	public int GetHeight(GameObject building) {
+		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
+		XmlAttribute floorAttribute = this.GetNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
 		if (floorAttribute != null)
 			return int.Parse(floorAttribute.Value);
 		else
@@ -75,12 +84,10 @@ public class BuildingsTools {
 	}
 
 	public void SetHeight(GameObject building, int nbFloors) {
-		string resumeFilePath = Application.dataPath + @"/Maps Resumed/map_resumed.osm";
-		XmlDocument mapResumeDocument = new XmlDocument(); 
-		
-		XmlAttribute floorAttribute = this.GetAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");
+		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
+		XmlAttribute floorAttribute = this.GetNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
 		if (floorAttribute != null)
-			floorAttribute.Value = Math.Max(nbFloors, 1) + "";
+			floorAttribute.Value = Math.Max(nbFloors, 1).ToString();
 
 		mapResumeDocument.Save (resumeFilePath);
 
@@ -88,29 +95,24 @@ public class BuildingsTools {
 		objectBuilder.EditUniqueBuilding (building, nbFloors);
 	}
 
-	public XmlAttribute GetAttribute(XmlDocument xmlDocument, string filePath, GameObject building, string attributeKey) {
-		string buildingIdentifier = building.name;
+	public XmlAttribute GetNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
+		XmlAttribute res = null;
+		if (File.Exists (resumeFilePath)) {
+			mapResumeDocument.Load (resumeFilePath); 
 
-		XmlNode res = null;
+			string locationXPath = "";
+			locationXPath += "/" + XmlTags.EARTH;
+			locationXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
+			locationXPath += "/" + XmlTags.REGION + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
+			locationXPath += "/" + XmlTags.TOWN + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
+			locationXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
+			locationXPath += "/" + XmlTags.BUILDING;
+			locationXPath += "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
 
-		if (File.Exists (filePath)) {
-			xmlDocument.Load (filePath); 
-			XmlNodeList infoNodes = xmlDocument.GetElementsByTagName ("info");
-
-			foreach (XmlNode infoNode in infoNodes) {
-				string nodeGroupId = infoNode.Attributes.GetNamedItem ("id").InnerText;
-				XmlNode nameAttribute = infoNode.Attributes.GetNamedItem ("name");
-				if (nameAttribute != null) {
-					string nodeGroupName = nameAttribute.InnerText;
-					if (nodeGroupId.Equals (buildingIdentifier) || nodeGroupName.Equals (buildingIdentifier)) {
-						res = infoNode;
-						break;
-					}
-				}
-			}
+			XmlNode infoNode = mapResumeDocument.SelectSingleNode (locationXPath);
+			res = infoNode.Attributes[attributeName];
 		}
-
-		return res.Attributes ["nbFloor"];
+		return res;
 	}
 
 	public NodeGroup WallToBuildingNodeGroup(GameObject wallGo) {
@@ -132,32 +134,40 @@ public class BuildingsTools {
 	}
 
 	public GameObject NodeGroupToGameObject(NodeGroup buildingNgp) {
-		string identifier = buildingNgp.Name;
+		if (objectBuilder.IdTable [buildingNgp.Id].GetType() == typeof(int)) {
+			int buildingGoId = (int)objectBuilder.IdTable [buildingNgp.Id];
+			int nbWallGroups = objectBuilder.WallGroups.transform.childCount;
 
-		GameObject res = null;
-
-		foreach (Transform buildingGo in objectBuilder.WallGroups.transform) {
-			if (buildingGo.name.Equals(identifier)) {
-				res = buildingGo.gameObject;
-				break;
-			}
+			int i = 0;
+			for (; i < nbWallGroups && objectBuilder.WallGroups.transform.GetChild (i).GetInstanceID () != buildingGoId; i++);
+			if (i < nbWallGroups)
+				return objectBuilder.WallGroups.transform.GetChild (i).gameObject;
+			else
+				return null;
+		} else {
+			return null;
 		}
-
-		return res;
 	}
 
 	public NodeGroup GameObjectToNodeGroup(GameObject buildingGo) {
-		string identifier = buildingGo.name;
-
 		NodeGroup res = null;
+		foreach (DictionaryEntry buildingEntry in objectBuilder.IdTable) {
+			if (buildingEntry.Key.GetType () == typeof(int) && buildingEntry.Value.GetType () == typeof(int)) {
+				int nodeGroupId = (int)buildingEntry.Key;
+				int gameObjectId = (int)buildingEntry.Value;
 
-		double numIdentifier;
-		bool parsingSuccess = double.TryParse (identifier, out numIdentifier);
+				if (gameObjectId == buildingGo.GetInstanceID()) {
+					int nbNodeGroup = objectBuilder.NodeGroups.Count;
 
-		foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-			if ((!parsingSuccess && ngp.Name.Equals(identifier)) || (parsingSuccess && ngp.Id == numIdentifier)) {
-				res = ngp;
-				break;
+					int i = 0;
+					for (; i < nbNodeGroup && ((NodeGroup)objectBuilder.NodeGroups[i]).Id != nodeGroupId; i++);
+					if (i < nbNodeGroup)
+						res = ((NodeGroup)objectBuilder.NodeGroups[i]);
+					else
+						res = null;
+					
+					break;
+				}
 			}
 		}
 

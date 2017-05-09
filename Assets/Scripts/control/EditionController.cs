@@ -32,7 +32,8 @@ public class EditionController : MonoBehaviour {
 
 	private BuildingsTools buildingsTools;
 
-	private ArrayList editedObjects;
+	private Hashtable renamedBuildings;
+	private ArrayList transformedObjects;
 
 	private GameObject selectedWall;
 	private GameObject selectedBuilding;
@@ -54,24 +55,25 @@ public class EditionController : MonoBehaviour {
 
 		this.panelState = PanelStates.CLOSED;
 
-		this.movingEditor = new MovingEditor (GameObject.Find(UINames.MOVE_HANDLER));
-		this.turningEditor = new TurningEditor (GameObject.Find(UINames.TURN_HANDLER));
+		this.movingEditor = new MovingEditor (GameObject.Find(UiNames.MOVE_HANDLER));
+		this.turningEditor = new TurningEditor (GameObject.Find(UiNames.TURN_HANDLER));
 
 		this.buildingsTools = BuildingsTools.GetInstance ();
 
-		this.editedObjects = new ArrayList ();
+		this.renamedBuildings = new Hashtable ();
+		this.transformedObjects = new ArrayList ();
 
-		this.validateEditionButton = GameObject.Find(UINames.VALDIATE_EDITION_BUTTON);
-		this.cancelEditionButton = GameObject.Find(UINames.CANCEL_EDITION_BUTTON);
+		this.validateEditionButton = GameObject.Find(UiNames.VALDIATE_EDITION_BUTTON);
+		this.cancelEditionButton = GameObject.Find(UiNames.CANCEL_EDITION_BUTTON);
 
 		this.cameraController = Camera.main.GetComponent<CameraController> ();
 
-		this.slidePanelButton = GameObject.Find (UINames.SLIDE_PANEL_BUTTON);
+		this.slidePanelButton = GameObject.Find (UiNames.SLIDE_PANEL_BUTTON);
 		this.validateEditionButton.transform.localScale = Vector3.zero;
 		this.cancelEditionButton.transform.localScale = Vector3.zero;
 
-		this.wallRangeButton = GameObject.Find(UINames.WALL_RANGE_BUTTON);
-		this.buildingRangeButton = GameObject.Find(UINames.BUILDING_RANGE_BUTTON);
+		this.wallRangeButton = GameObject.Find(UiNames.WALL_RANGE_BUTTON);
+		this.buildingRangeButton = GameObject.Find(UiNames.BUILDING_RANGE_BUTTON);
 
 		this.wallRangeButton.transform.localScale = Vector3.zero;
 		this.buildingRangeButton.transform.localScale = Vector3.zero;
@@ -79,10 +81,9 @@ public class EditionController : MonoBehaviour {
 		Button wallrangeButtonComponent = buildingRangeButton.GetComponent<Button> ();
 		wallrangeButtonComponent.interactable = false;
 
-		this.lateralPanel = GameObject.Find (UINames.LATERAL_PANEL);
+		this.lateralPanel = GameObject.Find (UiNames.LATERAL_PANEL);
 		this.lateralPanel.SetActive(false);
 	}
-
 
 	public void SwitchBuilding(GameObject selectedWall) {
 		this.selectedWall = selectedWall;
@@ -90,7 +91,7 @@ public class EditionController : MonoBehaviour {
 
 		// Récupération du bâtiment correspondant au mur sélectionné
 		NodeGroup buildingNgp = buildingsTools.WallToBuildingNodeGroup (selectedWall);
-		string identifier = selectedWall.name.Substring (0, selectedWall.name.LastIndexOf ("_"));
+		string identifier = selectedBuilding.name;
 
 		// Si le bâtiment n'a pas de nom défini, ajouter un prefixe dans son affichage
 		double parsedValue = 0;
@@ -103,7 +104,11 @@ public class EditionController : MonoBehaviour {
 		}
 
 		// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
-		buildingsTools.SetName(identifier);
+		InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
+		int i = 0;
+		for (; i < textInputs.Length && textInputs[i].name.Equals (UiNames.BUILDING_NAME_TEXT_INPUT); i++);
+		if (i < textInputs.Length)
+			textInputs[i].text = identifier;
 
 		buildingsTools.DiscolorAll ();
 		buildingsTools.ColorAsSelected (selectedBuilding);
@@ -251,32 +256,43 @@ public class EditionController : MonoBehaviour {
 		buildingRangeButtonTransform.localScale = targetScale;
 	}
 
+	public void RenameBuilding(GameObject building, string newName) {
+		if (!renamedBuildings.ContainsKey (building))
+			renamedBuildings.Add (building, building.name);
+
+		NodeGroup buildingNodeGroup = buildingsTools.GameObjectToNodeGroup (building);
+		buildingNodeGroup.Name = newName;
+		building.name = newName;
+		for (int i = 0; i < building.transform.childCount; i++)
+			building.transform.GetChild (i).name = newName + "_mur_" + i;
+	}
+
 	public void EnterMovingMode() {
-		this.EnterEditMode ();
+		this.EnterTransformMode ();
 		movingEditor.Initialize(selectedWall, selectedBuilding);
 		movingEditor.MoveHandler.SetActive (true);
 		editionState = EditionStates.MOVING_MODE;
 	}
 	public void EnterTurningMode() {
-		this.EnterEditMode ();
+		this.EnterTransformMode ();
 		turningEditor.Initialize(selectedWall, selectedBuilding);
 		turningEditor.TurnHandler.SetActive (true);
 		editionState = EditionStates.TURNING_MODE;
 	}
-	private void EnterEditMode() {
+	private void EnterTransformMode() {
 		this.ClosePanel (null);
 		this.StartCoroutine ("ToggleFloattingButtons");
 	}
 
 	public void ExitMovingMode() {
 		movingEditor.MoveHandler.SetActive (false);
-		this.ExitEditMode ();
+		this.ExitTransformMode ();
 	}
 	public void ExitTurningMode() {
 		turningEditor.TurnHandler.SetActive (false);
-		this.ExitEditMode ();
+		this.ExitTransformMode ();
 	}
-	private void ExitEditMode() {
+	private void ExitTransformMode() {
 		if(panelState == PanelStates.CLOSED)
 			this.OpenPanel (null);
 
@@ -290,16 +306,16 @@ public class EditionController : MonoBehaviour {
 		);
 	}
 
-	public void ValidateEdit() {
-		if (this.WallEdited() && !editedObjects.Contains(selectedWall))
-			editedObjects.Add (selectedWall);
+	public void ValidateTransform() {
+		if (this.WallTransformed() && !transformedObjects.Contains(selectedWall))
+			transformedObjects.Add (selectedWall);
 
-		if (this.BuildingEdited() && !editedObjects.Contains(SelectedBuilding))
-			editedObjects.Add (selectedBuilding);
+		if (this.BuildingTransformed() && !transformedObjects.Contains(SelectedBuilding))
+			transformedObjects.Add (selectedBuilding);
 	}
 
-	public void CancelEdit() {
-		if (this.WallEdited()) {
+	public void CancelTransform() {
+		if (this.WallTransformed()) {
 			if (editionState == EditionStates.MOVING_MODE) {
 				selectedWall.transform.position = movingEditor.SelectedWallInitPos;
 			} else if (editionState == EditionStates.TURNING_MODE) {
@@ -308,7 +324,7 @@ public class EditionController : MonoBehaviour {
 			}
 		}
 
-		if (this.BuildingEdited()) {
+		if (this.BuildingTransformed()) {
 			if (editionState == EditionStates.MOVING_MODE) {
 				selectedBuilding.transform.position = movingEditor.SelectedBuildingInitPos;
 			} else if (editionState == EditionStates.TURNING_MODE) {
@@ -318,12 +334,40 @@ public class EditionController : MonoBehaviour {
 		}
 	}
 
-	private bool WallEdited() {
-		return editionState == EditionStates.MOVING_MODE && movingEditor.WallEdited || editionState == EditionStates.TURNING_MODE && turningEditor.WallEdited;
+	private bool WallTransformed() {
+		return editionState == EditionStates.MOVING_MODE && movingEditor.WallTransformed || editionState == EditionStates.TURNING_MODE && turningEditor.WallTransformed;
 	}
 
-	private bool BuildingEdited() {
-		return editionState == EditionStates.MOVING_MODE && movingEditor.BuildingEdited || editionState == EditionStates.TURNING_MODE && turningEditor.BuildingEdited;
+	private bool BuildingTransformed() {
+		return editionState == EditionStates.MOVING_MODE && movingEditor.BuildingTransformed || editionState == EditionStates.TURNING_MODE && turningEditor.BuildingTransformed;
+	}
+
+	public void ValidateEdit() {
+		foreach (DictionaryEntry buildingEntry in renamedBuildings) {
+			if(buildingEntry.Key.GetType() == typeof(GameObject) && buildingEntry.Value.GetType() == typeof(string)) {
+				GameObject renamedBuilding = (GameObject)buildingEntry.Key;
+				buildingsTools.SetName (renamedBuilding, renamedBuilding.name);
+			}
+		}
+
+		renamedBuildings.Clear();
+		transformedObjects.Clear ();
+	}
+
+	public void CancelEdit() {
+		foreach (DictionaryEntry buildingEntry in renamedBuildings) {
+			if(buildingEntry.Key.GetType() == typeof(GameObject) && buildingEntry.Value.GetType() == typeof(String)) {
+				GameObject renamedBuilding = (GameObject)buildingEntry.Key;
+				string oldName = (string)buildingEntry.Value;
+
+				renamedBuilding.name = oldName;
+				for (int i = 0; i < renamedBuilding.transform.childCount; i++)
+					renamedBuilding.transform.GetChild (i).name = oldName + "_mur_" + i;
+			}
+		}
+
+		renamedBuildings.Clear();
+		transformedObjects.Clear ();
 	}
 
 	public EditionStates EditionState {
@@ -351,8 +395,12 @@ public class EditionController : MonoBehaviour {
 		set { panelState = value; }
 	}
 
+	public Hashtable RenamedBuildings {
+		get { return renamedBuildings; }
+	}
+
 	public ArrayList MovedObjects {
-		get { return editedObjects; }
+		get { return transformedObjects; }
 	}
 
 	public GameObject SelectedWall {

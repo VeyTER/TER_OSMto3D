@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class UINames {
+public class UiNames {
 	public const string BUILDING_NODES_BUTTON = "BuildingNodesButton";
 	public const string HIGHWAY_NODES_BUTTON = "HighwayNodesButton";
 	public const string WALLS_BUTTON = "WallsButton";

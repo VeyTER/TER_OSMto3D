@@ -48,7 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\constants\NodeTags.cs" />
      <Compile Include="Assets\Scripts\constants\ObjectNames.cs" />
-     <Compile Include="Assets\Scripts\constants\UINames.cs" />
+     <Compile Include="Assets\Scripts\constants\UiNames.cs" />
      <Compile Include="Assets\Scripts\constants\XmlAttributes.cs" />
      <Compile Include="Assets\Scripts\constants\XmlKeys.cs" />
      <Compile Include="Assets\Scripts\constants\XmlTags.cs" />
@@ -59,7 +59,7 @@
      <Compile Include="Assets\Scripts\control\MovingEditor.cs" />
      <Compile Include="Assets\Scripts\control\ObjectEditor.cs" />
      <Compile Include="Assets\Scripts\control\TurningEditor.cs" />
-     <Compile Include="Assets\Scripts\control\UIManager.cs" />
+     <Compile Include="Assets\Scripts\control\UiManager.cs" />
      <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
      <Compile Include="Assets\Scripts\model\DelauneyTriangulation.cs" />
      <Compile Include="Assets\Scripts\model\GroundBuilder.cs" />

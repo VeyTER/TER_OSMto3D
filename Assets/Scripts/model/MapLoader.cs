@@ -299,7 +299,7 @@ public class MapLoader {
 						}
 
 						XmlAttribute objectIdAttribute = mapResumedDocument.CreateAttribute (XmlAttributes.ID);
-						objectIdAttribute.Value = nodeGroup.Id + "";
+						objectIdAttribute.Value = nodeGroup.Id.ToString();
 						objectInfoNode.Attributes.Append (objectIdAttribute);
 
 						this.AddInternalNodes (mapResumedDocument, nodeGroup, objectNode);
