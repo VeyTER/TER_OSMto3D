@@ -103,9 +103,9 @@ public class EditionController : MonoBehaviour {
 		}
 
 		// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
-		buildingsTools.ChangeBuildingName(identifier);
+		buildingsTools.SetName(identifier);
 
-		buildingsTools.DiscolorAllBuildings ();
+		buildingsTools.DiscolorAll ();
 		buildingsTools.ColorAsSelected (selectedBuilding);
 
 		if (editionState == EditionStates.NONE_SELECTION) {
@@ -126,7 +126,7 @@ public class EditionController : MonoBehaviour {
 		selectedBuilding = null;
 		selectedWall = null;
 
-		buildingsTools.DiscolorAllBuildings ();
+		buildingsTools.DiscolorAll ();
 
 		this.ClosePanel (() => {
 			lateralPanel.SetActive (false);

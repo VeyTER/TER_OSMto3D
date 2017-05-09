@@ -173,7 +173,7 @@ public class ObjectBuilder {
 					meshRenderer.material = Resources.Load ("Materials/Wall") as Material;
 				}
 
-				Vector3 wallBroupCenter = buildingsTools.BuildingCenter(wallGroup);
+				Vector3 wallBroupCenter = buildingsTools.Center(wallGroup);
 				wallGroup.transform.position = wallBroupCenter;
 				foreach (Transform wallTransform in wallGroup.transform)
 					wallTransform.transform.position -= wallGroup.transform.position;

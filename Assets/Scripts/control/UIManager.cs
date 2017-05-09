@@ -262,6 +262,6 @@ public class UIManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void IncrementBuildingHeight(GameObject selectedBuilding) {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-		buildingsTools.IncrementBuildingHeight (selectedBuilding);
+		buildingsTools.IncrementHeight (selectedBuilding);
 	}
 }

@@ -16,7 +16,7 @@ public class BuildingsTools {
 		return BuildingsToolsInstanceHolder.instance;
 	}
 
-	public void ChangeBuildingName(string newName) {
+	public void SetName(string newName) {
 		InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
 
 		int i = 0;
@@ -25,7 +25,7 @@ public class BuildingsTools {
 			textInputs[i].text = newName;
 	}
 
-	public void DiscolorAllBuildings() {
+	public void DiscolorAll() {
 		foreach (Transform currentBuildingGo in objectBuilder.WallGroups.transform) {
 			foreach (Transform currentWallGo in currentBuildingGo.transform) {
 				Renderer meshRenderer = currentWallGo.GetComponent<Renderer> ();
@@ -54,31 +54,31 @@ public class BuildingsTools {
 		}
 	}
 
-	public int GetBuildingHeight(GameObject building) {
+	public int GetHeight(GameObject building) {
 		string resumeFilePath = Application.dataPath + @"/Maps Resumed/map_resumed.osm";
 		XmlDocument mapResumeDocument = new XmlDocument(); 
 
-		XmlAttribute floorAttribute = this.BuildingAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");
+		XmlAttribute floorAttribute = this.GetAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");
 		if (floorAttribute != null)
 			return int.Parse(floorAttribute.Value);
 		else
 			return -1;
 	}
 
-	public void DecrementBuildingHeight(GameObject buildingGo) {
-		int nbFloors = GetBuildingHeight(buildingGo);
-		this.ChangeBuildingHeight (buildingGo, nbFloors - 1);
+	public void DecrementHeight(GameObject buildingGo) {
+		int nbFloors = GetHeight(buildingGo);
+		this.SetHeight (buildingGo, nbFloors - 1);
 	}
-	public void IncrementBuildingHeight(GameObject buildingGo) {
-		int nbFloors = GetBuildingHeight(buildingGo);
-		this.ChangeBuildingHeight (buildingGo, nbFloors + 1);
+	public void IncrementHeight(GameObject buildingGo) {
+		int nbFloors = GetHeight(buildingGo);
+		this.SetHeight (buildingGo, nbFloors + 1);
 	}
 
-	public void ChangeBuildingHeight(GameObject building, int nbFloors) {
+	public void SetHeight(GameObject building, int nbFloors) {
 		string resumeFilePath = Application.dataPath + @"/Maps Resumed/map_resumed.osm";
 		XmlDocument mapResumeDocument = new XmlDocument(); 
 		
-		XmlAttribute floorAttribute = this.BuildingAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");
+		XmlAttribute floorAttribute = this.GetAttribute (mapResumeDocument, resumeFilePath, building, "nbFloor");
 		if (floorAttribute != null)
 			floorAttribute.Value = Math.Max(nbFloors, 1) + "";
 
@@ -88,7 +88,7 @@ public class BuildingsTools {
 		objectBuilder.EditUniqueBuilding (building, nbFloors);
 	}
 
-	public XmlAttribute BuildingAttribute(XmlDocument xmlDocument, string filePath, GameObject building, string attributeKey) {
+	public XmlAttribute GetAttribute(XmlDocument xmlDocument, string filePath, GameObject building, string attributeKey) {
 		string buildingIdentifier = building.name;
 
 		XmlNode res = null;
@@ -164,7 +164,7 @@ public class BuildingsTools {
 		return res;
 	}
 
-	public Vector3 BuildingCenter(GameObject building) {
+	public Vector3 Center(GameObject building) {
 		Vector3 positionsSum = new Vector3 (0, 0, 0);
 
 		foreach (Transform wallTransform in building.transform)
@@ -173,8 +173,8 @@ public class BuildingsTools {
 		return positionsSum / (building.transform.childCount * 1F);
 	}
 
-	public double BuildingRadius(GameObject building) {
-		Vector3 buildingCenter = this.BuildingCenter (building);
+	public double Radius(GameObject building) {
+		Vector3 buildingCenter = this.Center (building);
 
 		double maxDistance = 0;
 		foreach (Transform wallTransform in building.transform) {
