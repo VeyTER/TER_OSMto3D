@@ -68,10 +68,10 @@ public class ObjectBuilder {
 
 	// place les nodes dans la scène
 	public void BuildNodes() {
-		buildingNodes = new GameObject(CityNames.BUILDING_NODES);
+		buildingNodes = new GameObject(ObjectNames.BUILDING_NODES);
 		buildingNodes.transform.parent = cityComponents.transform;
 
-		highwayNodes = new GameObject(CityNames.HIGHWAY_NODES);
+		highwayNodes = new GameObject(ObjectNames.HIGHWAY_NODES);
 		highwayNodes.transform.parent = cityComponents.transform;
 
 		int i;
@@ -106,7 +106,7 @@ public class ObjectBuilder {
 
 	// place les murs dans la scène
 	public void BuildWalls() {
-		wallGroups = new GameObject(CityNames.WALLS);
+		wallGroups = new GameObject(ObjectNames.WALLS);
 		wallGroups.transform.parent = cityComponents.transform;
 		wallGroups.AddComponent<EditionController> ();
 		UIManager.editionController = wallGroups.GetComponent<EditionController>();
@@ -197,7 +197,7 @@ public class ObjectBuilder {
 
 	// construction des toits
 	public void BuildRoofs() {
-		roofs = new GameObject(CityNames.ROOFS);
+		roofs = new GameObject(ObjectNames.ROOFS);
 		roofs.transform.parent = cityComponents.transform;
 
 		foreach(NodeGroup ngp in nodeGroups) {
@@ -215,13 +215,13 @@ public class ObjectBuilder {
 
 	// construction des routes
 	public void BuildRoads() {
-		highways = new GameObject(CityNames.HIGHWAYS);
+		highways = new GameObject(ObjectNames.HIGHWAYS);
 		highways.transform.parent = cityComponents.transform;
 
-		cycleways = new GameObject(CityNames.CYCLEWAYS);
+		cycleways = new GameObject(ObjectNames.CYCLEWAYS);
 		cycleways.transform.parent = cityComponents.transform;
 
-		footways = new GameObject(CityNames.FOOTWAYS);
+		footways = new GameObject(ObjectNames.FOOTWAYS);
 		footways.transform.parent = cityComponents.transform;
 
 		double x, y;
@@ -279,7 +279,7 @@ public class ObjectBuilder {
 
 	// construction des arbres
 	public void BuildTrees() {
-		trees = new GameObject(CityNames.TREES);
+		trees = new GameObject(ObjectNames.TREES);
 		trees.transform.parent = cityComponents.transform;
 
 		double x, z;

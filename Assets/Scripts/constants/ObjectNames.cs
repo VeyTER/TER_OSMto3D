@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class CityNames {
+public class ObjectNames {
 	public const string CITY = "City";
 	public const string BUILDING_NODES = "Buildings nodes";
 	public const string HIGHWAY_NODES = "Highway nodes";

@@ -11,7 +11,7 @@ public class Main : MonoBehaviour {
 	private GameObject lateralPanel;
 
 	// création d'une instance de GestFile
-	private FileManager fileManager;
+	private MapLoader fileManager;
 
 	// création d'une instance de ObjectBuilding
 	private ObjectBuilder objectBuilder;
@@ -19,7 +19,7 @@ public class Main : MonoBehaviour {
 	// Fonction lancée à l'initialisation de la scene
 	public void Start() {
 		objectBuilder = ObjectBuilder.GetInstance();
-		fileManager = new FileManager();
+		fileManager = new MapLoader();
 
 		this.SetUpUI ();
 
@@ -50,7 +50,7 @@ public class Main : MonoBehaviour {
 			objectBuilder.ScaleNodes (1000D);
 			objectBuilder.SetLatLon (fileManager.Minlat, fileManager.Minlon, fileManager.Maxlat, fileManager.Maxlon);
 
-			GameObject cityComponents = new GameObject (CityNames.CITY);
+			GameObject cityComponents = new GameObject (ObjectNames.CITY);
 			objectBuilder.CityComponents = cityComponents;
 
 			// Contruction des noeuds

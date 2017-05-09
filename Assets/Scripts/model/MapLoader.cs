@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 
-public class FileManager {
+public class MapLoader {
 	private ObjectBuilder objectBuilder;
 
 	// chemin d'acces et nom du fichier par defaut
@@ -17,7 +17,7 @@ public class FileManager {
 	private double maxlat;
 	private double maxlon;
 
-	public FileManager() {
+	public MapLoader() {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
 		this.minlat = 0;
@@ -27,7 +27,7 @@ public class FileManager {
 	}
 
 	//Constructeur 
-	public FileManager(string osmDataPath) {
+	public MapLoader(string osmDataPath) {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
 		this.osmDataPath = osmDataPath;
