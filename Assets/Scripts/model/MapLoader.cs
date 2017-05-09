@@ -267,7 +267,6 @@ public class MapLoader {
 			this.TransfertSettingsToResumed (mapResumedDocument, mapSettingsDocument, mapResumedDocument);
 
 			XmlNode earthNode = mapResumedDocument.ChildNodes[1];
-
 			if (earthNode != null) {
 				XmlNode boundsNode = this.NewBoundsNode (mapResumedDocument);
 				earthNode.InsertBefore (boundsNode, earthNode.FirstChild);
@@ -283,7 +282,7 @@ public class MapLoader {
 					XmlNode locationNode = mapResumedDocument.SelectSingleNode (locationXPath);
 
 					if (locationNode != null) {
-						string customObjectXPath = locationXPath + "/" + nodeGroup.Type () + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Name + "\"]";
+						string customObjectXPath = locationXPath + "/" + XmlTags.BUILDING + "/" + nodeGroup.Type () + "[@" + XmlAttributes.NAME + "=\"" + nodeGroup.Name + "\"]";
 						XmlNode customObjectNode = mapResumedDocument.SelectSingleNode (customObjectXPath);
 
 						XmlNode objectNode = null;
@@ -298,10 +297,7 @@ public class MapLoader {
 							objectInfoNode = customObjectNode.FirstChild;
 						}
 
-						XmlAttribute objectIdAttribute = mapResumedDocument.CreateAttribute (XmlAttributes.ID);
-						objectIdAttribute.Value = nodeGroup.Id.ToString();
-						objectInfoNode.Attributes.Append (objectIdAttribute);
-
+						this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.ID, nodeGroup.Id.ToString ());
 						this.AddInternalNodes (mapResumedDocument, nodeGroup, objectNode);
 
 						if (nodeGroup.IsBuilding ())

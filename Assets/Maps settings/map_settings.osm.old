@@ -16,7 +16,7 @@
 						<info lat="43.560284" lon="1.470247" dist="0.0005" name="U1" nbfloor="1" roofangle="0" rooftype="flat"/>
 					</building>
 					<building>
-						<info lat="43.561316" lon="1.470514" dist="0.0006" name="U222222" nbfloor="2" roofangle="0" rooftype="flat"/>
+						<info lat="43.561316" lon="1.470514" dist="0.0006" name="U2" nbfloor="2" roofangle="0" rooftype="flat"/>
 					</building>
 					<building>
 						<info lat="43.561982" lon="1.470014" dist="0.00045" name="U3" nbfloor="5" roofangle="0" rooftype="flat"/>

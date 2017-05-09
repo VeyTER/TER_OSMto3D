@@ -126,10 +126,10 @@ public class HighwayBuilder {
 	//On définit dans cette fonction les points qui constitueront à plusieurs les sommets d'au moins 1 triangle (triangles définis dans makeBgTriangles()
 	private Vector3 [] MakeHighwayVertices(float length, float width) {
 		Vector3[] vec = new Vector3[] {
-			new Vector3 (0, 0, -width/2), //x,y,z=RIGHT,TOP,FORWARD
-			new Vector3 (length, 0, -width/2),
-			new Vector3 (length, 0, width/2),
-			new Vector3 (0, 0, width/2)
+			new Vector3 (0, 0, -width/2F), //x,y,z=RIGHT,TOP,FORWARD
+			new Vector3 (length, 0, -width/2F),
+			new Vector3 (length, 0, width/2F),
+			new Vector3 (0, 0, width/2F)
 		};		
 		return(vec);
 	}

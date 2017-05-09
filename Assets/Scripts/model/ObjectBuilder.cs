@@ -263,20 +263,20 @@ public class ObjectBuilder {
 					if (ngp.IsHighway () && (ngp.IsResidential () || ngp.IsPrimary () || ngp.IsSecondary () || ngp.IsTertiary () || ngp.IsService () || ngp.IsUnclassified ())) {
 						GameObject newHighway = roadBuilder.BuildClassicHighway ((float)x, (float)y, (float)length, (float)width, (float)angle);
 						newHighway.transform.parent = highways.transform;
-						newHighway.name = currentNode.Id + " à " + nextNode.Id;
+						newHighway.name = currentNode.Id + " to " + nextNode.Id;
 					} else if (ngp.IsFootway ()) {
 						GameObject newFootway = roadBuilder.BuildFootway ((float)x, (float)y, (float)length, (float)width, (float)angle);
 						newFootway.transform.parent = footways.transform;
-						newFootway.name = currentNode.Id + " à " + nextNode.Id;
+						newFootway.name = currentNode.Id + " to " + nextNode.Id;
 					} else if (ngp.IsCycleWay ()) {
 						GameObject newCycleway = roadBuilder.BuildCycleway ((float)x, (float)y, (float)length, (float)width, (float)angle);
 						newCycleway.transform.parent = cycleways.transform;
-						newCycleway.name = currentNode.Id + " à " + nextNode.Id;
+						newCycleway.name = currentNode.Id + " to " + nextNode.Id;
 // 					} else if (ngp.isBusWayLane ()) {
 // 						newHighWay = roadBuilder.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
 					} else if (ngp.IsWaterway ()) {
 						GameObject newWaterway = roadBuilder.BuildWaterway ((float)x, (float)y, (float)length, (float)width, (float)angle);
-						newWaterway.name = currentNode.Id + " à " + nextNode.Id;
+						newWaterway.name = currentNode.Id + " to " + nextNode.Id;
 					}
 				}
 			}	
