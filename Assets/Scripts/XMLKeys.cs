@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class XMLKeys {
+public class XmlKeys {
 	public const string NAME = "name";
 
 	public const string HIGHWAY = "highway";

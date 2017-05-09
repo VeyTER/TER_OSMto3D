@@ -28,7 +28,7 @@ public class Main : MonoBehaviour {
 
 		// Teste si un nom de fichier est renseigné sur l'interface de Unity
 		if (OSMFileName1 != null)
-			fileManager.ReadOSMFile (OSMFileName1, 0);
+			fileManager.LoadOsmData (OSMFileName1, 0);
 
 //		if (OSMFileName2 != "null") {
 //			gf.readFileOSM (OSMFileName2, 1);
@@ -39,13 +39,13 @@ public class Main : MonoBehaviour {
 			QualitySettings.antiAliasing = 8;
 
 			// Lecture de SettingsFiles
-			fileManager.ReadSettingsFile ();
+			fileManager.LoadSettingsData ();
 
 			// Creation du ResumeFile
-			fileManager.CreateResumeFile ();
+			fileManager.GenerateResumeFile ();
 
 			// Lecture du fichier ResumeFile précédement créé
-			fileManager.ReadResumeFile ();
+			fileManager.LoadResumedData ();
 
 			objectBuilder.ScaleNodes (1000D);
 			objectBuilder.SetLatLon (fileManager.Minlat, fileManager.Minlon, fileManager.Maxlat, fileManager.Maxlon);

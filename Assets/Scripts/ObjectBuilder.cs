@@ -50,8 +50,8 @@ public class ObjectBuilder {
 		foreach (NodeGroup ngp in nodeGroups) {
 			foreach (Node n in ngp.Nodes) {
 				if (!groupsMemo.Contains(n)) {
-					n.Latitude = n.Latitude * 1000d;
-					n.Longitude = n.Longitude * 1000d;
+					n.Latitude = n.Latitude * 1000;
+					n.Longitude = n.Longitude * 1000;
 					groupsMemo.Add(n);
 				}
 			}
@@ -138,7 +138,7 @@ public class ObjectBuilder {
 
 					length = Math.Sqrt(Math.Pow(nextNode.Latitude - curentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - curentNode.Longitude, 2));
 					adj = Math.Abs(nextNode.Latitude - curentNode.Latitude);
-					angle = (Math.Acos(adj / length) * 180d / Math.PI);
+					angle = (Math.Acos(adj / length) * 180 / Math.PI);
 
 					// on positionne le mur
 					GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -225,7 +225,7 @@ public class ObjectBuilder {
 		footways.transform.parent = cityComponents.transform;
 
 		double x, y;
-		double length, width = 0.06d;
+		double length, width = 0.06;
 		double angle;
 
 		foreach (NodeGroup ngp in nodeGroups) {
@@ -283,7 +283,8 @@ public class ObjectBuilder {
 		trees.transform.parent = cityComponents.transform;
 
 		double x, z;
-		float height=0.12f, diameter=0.08f;
+		float height = 0.12f;
+		float diameter = 0.08f;
 
 		foreach (NodeGroup ngp in nodeGroups) {
 			if ( ngp.IsTree() ) {
@@ -321,7 +322,8 @@ public class ObjectBuilder {
 	// construction des arbres
 	public void BuildTrafficSignals() {
 		double x, z;
-		float height=0.03f, diameter=0.015f;
+		float height = 0.03f;
+		float diameter = 0.015f;
 
 		foreach (NodeGroup ngp in nodeGroups) {
 			if ( ngp.IsHighway() && ngp.IsTrafficLight() ) {
@@ -362,8 +364,8 @@ public class ObjectBuilder {
 		GameObject mainCameraGo = Camera.main.gameObject;
 
 		// On centre la camera 
-		CamLat = (minlat * 1000d + maxlat * 1000d) / 2;
-		CamLon = (minlon * 1000d + maxlon * 1000d) / 2;
+		CamLat = (minlat * 1000 + maxlat * 1000) / 2;
+		CamLon = (minlon * 1000 + maxlon * 1000) / 2;
 
 		Light mainLight = mainCameraGo.AddComponent<Light> ();
 		mainLight.range = 30;
@@ -376,10 +378,10 @@ public class ObjectBuilder {
 		double angle, lat, lon, width, length;
 		Vector3 node1, node2, diff;
 
-		lat = (minlat * 1000d + maxlat * 1000d) / 2;
-		lon = (minlon * 1000d + maxlon * 1000d) / 2;
+		lat = (minlat * 1000 + maxlat * 1000) / 2;
+		lon = (minlon * 1000 + maxlon * 1000) / 2;
 		width = maxlon*1000d - minlon * 1000d;
-		length =  Math.Sqrt(Math.Pow(maxlat * 1000d - minlat * 1000d, 2) + Math.Pow(maxlon * 1000d - minlon * 1000d, 2));
+		length =  Math.Sqrt(Math.Pow(maxlat * 1000 - minlat * 1000, 2) + Math.Pow(maxlon * 1000 - minlon * 1000, 2));
 
 		node1 = new Vector3((float)maxlon, 0, (float)maxlat);
 		node2 = new Vector3((float)minlon, 0, (float)minlat);

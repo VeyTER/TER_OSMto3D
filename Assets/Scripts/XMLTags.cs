@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class XMLTags {
+public class XmlTags {
 	public const string XML = "xml"; 
 	public const string ROOT = "root"; 
 

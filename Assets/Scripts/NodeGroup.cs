@@ -406,31 +406,31 @@ public class NodeGroup {
 
 	public string Type() {
 		if (this.IsBuilding ()) {
-			return XMLTags.BUILDING;
+			return XmlTags.BUILDING;
 		} else if (this.IsTree ()) {
-			return XMLTags.TREE;
+			return XmlTags.TREE;
 		} else if (this.IsTrafficLight ()) {
-			return XMLTags.TRAFFIC_LIGHT;
+			return XmlTags.TRAFFIC_LIGHT;
 		} else if (this.IsHighway ()) {
-			return XMLTags.HIGHWAY;
+			return XmlTags.HIGHWAY;
 		} else if (this.IsWaterway ()) {
-			return XMLTags.WATERWAY;
+			return XmlTags.WATERWAY;
 		} else if (this.IsBusWayLane ()) {
-			return XMLTags.BUS_LANE_WAY;
+			return XmlTags.BUS_LANE_WAY;
 		} else if (this.IsFootway ()) {
-			return XMLTags.FOOTWAY;
+			return XmlTags.FOOTWAY;
 		} else if (this.IsCycleWay ()) {
-			return XMLTags.CYCLEWAY;
+			return XmlTags.CYCLEWAY;
 		} else if (this.IsPrimary ()) {
-			return XMLTags.PRIMARY;
+			return XmlTags.PRIMARY;
 		} else if (this.IsSecondary ()) {
-			return XMLTags.SECONDARY;
+			return XmlTags.SECONDARY;
 		} else if (this.IsTertiary ()) {
-			return XMLTags.TERTIARY;
+			return XmlTags.TERTIARY;
 		} else if (this.IsService ()) {
-			return XMLTags.SERVICE;
+			return XmlTags.SERVICE;
 		} else if (this.IsUnclassified ()) {
-			return XMLTags.UNCLASSIFIED;
+			return XmlTags.UNCLASSIFIED;
 		} else {
 			return "unknown";
 		}

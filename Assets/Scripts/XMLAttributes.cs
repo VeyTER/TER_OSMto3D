@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class XMLAttributes {
+public class XmlAttributes {
 	public const string ID = "id";
 
 	public const string VISIBILITY = "visible";

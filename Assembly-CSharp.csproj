@@ -68,10 +68,10 @@
      <Compile Include="Assets\Scripts\TurningEditor.cs" />
      <Compile Include="Assets\Scripts\UIManager.cs" />
      <Compile Include="Assets\Scripts\UINames.cs" />
-     <Compile Include="Assets\Scripts\XMLAttributes.cs" />
-     <Compile Include="Assets\Scripts\XMLKeys.cs" />
-     <Compile Include="Assets\Scripts\XMLTags.cs" />
-     <Compile Include="Assets\Scripts\XMLValues.cs" />
+     <Compile Include="Assets\Scripts\XmlAttributes.cs" />
+     <Compile Include="Assets\Scripts\XmlKeys.cs" />
+     <Compile Include="Assets\Scripts\XmlTags.cs" />
+     <Compile Include="Assets\Scripts\XmlValues.cs" />
      <None Include="Assets\Shaders\Standard.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
