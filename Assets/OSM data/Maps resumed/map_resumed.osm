@@ -1148,7 +1148,7 @@
             <nd ref="287691378" lat="43.5608217" lon="1.4726665" />
           </highway>
           <building>
-            <info id="18628306" name="U4444" nbfloor="5" roofangle="0" rooftype="flat" />
+            <info id="18628306" name="U4" nbfloor="5" roofangle="0" rooftype="flat" />
             <nd ref="192180799" lat="43.5626961" lon="1.468748" />
             <nd ref="2689506257" lat="43.5627436" lon="1.4688401" />
             <nd ref="192180801" lat="43.5628541" lon="1.4690545" />

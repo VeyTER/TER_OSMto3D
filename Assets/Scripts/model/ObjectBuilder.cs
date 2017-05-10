@@ -167,9 +167,9 @@ public class ObjectBuilder {
 
 					// Si on ne connait pas le nom du batiment on utilise l'id
 					if(ngp.Name == "unknown")
-						wall.name = currentNode.Reference  + "_mur_" + i;
+						wall.name = currentNode.Reference  + "_wall_" + i;
 					else
-						wall.name = ngp.Name + "_mur_" + i;
+						wall.name = ngp.Name + "_wall_" + i;
 
 					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
 					meshRenderer.material = Resources.Load ("Materials/Wall") as Material;
@@ -181,7 +181,7 @@ public class ObjectBuilder {
 					wallTransform.transform.position -= wallGroup.transform.position;
 
 				if(ngp.Name == "unknown")
-					wallGroup.name = ngp.Id.ToString();
+					wallGroup.name = "Bâtiment n°" + ngp.Id.ToString();
 				else
 					wallGroup.name = ngp.Name;
 
