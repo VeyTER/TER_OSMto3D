@@ -15,7 +15,7 @@ public class BuildingsTools {
 	private BuildingsTools () {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
-		this.resumeFilePath = Application.dataPath + @"/Maps resumed/map_resumed.osm";
+		this.resumeFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
 		this.mapResumeDocument = new XmlDocument();
 	}
 

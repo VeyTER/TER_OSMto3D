@@ -25,7 +25,7 @@ public class Triangle {
 	/// <returns></returns>
 	public bool ContainNode(Node noeud) {
 		bool res = false;
-		if((noeud.Id == nodeA.Id) || (noeud.Id == nodeB.Id) || (noeud.Id == nodeC.Id))
+		if((noeud.Reference == nodeA.Reference) || (noeud.Reference == nodeB.Reference) || (noeud.Reference == nodeC.Reference))
 			res = true;
 		return res;
 	}

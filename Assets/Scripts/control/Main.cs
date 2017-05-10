@@ -5,13 +5,12 @@ using System;
 
 public class Main : MonoBehaviour {
 	// Les fileName sont instancie via l'interfce de Unity
-	private string OSMFileName1;
-	private string OSMFileName2;
+	private string osmFileName;
 
 	private GameObject lateralPanel;
 
 	// création d'une instance de GestFile
-	private MapLoader fileManager;
+	private MapLoader mapLoader;
 
 	// création d'une instance de ObjectBuilding
 	private ObjectBuilder objectBuilder;
@@ -19,36 +18,35 @@ public class Main : MonoBehaviour {
 	// Fonction lancée à l'initialisation de la scene
 	public void Start() {
 		objectBuilder = ObjectBuilder.GetInstance();
-		fileManager = new MapLoader();
+		mapLoader = new MapLoader();
 
-		this.SetUpUI ();
+		this.SetUpUi ();
 
-		OSMFileName1 = "campus";
-		OSMFileName2 = null;
+		osmFileName = "campus";
 
 		// Teste si un nom de fichier est renseigné sur l'interface de Unity
-		if (OSMFileName1 != null)
-			fileManager.LoadOsmData (OSMFileName1, 0);
-
-//		if (OSMFileName2 != "null") {
-//			gf.readFileOSM (OSMFileName2, 1);
-//		}
+		if (osmFileName != null)
+			mapLoader.LoadOsmData (osmFileName, 0);
 
 		// Test si aucun des nom des fichiers n'est egale a null
-		if (OSMFileName1 != null || OSMFileName2 != null) {
+		if (osmFileName != null) {
 			QualitySettings.antiAliasing = 8;
 
 			// Lecture de SettingsFiles
-			fileManager.LoadSettingsData ();
+			mapLoader.LoadSettingsData ();
 
 			// Creation du ResumeFile
-			fileManager.GenerateResumeFile ();
+			mapLoader.GenerateResumeFile ();
+
+			// Lecture du fichier CustomFile avec remplacement des données correspondantes dans le ResumedFile
+			mapLoader.LoadCustomData ();
 
 			// Lecture du fichier ResumeFile précédement créé
-			fileManager.LoadResumedData ();
+			mapLoader.LoadResumedData ();
+
 
 			objectBuilder.ScaleNodes (1000D);
-			objectBuilder.SetLatLon (fileManager.Minlat, fileManager.Minlon, fileManager.Maxlat, fileManager.Maxlon);
+			objectBuilder.SetLatLon (mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
 
 			GameObject cityComponents = new GameObject (ObjectNames.CITY);
 			objectBuilder.CityComponents = cityComponents;
@@ -96,7 +94,7 @@ public class Main : MonoBehaviour {
 	// / Methode SetUpUI:
 	// / mise en place de l'interface
 	// / </summary>
-	public void SetUpUI() {
+	public void SetUpUi() {
 		GameObject uiManager = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/UIManagerScript"));
 		GameObject canvas = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/MainCanvas"));
 		GameObject eventSystem = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/EventSystem"));

@@ -2,24 +2,25 @@
 using System.Collections;
 
 public class Node {
-	private double id;
+	private double reference;
 	private double latitude;
 	private double longitude;
 
-	public Node(double id, double latitude, double longitude){
-		this.id = id;
+	public Node(double reference, double latitude, double longitude){
+		this.reference = reference;
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
 
 	public Node(double latitude, double longitude){
-		this.id = 0;
+		this.reference = 0;
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
 
-	public double Id {
-		get { return id; }
+	public double Reference {
+		get { return reference; }
+		set { reference = value; }
 	}
 
 	public double Latitude {
@@ -33,6 +34,6 @@ public class Node {
 	}
 
 	public string toString(){
-		return "Node ["+this.id+"] : (" + this.longitude+" ; " + this.latitude+")";
+		return "Node [" + reference + "] : (" + longitude + " ; " + latitude + ")";
 	}
 }

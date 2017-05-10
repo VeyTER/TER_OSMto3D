@@ -84,7 +84,7 @@ public class ObjectBuilder {
 					GameObject buildingNodeGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
 					buildingNodeGo.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
 					buildingNodeGo.transform.position = new Vector3((float)n.Longitude, 0, (float)n.Latitude);
-					buildingNodeGo.name = "" + n.Id;
+					buildingNodeGo.name = "" + n.Reference;
 					buildingNodeGo.tag = NodeTags.BUILDING_NODE_TAG;
 					buildingNodeGo.transform.parent = buildingNodes.transform;
 				}
@@ -98,7 +98,7 @@ public class ObjectBuilder {
 					GameObject highwayNodeGo = GameObject.CreatePrimitive (PrimitiveType.Cube);
 					highwayNodeGo.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
 					highwayNodeGo.transform.position = new Vector3 ((float)n.Longitude, 0, (float)n.Latitude);
-					highwayNodeGo.name = "" + n.Id;
+					highwayNodeGo.name = "" + n.Reference;
 					highwayNodeGo.tag = NodeTags.HIGHWAY_NODE_TAG;
 					highwayNodeGo.transform.parent = highwayNodes.transform;
 				}
@@ -167,11 +167,9 @@ public class ObjectBuilder {
 
 					// Si on ne connait pas le nom du batiment on utilise l'id
 					if(ngp.Name == "unknown")
-						wall.name = currentNode.Id  + "_mur_" + i;
+						wall.name = currentNode.Reference  + "_mur_" + i;
 					else
 						wall.name = ngp.Name + "_mur_" + i;
-
-					idTable [(int)currentNode.Id] = wall.GetInstanceID();
 
 					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
 					meshRenderer.material = Resources.Load ("Materials/Wall") as Material;
@@ -263,20 +261,20 @@ public class ObjectBuilder {
 					if (ngp.IsHighway () && (ngp.IsResidential () || ngp.IsPrimary () || ngp.IsSecondary () || ngp.IsTertiary () || ngp.IsService () || ngp.IsUnclassified ())) {
 						GameObject newHighway = roadBuilder.BuildClassicHighway ((float)x, (float)y, (float)length, (float)width, (float)angle);
 						newHighway.transform.parent = highways.transform;
-						newHighway.name = currentNode.Id + " to " + nextNode.Id;
+						newHighway.name = currentNode.Reference + " to " + nextNode.Reference;
 					} else if (ngp.IsFootway ()) {
 						GameObject newFootway = roadBuilder.BuildFootway ((float)x, (float)y, (float)length, (float)width, (float)angle);
 						newFootway.transform.parent = footways.transform;
-						newFootway.name = currentNode.Id + " to " + nextNode.Id;
+						newFootway.name = currentNode.Reference + " to " + nextNode.Reference;
 					} else if (ngp.IsCycleWay ()) {
 						GameObject newCycleway = roadBuilder.BuildCycleway ((float)x, (float)y, (float)length, (float)width, (float)angle);
 						newCycleway.transform.parent = cycleways.transform;
-						newCycleway.name = currentNode.Id + " to " + nextNode.Id;
+						newCycleway.name = currentNode.Reference + " to " + nextNode.Reference;
 // 					} else if (ngp.isBusWayLane ()) {
 // 						newHighWay = roadBuilder.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
 					} else if (ngp.IsWaterway ()) {
 						GameObject newWaterway = roadBuilder.BuildWaterway ((float)x, (float)y, (float)length, (float)width, (float)angle);
-						newWaterway.name = currentNode.Id + " to " + nextNode.Id;
+						newWaterway.name = currentNode.Reference + " to " + nextNode.Reference;
 					}
 				}
 			}	

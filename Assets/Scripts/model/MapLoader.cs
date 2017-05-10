@@ -8,9 +8,6 @@ using System.Xml;
 public class MapLoader {
 	private ObjectBuilder objectBuilder;
 
-	// chemin d'acces et nom du fichier par defaut
-	private string osmDataPath = @"./Assets/";
-
 	// coordonnées min et max de la carte
 	private double minlat;
 	private double minlon;
@@ -26,34 +23,19 @@ public class MapLoader {
 		this.maxlon = 0;
 	}
 
-	//Constructeur 
-	public MapLoader(string osmDataPath) {
-		this.objectBuilder = ObjectBuilder.GetInstance ();
-
-		this.osmDataPath = osmDataPath;
-
-		this.minlat = 0;
-		this.minlon = 0;
-		this.maxlat = 0;
-		this.maxlon = 0;
-	}
-
 	/// <summary>
 	/// Methode readFileOSM :
 	/// Permet d'extraire les données de fichier ".osm" et de les stocker dans des objet "node" et "nodeGroup". 
 	/// </summary>
 	/// <param name="nameMap"> nom du fichier ".osm" dont on doit extraire les infos </param>
 	public void LoadOsmData(string mapName, int mapNum) {
-		string OSMFilePath = osmDataPath + "Maps/" + mapName + ".osm";
+		string OSMFilePath = FilePaths.MAPS_FOLDER + mapName + ".osm";
 		XmlDocument OSMDocument = new XmlDocument(); 
 
 		if (File.Exists (OSMFilePath)) {
 			OSMDocument.Load (OSMFilePath);
 
 			XmlNodeList boundsNodes = OSMDocument.GetElementsByTagName (XmlTags.BOUNDS);
-			XmlNodeList nodeNodes = OSMDocument.GetElementsByTagName (XmlTags.NODE);
-			XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XmlTags.WAY);
-
 			if (boundsNodes.Count > 0) {
 				minlat = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MIN_LATITUDE));
 				minlon = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MIN_LONGITUDE));
@@ -62,6 +44,7 @@ public class MapLoader {
 			}
 
 			ArrayList nodes = new ArrayList();
+			XmlNodeList nodeNodes = OSMDocument.GetElementsByTagName (XmlTags.NODE);
 			foreach (XmlNode nodeNode in nodeNodes) {
 				double id = double.Parse (this.AttributeValue (nodeNode, XmlAttributes.ID));
 				double latitude = double.Parse(this.AttributeValue (nodeNode, XmlAttributes.LATITUDE));
@@ -86,27 +69,29 @@ public class MapLoader {
 							objectBuilder.NodeGroups.Add (nodeGroup);
 						}
 					}
+
 				}
 				nodes.Add(new Node(id, latitude, longitude));
 			}
 
+			XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XmlTags.WAY);
 			foreach (XmlNode wayNode in wayNodes) {
 				double id = double.Parse (this.AttributeValue (wayNode, XmlAttributes.ID));
 
 				NodeGroup nodeGroup = new NodeGroup (id);
 				XmlNodeList ndNodes = wayNode.ChildNodes;
 				for (int i = 0; i < ndNodes.Count; i++) {
-					if(ndNodes[i].Name.Equals(XmlTags.ND)) {
-						XmlNode ndNode = ndNodes [i];
+					XmlNode ndNode = wayNode.ChildNodes [i];
 
+					if(ndNode.Name.Equals(XmlTags.ND)) {
 						double reference = double.Parse (this.AttributeValue(ndNode, XmlAttributes.REFERENCE));
 
-						int j = 0;
-						for (; j < nodes.Count && ((Node)nodes [j]).Id != reference; j++);
-						if(j < nodes.Count)
-							nodeGroup.AddNode ((Node)nodes[j]);
-					} else if(ndNodes[i].Name.Equals(XmlTags.TAG)) {
-						XmlNode tagNode = ndNodes [i];
+						Node savedNode = (Node)nodes [0];
+						for (int j = 0; j < nodes.Count && savedNode.Reference != reference; savedNode = (Node)nodes [j], j++);
+						if (savedNode != null)
+							nodeGroup.AddNode (savedNode);
+					} else if(ndNode.Name.Equals(XmlTags.TAG)) {
+						XmlNode tagNode = ndNode;
 
 						string key = this.AttributeValue (tagNode, XmlAttributes.KEY);
 						string value = this.AttributeValue (tagNode, XmlAttributes.VALUE);
@@ -139,7 +124,7 @@ public class MapLoader {
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier setting a lire </param>
 	public void LoadSettingsData() {
-		string mapSettingsFilePath = osmDataPath + "Maps settings/map_settings.osm";
+		string mapSettingsFilePath = FilePaths.MAPS_SETTINGS_FOLDER + "map_settings.osm";
 		XmlDocument mapsSettingsDocument = new XmlDocument(); 
 
 		if (File.Exists (mapSettingsFilePath)) {
@@ -253,8 +238,8 @@ public class MapLoader {
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier ou l'on inscrit les informations </param>
 	public void GenerateResumeFile() {
-		string mapSettingsFilePath = osmDataPath + "Maps settings/map_settings.osm";
-		string mapResumedFilePath = osmDataPath + "Maps resumed/map_resumed.osm";
+		string mapSettingsFilePath = FilePaths.MAPS_SETTINGS_FOLDER + "map_settings.osm";
+		string mapResumedFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
 
 		XmlDocument mapSettingsDocument = new XmlDocument (); 
 		XmlDocument mapResumedDocument = new XmlDocument (); 
@@ -355,13 +340,18 @@ public class MapLoader {
 	}
 
 	private void AddInternalNodes(XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectNode) {
-		foreach (Node node in nodeGroup.Nodes) {
+		for (int i = 0; i < nodeGroup.Nodes.Count; i++) {
+			Node node = (Node)nodeGroup.Nodes [i];
+
 			XmlNode objectNd = mapResumedDocument.CreateElement (XmlTags.ND);
 			objectNode.AppendChild (objectNd);
 
-			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.ID, node.Id + "");
+			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.REFERENCE, node.Reference + "");
 			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LATITUDE, node.Latitude + "");
 			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LONGIUDE, node.Longitude + "");
+
+//			if(nodeGroup.Nodes.Count >= 2 && i == nodeGroup.Nodes.Count - 1 && node.Reference == ((Node)nodeGroup.Nodes[0]).Reference)
+//				this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LOOP, "true");
 		}
 	}
 
@@ -391,7 +381,7 @@ public class MapLoader {
 	/// </summary>
 	/// <param name="nameFile"> nom du fichier resume a lire </param>
 	public void LoadResumedData() {
-		string mapResumedFilePath = osmDataPath + "Maps resumed/map_resumed.osm";
+		string mapResumedFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
 		XmlDocument mapsSettingsDocument = new XmlDocument (); 
 
 		ArrayList extractedNodes = new ArrayList ();
@@ -475,6 +465,59 @@ public class MapLoader {
 
 				objectBuilder.NodeGroups.Add(nodeGroup);
 			}
+		}
+	}
+
+	public void LoadCustomData() {
+		string mapResumedFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
+		string mapCustomFilePath = FilePaths.MAPS_CUSTOM_FOLDER + "map_custom.osm";
+
+		XmlDocument mapResumedDocument = new XmlDocument ();
+		XmlDocument mapCustomDocument = new XmlDocument ();
+
+		if (File.Exists (mapResumedFilePath) && File.Exists (mapCustomFilePath)) {
+			mapResumedDocument.Load (mapResumedFilePath);
+			mapCustomDocument.Load (mapCustomFilePath);
+
+			XmlNode earthNode = mapCustomDocument.ChildNodes [1];
+			if (earthNode != null) {
+				XmlNodeList customNodes = earthNode.ChildNodes;
+				foreach (XmlNode customNode in customNodes) {
+					XmlNode customInfoNode = customNode.FirstChild;
+					string objectId = this.AttributeValue (customInfoNode, XmlAttributes.ID);
+
+					XmlNode matchingResumedNode = mapResumedDocument.SelectSingleNode("//" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + objectId + "\"]").ParentNode;
+
+					if (customNode.ChildNodes.Count == 1) {
+						matchingResumedNode.RemoveChild (matchingResumedNode.FirstChild);
+						XmlNode newResumedInfoNode = mapResumedDocument.ImportNode (customInfoNode, true);
+						matchingResumedNode.InsertBefore(newResumedInfoNode, matchingResumedNode.FirstChild);
+					} else {
+						for (int i = 1; i < customNode.ChildNodes.Count; i++) {
+							XmlNode customChildNode = customNode.ChildNodes [i];
+
+							string customChildNodeId = this.AttributeValue (customChildNode, XmlAttributes.REFERENCE);
+
+							int j = 0;
+							for(; j < matchingResumedNode.ChildNodes.Count; j++) {
+								XmlNode resumedChildNode = matchingResumedNode.ChildNodes [j];
+								string resumedChildNodeId = this.AttributeValue (resumedChildNode, XmlAttributes.REFERENCE);
+
+//								Debug.Log (customChildNodeId + "  " + resumedChildNodeId);
+
+								if (customChildNodeId.Equals (resumedChildNodeId)) {
+									XmlNode matchingResumedChildNode = matchingResumedNode.ChildNodes [j];
+									XmlNode newResumedChildNode = mapResumedDocument.ImportNode (customChildNode, true);
+									matchingResumedNode.InsertAfter (newResumedChildNode, matchingResumedChildNode);
+									matchingResumedNode.RemoveChild (matchingResumedChildNode);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			mapResumedDocument.Save (mapResumedFilePath);
 		}
 	}
 
