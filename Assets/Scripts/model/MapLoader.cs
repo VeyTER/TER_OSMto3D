@@ -493,10 +493,25 @@ public class MapLoader {
 						XmlNode newResumedInfoNode = mapResumedDocument.ImportNode (customInfoNode, true);
 						matchingResumedNode.InsertBefore(newResumedInfoNode, matchingResumedNode.FirstChild);
 					} else {
-						matchingResumedNode.RemoveAll ();
-						foreach (XmlNode customChildNode in customNode.ChildNodes) {
-							XmlNode newResumedChildNode = mapResumedDocument.ImportNode (customChildNode, true);
-							matchingResumedNode.AppendChild (newResumedChildNode);
+						for (int i = 1; i < customNode.ChildNodes.Count; i++) {
+							XmlNode customChildNode = customNode.ChildNodes [i];
+
+							string customChildNodeId = this.AttributeValue (customChildNode, XmlAttributes.REFERENCE);
+
+							int j = 0;
+							for(; j < matchingResumedNode.ChildNodes.Count; j++) {
+								XmlNode resumedChildNode = matchingResumedNode.ChildNodes [j];
+								string resumedChildNodeId = this.AttributeValue (resumedChildNode, XmlAttributes.REFERENCE);
+
+//								Debug.Log (customChildNodeId + "  " + resumedChildNodeId);
+
+								if (customChildNodeId.Equals (resumedChildNodeId)) {
+									XmlNode matchingResumedChildNode = matchingResumedNode.ChildNodes [j];
+									XmlNode newResumedChildNode = mapResumedDocument.ImportNode (customChildNode, true);
+									matchingResumedNode.InsertAfter (newResumedChildNode, matchingResumedChildNode);
+									matchingResumedNode.RemoveChild (matchingResumedChildNode);
+								}
+							}
 						}
 					}
 				}
