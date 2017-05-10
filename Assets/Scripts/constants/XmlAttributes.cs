@@ -5,6 +5,7 @@ public class XmlAttributes {
 
 	public const string VISIBILITY = "visible";
 	public const string REFERENCE = "ref";
+	public const string LOOP = "loop";
 
 	public const string KEY = "k";
 	public const string VALUE = "v";

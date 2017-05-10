@@ -1,27 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <earth>
   <building>
     <info id="23905163" name="IRIT" nbfloor="4" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="18628158" name="U1" nbfloor="1" roofangle="0" rooftype="flat"/>
+    <info id="18628158" name="U1" nbfloor="1" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="18628167" name="U2" nbfloor="2" roofangle="0" rooftype="flat"/>
+    <info id="18628167" name="U2" nbfloor="2" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="18628236" name="U3" nbfloor="5" roofangle="0" rooftype="flat"/>
+    <info id="18628236" name="U3" nbfloor="5" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="18628306" name="U4" nbfloor="5" roofangle="0" rooftype="flat"/>
+    <info id="18628306" name="U4" nbfloor="5" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="26138225" name="E4-SCUIO" nbfloor="1" roofangle="0" rooftype="flat"/>
+    <info id="26138225" name="E4-SCUIO" nbfloor="1" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="18628822" name="3 TP2" nbfloor="1" roofangle="0" rooftype="flat"/>
+    <info id="18628822" name="3 TP2" nbfloor="1" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat"/>
+    <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" />
   </building>
 </earth>

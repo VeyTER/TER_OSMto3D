@@ -12,11 +12,17 @@ public class BuildingsTools {
 	private string resumeFilePath;
 	private XmlDocument mapResumeDocument;
 
+	private string customFilePath;
+	private XmlDocument mapCustomDocument;
+
 	private BuildingsTools () {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
 		this.resumeFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
 		this.mapResumeDocument = new XmlDocument();
+
+		this.customFilePath = FilePaths.MAPS_CUSTOM_FOLDER + "map_custom.osm";
+		this.mapCustomDocument = new XmlDocument ();
 	}
 
 	public static BuildingsTools GetInstance() {
@@ -54,20 +60,50 @@ public class BuildingsTools {
 
 	public void SetName(GameObject building, string newName) {
 		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
-		XmlAttribute nameAttribute = this.GetNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
+		XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
+		XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
+
+		if (customNameAttribute == null) {
+			this.AddCustomBuilding (nodeGroup);
+			customNameAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
+		}
 
 		nodeGroup.Name = newName;
 		building.name = newName;
 		for (int i = 0; i < building.transform.childCount; i++)
 			building.transform.GetChild (i).name = newName + "_mur_" + i;
 		
-		nameAttribute.Value = newName;
+		resumeNameAttribute.Value = newName;
+		customNameAttribute.Value = newName;
+
 		mapResumeDocument.Save (resumeFilePath);
+		mapCustomDocument.Save (customFilePath);
+	}
+
+	public void AddCustomBuilding(NodeGroup nodeGroup) {
+		if (File.Exists (customFilePath)) {
+			XmlNode earthNode = mapCustomDocument.CreateElement (XmlTags.EARTH);
+			XmlNode buildingNode = mapCustomDocument.CreateElement (XmlTags.BUILDING);
+			XmlNode buildingInfoNode = mapCustomDocument.CreateElement (XmlTags.INFO);
+
+			earthNode.AppendChild (buildingNode);
+			buildingNode.AppendChild (buildingInfoNode);
+			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.NAME, nodeGroup.Name);
+			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor.ToString());
+			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, nodeGroup.RoofAngle.ToString());
+			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_TYPE, nodeGroup.RoofType);
+		}
+	}
+
+	private void AppendNodeGroupAttribute(XmlDocument boundingDocument, XmlNode containerNode, string attributeName, string attributeValue) {
+		XmlAttribute attribute = boundingDocument.CreateAttribute (attributeName);
+		attribute.Value = attributeValue;
+		containerNode.Attributes.Append (attribute);
 	}
 
 	public int GetHeight(GameObject building) {
 		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
-		XmlAttribute floorAttribute = this.GetNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
+		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
 		if (floorAttribute != null)
 			return int.Parse(floorAttribute.Value);
 		else
@@ -85,7 +121,7 @@ public class BuildingsTools {
 
 	public void SetHeight(GameObject building, int nbFloors) {
 		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
-		XmlAttribute floorAttribute = this.GetNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
+		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
 		if (floorAttribute != null)
 			floorAttribute.Value = Math.Max(nbFloors, 1).ToString();
 
@@ -95,7 +131,7 @@ public class BuildingsTools {
 		objectBuilder.EditUniqueBuilding (building, nbFloors);
 	}
 
-	public XmlAttribute GetNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
+	public XmlAttribute ResumeNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
 		XmlAttribute res = null;
 		if (File.Exists (resumeFilePath)) {
 			mapResumeDocument.Load (resumeFilePath); 
@@ -115,21 +151,14 @@ public class BuildingsTools {
 		return res;
 	}
 
-	public NodeGroup WallToBuildingNodeGroup(GameObject wallGo) {
-		string identifier = wallGo.name.Substring (0, wallGo.name.LastIndexOf ("_"));
-
-		NodeGroup res = null;
-
-		double numIdentifier;
-		bool parsingSuccess = double.TryParse (identifier, out numIdentifier);
-
-		foreach (NodeGroup ngp in objectBuilder.NodeGroups) {
-			if ((!parsingSuccess && ngp.Name.Equals(identifier)) || (parsingSuccess && ngp.Id == numIdentifier)) {
-				res = ngp;
-				break;
-			}
+	public XmlAttribute CustomNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
+		XmlAttribute res = null;
+		if (File.Exists (customFilePath)) {
+			mapCustomDocument.Load (customFilePath);
+			string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
+			XmlNode infoNode = mapCustomDocument.SelectSingleNode(xPath);
+			res = infoNode.Attributes[attributeName];
 		}
-
 		return res;
 	}
 

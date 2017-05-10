@@ -90,13 +90,12 @@ public class EditionController : MonoBehaviour {
 		selectedBuilding = selectedWall.transform.parent.gameObject;
 
 		// Récupération du bâtiment correspondant au mur sélectionné
-		NodeGroup buildingNgp = buildingsTools.WallToBuildingNodeGroup (selectedWall);
-		string identifier = selectedBuilding.name;
+		string buildingName = selectedBuilding.name;
 
 		// Si le bâtiment n'a pas de nom défini, ajouter un prefixe dans son affichage
 		double parsedValue = 0;
-		if (double.TryParse (identifier, out parsedValue))
-			identifier = "Bâtiment n°" + identifier;
+		if (double.TryParse (buildingName, out parsedValue))
+			buildingName = "Bâtiment n°" + buildingName;
 
 		if (lateralPanel.activeInHierarchy == false) {
 			lateralPanel.SetActive (true);
@@ -108,7 +107,7 @@ public class EditionController : MonoBehaviour {
 		int i = 0;
 		for (; i < textInputs.Length && textInputs[i].name.Equals (UiNames.BUILDING_NAME_TEXT_INPUT); i++);
 		if (i < textInputs.Length)
-			textInputs[i].text = identifier;
+			textInputs[i].text = buildingName;
 
 		buildingsTools.DiscolorAll ();
 		buildingsTools.ColorAsSelected (selectedBuilding);

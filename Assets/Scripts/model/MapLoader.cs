@@ -503,8 +503,6 @@ public class MapLoader {
 								XmlNode resumedChildNode = matchingResumedNode.ChildNodes [j];
 								string resumedChildNodeId = this.AttributeValue (resumedChildNode, XmlAttributes.REFERENCE);
 
-//								Debug.Log (customChildNodeId + "  " + resumedChildNodeId);
-
 								if (customChildNodeId.Equals (resumedChildNodeId)) {
 									XmlNode matchingResumedChildNode = matchingResumedNode.ChildNodes [j];
 									XmlNode newResumedChildNode = mapResumedDocument.ImportNode (customChildNode, true);
