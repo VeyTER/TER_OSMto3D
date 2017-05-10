@@ -92,6 +92,11 @@ public class EditionController : MonoBehaviour {
 		// Récupération du bâtiment correspondant au mur sélectionné
 		string buildingName = selectedBuilding.name;
 
+		// Si le bâtiment n'a pas de nom défini, ajouter un prefixe dans son affichage
+		double parsedValue = 0;
+		if (double.TryParse (buildingName, out parsedValue))
+			buildingName = "Bâtiment n°" + buildingName;
+
 		if (lateralPanel.activeInHierarchy == false) {
 			lateralPanel.SetActive (true);
 			this.OpenPanel (null);
@@ -251,8 +256,6 @@ public class EditionController : MonoBehaviour {
 	}
 
 	public void RenameBuilding(GameObject building, string newName) {
-		Debug.Log ("ok");
-
 		if (!renamedBuildings.ContainsKey (building))
 			renamedBuildings.Add (building, building.name);
 
@@ -342,10 +345,7 @@ public class EditionController : MonoBehaviour {
 		foreach (DictionaryEntry buildingEntry in renamedBuildings) {
 			if(buildingEntry.Key.GetType() == typeof(GameObject) && buildingEntry.Value.GetType() == typeof(string)) {
 				GameObject renamedBuilding = (GameObject)buildingEntry.Key;
-				string oldName = (string)buildingEntry.Value;
-
-				if(!renamedBuilding.name.Equals(oldName))
-					buildingsTools.SetName (renamedBuilding, renamedBuilding.name);
+				buildingsTools.SetName (renamedBuilding, renamedBuilding.name);
 			}
 		}
 

@@ -60,58 +60,39 @@ public class BuildingsTools {
 
 	public void SetName(GameObject building, string newName) {
 		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
-		if (!this.CustomBuildingExists (nodeGroup)) {
-			this.AppendCustomBuilding (nodeGroup);
-		}
-
 		XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
 		XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
 
-		if (File.Exists (resumeFilePath) && File.Exists (customFilePath)) {
-			mapResumeDocument.Load (resumeFilePath);
-			mapCustomDocument.Load (customFilePath);
-
-			nodeGroup.Name = newName;
-			building.name = newName;
-			for (int i = 0; i < building.transform.childCount; i++)
-				building.transform.GetChild (i).name = newName + "_mur_" + i;
-			
-			resumeNameAttribute.Value = newName;
-			customNameAttribute.Value = newName;
-
-			mapResumeDocument.Save (resumeFilePath);
-			mapCustomDocument.Save (customFilePath);
+		if (customNameAttribute == null) {
+			this.AddCustomBuilding (nodeGroup);
+			customNameAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
 		}
+
+		nodeGroup.Name = newName;
+		building.name = newName;
+		for (int i = 0; i < building.transform.childCount; i++)
+			building.transform.GetChild (i).name = newName + "_mur_" + i;
+		
+		resumeNameAttribute.Value = newName;
+		customNameAttribute.Value = newName;
+
+		mapResumeDocument.Save (resumeFilePath);
+		mapCustomDocument.Save (customFilePath);
 	}
 
-	public void AppendCustomBuilding(NodeGroup nodeGroup) {
+	public void AddCustomBuilding(NodeGroup nodeGroup) {
 		if (File.Exists (customFilePath)) {
-			mapCustomDocument.Load (customFilePath);
-
-			XmlNodeList earthNodes = mapCustomDocument.GetElementsByTagName (XmlTags.EARTH);
-
-			if (earthNodes.Count == 0)
-				mapCustomDocument.AppendChild (mapCustomDocument.CreateElement (XmlTags.EARTH));
-
-			XmlNode earthNode = earthNodes [0];
+			XmlNode earthNode = mapCustomDocument.CreateElement (XmlTags.EARTH);
 			XmlNode buildingNode = mapCustomDocument.CreateElement (XmlTags.BUILDING);
 			XmlNode buildingInfoNode = mapCustomDocument.CreateElement (XmlTags.INFO);
 
 			earthNode.AppendChild (buildingNode);
 			buildingNode.AppendChild (buildingInfoNode);
-			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ID, nodeGroup.Id.ToString ());
 			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.NAME, nodeGroup.Name);
-			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor.ToString ());
-			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, nodeGroup.RoofAngle.ToString ());
+			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor.ToString());
+			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, nodeGroup.RoofAngle.ToString());
 			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_TYPE, nodeGroup.RoofType);
-
-			mapCustomDocument.Save (customFilePath);
 		}
-	}
-
-	public bool CustomBuildingExists(NodeGroup BuildingNgp) {
-		string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + BuildingNgp.Id + "\"]";
-		return mapCustomDocument.SelectSingleNode (xPath) != null;
 	}
 
 	private void AppendNodeGroupAttribute(XmlDocument boundingDocument, XmlNode containerNode, string attributeName, string attributeValue) {
