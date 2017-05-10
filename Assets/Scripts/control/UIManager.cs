@@ -36,11 +36,13 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	}
 
 	public void OnValueChanged(InputField originInputFiled) {
-		editionController.RenameBuilding (editionController.SelectedBuilding, originInputFiled.text);
+		if(!editionController.SelectedBuilding.name.Equals(originInputFiled.text))
+			editionController.RenameBuilding (editionController.SelectedBuilding, originInputFiled.text);
 	}
 
 	public void OnEndChanged(InputField originInputFiled) {
-		editionController.RenameBuilding (editionController.SelectedBuilding, originInputFiled.text);
+		if(!editionController.SelectedBuilding.name.Equals(originInputFiled.text))
+			editionController.RenameBuilding (editionController.SelectedBuilding, originInputFiled.text);
 	}
 
 	public void OnBeginDrag (PointerEventData eventData) {
