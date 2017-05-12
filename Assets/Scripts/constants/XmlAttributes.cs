@@ -2,6 +2,7 @@
 
 public class XmlAttributes {
 	public const string ID = "id";
+	public const string INDEX = "index";
 
 	public const string VISIBILITY = "visible";
 	public const string REFERENCE = "ref";

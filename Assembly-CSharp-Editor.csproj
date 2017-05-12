@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{F3AF04DC-4A57-7B40-956A-A5A70FB01E3E}</ProjectGuid>
+    <ProjectGuid>{DF79757D-BBC4-CCD3-AEC5-3C27E689F176}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
@@ -46,27 +46,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\EasyRoads3D Free\Editor\EasyRoadsEditorMenu.cs" />
-     <Compile Include="Assets\EasyRoads3D Free\Editor\NewEasyRoads3D.cs" />
-     <Compile Include="Assets\EasyRoads3D Free\Editor\ObjectManager.cs" />
-     <Compile Include="Assets\EasyRoads3D Free\Editor\ProceduralObjectsEditor.cs" />
-     <Compile Include="Assets\EasyRoads3D Free\Editor\SideObjectImporter.cs" />
-     <Compile Include="Assets\EasyRoads3D Free\Editor\SideObjectInit.cs" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D-Normal-BumpSpec.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D-Surface.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D-Alpha-Bumped.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D-Surface_Alpha.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D-Alpha-BumpSpec.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D-Alpha-Diffuse.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D Marker.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\surfaceAlpha.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D-Normal-Diffuse.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\Surface.shader" />
-     <None Include="Assets\EasyRoads3D Free\_Readme.txt" />
-     <None Include="Assets\EasyRoads3D Free\_readme 1.txt" />
-     <None Include="Assets\EasyRoads3D Free\Release Notes.txt" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D-Road-Edit-Mode.shader" />
-     <None Include="Assets\EasyRoads3D Free\Shaders\EasyRoads3D-Normal-Bumped.shader" />
+     <Compile Include="Assets\OBJ-IO\Editor\OBJEditor.cs" />
+     <None Include="Assets\Shaders\Standard.shader" />
+     <None Include="Assets\OBJ-IO\Readme.txt" />
  <Reference Include="UnityEditor.Advertisements">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/Editor/UnityEditor.Advertisements.dll</HintPath>
  </Reference>
@@ -115,22 +97,22 @@
  <Reference Include="UnityEngine.VR">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
- <Reference Include="EasyRoads3DEditor">
- <HintPath>C:/Users/pourt/Documents/TER_OSMto3D/code/Assets/EasyRoads3D Free/Editor/EasyRoads3DEditor.dll</HintPath>
- </Reference>
- <Reference Include="EasyRoads3D">
- <HintPath>C:/Users/pourt/Documents/TER_OSMto3D/code/Assets/EasyRoads3D Free/lib/EasyRoads3D.dll</HintPath>
- </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.LinuxStandalone.Extensions">
+ <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/LinuxStandaloneSupport/UnityEditor.LinuxStandalone.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.WindowsStandalone.Extensions">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.OSXStandalone.Extensions">
+ <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{FC3F145C-D39D-AA0E-1B23-FBCD4E2AFA7F}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
+      <Project>{FF99ED3D-F043-626D-7AEA-F3F55EEB4561}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

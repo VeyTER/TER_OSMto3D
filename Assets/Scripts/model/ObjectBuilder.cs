@@ -6,7 +6,11 @@ using System;
 /*Classe contentant toutes les fonctions de construction de GameObject*/
 public class ObjectBuilder {
 	private ArrayList nodeGroups;
-	private Hashtable idTable;
+
+	private Hashtable buildingIdTable;
+	private Hashtable buildingNodesIdTable;
+
+	private Hashtable nodeIdTable;
 
 	private double minlat;
 	private double maxlat;
@@ -32,12 +36,16 @@ public class ObjectBuilder {
 
 	// constructeur
 	private ObjectBuilder() {
-		this.nodeGroups = new ArrayList();
-		this.idTable = new Hashtable ();
+		this.nodeGroups = new ArrayList ();
 
-		this.roadBuilder = new RoadBuilder();
-		this.roofBuilder = new RoofBuilder();
-		this.groundBuilder = new GroundBuilder();
+		this.buildingIdTable = new Hashtable ();
+		this.buildingNodesIdTable = new Hashtable ();
+
+		this.nodeIdTable = new Hashtable ();
+
+		this.roadBuilder = new RoadBuilder ();
+		this.roofBuilder = new RoofBuilder ();
+		this.groundBuilder = new GroundBuilder ();
 
 		this.floorHeight = 0.08F;
 	}
@@ -76,31 +84,47 @@ public class ObjectBuilder {
 		highwayNodes = new GameObject(ObjectNames.HIGHWAY_NODES);
 		highwayNodes.transform.parent = cityComponents.transform;
 
+		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
+
 		int i;
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.IsBuilding()) {
+				GameObject buildingNodeGroup = new GameObject ();;
+
 				// on construit les angles des buildings
 				foreach(Node n in ngp.Nodes) {
-					GameObject buildingNodeGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
-					buildingNodeGo.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-					buildingNodeGo.transform.position = new Vector3((float)n.Longitude, 0, (float)n.Latitude);
-					buildingNodeGo.name = "" + n.Reference;
-					buildingNodeGo.tag = NodeTags.BUILDING_NODE_TAG;
-					buildingNodeGo.transform.parent = buildingNodes.transform;
+					GameObject buildingNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					buildingNode.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+					buildingNode.transform.position = new Vector3((float)n.Longitude, 0, (float)n.Latitude);
+					buildingNode.name = n.Reference.ToString() + " | " + buildingNode.GetInstanceID();
+					buildingNode.tag = NodeTags.BUILDING_NODE_TAG;
+					buildingNode.transform.parent = buildingNodeGroup.transform;
 				}
+
+				buildingNodeGroup.transform.parent = buildingNodes.transform;
+				buildingNodeGroup.name = ngp.Id.ToString() + " | " + buildingNodeGroup.GetInstanceID();
+				buildingNodesIdTable [ngp.Id] = buildingNodeGroup.transform.GetInstanceID();
+
+				Vector3 nodeGroupCenter = buildingsTools.BuildingNodesCenter (buildingNodeGroup, ngp);
+				buildingNodeGroup.transform.position = nodeGroupCenter;
+				foreach (Transform wallTransform in buildingNodeGroup.transform)
+					wallTransform.transform.position -= buildingNodeGroup.transform.position;
 			}
+
 			if ( (ngp.IsHighway () && ((ngp.IsPrimary() || ngp.IsSecondary() || ngp.IsTertiary() || ngp.IsUnclassified()
 			   || ngp.IsResidential ()|| ngp.IsService()) || ngp.IsCycleWay() || ngp.IsFootway())) || ngp.IsWaterway()) {
+//				GameObject highwayNodeGroup = new GameObject();
+
 				// on construit les nodes des highways
 				i =  - 1;
 				foreach (Node n in ngp.Nodes) {
 					i++;
-					GameObject highwayNodeGo = GameObject.CreatePrimitive (PrimitiveType.Cube);
-					highwayNodeGo.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
-					highwayNodeGo.transform.position = new Vector3 ((float)n.Longitude, 0, (float)n.Latitude);
-					highwayNodeGo.name = "" + n.Reference;
-					highwayNodeGo.tag = NodeTags.HIGHWAY_NODE_TAG;
-					highwayNodeGo.transform.parent = highwayNodes.transform;
+					GameObject highwayNode = GameObject.CreatePrimitive (PrimitiveType.Cube);
+					highwayNode.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
+					highwayNode.transform.position = new Vector3 ((float)n.Longitude, 0, (float)n.Latitude);
+					highwayNode.name = "" + n.Reference;
+					highwayNode.tag = NodeTags.HIGHWAY_NODE_TAG;
+					highwayNode.transform.parent = highwayNodes.transform;
 				}
 			}
 		}
@@ -147,7 +171,7 @@ public class ObjectBuilder {
 					wall.tag = NodeTags.WALL_TAG;
 					etages = ngp.NbFloor;
 
-					wall.transform.localScale = new Vector3((float) length + 0.015f, floorHeight * etages, thickness);
+					wall.transform.localScale = new Vector3((float) length + thickness * 1.5F, floorHeight * etages, thickness);
 					wall.transform.position = new Vector3((float) x, (floorHeight / 2F) * (float) etages, (float) y);
 
 					BoxCollider wallBoxColliser = wall.GetComponent<BoxCollider> ();
@@ -165,7 +189,7 @@ public class ObjectBuilder {
 						wall.transform.localEulerAngles = new Vector3(0, (float) angle + 90, 0);
 					}
 
-					// Si on ne connait pas le nom du batiment on utilise l'id
+					// Si on ne connait pas le nom du batiment on utilise la référence
 					if(ngp.Name == "unknown")
 						wall.name = currentNode.Reference  + "_wall_" + i;
 					else
@@ -174,9 +198,10 @@ public class ObjectBuilder {
 					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
 					meshRenderer.material = Resources.Load ("Materials/Wall") as Material;
 				}
+				buildingIdTable [ngp.Id] = wallGroup.GetInstanceID();
 
-				Vector3 wallBroupCenter = buildingsTools.Center(wallGroup);
-				wallGroup.transform.position = wallBroupCenter;
+				Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup);
+				wallGroup.transform.position = wallGroupCenter;
 				foreach (Transform wallTransform in wallGroup.transform)
 					wallTransform.transform.position -= wallGroup.transform.position;
 
@@ -185,7 +210,6 @@ public class ObjectBuilder {
 				else
 					wallGroup.name = ngp.Name;
 
-				idTable [(int)ngp.Id] = wallGroup.GetInstanceID();
 
 				wallGroup.transform.parent = wallGroups.transform;
 			}
@@ -403,8 +427,12 @@ public class ObjectBuilder {
 		get { return nodeGroups; }
 	}
 
-	public Hashtable IdTable {
-		get { return idTable; }
+	public Hashtable BuildingIdTable {
+		get { return buildingIdTable; }
+	}
+
+	public Hashtable BuildingNodesIdTable {
+		get { return buildingNodesIdTable; }
 	}
 
 	public GameObject CityComponents {

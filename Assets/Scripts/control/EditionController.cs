@@ -251,8 +251,6 @@ public class EditionController : MonoBehaviour {
 	}
 
 	public void RenameBuilding(GameObject building, string newName) {
-		Debug.Log ("ok");
-
 		if (!renamedBuildings.ContainsKey (building))
 			renamedBuildings.Add (building, building.name);
 

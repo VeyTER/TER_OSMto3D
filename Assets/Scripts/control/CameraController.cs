@@ -99,7 +99,7 @@ public class CameraController : MonoBehaviour {
 
 		float cameraFOV = Camera.main.fieldOfView;
 		float buildingHeight = building.transform.localScale.y;
-		double buildingRadius = buildingsTools.Radius (building);
+		double buildingRadius = buildingsTools.BuildingRadius (building);
 		float targetPosZ = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
 
 		for (double i = 0; i <= 1; i += 0.1) {

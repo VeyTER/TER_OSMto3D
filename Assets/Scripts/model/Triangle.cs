@@ -37,7 +37,7 @@ public class Triangle {
 	public Node Center() {
 		double nalat, nalon, nblat, nblon, nclat, nclon;
 		double axc, bxc, dxc,ayc,byc, xc, yc;
-		double templat,templon;
+		double templat, templon;
 
 		// Récupération des coordonnee des trois sommets du triangle
 		nalat = this.nodeA.Latitude;

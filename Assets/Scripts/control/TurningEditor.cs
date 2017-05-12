@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class TurningEditor : ObjectEditor{
+public class TurningEditor : ObjectEditor {
 	public enum TurningStates { MOTIONLESS, TURNING}
 	private TurningStates turningState;
 

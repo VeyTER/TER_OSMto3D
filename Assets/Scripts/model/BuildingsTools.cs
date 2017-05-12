@@ -43,11 +43,11 @@ public class BuildingsTools {
 		}
 	}
 
-	public void ColorAsSelected(GameObject building) {
+	public void ColorAsSelected(GameObject buildingGo) {
 		Material wallMaterial = Resources.Load ("Materials/Wall") as Material;
 		Material selectedElementMaterial = Resources.Load ("Materials/SelectedElement") as Material;
 
-		foreach (Transform wallGo in building.transform) {
+		foreach (Transform wallGo in buildingGo.transform) {
 			Renderer meshRenderer = wallGo.GetComponent<Renderer> ();
 			if (meshRenderer != null) {
 				meshRenderer.materials = new Material[] {
@@ -58,26 +58,49 @@ public class BuildingsTools {
 		}
 	}
 
-	public void SetName(GameObject building, string newName) {
-		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
-		if (!this.CustomBuildingExists (nodeGroup)) {
-			this.AppendCustomBuilding (nodeGroup);
-		}
+	public void SetName(GameObject buildingGo, string newName) {
+		NodeGroup buildingNgp = this.GameObjectToNodeGroup (buildingGo);
+		if (!this.CustomBuildingExists (buildingNgp))
+			this.AppendCustomBuilding (buildingNgp);
 
-		XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
-		XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
+		XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (buildingNgp, XmlAttributes.NAME);
+		XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (buildingNgp, XmlAttributes.NAME);
 
 		if (File.Exists (resumeFilePath) && File.Exists (customFilePath)) {
 			mapResumeDocument.Load (resumeFilePath);
 			mapCustomDocument.Load (customFilePath);
 
-			nodeGroup.Name = newName;
-			building.name = newName;
-			for (int i = 0; i < building.transform.childCount; i++)
-				building.transform.GetChild (i).name = newName + "_mur_" + i;
+			buildingNgp.Name = newName;
+			buildingGo.name = newName;
+			for (int i = 0; i < buildingGo.transform.childCount; i++)
+				buildingGo.transform.GetChild (i).name = newName + "_mur_" + i;
 			
 			resumeNameAttribute.Value = newName;
 			customNameAttribute.Value = newName;
+
+			mapResumeDocument.Save (resumeFilePath);
+			mapCustomDocument.Save (customFilePath);
+		}
+	}
+
+	public void SetLocation(GameObject buildingGo, string newName) {
+		NodeGroup buildingNgp = this.GameObjectToNodeGroup (buildingGo);
+		if (!this.CustomBuildingExists (buildingNgp))
+			this.AppendCustomBuilding (buildingNgp);
+
+		foreach(GameObject wallGo in buildingGo.transform) {
+
+		}
+
+
+		if (File.Exists (resumeFilePath) && File.Exists (customFilePath)) {
+			mapResumeDocument.Load (resumeFilePath);
+			mapCustomDocument.Load (customFilePath);
+
+			buildingNgp.Name = newName;
+			buildingGo.name = newName;
+			for (int i = 0; i < buildingGo.transform.childCount; i++)
+				buildingGo.transform.GetChild (i).name = newName + "_mur_" + i;
 
 			mapResumeDocument.Save (resumeFilePath);
 			mapCustomDocument.Save (customFilePath);
@@ -182,8 +205,8 @@ public class BuildingsTools {
 	}
 
 	public GameObject NodeGroupToGameObject(NodeGroup buildingNgp) {
-		if (objectBuilder.IdTable [buildingNgp.Id].GetType() == typeof(int)) {
-			int buildingGoId = (int)objectBuilder.IdTable [buildingNgp.Id];
+		if (objectBuilder.BuildingIdTable [buildingNgp.Id].GetType() == typeof(int)) {
+			int buildingGoId = (int)objectBuilder.BuildingIdTable [buildingNgp.Id];
 			int nbWallGroups = objectBuilder.WallGroups.transform.childCount;
 
 			int i = 0;
@@ -199,9 +222,9 @@ public class BuildingsTools {
 
 	public NodeGroup GameObjectToNodeGroup(GameObject buildingGo) {
 		NodeGroup res = null;
-		foreach (DictionaryEntry buildingEntry in objectBuilder.IdTable) {
-			if (buildingEntry.Key.GetType () == typeof(int) && buildingEntry.Value.GetType () == typeof(int)) {
-				int nodeGroupId = (int)buildingEntry.Key;
+		foreach (DictionaryEntry buildingEntry in objectBuilder.BuildingIdTable) {
+			if (buildingEntry.Key.GetType () == typeof(long) && buildingEntry.Value.GetType () == typeof(int)) {
+				long nodeGroupId = (long)buildingEntry.Key;
 				int gameObjectId = (int)buildingEntry.Value;
 
 				if (gameObjectId == buildingGo.GetInstanceID()) {
@@ -222,26 +245,56 @@ public class BuildingsTools {
 		return res;
 	}
 
-	public Vector3 Center(GameObject building) {
-		Vector3 positionsSum = new Vector3 (0, 0, 0);
+	public Vector3 BuildingCenter(GameObject buildingGo) {
+		NodeGroup buildingNgp = this.GameObjectToNodeGroup (buildingGo);
 
-		foreach (Transform wallTransform in building.transform)
-			positionsSum += wallTransform.position;
-		
-		return positionsSum / (building.transform.childCount * 1F);
+		if (buildingNgp != null) {
+			Vector3 positionSum = Vector3.zero;
+			GameObject firstWall = buildingGo.transform.GetChild (0).gameObject;
+			for(int i = 0; i < buildingNgp.Nodes.Count - 1; i++) {
+				Node buildingNode = (Node)buildingNgp.Nodes [i];
+				Vector3 nodePosition = new Vector3 ((float)buildingNode.Longitude, (float)firstWall.transform.position.y, (float)buildingNode.Latitude);
+				positionSum += nodePosition;
+			}
+
+			return positionSum / ((buildingNgp.Nodes.Count - 1) * 1F);
+		} else {
+			return Vector3.zero;
+		}
 	}
 
-	public double Radius(GameObject building) {
-		Vector3 buildingCenter = this.Center (building);
+	public Vector3 BuildingNodesCenter(GameObject buildingGo, NodeGroup buildingNgp) {
+		Vector3 positionSum = new Vector3 (0, 0, 0);
 
-		double maxDistance = 0;
-		foreach (Transform wallTransform in building.transform) {
-			double currentDistance = Vector3.Distance (buildingCenter, wallTransform.position);
-			if (currentDistance > maxDistance)
-				maxDistance = currentDistance;
+		for(int i = 0; i < buildingNgp.Nodes.Count - 1; i++) {
+			Node buildingNode = (Node)buildingNgp.Nodes [i];
+			Vector3 nodePosition = new Vector3 ((float)buildingNode.Longitude, (float)buildingGo.transform.position.y, (float)buildingNode.Latitude);
+			positionSum += nodePosition;
 		}
 
-		return maxDistance;
+		return positionSum / ((buildingNgp.Nodes.Count - 1) * 1F);
+	}
+
+	public double BuildingRadius(GameObject buildingGo) {
+		Vector3 buildingCenter = this.BuildingCenter (buildingGo);
+		NodeGroup buildingNgp = this.GameObjectToNodeGroup (buildingGo);
+
+		if (buildingNgp != null) {
+			double maxDistance = 0;
+			for(int i = 0; i < buildingNgp.Nodes.Count - 1; i++) {
+				Node buildingNode = (Node)buildingNgp.Nodes [i];
+				Vector2 nodePosition = new Vector2 ((float)buildingNode.Longitude, (float)buildingNode.Latitude);
+				Vector2 buildingCenter2D = new Vector2 (buildingCenter.x, buildingCenter.z);
+
+				double currentDistance = Vector2.Distance (buildingCenter2D, nodePosition);
+				if (currentDistance > maxDistance)
+					maxDistance = currentDistance;
+			}
+
+			return maxDistance;
+		} else {
+			return -1;
+		}
 	}
 
 	public static class BuildingsToolsInstanceHolder {

@@ -44,8 +44,7 @@ public class Main : MonoBehaviour {
 			// Lecture du fichier ResumeFile précédement créé
 			mapLoader.LoadResumedData ();
 
-
-			objectBuilder.ScaleNodes (1000D);
+			objectBuilder.ScaleNodes (1000);
 			objectBuilder.SetLatLon (mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
 
 			GameObject cityComponents = new GameObject (ObjectNames.CITY);
@@ -95,7 +94,7 @@ public class Main : MonoBehaviour {
 	// / mise en place de l'interface
 	// / </summary>
 	public void SetUpUi() {
-		GameObject uiManager = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/UIManagerScript"));
+		GameObject uiManager = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/UiManagerScript"));
 		GameObject canvas = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/MainCanvas"));
 		GameObject eventSystem = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/EventSystem"));
 	}

@@ -43,10 +43,11 @@ public class MapLoader {
 				maxlon = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MAX_LONGITUDE));
 			}
 
+			// Extraction de toutes les nodes nodes, contenant des infos sur les sous-nodes
 			ArrayList nodes = new ArrayList();
 			XmlNodeList nodeNodes = OSMDocument.GetElementsByTagName (XmlTags.NODE);
 			foreach (XmlNode nodeNode in nodeNodes) {
-				double id = double.Parse (this.AttributeValue (nodeNode, XmlAttributes.ID));
+				long id = long.Parse (this.AttributeValue (nodeNode, XmlAttributes.ID));
 				double latitude = double.Parse(this.AttributeValue (nodeNode, XmlAttributes.LATITUDE));
 				double longitude = double.Parse(this.AttributeValue (nodeNode, XmlAttributes.LONGIUDE));
 
@@ -74,22 +75,21 @@ public class MapLoader {
 				nodes.Add(new Node(id, latitude, longitude));
 			}
 
+			// Extraction de tous les sous-nodes en recherchant à chque fois le node contenant des infos dessus
 			XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XmlTags.WAY);
 			foreach (XmlNode wayNode in wayNodes) {
-				double id = double.Parse (this.AttributeValue (wayNode, XmlAttributes.ID));
+				long id = long.Parse (this.AttributeValue (wayNode, XmlAttributes.ID));
 
 				NodeGroup nodeGroup = new NodeGroup (id);
-				XmlNodeList ndNodes = wayNode.ChildNodes;
-				for (int i = 0; i < ndNodes.Count; i++) {
-					XmlNode ndNode = wayNode.ChildNodes [i];
-
+				for (int i = 0; i < wayNode.ChildNodes.Count; i++) {
+					XmlNode ndNode = wayNode.ChildNodes[i];
 					if(ndNode.Name.Equals(XmlTags.ND)) {
 						double reference = double.Parse (this.AttributeValue(ndNode, XmlAttributes.REFERENCE));
 
-						Node savedNode = (Node)nodes [0];
-						for (int j = 0; j < nodes.Count && savedNode.Reference != reference; savedNode = (Node)nodes [j], j++);
-						if (savedNode != null)
-							nodeGroup.AddNode (savedNode);
+						Node infoNode = (Node)nodes [0];
+						for (int j = 0; j < nodes.Count && infoNode.Reference != reference; infoNode = (Node)nodes [j], j++);
+						if (infoNode != null)
+							nodeGroup.AddNode (infoNode);
 					} else if(ndNode.Name.Equals(XmlTags.TAG)) {
 						XmlNode tagNode = ndNode;
 
@@ -303,10 +303,10 @@ public class MapLoader {
 
 	private XmlNode NewBoundsNode(XmlDocument document) {
 		XmlNode res = document.CreateElement (XmlTags.BOUNDS);
-		this.AppendAttribute (document, res, XmlAttributes.MIN_LATITUDE, minlat + "");
-		this.AppendAttribute (document, res, XmlAttributes.MIN_LONGITUDE, minlon + "");
-		this.AppendAttribute (document, res, XmlAttributes.MAX_LATITUDE, maxlat + "");
-		this.AppendAttribute (document, res, XmlAttributes.MAX_LONGITUDE, maxlon + "");
+		this.AppendAttribute (document, res, XmlAttributes.MIN_LATITUDE, minlat.ToString());
+		this.AppendAttribute (document, res, XmlAttributes.MIN_LONGITUDE, minlon.ToString());
+		this.AppendAttribute (document, res, XmlAttributes.MAX_LATITUDE, maxlat.ToString());
+		this.AppendAttribute (document, res, XmlAttributes.MAX_LONGITUDE, maxlon.ToString());
 		return res;
 	}
 
@@ -342,31 +342,30 @@ public class MapLoader {
 	private void AddInternalNodes(XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectNode) {
 		for (int i = 0; i < nodeGroup.Nodes.Count; i++) {
 			Node node = (Node)nodeGroup.Nodes [i];
+			node.Index = i;
 
 			XmlNode objectNd = mapResumedDocument.CreateElement (XmlTags.ND);
 			objectNode.AppendChild (objectNd);
 
-			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.REFERENCE, node.Reference + "");
-			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LATITUDE, node.Latitude + "");
-			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LONGIUDE, node.Longitude + "");
-
-//			if(nodeGroup.Nodes.Count >= 2 && i == nodeGroup.Nodes.Count - 1 && node.Reference == ((Node)nodeGroup.Nodes[0]).Reference)
-//				this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LOOP, "true");
+			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.INDEX, node.Index.ToString ());
+			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.REFERENCE, node.Reference.ToString());
+			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LATITUDE, node.Latitude.ToString());
+			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LONGIUDE, node.Longitude.ToString());
 		}
 	}
 
 	private void AddBuildingNodeAttribute(XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectNode, XmlNode objectInfoNode) {
 		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.NAME, nodeGroup.Name);
-		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor + "");
-		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.ROOF_ANGLE, nodeGroup.RoofAngle + "");
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor.ToString());
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.ROOF_ANGLE, nodeGroup.RoofAngle.ToString());
 		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.ROOF_TYPE, nodeGroup.RoofType);
 	}
 
 	private void AddHighwayNodeAttribute(XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectNode, XmlNode objectInfoNode) {
 		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.NAME, nodeGroup.Name);
 		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.ROAD_TYPE, nodeGroup.GetTagValue ("highway"));
-		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.NB_WAY, nodeGroup.NbWay + "");
-		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.MAX_SPEED, nodeGroup.MaxSpeed + "");
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.NB_WAY, nodeGroup.NbWay.ToString());
+		this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.MAX_SPEED, nodeGroup.MaxSpeed.ToString());
 	}
 
 	private void AppendAttribute(XmlDocument boundingDocument, XmlNode containerNode, string attributeName, string attributeValue) {
@@ -421,7 +420,7 @@ public class MapLoader {
 			} else {
 				XmlNode areaInfosNode = dataNode.FirstChild;
 
-				double id = double.Parse(this.AttributeValue (areaInfosNode, XmlAttributes.ID));
+				long id = long.Parse(this.AttributeValue (areaInfosNode, XmlAttributes.ID));
 
 				NodeGroup nodeGroup = new NodeGroup (id);
 				for (int i = 1; i < dataNode.ChildNodes.Count; i++) {

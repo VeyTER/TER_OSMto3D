@@ -11,7 +11,6 @@ public class DelauneyTriangulation {
 
 	private List<Node> nodes = new List<Node>();
 	private List<Node> nodesTemp = new List<Node>();
-	private List<Node> nodesRm = new List<Node>();
 
 	private double spacing = 0.0001d;
 

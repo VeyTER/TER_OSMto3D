@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class NodeGroup {
-	private double id;
+	private long id;
 	private string name;
 
 	private ArrayList nodes;
@@ -30,7 +31,7 @@ public class NodeGroup {
 	private int maxSpeed;
 
 	//constructeur
-	public NodeGroup(double id) {
+	public NodeGroup(long id) {
 		this.id = id;
 		this.name = "unknown";
 
@@ -59,7 +60,7 @@ public class NodeGroup {
 	}
 
 	//Surcharge du constructeur
-	public NodeGroup(double id, string name, string country, string region, string town, string district, string roofType, int roofAngle, int nbWay, int maxSpeed) {
+	public NodeGroup(long id, string name, string country, string region, string town, string district, string roofType, int roofAngle, int nbWay, int maxSpeed) {
 		this.id = id;
 		this.name = name;
 
@@ -195,7 +196,7 @@ public class NodeGroup {
 	}
 
 	// teste si un point est à gauche ou a droite d'un vecteur
-	public bool IsAtRight( Node nodeA, Node nodeB, Node nodeTest) {
+	public bool IsAtRight(Node nodeA, Node nodeB, Node nodeTest) {
 		double determinant, abx, aby, dx, dy;
 
 		abx = nodeB.Latitude - nodeA.Latitude;
@@ -436,7 +437,7 @@ public class NodeGroup {
 		}
 	}
 
-	public double Id {
+	public long Id {
 		get { return id; }
 		set { id = value; }
 	}

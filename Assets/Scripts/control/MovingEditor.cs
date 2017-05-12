@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class MovingEditor : ObjectEditor{
+public class MovingEditor : ObjectEditor {
 	public enum MovingStates { MOTIONLESS, MOVING}
 	private MovingStates movingState;
 
@@ -49,11 +49,10 @@ public class MovingEditor : ObjectEditor{
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandlerInitOffset = mousePosition - moveHandlerInitPosition;
 
-		if (selectionRange == EditionController.SelectionRanges.WALL) {
+		if (selectionRange == EditionController.SelectionRanges.WALL)
 			wallEdited = true;
-		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
+		else if (selectionRange == EditionController.SelectionRanges.BUILDING)
 			buildingEdited = true;
-		}
 
 		this.MoveObject (selectionRange);
 
@@ -71,10 +70,13 @@ public class MovingEditor : ObjectEditor{
 		Vector3 moveHandlerPosition = moveHandler.transform.position;
 
 		Vector3 selectedObjectCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(moveHandlerPosition.x, moveHandlerPosition.y, mainCamera.transform.position.y));
-		if (selectionRange == EditionController.SelectionRanges.WALL)
+		if (selectionRange == EditionController.SelectionRanges.WALL) {
 			selectedWall.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedWall.transform.position.y, selectedObjectCurrentPos.z);
-		else if (selectionRange == EditionController.SelectionRanges.BUILDING)
+
+		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
 			selectedBuilding.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuilding.transform.position.y, selectedObjectCurrentPos.z);
+			selectedBuildingNodeGroup.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuildingNodeGroup.transform.position.y, selectedObjectCurrentPos.z);
+		}
 	}
 
 	public void EndObjectMoving() {
