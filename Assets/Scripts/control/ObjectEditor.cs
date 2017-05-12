@@ -36,7 +36,7 @@ public class ObjectEditor {
 
 		Transform buildingNodesTransform = objectBuilder.BuildingNodes.transform;
 		int i = 0;
-		for (; i < buildingNodesTransform.childCount && buildingNodesTransform.GetChild(i).transform.GetInstanceID() != buildingNodeGroupId; i++);
+		for (; i < buildingNodesTransform.childCount && buildingNodesTransform.GetChild(i).GetInstanceID() != buildingNodeGroupId; i++);
 		if (i < buildingNodesTransform.childCount)
 			SelectedBuildingNodes = buildingNodesTransform.GetChild (i).gameObject;
 		else

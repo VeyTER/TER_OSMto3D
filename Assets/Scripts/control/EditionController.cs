@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System.Collections.Generic;
 
 public class EditionController : MonoBehaviour {
 	public enum EditionStates {
@@ -33,10 +34,17 @@ public class EditionController : MonoBehaviour {
 	private BuildingsTools buildingsTools;
 
 	private Hashtable renamedBuildings;
-	private ArrayList transformedObjects;
+	private List<GameObject> movedObjects;
+	private List<GameObject> turnedObjects;
 
 	private GameObject selectedWall;
 	private GameObject selectedBuilding;
+
+	private Dictionary<GameObject, Vector3> wallsInitPos;
+	private Dictionary<GameObject, Vector3> buildingsInitPos;
+
+	private Dictionary<GameObject, float> wallsInitAngle;
+	private Dictionary<GameObject, float> buildingsInitAngle;
 
 	private CameraController cameraController;
 
@@ -61,7 +69,14 @@ public class EditionController : MonoBehaviour {
 		this.buildingsTools = BuildingsTools.GetInstance ();
 
 		this.renamedBuildings = new Hashtable ();
-		this.transformedObjects = new ArrayList ();
+		this.movedObjects = new List<GameObject> ();
+		this.turnedObjects = new List<GameObject> ();
+
+		this.wallsInitPos = new Dictionary<GameObject, Vector3>();
+		this.buildingsInitPos = new Dictionary<GameObject, Vector3>();
+
+		this.wallsInitAngle = new Dictionary<GameObject, float>();
+		this.buildingsInitAngle = new Dictionary<GameObject, float>();
 
 		this.validateEditionButton = GameObject.Find(UiNames.VALDIATE_EDITION_BUTTON);
 		this.cancelEditionButton = GameObject.Find(UiNames.CANCEL_EDITION_BUTTON);
@@ -89,9 +104,6 @@ public class EditionController : MonoBehaviour {
 		this.selectedWall = selectedWall;
 		selectedBuilding = selectedWall.transform.parent.gameObject;
 
-		// Récupération du bâtiment correspondant au mur sélectionné
-		string buildingName = selectedBuilding.name;
-
 		if (lateralPanel.activeInHierarchy == false) {
 			lateralPanel.SetActive (true);
 			this.OpenPanel (null);
@@ -102,10 +114,21 @@ public class EditionController : MonoBehaviour {
 		int i = 0;
 		for (; i < textInputs.Length && textInputs[i].name.Equals (UiNames.BUILDING_NAME_TEXT_INPUT); i++);
 		if (i < textInputs.Length)
-			textInputs[i].text = buildingName;
+			textInputs[i].text = selectedBuilding.name;
 
 		buildingsTools.DiscolorAll ();
 		buildingsTools.ColorAsSelected (selectedBuilding);
+
+		if (!wallsInitPos.ContainsKey(this.selectedWall) && !wallsInitAngle.ContainsKey(this.selectedWall)) {
+			print (this.selectedWall.transform.position + "  " + this.selectedWall.transform.localPosition);
+			wallsInitPos.Add (this.selectedWall, this.selectedWall.transform.position);
+			wallsInitAngle.Add (this.selectedWall, this.selectedWall.transform.rotation.eulerAngles.y);
+		}
+
+		if (!buildingsInitPos.ContainsKey(selectedBuilding) && !buildingsInitAngle.ContainsKey(selectedBuilding)) {
+			buildingsInitPos.Add (selectedBuilding, selectedBuilding.transform.position);
+			buildingsInitAngle.Add (selectedBuilding, selectedBuilding.transform.rotation.eulerAngles.y);
+		}
 
 		if (editionState == EditionStates.NONE_SELECTION) {
 			GameObject mainCameraGo = Camera.main.gameObject;
@@ -301,29 +324,37 @@ public class EditionController : MonoBehaviour {
 	}
 
 	public void ValidateTransform() {
-		if (this.WallTransformed() && !transformedObjects.Contains(selectedWall))
-			transformedObjects.Add (selectedWall);
+		if (this.WallTransformed () && !movedObjects.Contains (selectedWall)) {
+			if(editionState == EditionStates.MOVING_MODE && !movedObjects.Contains (selectedWall))
+				movedObjects.Add (selectedWall);
+			else if(editionState == EditionStates.TURNING_MODE && !turnedObjects.Contains (selectedWall))
+				turnedObjects.Add (selectedWall);
+		}
 
-		if (this.BuildingTransformed() && !transformedObjects.Contains(SelectedBuilding))
-			transformedObjects.Add (selectedBuilding);
+		if (this.BuildingTransformed ()) {
+			if(editionState == EditionStates.MOVING_MODE && !movedObjects.Contains (selectedBuilding))
+				movedObjects.Add (selectedBuilding);
+			else if(editionState == EditionStates.TURNING_MODE && !turnedObjects.Contains (selectedBuilding))
+				turnedObjects.Add (selectedBuilding);
+		}
 	}
 
 	public void CancelTransform() {
 		if (this.WallTransformed()) {
 			if (editionState == EditionStates.MOVING_MODE) {
-				selectedWall.transform.position = movingEditor.SelectedWallInitPos;
+				selectedWall.transform.position = movingEditor.SelectedWallStartPos;
 			} else if (editionState == EditionStates.TURNING_MODE) {
 				Quaternion selectedWallRotation = selectedWall.transform.rotation;
-				selectedWall.transform.rotation = Quaternion.Euler (selectedWallRotation.x, turningEditor.SelectedWallInitAngle, selectedWallRotation.z);
+				selectedWall.transform.rotation = Quaternion.Euler (selectedWallRotation.x, turningEditor.SelectedWallStartAngle, selectedWallRotation.z);
 			}
 		}
 
 		if (this.BuildingTransformed()) {
 			if (editionState == EditionStates.MOVING_MODE) {
-				selectedBuilding.transform.position = movingEditor.SelectedBuildingInitPos;
+				selectedBuilding.transform.position = movingEditor.SelectedBuildingStartPos;
 			} else if (editionState == EditionStates.TURNING_MODE) {
 				Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
-				selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turningEditor.SelectedBuildingInitAngle, selectedBuildingRotation.z);
+				selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turningEditor.SelectedBuildingStartAngle, selectedBuildingRotation.z);
 			}
 		}
 	}
@@ -347,13 +378,12 @@ public class EditionController : MonoBehaviour {
 			}
 		}
 
-		renamedBuildings.Clear();
-		transformedObjects.Clear ();
+		this.CleanHistory ();
 	}
 
 	public void CancelEdit() {
 		foreach (DictionaryEntry buildingEntry in renamedBuildings) {
-			if(buildingEntry.Key.GetType() == typeof(GameObject) && buildingEntry.Value.GetType() == typeof(String)) {
+			if (buildingEntry.Key.GetType () == typeof(GameObject) && buildingEntry.Value.GetType () == typeof(String)) {
 				GameObject renamedBuilding = (GameObject)buildingEntry.Key;
 				string oldName = (string)buildingEntry.Value;
 
@@ -363,8 +393,39 @@ public class EditionController : MonoBehaviour {
 			}
 		}
 
-		renamedBuildings.Clear();
-		transformedObjects.Clear ();
+		Vector3 buildingPosition = movingEditor.SelectedBuildingNodes.transform.position;
+		Vector3 buildingNodePosition = selectedBuilding.transform.position;
+		movingEditor.SelectedBuildingNodes.transform.position = new Vector3 (buildingPosition.x, buildingNodePosition.y, buildingPosition.z);
+
+		foreach (KeyValuePair<GameObject, Vector3> buildingPositionEntry in buildingsInitPos) {
+			GameObject building = buildingPositionEntry.Key;
+			building.transform.position = buildingPositionEntry.Value;
+		}
+		foreach (KeyValuePair<GameObject, float> buildingAngleEntry in buildingsInitAngle) {
+			GameObject building = buildingAngleEntry.Key;
+			Quaternion buildingRotation = building.transform.rotation;
+			building.transform.rotation = building.transform.rotation = Quaternion.Euler (buildingRotation.x, buildingAngleEntry.Value, buildingRotation.z);
+		}
+
+		foreach (KeyValuePair<GameObject, Vector3> wallPositionEntry in wallsInitPos) {
+			GameObject wall = wallPositionEntry.Key;
+			wall.transform.position = wallPositionEntry.Value;
+		}
+		foreach (KeyValuePair<GameObject, float> wallAngleEntry in wallsInitAngle) {
+			GameObject wall = wallAngleEntry.Key;
+			Quaternion wallRotation = wall.transform.rotation;
+			wall.transform.rotation = wall.transform.rotation = Quaternion.Euler (wallRotation.x, wallAngleEntry.Value, wallRotation.z);
+		}
+
+		this.CleanHistory ();
+	}
+
+	private void CleanHistory() {
+		wallsInitPos.Clear();
+		wallsInitAngle.Clear ();
+
+		buildingsInitPos.Clear();
+		buildingsInitAngle.Clear ();
 	}
 
 	public EditionStates EditionState {
@@ -394,10 +455,6 @@ public class EditionController : MonoBehaviour {
 
 	public Hashtable RenamedBuildings {
 		get { return renamedBuildings; }
-	}
-
-	public ArrayList MovedObjects {
-		get { return transformedObjects; }
 	}
 
 	public GameObject SelectedWall {

@@ -97,11 +97,6 @@ public class BuildingsTools {
 			mapResumeDocument.Load (resumeFilePath);
 			mapCustomDocument.Load (customFilePath);
 
-			buildingNgp.Name = newName;
-			buildingGo.name = newName;
-			for (int i = 0; i < buildingGo.transform.childCount; i++)
-				buildingGo.transform.GetChild (i).name = newName + "_mur_" + i;
-
 			mapResumeDocument.Save (resumeFilePath);
 			mapCustomDocument.Save (customFilePath);
 		}

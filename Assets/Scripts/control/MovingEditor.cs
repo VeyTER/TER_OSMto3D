@@ -5,17 +5,17 @@ public class MovingEditor : ObjectEditor {
 	public enum MovingStates { MOTIONLESS, MOVING}
 	private MovingStates movingState;
 
-	protected Vector3 selectedWallInitPos;
-	protected Vector3 selectedBuildingInitPos;
+	protected Vector3 selectedWallStartPos;
+	protected Vector3 selectedBuildingStartPos;
 
 	private GameObject moveHandler;
-	private Vector2 moveHandlerInitOffset;
+	private Vector2 moveHandlerStartOffset;
 
 	public MovingEditor (GameObject moveHandler) {
 		this.movingState = MovingStates.MOTIONLESS;
 
-		this.selectedWallInitPos = Vector3.zero;
-		this.selectedBuildingInitPos = Vector3.zero;
+		this.selectedWallStartPos = Vector3.zero;
+		this.selectedBuildingStartPos = Vector3.zero;
 
 		this.moveHandler = moveHandler;
 		this.moveHandler.SetActive (false);
@@ -39,15 +39,15 @@ public class MovingEditor : ObjectEditor {
 		moveHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
 
 		if (selectionRange == EditionController.SelectionRanges.WALL)
-			selectedWallInitPos = objectPosition;
+			selectedWallStartPos = objectPosition;
 		else if (selectionRange == EditionController.SelectionRanges.BUILDING)
-			selectedBuildingInitPos = objectPosition;
+			selectedBuildingStartPos = objectPosition;
 	}
 
 	public void StartObjectMoving(EditionController.SelectionRanges selectionRange) {
-		Vector2 moveHandlerInitPosition = moveHandler.transform.position;
+		Vector2 moveHandlerStartPosition = moveHandler.transform.position;
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
-		moveHandlerInitOffset = mousePosition - moveHandlerInitPosition;
+		moveHandlerStartOffset = mousePosition - moveHandlerStartPosition;
 
 		if (selectionRange == EditionController.SelectionRanges.WALL)
 			wallEdited = true;
@@ -61,7 +61,7 @@ public class MovingEditor : ObjectEditor {
 
 	public void UpdateObjectMoving(EditionController.SelectionRanges selectionRange) {
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
-		moveHandler.transform.position = mousePosition - moveHandlerInitOffset;
+		moveHandler.transform.position = mousePosition - moveHandlerStartOffset;
 		this.MoveObject (selectionRange);
 	}
 
@@ -119,14 +119,14 @@ public class MovingEditor : ObjectEditor {
 		set { movingState = value; }
 	}
 
-	public Vector3 SelectedWallInitPos {
-		get { return selectedWallInitPos; }
-		set { selectedWallInitPos = value; }
+	public Vector3 SelectedWallStartPos {
+		get { return selectedWallStartPos; }
+		set { selectedWallStartPos = value; }
 	}
 
-	public Vector3 SelectedBuildingInitPos {
-		get { return selectedBuildingInitPos; }
-		set { selectedBuildingInitPos = value; }
+	public Vector3 SelectedBuildingStartPos {
+		get { return selectedBuildingStartPos; }
+		set { selectedBuildingStartPos = value; }
 	}
 
 	public GameObject MoveHandler {

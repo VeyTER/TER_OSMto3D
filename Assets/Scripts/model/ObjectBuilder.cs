@@ -96,13 +96,13 @@ public class ObjectBuilder {
 					GameObject buildingNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
 					buildingNode.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
 					buildingNode.transform.position = new Vector3((float)n.Longitude, 0, (float)n.Latitude);
-					buildingNode.name = n.Reference.ToString() + " | " + buildingNode.GetInstanceID();
+					buildingNode.name = n.Reference.ToString();
 					buildingNode.tag = NodeTags.BUILDING_NODE_TAG;
 					buildingNode.transform.parent = buildingNodeGroup.transform;
 				}
 
 				buildingNodeGroup.transform.parent = buildingNodes.transform;
-				buildingNodeGroup.name = ngp.Id.ToString() + " | " + buildingNodeGroup.GetInstanceID();
+				buildingNodeGroup.name = ngp.Id.ToString();
 				buildingNodesIdTable [ngp.Id] = buildingNodeGroup.transform.GetInstanceID();
 
 				Vector3 nodeGroupCenter = buildingsTools.BuildingNodesCenter (buildingNodeGroup, ngp);

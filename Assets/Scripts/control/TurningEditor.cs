@@ -5,17 +5,17 @@ public class TurningEditor : ObjectEditor {
 	public enum TurningStates { MOTIONLESS, TURNING}
 	private TurningStates turningState;
 
-	protected float selectedWallInitAngle;
-	protected float selectedBuildingInitAngle;
+	protected float selectedWallStartAngle;
+	protected float selectedBuildingStartAngle;
 
 	private GameObject turnHandler;
-	private float turnHandlerInitOffset;
+	private float turnHandlerStartOffset;
 
 	public TurningEditor (GameObject turnHandler) {
 		this.turningState = TurningStates.MOTIONLESS;
 
-		this.selectedBuildingInitAngle = 0F;
-		this.selectedWallInitAngle = 0F;
+		this.selectedBuildingStartAngle = 0F;
+		this.selectedWallStartAngle = 0F;
 
 		this.turnHandler = turnHandler;
 		this.turnHandler.SetActive (false);
@@ -28,25 +28,25 @@ public class TurningEditor : ObjectEditor {
 
 		if (selectionRange == EditionController.SelectionRanges.WALL) {
 			objectScreenPosition = mainCamera.WorldToScreenPoint (selectedWall.transform.position);
-			selectedWallInitAngle = selectedWall.transform.rotation.eulerAngles.y;
+			selectedWallStartAngle = selectedWall.transform.rotation.eulerAngles.y;
 			turnHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
 			turnHandler.transform.rotation = Quaternion.Euler (turnHandlerRotation.x, turnHandlerRotation.z, 360 - selectedWall.transform.rotation.eulerAngles.y); 
 		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
 			objectScreenPosition = mainCamera.WorldToScreenPoint (selectedBuilding.transform.position);
-			selectedBuildingInitAngle = selectedBuilding.transform.rotation.eulerAngles.y;
+			selectedBuildingStartAngle = selectedBuilding.transform.rotation.eulerAngles.y;
 			turnHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
 			turnHandler.transform.rotation = Quaternion.Euler (turnHandlerRotation.x, turnHandlerRotation.z,  360 - selectedBuilding.transform.rotation.eulerAngles.y); 
 		}
 	}
 
 	public void StartObjectTurning(EditionController.SelectionRanges selectionRange) {
-		Vector3 turnHandlerInitPosition = turnHandler.transform.position;
-		float turnHandlerInitAngle = turnHandler.transform.rotation.eulerAngles.z;
+		Vector3 turnHandlerStartPosition = turnHandler.transform.position;
+		float turnHandlerStartAngle = turnHandler.transform.rotation.eulerAngles.z;
 
-		Vector2 relativeMousePosition = new Vector2(turnHandlerInitPosition.x, turnHandlerInitPosition.y) - new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
+		Vector2 relativeMousePosition = new Vector2(turnHandlerStartPosition.x, turnHandlerStartPosition.y) - new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		float mouseAngle = (float)((2 * Math.PI) - (Math.Atan2 (relativeMousePosition.x, relativeMousePosition.y) + Math.PI)) * Mathf.Rad2Deg;
 
-		turnHandlerInitOffset = mouseAngle - turnHandlerInitAngle;
+		turnHandlerStartOffset = mouseAngle - turnHandlerStartAngle;
 
 		if (selectionRange == EditionController.SelectionRanges.WALL)
 			wallEdited = true;
@@ -65,7 +65,7 @@ public class TurningEditor : ObjectEditor {
 		float mouseAngle = (float)((2 * Math.PI) - (Math.Atan2 (relativeMousePosition.x, relativeMousePosition.y) + Math.PI)) * Mathf.Rad2Deg;
 
 		Quaternion turnHandlerRotation = turnHandler.transform.rotation;
-		turnHandler.transform.rotation = Quaternion.Euler(turnHandlerRotation.x, turnHandlerRotation.y, (mouseAngle - turnHandlerInitOffset));
+		turnHandler.transform.rotation = Quaternion.Euler(turnHandlerRotation.x, turnHandlerRotation.y, (mouseAngle - turnHandlerStartOffset));
 
 		this.TurnObject (selectionRange);
 	}
@@ -80,6 +80,7 @@ public class TurningEditor : ObjectEditor {
 		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
 			Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
 			selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);
+			selectedBuildingNodeGroup.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);
 		}
 	}
 
@@ -99,14 +100,14 @@ public class TurningEditor : ObjectEditor {
 		set { turningState = value; }
 	}
 
-	public float SelectedBuildingInitAngle {
-		get { return selectedBuildingInitAngle; }
-		set { selectedBuildingInitAngle = value; }
+	public float SelectedBuildingStartAngle {
+		get { return selectedBuildingStartAngle; }
+		set { selectedBuildingStartAngle = value; }
 	}
 
-	public float SelectedWallInitAngle {
-		get { return selectedWallInitAngle; }
-		set { selectedWallInitAngle = value; }
+	public float SelectedWallStartAngle {
+		get { return selectedWallStartAngle; }
+		set { selectedWallStartAngle = value; }
 	}
 
 	public GameObject TurnHandler {
