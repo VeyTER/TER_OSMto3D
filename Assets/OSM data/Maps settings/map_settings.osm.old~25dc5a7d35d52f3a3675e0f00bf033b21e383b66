@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<earth>
+	<info nbfloor="1" roofangle="15" rooftype="pitched"/>
+	<country designation="France">
+		<info lat="47.3833300" lon="0.6833300" dist="5" nbfloor="1" roofangle="15" rooftype="pitched"/>
+		<region designation="Midi-Pyrenees">
+			<info lat="43.600000" lon="1.433333" dist="1.1" nbfloor="1" roofangle="15" rooftype="pitched"/>
+			<town designation="Toulouse">
+				<info lat="43.600000" lon="1.433333" dist="0.8" nbfloor="3" roofangle="15" rooftype="pitched"/>
+				<district designation="UPS">
+					<info lat="43.560397" lon="1.468820" dist="0.03" nbfloor="4" roofangle="0" rooftype="flat"/>
+					<building>
+						<info lat="43.561988" lon="1.467984" dist="0.0005" name="IRIT" nbfloor="4" roofangle="0" rooftype="flat"/>
+					</building>
+					<building>
+						<info lat="43.560284" lon="1.470247" dist="0.0005" name="U1" nbfloor="1" roofangle="0" rooftype="flat"/>
+					</building>
+					<building>
+						<info lat="43.561316" lon="1.470514" dist="0.0006" name="U2" nbfloor="2" roofangle="0" rooftype="flat"/>
+					</building>
+					<building>
+						<info lat="43.561982" lon="1.470014" dist="0.00045" name="U3" nbfloor="5" roofangle="0" rooftype="flat"/>
+					</building>
+					<building>
+						<info lat="43.562723" lon="1.469149" dist="0.0005" name="U4" nbfloor="5" roofangle="0" rooftype="flat"/>
+					</building>
+					<building>
+						<info lat="43.561877" lon="1.469263" dist="0.0003" name="E4-SCUIO" nbfloor="1" roofangle="0" rooftype="flat"/>
+					</building>
+					<building>
+						<info lat="43.561010" lon="1.467793" dist="0.0005" name="3 TP2" nbfloor="1" roofangle="0" rooftype="flat"/>
+					</building>
+					<building>
+						<info lat="43.562995" lon="1.466057" dist="0.0006" name="Administration" nbfloor="3" roofangle="0" rooftype="flat"/>
+					</building>
+				</district>
+				<district designation="Centre-Ville">
+					<info lat="43.603236" lon="1.444659" dist="0.03" nbfloor="3" roofangle="15" rooftype="pitched"/>
+				</district>
+			</town>
+		</region>
+	</country>
+</earth>

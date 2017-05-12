@@ -94,7 +94,8 @@ public class CameraController : MonoBehaviour {
 		Vector3 initPosition = transform.position;
 		Quaternion initRotation = transform.rotation;
 
-		Vector3 targetPosition = building.transform.position;
+		Vector3 buildingCenterPosition = buildingsTools.BuildingCenter (building);
+		Vector3 targetPosition = new Vector3(buildingCenterPosition.x, building.transform.position.y, buildingCenterPosition.z);
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (90, 90, 0));
 
 		float cameraFOV = Camera.main.fieldOfView;

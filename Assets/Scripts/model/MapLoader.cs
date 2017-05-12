@@ -84,7 +84,7 @@ public class MapLoader {
 				for (int i = 0; i < wayNode.ChildNodes.Count; i++) {
 					XmlNode ndNode = wayNode.ChildNodes[i];
 					if(ndNode.Name.Equals(XmlTags.ND)) {
-						double reference = double.Parse (this.AttributeValue(ndNode, XmlAttributes.REFERENCE));
+						long reference = long.Parse (this.AttributeValue(ndNode, XmlAttributes.REFERENCE));
 
 						Node infoNode = (Node)nodes [0];
 						for (int j = 0; j < nodes.Count && infoNode.Reference != reference; infoNode = (Node)nodes [j], j++);
@@ -426,9 +426,11 @@ public class MapLoader {
 				for (int i = 1; i < dataNode.ChildNodes.Count; i++) {
 					XmlNode ndNode = dataNode.ChildNodes[i];
 
+					long reference = long.Parse (this.AttributeValue(ndNode, XmlAttributes.REFERENCE));
+					int index = int.Parse (this.AttributeValue(ndNode, XmlAttributes.INDEX));
 					double latitude = double.Parse (this.AttributeValue(ndNode, XmlAttributes.LATITUDE));
 					double longitude = double.Parse (this.AttributeValue(ndNode, XmlAttributes.LONGIUDE));
-					Node node = new Node (id, latitude, longitude);
+					Node node = new Node (reference, index, latitude, longitude);
 					nodeGroup.AddNode (node);
 				}
 

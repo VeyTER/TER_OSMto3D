@@ -80,7 +80,8 @@ public class TurningEditor : ObjectEditor {
 		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
 			Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
 			selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);
-			selectedBuildingNodeGroup.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);
+			selectedBuildingNodes.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);
+			BuildingsTools.GetInstance().UpdateNodes (selectedBuilding);
 		}
 	}
 

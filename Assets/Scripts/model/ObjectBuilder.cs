@@ -8,6 +8,8 @@ public class ObjectBuilder {
 	private ArrayList nodeGroups;
 
 	private Hashtable buildingIdTable;
+
+	private Hashtable buildingNodeGroupsIdTable;
 	private Hashtable buildingNodesIdTable;
 
 	private Hashtable nodeIdTable;
@@ -39,6 +41,8 @@ public class ObjectBuilder {
 		this.nodeGroups = new ArrayList ();
 
 		this.buildingIdTable = new Hashtable ();
+
+		this.buildingNodeGroupsIdTable = new Hashtable ();
 		this.buildingNodesIdTable = new Hashtable ();
 
 		this.nodeIdTable = new Hashtable ();
@@ -99,11 +103,12 @@ public class ObjectBuilder {
 					buildingNode.name = n.Reference.ToString();
 					buildingNode.tag = NodeTags.BUILDING_NODE_TAG;
 					buildingNode.transform.parent = buildingNodeGroup.transform;
+					buildingNodesIdTable [n.Reference + "|" + n.Index] = buildingNode.transform.GetInstanceID();
 				}
 
 				buildingNodeGroup.transform.parent = buildingNodes.transform;
 				buildingNodeGroup.name = ngp.Id.ToString();
-				buildingNodesIdTable [ngp.Id] = buildingNodeGroup.transform.GetInstanceID();
+				buildingNodeGroupsIdTable [ngp.Id] = buildingNodeGroup.transform.GetInstanceID();
 
 				Vector3 nodeGroupCenter = buildingsTools.BuildingNodesCenter (buildingNodeGroup, ngp);
 				buildingNodeGroup.transform.position = nodeGroupCenter;
@@ -122,7 +127,7 @@ public class ObjectBuilder {
 					GameObject highwayNode = GameObject.CreatePrimitive (PrimitiveType.Cube);
 					highwayNode.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
 					highwayNode.transform.position = new Vector3 ((float)n.Longitude, 0, (float)n.Latitude);
-					highwayNode.name = "" + n.Reference;
+					highwayNode.name = n.Reference.ToString();
 					highwayNode.tag = NodeTags.HIGHWAY_NODE_TAG;
 					highwayNode.transform.parent = highwayNodes.transform;
 				}
@@ -198,7 +203,7 @@ public class ObjectBuilder {
 					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
 					meshRenderer.material = Resources.Load ("Materials/Wall") as Material;
 				}
-				buildingIdTable [ngp.Id] = wallGroup.GetInstanceID();
+				buildingIdTable [ngp.Id] = wallGroup.transform.GetInstanceID();
 
 				Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup);
 				wallGroup.transform.position = wallGroupCenter;
@@ -429,6 +434,10 @@ public class ObjectBuilder {
 
 	public Hashtable BuildingIdTable {
 		get { return buildingIdTable; }
+	}
+
+	public Hashtable BuildingNodeGroupsIdTable {
+		get { return buildingNodeGroupsIdTable; }
 	}
 
 	public Hashtable BuildingNodesIdTable {

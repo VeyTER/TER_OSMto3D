@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Node {
-	private double reference;
+	private long reference;
 	private int index;
 	private double latitude;
 	private double longitude;
@@ -14,14 +14,21 @@ public class Node {
 		this.longitude = longitude;
 	}
 
-	public Node(double reference, double latitude, double longitude) {
+	public Node(long reference, double latitude, double longitude) {
 		this.reference = reference;
 		this.index = -1;
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
 
-	public double Reference {
+	public Node(long reference, int index, double latitude, double longitude) {
+		this.reference = reference;
+		this.index = index;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
+
+	public long Reference {
 		get { return reference; }
 		set { reference = value; }
 	}

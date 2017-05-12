@@ -59,7 +59,7 @@ public class BuildingsTools {
 	}
 
 	public void SetName(GameObject buildingGo, string newName) {
-		NodeGroup buildingNgp = this.GameObjectToNodeGroup (buildingGo);
+		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
 		if (!this.CustomBuildingExists (buildingNgp))
 			this.AppendCustomBuilding (buildingNgp);
 
@@ -84,7 +84,7 @@ public class BuildingsTools {
 	}
 
 	public void SetLocation(GameObject buildingGo, string newName) {
-		NodeGroup buildingNgp = this.GameObjectToNodeGroup (buildingGo);
+		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
 		if (!this.CustomBuildingExists (buildingNgp))
 			this.AppendCustomBuilding (buildingNgp);
 
@@ -139,7 +139,7 @@ public class BuildingsTools {
 	}
 
 	public int GetHeight(GameObject building) {
-		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
+		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
 		if (floorAttribute != null)
 			return int.Parse(floorAttribute.Value);
@@ -157,7 +157,7 @@ public class BuildingsTools {
 	}
 
 	public void SetHeight(GameObject building, int nbFloors) {
-		NodeGroup nodeGroup = this.GameObjectToNodeGroup (building);
+		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
 		if (floorAttribute != null)
 			floorAttribute.Value = Math.Max(nbFloors, 1).ToString();
@@ -199,7 +199,7 @@ public class BuildingsTools {
 		return res;
 	}
 
-	public GameObject NodeGroupToGameObject(NodeGroup buildingNgp) {
+	public GameObject NodeGroupToBuilding(NodeGroup buildingNgp) {
 		if (objectBuilder.BuildingIdTable [buildingNgp.Id].GetType() == typeof(int)) {
 			int buildingGoId = (int)objectBuilder.BuildingIdTable [buildingNgp.Id];
 			int nbWallGroups = objectBuilder.WallGroups.transform.childCount;
@@ -215,14 +215,23 @@ public class BuildingsTools {
 		}
 	}
 
-	public NodeGroup GameObjectToNodeGroup(GameObject buildingGo) {
-		NodeGroup res = null;
-		foreach (DictionaryEntry buildingEntry in objectBuilder.BuildingIdTable) {
-			if (buildingEntry.Key.GetType () == typeof(long) && buildingEntry.Value.GetType () == typeof(int)) {
-				long nodeGroupId = (long)buildingEntry.Key;
-				int gameObjectId = (int)buildingEntry.Value;
+	public NodeGroup BuildingToNodeGroup(GameObject buildingGo) {
+		return this.ObjectToNodeGroup (buildingGo, objectBuilder.BuildingIdTable);
+	}
 
-				if (gameObjectId == buildingGo.GetInstanceID()) {
+	public NodeGroup BuildingNodeGroupToNodeGroup(GameObject buildingNodeGroupGo) {
+		return this.ObjectToNodeGroup (buildingNodeGroupGo, objectBuilder.BuildingNodeGroupsIdTable);
+	}
+
+	public NodeGroup ObjectToNodeGroup(GameObject gameObject, Hashtable idTable) {
+		NodeGroup res = null;
+
+		foreach (DictionaryEntry objectEntry in idTable) {
+			if (objectEntry.Key.GetType () == typeof(long) && objectEntry.Value.GetType () == typeof(int)) {
+				long nodeGroupId = (long)objectEntry.Key;
+				int currentGameObjectId = (int)objectEntry.Value;
+
+				if (currentGameObjectId == gameObject.transform.GetInstanceID()) {
 					int nbNodeGroup = objectBuilder.NodeGroups.Count;
 
 					int i = 0;
@@ -240,8 +249,71 @@ public class BuildingsTools {
 		return res;
 	}
 
+	public Node BuildingNodeToNode(GameObject buildingNodeGo) {
+		NodeGroup parentNodeGoup = this.BuildingNodeGroupToNodeGroup (buildingNodeGo.transform.parent.gameObject);
+		return this.BuildingNodeToNode (buildingNodeGo, parentNodeGoup);
+	}
+
+	public Node BuildingNodeToNode(GameObject buildingNodeGo, NodeGroup parentNodeGoup) {
+		Node res = null;
+
+		foreach (DictionaryEntry objectEntry in objectBuilder.BuildingNodesIdTable) {
+			if (objectEntry.Key.GetType () == typeof(string) && objectEntry.Value.GetType () == typeof(int)) {
+				string nodeId = (string)objectEntry.Key;
+				int currentGameObjectId = (int)objectEntry.Value;
+
+				string[] nodeIdArraySplit = nodeId.Split ('|');
+				long nodeReference = long.Parse (nodeIdArraySplit[0]);
+				int nodeIndex = int.Parse (nodeIdArraySplit[1]);
+
+				if (currentGameObjectId == buildingNodeGo.transform.GetInstanceID()) {
+					int nbNode = parentNodeGoup.Nodes.Count;
+
+					int i = 0;
+					for (; i < nbNode && (((Node)parentNodeGoup.GetNode(i)).Reference != nodeReference || ((Node)parentNodeGoup.GetNode(i)).Index != nodeIndex); i++);
+					if (i < nbNode)
+						res = ((Node)parentNodeGoup.GetNode (i));
+					else
+						res = null;
+
+					break;
+				}
+			}
+		}
+
+		return res;
+	}
+
+	public GameObject BuildingToBuildingNodeGroup(GameObject buildingGo) {
+		// [GameObject]-building  =>  [NodeGroup]-buildingNodeGroup
+		NodeGroup buildingNodeGroup = this.BuildingToNodeGroup (buildingGo);
+
+		// 							  [NodeGroup]-buildingNodeGroup ID  =>  [GameObject]-BuildingNode ID
+		int buildingNodeGroupId = (int)objectBuilder.BuildingNodeGroupsIdTable[buildingNodeGroup.Id];
+
+		// 							 										[GameObject]-BuildingNode ID  =>  [GameObject]-BuildingNode
+		Transform buildingNodesTransform = objectBuilder.BuildingNodes.transform;
+		int i = 0;
+		for (; i < buildingNodesTransform.childCount && buildingNodesTransform.GetChild(i).GetInstanceID() != buildingNodeGroupId; i++);
+		if (i < buildingNodesTransform.childCount)
+			return buildingNodesTransform.GetChild (i).gameObject;
+		else
+			return null;
+	}
+
+	public void UpdateNodes(GameObject building) {
+		NodeGroup parentNodeGroup = this.BuildingToNodeGroup (building);
+		GameObject buildingNodeGroup = this.BuildingToBuildingNodeGroup (building);
+
+		foreach(Transform buildingNodeTransform in buildingNodeGroup.transform) {
+			Node node = this.BuildingNodeToNode (buildingNodeTransform.gameObject, parentNodeGroup);
+			node.Latitude = buildingNodeTransform.position.z;
+			node.Longitude = buildingNodeTransform.position.x;
+		}
+	}
+
 	public Vector3 BuildingCenter(GameObject buildingGo) {
-		NodeGroup buildingNgp = this.GameObjectToNodeGroup (buildingGo);
+		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
 
 		if (buildingNgp != null) {
 			Vector3 positionSum = Vector3.zero;
@@ -272,7 +344,7 @@ public class BuildingsTools {
 
 	public double BuildingRadius(GameObject buildingGo) {
 		Vector3 buildingCenter = this.BuildingCenter (buildingGo);
-		NodeGroup buildingNgp = this.GameObjectToNodeGroup (buildingGo);
+		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
 
 		if (buildingNgp != null) {
 			double maxDistance = 0;

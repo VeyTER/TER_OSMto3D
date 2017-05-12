@@ -75,7 +75,8 @@ public class MovingEditor : ObjectEditor {
 
 		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
 			selectedBuilding.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuilding.transform.position.y, selectedObjectCurrentPos.z);
-			selectedBuildingNodeGroup.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuildingNodeGroup.transform.position.y, selectedObjectCurrentPos.z);
+			selectedBuildingNodes.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuildingNodes.transform.position.y, selectedObjectCurrentPos.z);
+			BuildingsTools.GetInstance().UpdateNodes (selectedBuilding);
 		}
 	}
 

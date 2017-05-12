@@ -6,8 +6,8 @@ public class ObjectEditor {
 	protected GameObject selectedWall;
 	protected GameObject selectedBuilding;
 
-	protected GameObject selectedWallNodeGroup;
-	protected GameObject selectedBuildingNodeGroup;
+	protected GameObject selectedWallNodes;
+	protected GameObject selectedBuildingNodes;
 
 	protected bool wallEdited;
 	protected bool buildingEdited;
@@ -16,8 +16,8 @@ public class ObjectEditor {
 		this.selectedWall = null;
 		this.selectedBuilding = null;
 
-		this.selectedWallNodeGroup = null;
-		this.selectedBuildingNodeGroup = null;
+		this.selectedWallNodes = null;
+		this.selectedBuildingNodes = null;
 
 		this.wallEdited = false;
 		this.buildingEdited = false;
@@ -28,20 +28,9 @@ public class ObjectEditor {
 		this.SelectedBuilding = selectedBuilding;
 
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-		ObjectBuilder objectBuilder = ObjectBuilder.GetInstance ();
+		SelectedBuildingNodes = buildingsTools.BuildingToBuildingNodeGroup (selectedBuilding);
 
-		NodeGroup buildingNode = buildingsTools.GameObjectToNodeGroup (selectedBuilding);
-
-		int buildingNodeGroupId = (int)objectBuilder.BuildingNodesIdTable[buildingNode.Id];
-
-		Transform buildingNodesTransform = objectBuilder.BuildingNodes.transform;
-		int i = 0;
-		for (; i < buildingNodesTransform.childCount && buildingNodesTransform.GetChild(i).GetInstanceID() != buildingNodeGroupId; i++);
-		if (i < buildingNodesTransform.childCount)
-			SelectedBuildingNodes = buildingNodesTransform.GetChild (i).gameObject;
-		else
-			SelectedBuildingNodes = null;
-
+//		TODO
 //		this.SelectedWallNodes = selectedWall;
 
 		WallTransformed = false;
@@ -59,13 +48,13 @@ public class ObjectEditor {
 	}
 
 	public GameObject SelectedWallNodes {
-		get { return selectedWallNodeGroup; }
-		set { selectedWallNodeGroup = value; }
+		get { return selectedWallNodes; }
+		set { selectedWallNodes = value; }
 	}
 	
 	public GameObject SelectedBuildingNodes {
-		get { return selectedBuildingNodeGroup; }
-		set { selectedBuildingNodeGroup = value; }
+		get { return selectedBuildingNodes; }
+		set { selectedBuildingNodes = value; }
 	}
 
 	public bool WallTransformed {

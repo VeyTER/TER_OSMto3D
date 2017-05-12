@@ -120,7 +120,6 @@ public class EditionController : MonoBehaviour {
 		buildingsTools.ColorAsSelected (selectedBuilding);
 
 		if (!wallsInitPos.ContainsKey(this.selectedWall) && !wallsInitAngle.ContainsKey(this.selectedWall)) {
-			print (this.selectedWall.transform.position + "  " + this.selectedWall.transform.localPosition);
 			wallsInitPos.Add (this.selectedWall, this.selectedWall.transform.position);
 			wallsInitAngle.Add (this.selectedWall, this.selectedWall.transform.rotation.eulerAngles.y);
 		}
@@ -277,7 +276,7 @@ public class EditionController : MonoBehaviour {
 		if (!renamedBuildings.ContainsKey (building))
 			renamedBuildings.Add (building, building.name);
 
-		NodeGroup buildingNodeGroup = buildingsTools.GameObjectToNodeGroup (building);
+		NodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup (building);
 		buildingNodeGroup.Name = newName;
 		building.name = newName;
 		for (int i = 0; i < building.transform.childCount; i++)
@@ -336,6 +335,7 @@ public class EditionController : MonoBehaviour {
 				movedObjects.Add (selectedBuilding);
 			else if(editionState == EditionStates.TURNING_MODE && !turnedObjects.Contains (selectedBuilding))
 				turnedObjects.Add (selectedBuilding);
+			buildingsTools.UpdateNodes (selectedBuilding);
 		}
 	}
 
@@ -352,10 +352,21 @@ public class EditionController : MonoBehaviour {
 		if (this.BuildingTransformed()) {
 			if (editionState == EditionStates.MOVING_MODE) {
 				selectedBuilding.transform.position = movingEditor.SelectedBuildingStartPos;
+
+				Vector3 buildingPosition = selectedBuilding.transform.position;
+				Vector3 buildingNodesGroupPosition = movingEditor.SelectedBuildingNodes.transform.position;
+
+				movingEditor.SelectedBuildingNodes.transform.position = new Vector3 (buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
 			} else if (editionState == EditionStates.TURNING_MODE) {
 				Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
 				selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turningEditor.SelectedBuildingStartAngle, selectedBuildingRotation.z);
+			
+				float buildingAngle = selectedBuilding.transform.rotation.y;
+				Quaternion buildingNodesGroupRotation = turningEditor.SelectedBuildingNodes.transform.rotation;
+
+				turningEditor.SelectedBuildingNodes.transform.rotation = Quaternion.Euler (buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
 			}
+			buildingsTools.UpdateNodes (selectedBuilding);
 		}
 	}
 
@@ -393,18 +404,30 @@ public class EditionController : MonoBehaviour {
 			}
 		}
 
-		Vector3 buildingPosition = movingEditor.SelectedBuildingNodes.transform.position;
-		Vector3 buildingNodePosition = selectedBuilding.transform.position;
-		movingEditor.SelectedBuildingNodes.transform.position = new Vector3 (buildingPosition.x, buildingNodePosition.y, buildingPosition.z);
-
 		foreach (KeyValuePair<GameObject, Vector3> buildingPositionEntry in buildingsInitPos) {
 			GameObject building = buildingPositionEntry.Key;
 			building.transform.position = buildingPositionEntry.Value;
+
+			GameObject buildingNodes = buildingsTools.BuildingToBuildingNodeGroup (building);
+
+			Vector3 buildingPosition = building.transform.position;
+			Vector3 buildingNodesGroupPosition = buildingNodes.transform.position;
+
+			buildingNodes.transform.position = new Vector3 (buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
+			buildingsTools.UpdateNodes (building);
 		}
 		foreach (KeyValuePair<GameObject, float> buildingAngleEntry in buildingsInitAngle) {
 			GameObject building = buildingAngleEntry.Key;
 			Quaternion buildingRotation = building.transform.rotation;
 			building.transform.rotation = building.transform.rotation = Quaternion.Euler (buildingRotation.x, buildingAngleEntry.Value, buildingRotation.z);
+
+			GameObject buildingNodes = buildingsTools.BuildingToBuildingNodeGroup (building);
+				
+			float buildingAngle = building.transform.rotation.y;
+			Quaternion buildingNodesGroupRotation = buildingNodes.transform.rotation;
+
+			buildingNodes.transform.rotation = Quaternion.Euler (buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
+			buildingsTools.UpdateNodes (building);
 		}
 
 		foreach (KeyValuePair<GameObject, Vector3> wallPositionEntry in wallsInitPos) {
