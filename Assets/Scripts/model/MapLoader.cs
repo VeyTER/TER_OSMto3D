@@ -99,8 +99,9 @@ public class MapLoader {
 						if (key.Equals (XmlValues.LANES))
 							nodeGroup.NbWay = int.Parse (value);
 
-						if (key.Equals (XmlValues.MAX_SPEED))
-							nodeGroup.MaxSpeed = int.Parse (value);
+// 						TODO Tester, MAX_SPEED étant une valeur et non une clé...
+//						if (key.Equals (XmlValues.MAX_SPEED))
+//							nodeGroup.MaxSpeed = int.Parse (value);
 
 						nodeGroup.AddTag(key, value);
 
