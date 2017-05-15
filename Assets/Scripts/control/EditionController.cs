@@ -90,11 +90,11 @@ public class EditionController : MonoBehaviour {
 		this.wallRangeButton = GameObject.Find(UiNames.WALL_RANGE_BUTTON);
 		this.buildingRangeButton = GameObject.Find(UiNames.BUILDING_RANGE_BUTTON);
 
-		this.wallRangeButton.transform.localScale = Vector3.zero;
-		this.buildingRangeButton.transform.localScale = Vector3.zero;
-
-		Button wallrangeButtonComponent = buildingRangeButton.GetComponent<Button> ();
-		wallrangeButtonComponent.interactable = false;
+//		this.wallRangeButton.transform.localScale = Vector3.zero;
+//		this.buildingRangeButton.transform.localScale = Vector3.zero;
+//
+//		Button wallrangeButtonComponent = buildingRangeButton.GetComponent<Button> ();
+//		wallrangeButtonComponent.interactable = false;
 
 		this.lateralPanel = GameObject.Find (UiNames.LATERAL_PANEL);
 		this.lateralPanel.SetActive(false);
@@ -229,21 +229,21 @@ public class EditionController : MonoBehaviour {
 		Vector3 validateButtonInitScale = validateEditionButton.transform.localScale;
 		Vector3 cancelButtonInitScale = cancelEditionButton.transform.localScale;
 
-		Vector3 wallRangeInitScale = wallRangeButton.transform.localScale;
-		Vector3 buildingRangeInitScale = buildingRangeButton.transform.localScale;
+//		Vector3 wallRangeInitScale = wallRangeButton.transform.localScale;
+//		Vector3 buildingRangeInitScale = buildingRangeButton.transform.localScale;
 
 		Vector3 targetScale = Vector3.zero;
 
-		if (validateButtonInitScale == Vector3.one && cancelButtonInitScale == Vector3.one && wallRangeInitScale == Vector3.one && buildingRangeInitScale == Vector3.one)
+		if (validateButtonInitScale == Vector3.one && cancelButtonInitScale == Vector3.one /*&& wallRangeInitScale == Vector3.one && buildingRangeInitScale == Vector3.one*/)
 			targetScale = Vector3.zero;
-		else if (validateButtonInitScale == Vector3.zero && cancelButtonInitScale == Vector3.zero && wallRangeInitScale == Vector3.zero && buildingRangeInitScale == Vector3.zero)
+		else if (validateButtonInitScale == Vector3.zero && cancelButtonInitScale == Vector3.zero /*&& wallRangeInitScale == Vector3.zero && buildingRangeInitScale == Vector3.zero*/)
 			targetScale = Vector3.one;
 
 		Transform validateButtonTransform = validateEditionButton.transform;
 		Transform cancelButtonTransform = cancelEditionButton.transform;
 
-		Transform wallRangeButtonTransform = wallRangeButton.transform;
-		Transform buildingRangeButtonTransform = buildingRangeButton.transform;
+//		Transform wallRangeButtonTransform = wallRangeButton.transform;
+//		Transform buildingRangeButtonTransform = buildingRangeButton.transform;
 
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
@@ -252,14 +252,14 @@ public class EditionController : MonoBehaviour {
 				validateButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
 				cancelButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
 
-				wallRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
-				buildingRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
+//				wallRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
+//				buildingRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
 			} else if (validateButtonInitScale.x == 1) {
 				validateButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
 				cancelButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
 
-				wallRangeButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
-				buildingRangeButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
+//				wallRangeButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
+//				buildingRangeButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
 			}
 
 			yield return new WaitForSeconds (0.01F);
@@ -268,8 +268,8 @@ public class EditionController : MonoBehaviour {
 		validateButtonTransform.localScale = targetScale;
 		cancelButtonTransform.localScale = targetScale;
 
-		wallRangeButtonTransform.localScale = targetScale;
-		buildingRangeButtonTransform.localScale = targetScale;
+//		wallRangeButtonTransform.localScale = targetScale;
+//		buildingRangeButtonTransform.localScale = targetScale;
 	}
 
 	public void RenameBuilding(GameObject building, string newName) {
