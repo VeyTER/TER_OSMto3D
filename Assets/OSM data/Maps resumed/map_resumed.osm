@@ -896,11 +896,11 @@
           </highway>
           <building>
             <info id="26265919" name="UFR STAPS" nbfloor="4" roofangle="0" rooftype="flat" />
-            <nd index="0" ref="287691365" lat="43.5617884" lon="1.4715995" />
-            <nd index="1" ref="287691366" lat="43.5614976" lon="1.4718885" />
-            <nd index="2" ref="287691367" lat="43.5615887" lon="1.4720645" />
-            <nd index="3" ref="287691369" lat="43.5618763" lon="1.4717746" />
-            <nd index="4" ref="287691365" lat="43.5617884" lon="1.4715995" />
+            <nd index="0" ref="287691365" lat="43.56108984375" lon="1.47174829101563" />
+            <nd index="1" ref="287691366" lat="43.5607890625" lon="1.47203198242188" />
+            <nd index="2" ref="287691367" lat="43.560875" lon="1.47221252441406" />
+            <nd index="3" ref="287691369" lat="43.56116796875" lon="1.47193054199219" />
+            <nd index="4" ref="287691365" lat="43.56108984375" lon="1.47174829101563" />
           </building>
           <highway>
             <info id="26265913" name="Boulevard Périphérique" roadtype="residential" nbWay="1" maxspeed="30" />
@@ -965,11 +965,11 @@
           </highway>
           <building>
             <info id="26285670" name="unknown" nbfloor="4" roofangle="0" rooftype="flat" />
-            <nd index="0" ref="287931695" lat="43.5618147" lon="1.4719372" />
-            <nd index="1" ref="287931696" lat="43.5618882" lon="1.472077" />
-            <nd index="2" ref="287931697" lat="43.561787" lon="1.4721681" />
-            <nd index="3" ref="287931698" lat="43.5617205" lon="1.472037" />
-            <nd index="4" ref="287931695" lat="43.5618147" lon="1.4719372" />
+            <nd index="0" ref="287931695" lat="43.56283203125" lon="1.46920385742188" />
+            <nd index="1" ref="287931696" lat="43.56269921875" lon="1.46928601074219" />
+            <nd index="2" ref="287931697" lat="43.5626015625" lon="1.46919274902344" />
+            <nd index="3" ref="287931698" lat="43.5627265625" lon="1.469111328125" />
+            <nd index="4" ref="287931695" lat="43.56283203125" lon="1.46920385742188" />
           </building>
           <highway>
             <info id="26285673" name="unknown" roadtype="footway" nbWay="1" maxspeed="50" />

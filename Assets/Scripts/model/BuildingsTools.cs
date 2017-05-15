@@ -83,19 +83,46 @@ public class BuildingsTools {
 		}
 	}
 
-	public void SetLocation(GameObject buildingGo, string newName) {
+	public void SetLocation(GameObject buildingGo) {
 		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
 		if (!this.CustomBuildingExists (buildingNgp))
 			this.AppendCustomBuilding (buildingNgp);
 
-		foreach(GameObject wallGo in buildingGo.transform) {
-
-		}
-
-
 		if (File.Exists (resumeFilePath) && File.Exists (customFilePath)) {
 			mapResumeDocument.Load (resumeFilePath);
 			mapCustomDocument.Load (customFilePath);
+
+			string xPath = "/" + XmlTags.EARTH + "//" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + buildingNgp.Id + "\"]";
+			XmlNode resumeBuildingNode = mapResumeDocument.SelectSingleNode (xPath).ParentNode;
+			XmlNode customBuildingNode = mapCustomDocument.SelectSingleNode (xPath).ParentNode;
+
+			for (int i = 0; i < customBuildingNode.ChildNodes.Count;) {
+				XmlNode customBuildingChildNode = customBuildingNode.ChildNodes [i];
+				if (!customBuildingChildNode.Name.Equals (XmlTags.INFO)) {
+					customBuildingNode.RemoveChild (customBuildingChildNode);
+				} else {
+					i++;
+				}
+			}
+
+			XmlNodeList resumedBuildingNd = resumeBuildingNode.ChildNodes;
+
+			foreach(Node node in buildingNgp.Nodes) {
+				long nodeReference = node.Reference;
+				int nodeIndex = node.Index;
+
+				int i = 1;
+				for (; i < resumedBuildingNd.Count && (!resumedBuildingNd [i].Attributes [XmlAttributes.REFERENCE].Value.Equals (nodeReference.ToString ())
+				|| !resumedBuildingNd [i].Attributes [XmlAttributes.INDEX].Value.Equals (nodeIndex.ToString ())); i++);
+
+				if (i < resumedBuildingNd.Count) {
+					resumedBuildingNd [i].Attributes [XmlAttributes.LATITUDE].Value = (node.Latitude / Main.SCALE_FACTOR).ToString();
+					resumedBuildingNd [i].Attributes [XmlAttributes.LONGIUDE].Value = (node.Longitude / Main.SCALE_FACTOR).ToString();
+
+					XmlNode customBuildingNd = mapCustomDocument.ImportNode (resumedBuildingNd [i], true);
+					customBuildingNode.AppendChild (customBuildingNd);
+				}
+			}
 
 			mapResumeDocument.Save (resumeFilePath);
 			mapCustomDocument.Save (customFilePath);
@@ -127,9 +154,14 @@ public class BuildingsTools {
 		}
 	}
 
-	public bool CustomBuildingExists(NodeGroup BuildingNgp) {
-		string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + BuildingNgp.Id + "\"]";
-		return mapCustomDocument.SelectSingleNode (xPath) != null;
+	public bool CustomBuildingExists(NodeGroup buildingNgp) {
+//		if (File.Exists (customFilePath)) {
+//			mapCustomDocument.Load (customFilePath);
+			string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + buildingNgp.Id + "\"]";
+			return mapCustomDocument.SelectSingleNode (xPath) != null;
+//		} else {
+//			return false;
+//		}
 	}
 
 	private void AppendNodeGroupAttribute(XmlDocument boundingDocument, XmlNode containerNode, string attributeName, string attributeValue) {

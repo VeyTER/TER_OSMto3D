@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System;
 
 public class Main : MonoBehaviour {
+	public static double SCALE_FACTOR = 1000;
+
 	// Les fileName sont instancie via l'interfce de Unity
 	private string osmFileName;
 
@@ -44,7 +46,7 @@ public class Main : MonoBehaviour {
 			// Lecture du fichier ResumeFile précédement créé
 			mapLoader.LoadResumedData ();
 
-			objectBuilder.ScaleNodes (1000);
+			objectBuilder.ScaleNodes (Main.SCALE_FACTOR);
 			objectBuilder.SetLatLon (mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
 
 			GameObject cityComponents = new GameObject (ObjectNames.CITY);

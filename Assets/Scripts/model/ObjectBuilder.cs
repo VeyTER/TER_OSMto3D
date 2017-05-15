@@ -64,8 +64,8 @@ public class ObjectBuilder {
 		foreach (NodeGroup ngp in nodeGroups) {
 			foreach (Node n in ngp.Nodes) {
 				if (!groupsMemo.Contains(n)) {
-					n.Latitude = n.Latitude * 1000;
-					n.Longitude = n.Longitude * 1000;
+					n.Latitude = n.Latitude * Main.SCALE_FACTOR;
+					n.Longitude = n.Longitude * Main.SCALE_FACTOR;
 					groupsMemo.Add(n);
 				}
 			}
@@ -397,8 +397,8 @@ public class ObjectBuilder {
 		GameObject mainCameraGo = Camera.main.gameObject;
 
 		// On centre la camera 
-		CamLat = (minlat * 1000 + maxlat * 1000) / 2;
-		CamLon = (minlon * 1000 + maxlon * 1000) / 2;
+		CamLat = (minlat * Main.SCALE_FACTOR + maxlat * Main.SCALE_FACTOR) / 2;
+		CamLon = (minlon * Main.SCALE_FACTOR + maxlon * Main.SCALE_FACTOR) / 2;
 
 		Light mainLight = mainCameraGo.AddComponent<Light> ();
 		mainLight.range = 30;
@@ -411,10 +411,10 @@ public class ObjectBuilder {
 		double angle, lat, lon, width, length;
 		Vector3 node1, node2, diff;
 
-		lat = (minlat * 1000 + maxlat * 1000) / 2;
-		lon = (minlon * 1000 + maxlon * 1000) / 2;
-		width = maxlon*1000d - minlon * 1000d;
-		length =  Math.Sqrt(Math.Pow(maxlat * 1000 - minlat * 1000, 2) + Math.Pow(maxlon * 1000 - minlon * 1000, 2));
+		lat = (minlat * Main.SCALE_FACTOR + maxlat * Main.SCALE_FACTOR) / 2;
+		lon = (minlon * Main.SCALE_FACTOR + maxlon * Main.SCALE_FACTOR) / 2;
+		width = maxlon * Main.SCALE_FACTOR - minlon * Main.SCALE_FACTOR;
+		length =  Math.Sqrt(Math.Pow(maxlat * Main.SCALE_FACTOR - minlat * Main.SCALE_FACTOR, 2) + Math.Pow(maxlon * Main.SCALE_FACTOR - minlon * Main.SCALE_FACTOR, 2));
 
 		node1 = new Vector3((float)maxlon, 0, (float)maxlat);
 		node2 = new Vector3((float)minlon, 0, (float)minlat);

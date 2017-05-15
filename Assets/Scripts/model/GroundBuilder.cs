@@ -9,7 +9,7 @@ public class GroundBuilder {
 		GameObject ground = new GameObject ("Ground", typeof(MeshFilter), typeof(MeshRenderer));
 
 		//Position et rotation du GO
-		ground.transform.position = new Vector3 (minlon * 1000f, -0.02f, minlat * 1000f);
+		ground.transform.position = new Vector3 ((float)(minlon * Main.SCALE_FACTOR), -0.02F, (float)(minlat * Main.SCALE_FACTOR));
 		ground.transform.rotation = Quaternion.Euler (0, angle, 0);
 
 		//Création d'un Mesh

@@ -366,6 +366,7 @@ public class EditionController : MonoBehaviour {
 
 				turningEditor.SelectedBuildingNodes.transform.rotation = Quaternion.Euler (buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
 			}
+
 			buildingsTools.UpdateNodes (selectedBuilding);
 		}
 	}
@@ -389,13 +390,17 @@ public class EditionController : MonoBehaviour {
 			}
 		}
 
+		HashSet<GameObject> transformedObjects = new HashSet<GameObject> ();
+
 		foreach (KeyValuePair<GameObject, Vector3> buildingPositionEntry in buildingsInitPos) {
 			GameObject building = buildingPositionEntry.Key;
 			buildingsTools.UpdateNodes (building);
+			transformedObjects.Add (building);
 		}
 		foreach (KeyValuePair<GameObject, float> buildingAngleEntry in buildingsInitAngle) {
 			GameObject building = buildingAngleEntry.Key;
 			buildingsTools.UpdateNodes (building);
+			transformedObjects.Add (building);
 		}
 
 		foreach (KeyValuePair<GameObject, Vector3> wallPositionEntry in wallsInitPos) {
@@ -403,6 +408,10 @@ public class EditionController : MonoBehaviour {
 		}
 		foreach (KeyValuePair<GameObject, float> wallAngleEntry in wallsInitAngle) {
 			
+		}
+
+		foreach (GameObject building in transformedObjects) {
+			buildingsTools.SetLocation (building);
 		}
 
 		this.CleanHistory ();
