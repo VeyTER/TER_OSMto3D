@@ -24,7 +24,7 @@ public class Main : MonoBehaviour {
 
 		this.SetUpUi ();
 
-		osmFileName = "campus";
+		osmFileName = "capitole";
 
 		// Teste si un nom de fichier est renseigné sur l'interface de Unity
 		if (osmFileName != null)

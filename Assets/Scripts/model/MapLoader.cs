@@ -385,6 +385,7 @@ public class MapLoader {
 
 		ArrayList extractedNodes = new ArrayList ();
 		objectBuilder.NodeGroups.Clear ();
+
 		if (File.Exists (mapResumedFilePath)) {
 			mapsSettingsDocument.Load (mapResumedFilePath);
 
@@ -487,17 +488,19 @@ public class MapLoader {
 					XmlNode customInfoNode = customNode.FirstChild;
 					string objectId = this.AttributeValue (customInfoNode, XmlAttributes.ID);
 
-					XmlNode matchingResumedNode = mapResumedDocument.SelectSingleNode("//" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + objectId + "\"]").ParentNode;
-
-					if (customNode.ChildNodes.Count == 1) {
-						matchingResumedNode.RemoveChild (matchingResumedNode.FirstChild);
-						XmlNode newResumedInfoNode = mapResumedDocument.ImportNode (customInfoNode, true);
-						matchingResumedNode.InsertBefore(newResumedInfoNode, matchingResumedNode.FirstChild);
-					} else {
-						matchingResumedNode.RemoveAll ();
-						foreach (XmlNode customChildNode in customNode.ChildNodes) {
-							XmlNode newResumedChildNode = mapResumedDocument.ImportNode (customChildNode, true);
-							matchingResumedNode.AppendChild (newResumedChildNode);
+					XmlNode matchingResumedInfoNode = mapResumedDocument.SelectSingleNode("//" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + objectId + "\"]");
+					if (matchingResumedInfoNode != null) {
+						XmlNode matchingResumedNode = matchingResumedInfoNode.ParentNode;
+						if (customNode.ChildNodes.Count == 1) {
+							matchingResumedNode.RemoveChild (matchingResumedNode.FirstChild);
+							XmlNode newResumedInfoNode = mapResumedDocument.ImportNode (customInfoNode, true);
+							matchingResumedNode.InsertBefore (newResumedInfoNode, matchingResumedNode.FirstChild);
+						} else {
+							matchingResumedNode.RemoveAll ();
+							foreach (XmlNode customChildNode in customNode.ChildNodes) {
+								XmlNode newResumedChildNode = mapResumedDocument.ImportNode (customChildNode, true);
+								matchingResumedNode.AppendChild (newResumedChildNode);
+							}
 						}
 					}
 				}
