@@ -335,6 +335,7 @@ public class EditionController : MonoBehaviour {
 				movedObjects.Add (selectedBuilding);
 			else if(editionState == EditionStates.TURNING_MODE && !turnedObjects.Contains (selectedBuilding))
 				turnedObjects.Add (selectedBuilding);
+			
 			buildingsTools.UpdateNodes (selectedBuilding);
 		}
 	}
