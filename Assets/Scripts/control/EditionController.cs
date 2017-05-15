@@ -361,7 +361,7 @@ public class EditionController : MonoBehaviour {
 				Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
 				selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turningEditor.SelectedBuildingStartAngle, selectedBuildingRotation.z);
 			
-				float buildingAngle = selectedBuilding.transform.rotation.y;
+				float buildingAngle = selectedBuilding.transform.rotation.eulerAngles.y;
 				Quaternion buildingNodesGroupRotation = turningEditor.SelectedBuildingNodes.transform.rotation;
 
 				turningEditor.SelectedBuildingNodes.transform.rotation = Quaternion.Euler (buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
@@ -438,7 +438,7 @@ public class EditionController : MonoBehaviour {
 			building.transform.rotation = building.transform.rotation = Quaternion.Euler (buildingRotation.x, buildingAngleEntry.Value, buildingRotation.z);
 
 			GameObject buildingNodes = buildingsTools.BuildingToBuildingNodeGroup (building);
-				
+
 			float buildingAngle = building.transform.rotation.eulerAngles.y;
 			Quaternion buildingNodesGroupRotation = buildingNodes.transform.rotation;
 
