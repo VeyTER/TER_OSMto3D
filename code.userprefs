@@ -1,13 +1,15 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\model\ObjectBuilder.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\control\EditionController.cs">
     <Files>
-      <File FileName="Assets\Scripts\control\Main.cs" Line="16" Column="38" />
-      <File FileName="Assets\Scripts\model\MapLoader.cs" Line="43" Column="84" />
-      <File FileName="Assets\Scripts\model\ObjectBuilder.cs" Line="107" Column="1" />
-      <File FileName="Assets\Scripts\control\EditionController.cs" Line="356" Column="101" />
-      <File FileName="Assets\Scripts\control\ObjectEditor.cs" Line="42" Column="50" />
-      <File FileName="Assets\Scripts\control\MovingEditor.cs" Line="78" Column="1" />
+      <File FileName="Assets\Scripts\control\Main.cs" Line="84" Column="21" />
+      <File FileName="Assets\Scripts\model\MapLoader.cs" Line="87" Column="31" />
+      <File FileName="Assets\Scripts\model\ObjectBuilder.cs" Line="206" Column="51" />
+      <File FileName="Assets\Scripts\control\EditionController.cs" Line="355" Column="5" />
+      <File FileName="Assets\Scripts\control\ObjectEditor.cs" Line="40" Column="18" />
+      <File FileName="Assets\Scripts\control\MovingEditor.cs" Line="79" Column="64" />
+      <File FileName="Assets\Scripts\control\TurningEditor.cs" Line="84" Column="62" />
+      <File FileName="Assets\Scripts\model\BuildingsTools.cs" Line="287" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

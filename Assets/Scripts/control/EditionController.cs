@@ -389,6 +389,22 @@ public class EditionController : MonoBehaviour {
 			}
 		}
 
+		foreach (KeyValuePair<GameObject, Vector3> buildingPositionEntry in buildingsInitPos) {
+			GameObject building = buildingPositionEntry.Key;
+			buildingsTools.UpdateNodes (building);
+		}
+		foreach (KeyValuePair<GameObject, float> buildingAngleEntry in buildingsInitAngle) {
+			GameObject building = buildingAngleEntry.Key;
+			buildingsTools.UpdateNodes (building);
+		}
+
+		foreach (KeyValuePair<GameObject, Vector3> wallPositionEntry in wallsInitPos) {
+			
+		}
+		foreach (KeyValuePair<GameObject, float> wallAngleEntry in wallsInitAngle) {
+			
+		}
+
 		this.CleanHistory ();
 	}
 
@@ -423,7 +439,7 @@ public class EditionController : MonoBehaviour {
 
 			GameObject buildingNodes = buildingsTools.BuildingToBuildingNodeGroup (building);
 				
-			float buildingAngle = building.transform.rotation.y;
+			float buildingAngle = building.transform.rotation.eulerAngles.y;
 			Quaternion buildingNodesGroupRotation = buildingNodes.transform.rotation;
 
 			buildingNodes.transform.rotation = Quaternion.Euler (buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
