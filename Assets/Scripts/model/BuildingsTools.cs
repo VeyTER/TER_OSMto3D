@@ -62,13 +62,13 @@ public class BuildingsTools {
 		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
 		if (!this.CustomBuildingExists (buildingNgp))
 			this.AppendCustomBuilding (buildingNgp);
-
-		XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (buildingNgp, XmlAttributes.NAME);
-		XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (buildingNgp, XmlAttributes.NAME);
-
+		
 		if (File.Exists (resumeFilePath) && File.Exists (customFilePath)) {
 			mapResumeDocument.Load (resumeFilePath);
 			mapCustomDocument.Load (customFilePath);
+
+			XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (buildingNgp, XmlAttributes.NAME);
+			XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (buildingNgp, XmlAttributes.NAME);
 
 			buildingNgp.Name = newName;
 			buildingGo.name = newName;
@@ -155,13 +155,14 @@ public class BuildingsTools {
 	}
 
 	public bool CustomBuildingExists(NodeGroup buildingNgp) {
-//		if (File.Exists (customFilePath)) {
-//			mapCustomDocument.Load (customFilePath);
+		if (File.Exists (customFilePath)) {
+			mapCustomDocument.Load (customFilePath);
 			string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + buildingNgp.Id + "\"]";
+			mapCustomDocument.Save (customFilePath);
 			return mapCustomDocument.SelectSingleNode (xPath) != null;
-//		} else {
-//			return false;
-//		}
+		} else {
+			return false;
+		}
 	}
 
 	private void AppendNodeGroupAttribute(XmlDocument boundingDocument, XmlNode containerNode, string attributeName, string attributeValue) {
@@ -200,10 +201,10 @@ public class BuildingsTools {
 		objectBuilder.EditUniqueBuilding (building, nbFloors);
 	}
 
-	public XmlAttribute ResumeNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
+	private XmlAttribute ResumeNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
 		XmlAttribute res = null;
-		if (File.Exists (resumeFilePath)) {
-			mapResumeDocument.Load (resumeFilePath); 
+//		if (File.Exists (resumeFilePath)) {
+//			mapResumeDocument.Load (resumeFilePath); 
 
 			string locationXPath = "";
 			locationXPath += "/" + XmlTags.EARTH;
@@ -216,18 +217,21 @@ public class BuildingsTools {
 
 			XmlNode infoNode = mapResumeDocument.SelectSingleNode (locationXPath);
 			res = infoNode.Attributes[attributeName];
-		}
+
+//			mapResumeDocument.Save (resumeFilePath); 
+//		}
 		return res;
 	}
 
-	public XmlAttribute CustomNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
+	private XmlAttribute CustomNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
 		XmlAttribute res = null;
-		if (File.Exists (customFilePath)) {
-			mapCustomDocument.Load (customFilePath);
+//		if (File.Exists (customFilePath)) {
+//			mapCustomDocument.Load (customFilePath);
 			string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
 			XmlNode infoNode = mapCustomDocument.SelectSingleNode(xPath);
 			res = infoNode.Attributes[attributeName];
-		}
+//			mapCustomDocument.Save (customFilePath); 
+//		}
 		return res;
 	}
 

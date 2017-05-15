@@ -411,7 +411,18 @@ public class EditionController : MonoBehaviour {
 		}
 
 		foreach (GameObject building in transformedObjects) {
-			buildingsTools.SetLocation (building);
+			Vector3 buildingInitPos = Vector3.zero;
+			float buildingInitAngle = 0F;
+
+			bool positionContained = buildingsInitPos.TryGetValue (building, out buildingInitPos);
+			bool angleContained = buildingsInitAngle.TryGetValue (building, out buildingInitAngle);
+
+			if (positionContained && angleContained) {
+				print (building.transform.rotation.eulerAngles.y + "  " + buildingInitAngle);
+				if (!building.transform.position.Equals (buildingInitPos) || building.transform.rotation.eulerAngles.y != buildingInitAngle) {
+					buildingsTools.SetLocation (building);
+				}
+			}
 		}
 
 		this.CleanHistory ();
