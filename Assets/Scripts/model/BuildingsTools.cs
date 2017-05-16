@@ -343,6 +343,7 @@ public class BuildingsTools {
 
 		foreach(Transform buildingNodeTransform in buildingNodeGroup.transform) {
 			Node node = this.BuildingNodeToNode (buildingNodeTransform.gameObject, parentNodeGroup);
+
 			node.Latitude = buildingNodeTransform.position.z;
 			node.Longitude = buildingNodeTransform.position.x;
 		}

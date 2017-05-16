@@ -73,7 +73,7 @@ public class ObjectBuilder {
 	}
 
 	// copie des coordonnées en latitude et longitude
-	public void SetLatLon(double minlat, double minlon, double maxlat, double maxlon) {
+	public void SetBounds(double minlat, double minlon, double maxlat, double maxlon) {
 		this.minlat = minlat;
 		this.minlon = minlon;
 		this.maxlat = maxlat;
@@ -353,7 +353,7 @@ public class ObjectBuilder {
 	}
 
 	// construction des arbres
-	public void BuildTrafficSignals() {
+	public void BuildTrafficLights() {
 		double x, z;
 		float height = 0.03f;
 		float diameter = 0.015f;
@@ -391,18 +391,17 @@ public class ObjectBuilder {
 	}
 
 	// place la caméra dans la scene
-	public void BuildMainCameraBG() {
-		double CamLat, CamLon;
+	public void BuildMainCamera() {
+		// On centre la camera 
+		double camLat = (minlat * Main.SCALE_FACTOR + maxlat * Main.SCALE_FACTOR) / 2;
+		double camLon = (minlon * Main.SCALE_FACTOR + maxlon * Main.SCALE_FACTOR) / 2;
 
 		GameObject mainCameraGo = Camera.main.gameObject;
-
-		// On centre la camera 
-		CamLat = (minlat * Main.SCALE_FACTOR + maxlat * Main.SCALE_FACTOR) / 2;
-		CamLon = (minlon * Main.SCALE_FACTOR + maxlon * Main.SCALE_FACTOR) / 2;
 
 		Light mainLight = mainCameraGo.AddComponent<Light> ();
 		mainLight.range = 30;
 		mainLight.intensity = 0.5f;
+
 		mainCameraGo.AddComponent <CameraController> ();
 	}
 

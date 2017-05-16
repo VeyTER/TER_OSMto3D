@@ -14,7 +14,7 @@ public class MapLoader {
 	private double maxlat;
 	private double maxlon;
 
-	public MapLoader() {
+	private MapLoader() {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
 		this.minlat = 0;
@@ -23,13 +23,17 @@ public class MapLoader {
 		this.maxlon = 0;
 	}
 
+	public static MapLoader GetInstance() {
+		return MapLoaderHolder.instance;
+	}
+
 	/// <summary>
 	/// Methode readFileOSM :
 	/// Permet d'extraire les données de fichier ".osm" et de les stocker dans des objet "node" et "nodeGroup". 
 	/// </summary>
 	/// <param name="nameMap"> nom du fichier ".osm" dont on doit extraire les infos </param>
-	public void LoadOsmData(string mapName, int mapNum) {
-		string OSMFilePath = FilePaths.MAPS_FOLDER + mapName + ".osm";
+	public void LoadOsmData(string mapName) {
+		string OSMFilePath = mapName;
 		XmlDocument OSMDocument = new XmlDocument(); 
 
 		if (File.Exists (OSMFilePath)) {
@@ -529,5 +533,9 @@ public class MapLoader {
 	public double Maxlon {
 		get { return maxlon; }
 		set { maxlon = value; }
+	}
+
+	private static class MapLoaderHolder {
+		public static MapLoader instance = new MapLoader();
 	}
 }

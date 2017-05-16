@@ -162,7 +162,7 @@ public class OBJExporter : ScriptableWizard
         //work on export
         StringBuilder sb = new StringBuilder();
         StringBuilder sbMaterials = new StringBuilder();
-        sb.AppendLine("# Export of " + Application.loadedLevelName);
+//sb.AppendLine("# Export of " + Application.loadedLevelName);
         sb.AppendLine("# from Aaro4130 OBJ Exporter " + versionString);
         if (generateMaterials)
         {

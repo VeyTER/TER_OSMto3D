@@ -3,14 +3,26 @@ using UnityEngine;
 using System.Collections;
 
 public class ObjectEditor {
+	/// <summary>Mur courant sélectionné par l'utilsiateur.</summary>
 	protected GameObject selectedWall;
+
+	/// <summary>Bâtiment courant sélectionné par l'utilsiateur.</summary>
 	protected GameObject selectedBuilding;
 
+
+	/// <summary>Nodes 3D correspondant au mur courant sélectionné par l'utilsiateur.</summary>
 	protected GameObject selectedWallNodes;
+
+	/// <summary>Nodes 3D correspondant correspondants au bâtiment courant sélectionné par l'utilsiateur.</summary>
 	protected GameObject selectedBuildingNodes;
 
+
+	/// <summary>Témoin de transformation d'un mur.</summary>
 	protected bool wallEdited;
+
+	/// <summary>Témoin de transformation d'un bâtiment.</summary>
 	protected bool buildingEdited;
+
 
 	public ObjectEditor () {
 		this.selectedWall = null;
@@ -23,16 +35,22 @@ public class ObjectEditor {
 		this.buildingEdited = false;
 	}
 
+
+	/// <summary>
+	/// 	Prépare la transformation en initialisant les attributs.
+	/// </summary>
+	/// <param name="selectedWall">Selected wall.</param>
+	/// <param name="selectedBuilding">Selected building.</param>
 	public void Initialize(GameObject selectedWall, GameObject selectedBuilding) {
+		// Initialisation des objets sélectionnés
 		this.SelectedWall = selectedWall;
 		this.SelectedBuilding = selectedBuilding;
 
+		// Initialisation des nodes correspondants au bâtiment sélectionné (les mus n'étant pas gérés)
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 		SelectedBuildingNodes = buildingsTools.BuildingToBuildingNodeGroup (selectedBuilding);
 
-//		TODO
-//		this.SelectedWallNodes = selectedWall;
-
+		// Initialisation des témoins de transformation
 		WallTransformed = false;
 		BuildingTransformed = false;
 	}
@@ -67,4 +85,3 @@ public class ObjectEditor {
 		set { buildingEdited = value; }
 	}
 }
-

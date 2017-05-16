@@ -1,15 +1,33 @@
 ﻿using System;
 using UnityEngine;
 
+/// <summary>
+/// 	Gère le déplacement de l'objet sélectionné lorsque l'utilisateur clique et laisse appuyer sur la poignée de
+/// 	déplacement.
+/// </summary>
 public class MovingEditor : ObjectEditor {
-	public enum MovingStates { MOTIONLESS, MOVING}
+	/// <summary>
+	/// 	Etats de déplacement de l'objet sélectionné. En effet, celui-ci peut-être soit immobile, soit en mouvement.
+	/// </summary>
+	public enum MovingStates { MOTIONLESS, MOVING }
+
+	/// <summary>Etat courant de déplacement de l'objet.</summary>
 	private MovingStates movingState;
 
+
+	/// <summary>Position de départ du mur sélectionné pour le déplacement courant.</summary>
 	protected Vector3 selectedWallStartPos;
+
+	/// <summary>Position de départ du bâtiment sélectionné pour le déplacement courant.</summary>
 	protected Vector3 selectedBuildingStartPos;
 
+
+	/// <summary>Poignée permettant à l'utilisateur de choisir la nouvelle position de l'objet sélectionné.</summary>
 	private GameObject moveHandler;
+
+	/// <summary>Décalage en position de la poignée avec la souris lors de la prise en main de la poignée.</summary>
 	private Vector2 moveHandlerStartOffset;
+
 
 	public MovingEditor (GameObject moveHandler) {
 		this.movingState = MovingStates.MOTIONLESS;
@@ -21,54 +39,82 @@ public class MovingEditor : ObjectEditor {
 		this.moveHandler.SetActive (false);
 	}
 
-	public void InitializeMovingMode(EditionController.SelectionRanges selectionRange) {
-		Camera mainCamera = Camera.main;
 
+	/// <summary>
+	/// 	Initialise le mode de déplacement en définissant la position de départ de l'objet sélectionné pour le
+	/// 	déplacement courant.
+	/// </summary>
+	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
+	public void InitializeMovingMode(EditionController.SelectionRanges selectionRange) {
 		Vector3 objectPosition = Vector3.zero;
 		Vector3 objectScale = Vector3.zero;
 
+		// Affectation de la position courante de l'objet à la position initiale
 		if (selectionRange == EditionController.SelectionRanges.WALL) {
 			objectPosition = selectedWall.transform.position;
 			objectScale = selectedWall.transform.localScale;
+			selectedWallStartPos = objectPosition;
 		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
 			objectPosition = selectedBuilding.transform.position;
 			objectScale = selectedBuilding.transform.localScale;
+			selectedBuildingStartPos = objectPosition;
 		}
 
-		Vector3 objectScreenPosition = mainCamera.WorldToScreenPoint (objectPosition);
+		// Initialisation de la position de la poignée de déplacement
+		Vector3 objectScreenPosition = Camera.main.WorldToScreenPoint (objectPosition);
 		moveHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
-
-		if (selectionRange == EditionController.SelectionRanges.WALL)
-			selectedWallStartPos = objectPosition;
-		else if (selectionRange == EditionController.SelectionRanges.BUILDING)
-			selectedBuildingStartPos = objectPosition;
 	}
 
+
+	/// <summary>
+	/// 	Démarre le déplacement de l'objet sélectionné en considérant, selon les cas, un mur ou un bâtiment comme
+	/// 	sélectionné.
+	/// </summary>
+	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
 	public void StartObjectMoving(EditionController.SelectionRanges selectionRange) {
 		Vector2 moveHandlerStartPosition = moveHandler.transform.position;
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
+
+		// Calcul du décalage entre la la poignée et la souris
 		moveHandlerStartOffset = mousePosition - moveHandlerStartPosition;
 
+		// Mise à jour des témoins de sélection
 		if (selectionRange == EditionController.SelectionRanges.WALL)
 			wallEdited = true;
 		else if (selectionRange == EditionController.SelectionRanges.BUILDING)
 			buildingEdited = true;
 
+		// Déplacement de l'objet à sa position initiale
 		this.MoveObject (selectionRange);
 
 		movingState = MovingStates.MOVING;
 	}
 
+
+	/// <summary>
+	/// 	Met à jour la position de l'objet sélectionné en fonction de l'emplacement de la souris.
+	/// </summary>
+	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
 	public void UpdateObjectMoving(EditionController.SelectionRanges selectionRange) {
+		// Calcul de la nouvelle position de la poignée
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandler.transform.position = mousePosition - moveHandlerStartOffset;
+
+		// Déplacement de l'objet à sa nouvelle position
 		this.MoveObject (selectionRange);
 	}
 
+
+	/// <summary>
+	/// 	Déplace l'objet sélectionné à la position correspondante de la poignée dans le repère 3D.
+	/// </summary>
+	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
 	private void MoveObject(EditionController.SelectionRanges selectionRange) {
 		Camera mainCamera = Camera.main;
 		Vector3 moveHandlerPosition = moveHandler.transform.position;
 
+		// Déplace l'objet ainsi que les nodes noeuds 3D correspondant si l'objet est un bâtiment. Les murs ne sont en
+		// effet pas pris en charge.
 		Vector3 selectedObjectCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(moveHandlerPosition.x, moveHandlerPosition.y, mainCamera.transform.position.y));
 		if (selectionRange == EditionController.SelectionRanges.WALL) {
 			selectedWall.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedWall.transform.position.y, selectedObjectCurrentPos.z);
@@ -79,10 +125,19 @@ public class MovingEditor : ObjectEditor {
 		}
 	}
 
+
+	/// <summary>
+	/// 	Termine le déplacement de l'objet sélectionné en indiquant l'état de déplacement comme immobile.
+	/// </summary>
 	public void EndObjectMoving() {
 		movingState = MovingStates.MOTIONLESS;
 	}
 
+
+	/// <summary>
+	/// 	Décale la caméra lorsque le l'utilisateur est en train de déplacer un objet et que la souris se trouve
+	/// 	trop proche des bors de l'écran. Cela permet de ne pas se cantonner à la vue courante.
+	/// </summary>
 	public void ShiftCamera() {
 		GameObject wallsGroups = ObjectBuilder.GetInstance ().WallGroups;
 		float cameraAngle = Mathf.Deg2Rad * wallsGroups.transform.rotation.eulerAngles.y;
@@ -107,12 +162,23 @@ public class MovingEditor : ObjectEditor {
 		mainCamera.transform.localPosition = newCameraPosition;
 	}
 
+
+	/// <summary>
+	/// 	Indique si l'objet est immobile.
+	/// </summary>
+	/// <returns><c>true</c> si l'objet est immobile; sinon, <c>false</c>.</returns>
 	public bool IsMotionless() {
 		return movingState == MovingStates.MOTIONLESS;
 	}
+
+	/// <summary>
+	/// 	Indique si l'objet est en mouvement.
+	/// </summary>
+	/// <returns><c>true</c> si l'objet est en mouvement; sinon, <c>false</c>.</returns>
 	public bool IsMoving() {
 		return movingState == MovingStates.MOVING;
 	}
+
 
 	public MovingStates MovingState {
 		get { return movingState; }
