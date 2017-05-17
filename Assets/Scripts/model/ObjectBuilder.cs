@@ -19,7 +19,7 @@ public class ObjectBuilder {
 	private double minlon;
 	private double maxlon;
 
-	private RoadBuilder roadBuilder;
+	private HighwayBuilder roadBuilder;
 	private RoofBuilder roofBuilder;
 	private GroundBuilder groundBuilder;
 	private DelauneyTriangulation triangulation;
@@ -47,7 +47,7 @@ public class ObjectBuilder {
 
 		this.nodeIdTable = new Hashtable ();
 
-		this.roadBuilder = new RoadBuilder ();
+		this.roadBuilder = new HighwayBuilder ();
 		this.roofBuilder = new RoofBuilder ();
 		this.groundBuilder = new GroundBuilder ();
 
@@ -425,7 +425,7 @@ public class ObjectBuilder {
 		else
 			angle = (double)Vector3.Angle (Vector3.right,  - diff) + 180;
 
-		groundBuilder.BuildGround ((float)lon, (float)lat, (float)length, (float)length, (float)angle, (float) minlat, (float)minlon);
+		groundBuilder.BuildGround ((float)length, (float)length, (float)angle, (float) minlat, (float)minlon);
 	}
 
 	public ArrayList NodeGroups {

@@ -9,18 +9,18 @@ public class MapLoader {
 	private ObjectBuilder objectBuilder;
 
 	// coordonnées min et max de la carte
-	private double minlat;
-	private double minlon;
-	private double maxlat;
-	private double maxlon;
+	private double minLat;
+	private double minLon;
+	private double maxLat;
+	private double maxLon;
 
 	private MapLoader() {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
-		this.minlat = 0;
-		this.minlon = 0;
-		this.maxlat = 0;
-		this.maxlon = 0;
+		this.minLat = 0;
+		this.minLon = 0;
+		this.maxLat = 0;
+		this.maxLon = 0;
 	}
 
 	public static MapLoader GetInstance() {
@@ -41,10 +41,10 @@ public class MapLoader {
 
 			XmlNodeList boundsNodes = OSMDocument.GetElementsByTagName (XmlTags.BOUNDS);
 			if (boundsNodes.Count > 0) {
-				minlat = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MIN_LATITUDE));
-				minlon = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MIN_LONGITUDE));
-				maxlat = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MAX_LATITUDE));
-				maxlon = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MAX_LONGITUDE));
+				minLat = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MIN_LATITUDE));
+				minLon = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MIN_LONGITUDE));
+				maxLat = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MAX_LATITUDE));
+				maxLon = double.Parse (this.AttributeValue (boundsNodes [0], XmlAttributes.MAX_LONGITUDE));
 			}
 
 			// Extraction de toutes les nodes nodes, contenant des infos sur les sous-nodes
@@ -308,10 +308,10 @@ public class MapLoader {
 
 	private XmlNode NewBoundsNode(XmlDocument document) {
 		XmlNode res = document.CreateElement (XmlTags.BOUNDS);
-		this.AppendAttribute (document, res, XmlAttributes.MIN_LATITUDE, minlat.ToString());
-		this.AppendAttribute (document, res, XmlAttributes.MIN_LONGITUDE, minlon.ToString());
-		this.AppendAttribute (document, res, XmlAttributes.MAX_LATITUDE, maxlat.ToString());
-		this.AppendAttribute (document, res, XmlAttributes.MAX_LONGITUDE, maxlon.ToString());
+		this.AppendAttribute (document, res, XmlAttributes.MIN_LATITUDE, minLat.ToString());
+		this.AppendAttribute (document, res, XmlAttributes.MIN_LONGITUDE, minLon.ToString());
+		this.AppendAttribute (document, res, XmlAttributes.MAX_LATITUDE, maxLat.ToString());
+		this.AppendAttribute (document, res, XmlAttributes.MAX_LONGITUDE, maxLon.ToString());
 		return res;
 	}
 
@@ -399,10 +399,10 @@ public class MapLoader {
 				
 				XmlNode boundsNode = earthNode.FirstChild;
 				if (boundsNode != null) {
-					minlat = double.Parse (this.AttributeValue (boundsNode, XmlAttributes.MIN_LATITUDE));
-					minlon = double.Parse (this.AttributeValue (boundsNode, XmlAttributes.MIN_LONGITUDE));
-					maxlat = double.Parse (this.AttributeValue (boundsNode, XmlAttributes.MAX_LATITUDE));
-					maxlon = double.Parse (this.AttributeValue (boundsNode, XmlAttributes.MAX_LONGITUDE));
+					minLat = double.Parse (this.AttributeValue (boundsNode, XmlAttributes.MIN_LATITUDE));
+					minLon = double.Parse (this.AttributeValue (boundsNode, XmlAttributes.MIN_LONGITUDE));
+					maxLat = double.Parse (this.AttributeValue (boundsNode, XmlAttributes.MAX_LATITUDE));
+					maxLon = double.Parse (this.AttributeValue (boundsNode, XmlAttributes.MAX_LONGITUDE));
 
 					string[] areas = new string[4] {
 						XmlTags.COUNTRY,
@@ -516,23 +516,23 @@ public class MapLoader {
 	}
 
 	public double Minlat {
-		get { return minlat; }
-		set { minlat = value; }
+		get { return minLat; }
+		set { minLat = value; }
 	}
 
 	public double Minlon {
-		get { return minlon; }
-		set { minlon = value; }
+		get { return minLon; }
+		set { minLon = value; }
 	}
 
 	public double Maxlat {
-		get { return maxlat; }
-		set { maxlat = value; }
+		get { return maxLat; }
+		set { maxLat = value; }
 	}
 
 	public double Maxlon {
-		get { return maxlon; }
-		set { maxlon = value; }
+		get { return maxLon; }
+		set { maxLon = value; }
 	}
 
 	private static class MapLoaderHolder {

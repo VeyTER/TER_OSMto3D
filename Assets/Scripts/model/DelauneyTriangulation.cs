@@ -4,109 +4,49 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 
+/// <summary>
+/// 	Suite de méthodes permettant d'effectuer une triangulation de Delaunay pour construire les toits.
+/// </summary>
 public class DelauneyTriangulation {
-	private List<Triangle> triangles = new List<Triangle>();
-	private List<Triangle> trianglesAdd = new List<Triangle>();
-	private List<Triangle> trianglesSuppr = new List<Triangle>();
+	/// <summary>Triangles produit par la triangulation et destinés à être affichés.</summary>
+	private List<Triangle> triangles;
 
+
+	/// <summary>Triangles destiné à être supprimés de la liste finale car ne respectant pas les conditions.</summary>
+	private List<Triangle> oldTriangles;
+
+	/// <summary>Triangles destiné à être ajoutés de la liste finale.</summary>
+	private List<Triangle> newTriangles;
+
+
+	/// <summary>Neods à partir desquels construire la triangulation.</summary>
 	private List<Node> nodes = new List<Node>();
+
+	/// <summary>Neods à partir desquels construire la triangulation.</summary>
 	private List<Node> nodesTemp = new List<Node>();
 
-	private double spacing = 0.0001d;
 
-	// Constructeur
-	public DelauneyTriangulation (NodeGroup build) {
-		int temp;
-		foreach (Node nd in build.Nodes)
-			nodes.Add(nd);
-		temp = nodes.Count;
-		nodes.RemoveAt(temp - 1);
+	public DelauneyTriangulation (NodeGroup buildingNodeGroup) {
+		this.triangles = new List<Triangle>();
+
+		this.oldTriangles = new List<Triangle>();
+		this.newTriangles = new List<Triangle>();
+
+		foreach (Node node in buildingNodeGroup.Nodes)
+			nodes.Add(node);
+		
+		nodes.RemoveAt(nodes.Count - 1);
 	}
 
-	/// <summary>
-	/// Methode start:
-	/// Triangule les points du batiment pour construire les toits
-	/// </summary>
-	public void Start() {
-		// On parcour la liste des noeud
-		foreach(Node n in nodes) {
-
-			// On parcour la liste des triangles
-			foreach(Triangle t1 in triangles) {
-				// Si le triangle ne respecte pas les conditions on l'ajout à la liste des triangles à supprimer de la liste des triangles
-				if (this.IsWithin(t1, n)) {
-					trianglesSuppr.Add(t1);
-				}
-			}
-
-			// Ajout de tout les noeuds differents des triangles à supprimer dans la liste des noeuds temporaire
-			foreach(Triangle t2 in trianglesSuppr) {
-				if (!nodesTemp.Contains(t2.NodeA))
-					nodesTemp.Add(t2.NodeA);
-
-				if (!nodesTemp.Contains(t2.NodeB))
-					nodesTemp.Add(t2.NodeB);
-
-				if (!nodesTemp.Contains(t2.NodeC))
-					nodesTemp.Add(t2.NodeC);
-			}
-
-			// Creation des triangles à partir de deux points dans la liste des noeuds temporaire et le noeud courant
-			for(int i = 0; i<nodesTemp.Count;i++) {
-				if (i < (nodesTemp.Count - 1))
-					trianglesAdd.Add(new Triangle(nodesTemp[i], nodesTemp[i + 1], n));
-				else
-					trianglesAdd.Add(new Triangle(nodesTemp[i], nodesTemp[0], n));
-			}
-
-			// On retire de la liste des triangles les triangle à supprimer
-			foreach (Triangle t3 in trianglesSuppr)
-				triangles.Remove(t3);
-
-			// On ajoute à la liste des triangles les triangles à ajouter
-			foreach(Triangle t4 in trianglesAdd)
-				triangles.Add(t4);
-
-			// On efface les listes temporaires
-			trianglesAdd.Clear();
-			trianglesSuppr.Clear();
-			nodesTemp.Clear();
-		}
-	}
 
 	/// <summary>
-	/// Methode isWithin :
-	/// Determine si un point est a l'interieur du cercle circoncrit d'un triangle
-	/// </summary>
-	/// <param name="tri"> Triangle </param>
-	/// <param name="n"> Point à traiter </param>
-	/// <returns> True : Si le point est à l'iterieur </returns>
-	public bool IsWithin(Triangle tri , Node n) {
-		double A, B;
-		double moduleA, moduleB;
-
-		Node triangleCenter = tri.Center ();
-
-		// Calcul rayon du cercle circonscri au triangle
-		A = Math.Pow((tri.NodeA.Longitude - triangleCenter.Longitude), 2) + Math.Pow((tri.NodeA.Latitude - triangleCenter.Latitude), 2);
-		moduleA = Math.Sqrt(A);
-
-		// Calcul de la distance entre le centre du cercle circoncrit et le point en parametre
-		B = Math.Pow((n.Longitude - triangleCenter.Longitude), 2) + Math.Pow((n.Latitude - triangleCenter.Latitude), 2);
-		moduleB = Math.Sqrt(B);
-
-		if (moduleA > moduleB)
-			return true;
-		else
-			return false;
-	}
-
-	/// <summary>
-	/// Methode creaBoiteEnglob:
-	/// Creer un triangle dont le cercle circonscrit englobe tout le batiment
-	/// CETTE FONCTION NE CREER PAS DE BOITE ENGLOBANTE
-	/// ACTUELLEMENT ELLE NE SERT QU'A LA CREATION DE TRIANGLES POUR DEBUTER
-	/// UNE TRIAGULATION DE DELAUNAY
+	///		<para>
+	/// 		Créé un triangle dont le cercle circonscrit englobe tout le batiment.
+	/// 	</para>
+	/// 	<para>
+	/// 		ATTENTION : Cette fonction ne créé pas de boîte englobante, actuellement, elle ne sert qu'à la création
+	/// 		de triangles pour débuter une triangulation de Delauney.
+	/// 	</para>
 	/// </summary>
 	public void CreateBoundingBox() {
 		/*double maxX, maxY, minX, minY;
@@ -156,15 +96,17 @@ public class DelauneyTriangulation {
         // Ajout d'un triangle respectant les conditons de Delaunay à la liste des triangles
         listTriangle.Add(new Triangle(temp1, temp2, temp3));
         */
-		// CREATION DES TRIANGLES
+
+		// Création des triangles
 		for (int i = 0; i < nodes.Count; i++) {
 			if (i < (nodes.Count - 2))
-				trianglesAdd.Add(new Triangle(nodes[i], nodes[i + 1], nodes[i + 2]));
+				newTriangles.Add(new Triangle(nodes[i], nodes[i + 1], nodes[i + 2]));
 			else if (i < (nodes.Count - 1))
-				trianglesAdd.Add(new Triangle(nodes[i], nodes[i + 1], nodes[0]));
+				newTriangles.Add(new Triangle(nodes[i], nodes[i + 1], nodes[0]));
 			else
-				trianglesAdd.Add(new Triangle(nodes[i], nodes[0], nodes[1]));
+				newTriangles.Add(new Triangle(nodes[i], nodes[0], nodes[1]));
 		}
+
 		/*for (int i = 0; i < listNode.Count; i++)
 		{
 			if (i < (listNode.Count - 3))
@@ -184,15 +126,82 @@ public class DelauneyTriangulation {
 				listTriangleAdd.Add(new Triangle(listNode[i], listNode[0], listNode[2]));
 			}
 		}*/
-
 	}
+
+
+	public void Start() {
+		// Parcours de la liste des noeud
+		foreach(Node node in nodes) {
+
+			// Parcours de la liste des triangles
+			foreach(Triangle triangle1 in triangles) {
+				// Ajout du triangle à la liste des triangles à supprimer de la liste des triangles si celui-ci ne
+				// respecte pas les conditions
+				if (this.IsWithin(triangle1, node))
+					oldTriangles.Add(triangle1);
+			}
+
+			// Ajout de tout les noeuds differents des triangles à supprimer dans la liste des noeuds temporaire
+			foreach(Triangle triangle2 in oldTriangles) {
+				if (!nodesTemp.Contains(triangle2.NodeA))
+					nodesTemp.Add(triangle2.NodeA);
+
+				if (!nodesTemp.Contains(triangle2.NodeB))
+					nodesTemp.Add(triangle2.NodeB);
+
+				if (!nodesTemp.Contains(triangle2.NodeC))
+					nodesTemp.Add(triangle2.NodeC);
+			}
+
+			// Creation des triangles à partir de deux points dans la liste des noeuds temporaire et le noeud courant
+			for(int i = 0; i < nodesTemp.Count; i++) {
+				if (i < (nodesTemp.Count - 1))
+					newTriangles.Add(new Triangle(nodesTemp[i], nodesTemp[i + 1], node));
+				else
+					newTriangles.Add(new Triangle(nodesTemp[i], nodesTemp[0], node));
+			}
+
+			// Suppression les triangle à supprimer de la liste des triangles 
+			foreach (Triangle triangle3 in oldTriangles)
+				triangles.Remove(triangle3);
+
+			// Ajout des triangles à ajouter à la liste des triangles
+			foreach(Triangle triangle4 in newTriangles)
+				triangles.Add(triangle4);
+
+			// Suppression des listes temporaires
+			newTriangles.Clear();
+			oldTriangles.Clear();
+			nodesTemp.Clear();
+		}
+	}
+
+
+	/// <summary>
+	/// 	Détermine si un point est a l'interieur du cercle circoncrit d'un triangle.
+	/// </summary>
+	/// <param name="tri">Triangle à tester.</param>
+	/// <param name="n">Point à traiter.</param>
+	/// <returns><c>true</c>, si le point est à l'interieur du triangle, <c>false</c> sinon.</returns>
+	public bool IsWithin(Triangle triangle, Node node) {
+		Node triangleCenter = triangle.Center ();
+
+		// Calcul du rayon du cercle circonscri au triangle
+		double quadraticSumA = Math.Pow((triangle.NodeA.Longitude - triangleCenter.Longitude), 2) + Math.Pow((triangle.NodeA.Latitude - triangleCenter.Latitude), 2);
+		double moduleA = Math.Sqrt(quadraticSumA);
+
+		// Calcul de la distance entre le centre du cercle circoncrit et le point en paramètre
+		double quadraticSumB = Math.Pow((node.Longitude - triangleCenter.Longitude), 2) + Math.Pow((node.Latitude - triangleCenter.Latitude), 2);
+		double moduleB = Math.Sqrt(quadraticSumB);
+
+		if (moduleA > moduleB)
+			return true;
+		else
+			return false;
+	}
+
 
 	public List<Triangle> Triangles {
 		get { return triangles; }
-	}
-
-	public double Spacing {
-		get { return spacing; }
-		set { spacing = value; }
 	}
 }

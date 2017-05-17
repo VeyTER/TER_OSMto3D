@@ -30,6 +30,9 @@ public class NodeTags {
 	/// <summary>Tag des noeuds représentant une piste cyclable.</summary>
 	public const string CYCLEWAY_TAG = "Cycleway";
 
+	/// <summary>Tag des noeuds représentant une voie de bus.</summary>
+	public const string BUS_LANE_TAG = "BusLane";
+
 	/// <summary>Tag des noeuds représentant un arbre.</summary>
 	public const string TREE_TAG = "Tree";
 }

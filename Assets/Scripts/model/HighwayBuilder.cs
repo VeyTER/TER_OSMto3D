@@ -1,167 +1,251 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-/* Classe qui gère la création des différents types de voie (terrestres et maritime) */
-
+/// <summary>
+/// 	Gère la génération des routes.
+/// </summary>
 public class HighwayBuilder {
-	//Fonction qui créé un route classique. Appelle toutes les autres fonctions privées de la classe
-	public GameObject BuildClassicHighway(float x, float z, float length, float width, float angle) {
+
+	/// <summary>
+	/// 	Créé une route classique en appelant toutes les autres fonctions privées de la classe.
+	/// </summary>
+	/// <returns>Nouvelle route classique.</returns>
+	/// <param name="posX">Position en X de la route.</param>
+	/// <param name="posZ">Position en Z de la route.</param>
+	/// <param name="length">Longueur de la route.</param>
+	/// <param name="width">Largeur de la route.</param>
+	/// <param name="angle">Orientation de la route.</param>
+	public GameObject BuildClassicHighway(float posX, float posZ, float length, float width, float angle) {
+		// Création et paramétrage de l'objet 3D destiné à former une route classique
 		GameObject highway = new GameObject ("Highway", typeof(MeshFilter), typeof(MeshRenderer));
-
 		highway.tag = NodeTags.HIGHWAY_TAG;
-		highway.transform.position = new Vector3 (x, 0.002f, z);
+		highway.transform.position = new Vector3 (posX, 0.002F, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
 
+		// Création, construction et texturing du maillage formant la route
 		Mesh mesh = new Mesh ();
-		mesh.vertices = MakeHighwayVertices (length + 0.01f, width);
-		mesh.triangles = MakeHighwayTriangles ();
-		mesh.uv = MakeHighwayUV (length + 0.01f, width);
-		mesh.normals = MakeHighwayNormals ();
+		mesh.vertices = HighwayVertices (length + 0.01f, width);
+		mesh.triangles = HighwayTriangles ();
+		mesh.uv = HighwayUV (length + 0.01f, width);
+		mesh.normals = HighwayNormals ();
 
-		MeshFilter mesh_filter = highway.GetComponent<MeshFilter> ();
-		mesh_filter.mesh = mesh;
+		// Affactiation du maillage à la route pour lui donner la forme voulue
+		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
+		meshFilter.mesh = mesh;
 
-		MeshRenderer mesh_renderer = highway.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load (Materials.ROAD) as Material;
+		// Affectation du matériau à la route pour lui donner la texture voulue
+		MeshRenderer meshRenderer = highway.GetComponent<MeshRenderer> ();
+		meshRenderer.material = Resources.Load (Materials.ROAD) as Material;
 
 		return highway;
 	}
 
-	//Fonction qui créé une voie de bus. Appelle toutes les autres fonctions privées de la classe
-	public GameObject BuildBusLane(float x, float z, float length, float width, float angle) {
+
+	/// <summary>
+	/// 	Créé une voie de bus en appelant toutes les autres fonctions privées de la classe.
+	/// </summary>
+	/// <returns>Nouvelle voie de bus.</returns>
+	/// <param name="posX">Position en X de la voie.</param>
+	/// <param name="posZ">Position en Z de la voie.</param>
+	/// <param name="length">Longueur de la voie.</param>
+	/// <param name="width">Largeur de la voie.</param>
+	/// <param name="angle">Orientation de la voie.</param>
+	public GameObject BuildBusLane(float posX, float posZ, float length, float width, float angle) {
+		// Création et paramétrage de l'objet 3D destiné à former une voie de bus
 		GameObject highway = new GameObject ("BusLane", typeof(MeshFilter), typeof(MeshRenderer));
-
-		highway.tag = "BusLane";
-		highway.transform.position = new Vector3 (x, 0, z);
+		highway.tag = NodeTags.BUS_LANE_TAG;
+		highway.transform.position = new Vector3 (posX, 0, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
 		Mesh mesh = new Mesh ();
 
-		mesh.vertices = MakeHighwayVertices (length, width);
-		mesh.triangles = MakeHighwayTriangles ();
-		mesh.uv = MakeHighwayUV (length, width);
-		mesh.normals = MakeHighwayNormals ();
+		// Création, construction et texturing du maillage formant la voie
+		mesh.vertices = HighwayVertices (length, width);
+		mesh.triangles = HighwayTriangles ();
+		mesh.uv = HighwayUV (length, width);
+		mesh.normals = HighwayNormals ();
 
-		MeshFilter mesh_filter = highway.GetComponent<MeshFilter> ();
-		mesh_filter.mesh = mesh;
+		// Affactiation du maillage à la voie pour lui donner la forme voulue
+		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
+		meshFilter.mesh = mesh;
 
-		MeshRenderer mesh_renderer = highway.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load (Materials.BUSWAY) as Material;
+		// Affectation du matériau à la voie pour lui donner la texture voulue
+		MeshRenderer meshRenderer = highway.GetComponent<MeshRenderer> ();
+		meshRenderer.material = Resources.Load (Materials.BUSWAY) as Material;
 
 		return highway;
 	}
 
-	//Fonction qui créé une voie cyclable. Appelle toutes les autres fonctions privées de la classe
-	public GameObject BuildCycleway(float x, float z, float length, float width, float angle) {
+
+	/// <summary>
+	/// 	Créé une piste cyclable en appelant toutes les autres fonctions privées de la classe.
+	/// </summary>
+	/// <returns>Nouvelle piste cyclable.</returns>
+	/// <param name="posX">Position en X de la piste cyclable.</param>
+	/// <param name="posZ">Position en Z de la piste cyclable.</param>
+	/// <param name="length">Longueur de la piste cyclable.</param>
+	/// <param name="width">Largeur de la piste cyclable.</param>
+	/// <param name="angle">Orientation de la piste cyclable.</param>
+	public GameObject BuildCycleway(float posX, float posZ, float length, float width, float angle) {
+		width /= 2F;
+
+		// Création et paramétrage de l'objet 3D destiné à former une piste cyclable
 		GameObject highway = new GameObject ("Cycleway", typeof(MeshFilter), typeof(MeshRenderer));
-
-		width = width / 2f;
-
 		highway.tag = NodeTags.CYCLEWAY_TAG;
-		highway.transform.position = new Vector3 (x, 0, z);
+		highway.transform.position = new Vector3 (posX, 0, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
 		Mesh mesh = new Mesh ();
 
-		mesh.vertices = MakeHighwayVertices (length, width);
-		mesh.triangles = MakeHighwayTriangles ();
-		mesh.uv = MakeHighwayUV (length, width);
-		mesh.normals = MakeHighwayNormals ();
+		// Création, construction et texturing du maillage formant la piste
+		mesh.vertices = HighwayVertices (length, width);
+		mesh.triangles = HighwayTriangles ();
+		mesh.uv = HighwayUV (length, width);
+		mesh.normals = HighwayNormals ();
 
-		MeshFilter mesh_filter = highway.GetComponent<MeshFilter> ();
-		mesh_filter.mesh = mesh;
+		// Affactiation du maillage à la piste pour lui donner la forme voulue
+		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
+		meshFilter.mesh = mesh;
 
-		MeshRenderer mesh_renderer = highway.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load (Materials.CYCLEWAY) as Material;
+		// Affectation du matériau à la piste pour lui donner la texture voulue
+		MeshRenderer meshRenderer = highway.GetComponent<MeshRenderer> ();
+		meshRenderer.material = Resources.Load (Materials.CYCLEWAY) as Material;
 
 		return highway;
 	}
 
-	//Fonction qui créé un chemin piéton. Appelle toutes les autres fonctions privées de la classe
-	public GameObject BuildFootway(float x, float z, float length, float width, float angle) {
+
+	/// <summary>
+	/// 	Créé un chemin piéton en appelant toutes les autres fonctions privées de la classe.
+	/// </summary>
+	/// <returns>Nouveau chemin piéton.</returns>
+	/// <param name="posX">Position en X du chemin piéton.</param>
+	/// <param name="posZ">Position en Z du chemin piéton.</param>
+	/// <param name="length">Longueur du chemin piéton.</param>
+	/// <param name="width">Largeur du chemin piéton.</param>
+	/// <param name="angle">Orientation du chemin piéton.</param>
+	public GameObject BuildFootway(float posX, float posZ, float length, float width, float angle) {
+		width /= 1.5F;
+
+		// Création et paramétrage de l'objet 3D destiné à former un chemin piéton
 		GameObject highway = new GameObject ("Footway", typeof(MeshFilter), typeof(MeshRenderer));
-
-		width = width /1.5f;
-
 		highway.tag = NodeTags.FOOTWAY_TAG;
-		highway.transform.position = new Vector3 (x, 0, z);
+		highway.transform.position = new Vector3 (posX, 0, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
 		Mesh mesh = new Mesh ();
 
-		mesh.vertices = MakeHighwayVertices (length, width);
-		mesh.triangles = MakeHighwayTriangles ();
-		mesh.uv = MakeHighwayUV (length, width);
-		mesh.normals = MakeHighwayNormals ();
+		// Création, construction et texturing du maillage formant le chemin
+		mesh.vertices = HighwayVertices (length, width);
+		mesh.triangles = HighwayTriangles ();
+		mesh.uv = HighwayUV (length, width);
+		mesh.normals = HighwayNormals ();
 
-		MeshFilter mesh_filter = highway.GetComponent<MeshFilter> ();
-		mesh_filter.mesh = mesh;
+		// Affactiation du maillage au chemin pour lui donner la forme voulue
+		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
+		meshFilter.mesh = mesh;
 
-		MeshRenderer mesh_renderer = highway.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load (Materials.FOOTWAY) as Material;
+		// Affectation du matériau au chemin pour lui donner la texture voulue
+		MeshRenderer meshRenderer = highway.GetComponent<MeshRenderer> ();
+		meshRenderer.material = Resources.Load (Materials.FOOTWAY) as Material;
 
 		return highway;
 	}
 
-	//Fonction qui créé une voie maritime. Appelle toutes les autres fonctions privées de la classe
-	public GameObject BuildWaterway(float x, float z, float length, float width, float angle) {
-		width = width /1.5f;
+
+	/// <summary>
+	/// 	Créé une voie maritime toutes les autres fonctions privées de la classe.
+	/// </summary>
+	/// <returns>Nouveau cours d'eau.</returns>
+	/// <param name="posX">Position en X de la voie maritime.</param>
+	/// <param name="posZ">Position en Z de la voie maritime.</param>
+	/// <param name="length">Longueur de la voie maritime.</param>
+	/// <param name="width">Largeur de la voie maritime.</param>
+	/// <param name="angle">Orientation de la voie maritime.</param>
+	public GameObject BuildWaterway(float posX, float posZ, float length, float width, float angle) {
+		width /= 1.5F;
+
+		// Création et paramétrage de l'objet 3D destiné à former une voie maritime
 		GameObject highway = new GameObject ("Waterway", typeof(MeshFilter), typeof(MeshRenderer));
 		//highway.tag = "Waterway";
-		highway.transform.position = new Vector3 (x, 0, z);
+		highway.transform.position = new Vector3 (posX, 0, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
 		Mesh mesh = new Mesh ();
 
-		mesh.vertices = MakeHighwayVertices (length, width);
-		mesh.triangles = MakeHighwayTriangles ();
-		mesh.uv = MakeHighwayUV (length, width);
-		mesh.normals = MakeHighwayNormals ();
+		// Création, construction et texturing du maillage formant la voie
+		mesh.vertices = HighwayVertices (length, width);
+		mesh.triangles = HighwayTriangles ();
+		mesh.uv = HighwayUV (length, width);
+		mesh.normals = HighwayNormals ();
 
-		MeshFilter mesh_filter = highway.GetComponent<MeshFilter> ();
-		mesh_filter.mesh = mesh;
+		// Affactiation du maillage à la voie pour lui donner la forme voulue
+		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
+		meshFilter.mesh = mesh;
 
-		MeshRenderer mesh_renderer = highway.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load (Materials.WATERWAY) as Material;
+		// Affectation du matériau à la voie pour lui donner la texture voulue
+		MeshRenderer meshRenderer = highway.GetComponent<MeshRenderer> ();
+		meshRenderer.material = Resources.Load (Materials.WATERWAY) as Material;
 
 		return highway;
 	}
 
-	//On définit dans cette fonction les points qui constitueront à plusieurs les sommets d'au moins 1 triangle (triangles définis dans makeBgTriangles()
-	private Vector3 [] MakeHighwayVertices(float length, float width) {
-		Vector3[] vec = new Vector3[] {
-			new Vector3 (0, 0, -width/2F), //x,y,z=RIGHT,TOP,FORWARD
-			new Vector3 (length, 0, -width/2F),
-			new Vector3 (length, 0, width/2F),
-			new Vector3 (0, 0, width/2F)
+
+	/// <summary>
+	/// 	Définit les points qui constituront, à plusieurs, les sommets d'au moins un triangle.
+	/// </summary>
+	/// <returns>Points formant la route.</returns>
+	/// <param name="length">Longueur de la route</param>
+	/// <param name="width">Largeur de la route</param>
+	private Vector3 [] HighwayVertices(float length, float width) {
+		Vector3[] res = new Vector3[] {
+			new Vector3 (0, 0, -width  / 2F),	 // [x, y, z] = [RIGHT,TOP,FORWARD]
+			new Vector3 (length, 0, -width / 2F),
+			new Vector3 (length, 0, width / 2F),
+			new Vector3 (0, 0, width / 2F)
 		};		
-		return(vec);
+		return res;
 	}
 
-	//Création de 2 triangles qui vont former à eux deux un morceau de route
-	private int[] MakeHighwayTriangles() {
-		int [] tri = {
+
+	/// <summary>
+	/// 	Définit les points qui constituront, à plusieurs, les sommets d'au moins un triangle.
+	/// </summary>
+	/// <returns>Triangles formant un tronçont de route.</returns>
+	private int[] HighwayTriangles() {
+		int [] res = {
 			1, 0, 2, //triangle 1
 			2, 0, 3  //triangle 2
 		};
-		return(tri);
+		return res;
 	}
 
-	//Points pour le placement de la texture sur le GO
-	private Vector2 [] MakeHighwayUV(float length, float width) {
-		Vector2[] vec = new Vector2[] {
-			new Vector2 (0, 0), //(x,y)
+
+	/// <summary>
+	/// 	Créé les points utilisés pour le placement de la texture sur la route.
+	/// </summary>
+	/// <returns>Coordonnées pour le mapping.</returns>
+	/// <param name="length">Longueur de la route</param>
+	/// <param name="width">Largeur de la route</param>
+	private Vector2 [] HighwayUV(float length, float width) {
+		Vector2[] res = new Vector2[] {
+			new Vector2 (0, 0),		// (x, y)
 			new Vector2 (length * 20, 0),
 			new Vector2 (length * 20, 1),
 			new Vector2 (0, 1)
 		};
-		return(vec);
+		return res;
 	}
 
-	//Fonction qui permet d'avoir une texture "claire" sur le GO. Sinon le rendu de la texture est vraiment trop sombre.
-	private Vector3 [] MakeHighwayNormals() {
-		Vector3[] vec = new Vector3[] {
+
+	/// <summary>
+	/// 	Permet d'obtenir une texture épurée sur le sol. Sans ce traitement, le rendu de la texture serait vraiment
+	/// 	trop sombre.
+	/// </summary>
+	/// <returns>Normales de la texture.</returns>
+	private Vector3 [] HighwayNormals() {
+		Vector3[] res = new Vector3[] {
 			Vector3.up,
 			Vector3.up,
 			Vector3.up,
 			Vector3.up
 		};
-		return(vec);
+		return res;
 	}
 }
