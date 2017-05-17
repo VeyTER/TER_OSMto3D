@@ -262,17 +262,17 @@ public class MapLoader {
 				earthNode.InsertBefore (boundsNode, earthNode.FirstChild);
 
 				foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
-					string locationXPath = "";
-					locationXPath += "/" + XmlTags.EARTH;
-					locationXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
-					locationXPath += "/" + XmlTags.REGION + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
-					locationXPath += "/" + XmlTags.TOWN + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
-					locationXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
+					string zoningXPath = "";
+					zoningXPath += "/" + XmlTags.EARTH;
+					zoningXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
+					zoningXPath += "/" + XmlTags.REGION + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
+					zoningXPath += "/" + XmlTags.TOWN + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
+					zoningXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
 
-					XmlNode locationNode = mapResumedDocument.SelectSingleNode (locationXPath);
+					XmlNode locationNode = mapResumedDocument.SelectSingleNode (zoningXPath);
 
 					if (locationNode != null) {
-						string customObjectXPath = locationXPath + "/" + XmlTags.BUILDING + "/" + nodeGroup.Type () + "[@" + XmlAttributes.NAME + "=\"" + nodeGroup.Name + "\"]";
+						string customObjectXPath = zoningXPath + "/" + XmlTags.BUILDING + "/" + nodeGroup.Type () + "[@" + XmlAttributes.NAME + "=\"" + nodeGroup.Name + "\"]";
 						XmlNode customObjectNode = mapResumedDocument.SelectSingleNode (customObjectXPath);
 
 						XmlNode objectNode = null;

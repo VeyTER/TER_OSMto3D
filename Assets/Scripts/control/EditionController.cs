@@ -8,26 +8,26 @@ using System.Collections.Generic;
 
 /// <summary>
 /// 	<para>
-/// 		Composant censé être unique controllant la modification d'un objet tel qu'un bâtiment. Cette classe va de
-/// 		pair avec la classe UiManager qui, elle, est présentes dans plusieurs GameObject à chaque fois sous une
-/// 		instance différente. On aurait pu avoir uen seule classe réceptionnant les actions sur les GameObject et
-/// 		agissant en conséquence, mais la gestion des états aurait été plus complexe sur plusieurs instances.
+/// 		Composant censé être unique et controllant la modification d'un objet tel qu'un bâtiment. Cette classe va de
+/// 		pair avec la classe UiManager qui, elle, est présente dans plusieurs GameObject à chaque fois sous une
+/// 		instance différente. On aurait pu avoir une seule classe réceptionnant les actions sur les GameObject et
+/// 		agissant en conséquence, mais la gestion des états à cheuval sur plusieurs instance risquait d'être bancale.
 /// 	</para>
 /// 	<para></para>
 ///  	<para>
-/// 		Cette classe avait été conçue à l'origine pour éditer soit un mur seul, soit un bâtiment entier, mais
-/// 		l'édition d'un mur seul a été désactivée (le boutons ont été masqués) car jugée peu pertinente.
+/// 		Cette classe avait été conçue à l'origine pour modifier soit un mur seul, soit un bâtiment entier, mais
+/// 		la modification d'un mur seul a été désactivée (les boutons ont été masqués) car jugée peu pertinente.
 /// 	</para>
 /// 	<para></para>
 /// 	<para>
-/// 		ATTENTION : L'édition des murs ayant été abandonnée en cours de route, celle-ci ne fonctionnera pas
+/// 		ATTENTION : La modification des murs ayant été abandonnée en cours de route, celle-ci ne fonctionnera pas
 /// 		entièrement si elle est réactivée.
 /// 	</para>
 /// </summary>
 public class EditionController : MonoBehaviour {
 	/// <summary>
 	/// 	Les différents états dans lesquels peut se trouver le controlleur. L'état NONE_SELECTION signifie que le
-	/// 	controlleur n'est affcté à aucun objet, MOVING_TO_OBJECT symbolise le déplacement vers l'objet courant
+	/// 	controlleur n'est affecté à aucun objet, MOVING_TO_OBJECT symbolise le déplacement vers l'objet courant
 	/// 	tandis que READY_TO_EDIT indique que le controlleur est positionné au niveau de l'objet et prêt à effectuer
 	/// 	les modifications.
 	/// </summary>
@@ -91,10 +91,10 @@ public class EditionController : MonoBehaviour {
 	private List<GameObject> turnedObjects;
 
 
-	/// <summary>Mur sélectionné pour édition</summary>
+	/// <summary>Mur sélectionné pour modification.</summary>
 	private GameObject selectedWall;
 
-	/// <summary>Bâtiment sélectionné pour édition</summary>
+	/// <summary>Bâtiment sélectionné pour modification.</summary>
 	private GameObject selectedBuilding;
 
 
@@ -260,7 +260,7 @@ public class EditionController : MonoBehaviour {
 		// Décoloration du bâtiment courant
 		buildingsTools.DiscolorAll ();
 
-		// Fermeture du panneau latéral et désactiovation de ce dernier lorsqu'il est fermé
+		// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
 		this.ClosePanel (() => {
 			lateralPanel.SetActive (false);
 		});
@@ -278,7 +278,7 @@ public class EditionController : MonoBehaviour {
 
 
 	/// <summary>
-	/// 	Inverse l'état d'ouverture du panneau latéral : s'il état fermé, il s'ouvre; s'il était ouvert, il se ferme.
+	/// 	Inverse l'état d'ouverture du panneau latéral : s'il était fermé, il s'ouvre; s'il était ouvert, il se ferme.
 	/// </summary>
 	/// <param name="finalAction">Action finale à effectuer à la fin de l'inversion.</param>
 	public void TogglePanel(Action finalAction) {
@@ -329,15 +329,15 @@ public class EditionController : MonoBehaviour {
 		Vector3 panelButtonPosition = slidePanelButton.transform.localPosition;
 		Quaternion panelButtonRotation = slidePanelButton.transform.localRotation;
 
-		// Position en X initiale et ciblé du panneau
+		// Position en X initiale puis ciblée du panneau
 		float initPanelPosX = panelPosition.x;
 		float targetPanelPosX = panelPosition.x + (direction * panelRectTransform.rect.width);
 
-		// Position en X initiale et ciblé du bouton de contrôle
+		// Position en X initiale puis ciblée du bouton de contrôle
 		float panelButtonInitPosX = panelButtonPosition.x;
 		float targetPanelButtonPosX = panelButtonPosition.x - (direction * 20);
 
-		// orientation en Z initiale et ciblé du bouton de contrôle
+		// orientation en Z initiale puis ciblée du bouton de contrôle
 		float panelButtonInitRotZ = panelButtonRotation.eulerAngles.z;
 		float targetPanelButtonRotZ = panelButtonRotation.eulerAngles.z + (direction * 180);
 
@@ -372,7 +372,7 @@ public class EditionController : MonoBehaviour {
 
 
 	/// <summary>
-	/// 	Inverse les visibilité des boutons flottants avec un effet de zoom.
+	/// 	Inverse la visibilité des boutons flottants avec un effet de zoom.
 	/// </summary>
 	/// <returns>The floatting buttons.</returns>
 	private IEnumerator ToggleFloattingButtons() {
@@ -431,10 +431,10 @@ public class EditionController : MonoBehaviour {
 	/// <summary>
 	/// 	Change le nom du NodeGroup et du GameObject correspondant au bâtiment et enregistre le nom inital. Cette
 	/// 	méthode ne modifie pas le nom dans les fichiers car l'utilisateur n'a pas encore enregistré les
-	/// 	modifications
+	/// 	modifications.
 	/// </summary>
 	/// <param name="building">Bâtiment dont on veut changer le nom.</param>
-	/// <param name="newName">Novueau nom à donner au bâtiment.</param>
+	/// <param name="newName">Nouveau nom à donner au bâtiment.</param>
 	public void RenameBuilding(GameObject building, string newName) {
 		// Enregistrement du nom initial si c'est la 1ère fois qu'il est modifié durant la période courante
 		// de modification.
@@ -446,7 +446,7 @@ public class EditionController : MonoBehaviour {
 		buildingNodeGroup.Name = newName;
 		building.name = newName;
 
-		// Chagement du nom des murs apparentés au bâtiment
+		// Changement du nom des murs apparentés au bâtiment
 		for (int i = 0; i < building.transform.childCount; i++)
 			building.transform.GetChild (i).name = newName + "_mur_" + i;
 	}
@@ -475,7 +475,7 @@ public class EditionController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 	Active dans un mode de transformation d'un bâtiment en fermant le panneau latéral et en inversant
+	/// 	Active le mode de transformation d'un bâtiment en fermant le panneau latéral et en inversant
 	/// 	l'affichage des boutons flottants.
 	/// </summary>
 	private void EnterTransformMode() {
@@ -512,7 +512,7 @@ public class EditionController : MonoBehaviour {
 
 
 	/// <summary>
-	/// 	Valide la transformation d'un objet en l'ajoutant aux objects modifiés et en mettant à jour les neouds
+	/// 	Valide la transformation d'un objet en l'ajoutant aux objets modifiés et en mettant à jour les noeuds
 	/// 	correspondants (NodeGroup).
 	/// </summary>
 	public void ValidateTransform() {
@@ -531,14 +531,14 @@ public class EditionController : MonoBehaviour {
 			else if(editionState == EditionStates.TURNING_MODE && !turnedObjects.Contains (selectedBuilding))
 				turnedObjects.Add (selectedBuilding);
 			
-			buildingsTools.UpdateNodes (selectedBuilding);
+			buildingsTools.UpdateNodesPosition (selectedBuilding);
 		}
 	}
 
 
 	/// <summary>
-	/// 	Annule la transformation de l'objet courant à leur affectant la situation qu'ils avaient avant le passage
-	/// 	en mode de transformation (MOVING_MODE par ex) et en mettant à jour les neouds correspondant (NodeGroup).
+	/// 	Annule la transformation de l'objet courant en leur affectant la situation qu'ils avaient avant le passage
+	/// 	en mode de transformation (MOVING_MODE par ex) et en mettant à jour les noeuds correspondant (NodeGroup).
 	/// </summary>
 	public void CancelTransform() {
 		// [ NON MAINTENU ] Affecte au mur courant la position ou la rotation de départ en fonction du mode de
@@ -571,13 +571,13 @@ public class EditionController : MonoBehaviour {
 				turningEditor.SelectedBuildingNodes.transform.rotation = Quaternion.Euler (buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
 			}
 
-			buildingsTools.UpdateNodes (selectedBuilding);
+			buildingsTools.UpdateNodesPosition (selectedBuilding);
 		}
 	}
 
 
 	/// <summary>
-	/// Indique si un objet est en cours de transformation (en déplacement par ex).
+	/// 	Indique si un objet est en cours de transformation (en déplacement par ex).
 	/// </summary>
 	/// <returns><c>true</c>, un objet est en cours de transformation, <c>false</c> sinon.</returns>
 	public bool Transforming() {
@@ -620,25 +620,25 @@ public class EditionController : MonoBehaviour {
 				string oldName = (string)buildingEntry.Value;
 
 				if(!renamedBuilding.name.Equals(oldName))
-					buildingsTools.SetName (renamedBuilding, renamedBuilding.name);
+					buildingsTools.UpdateName (renamedBuilding);
 			}
 		}
 
-		// On stocke les objets modifiés dans un ensemble pour éviter de mettre à jour deux fois les mêmes bâtiments
-		// (les HashSet supprimant les doublons)
+		// Stockage des objets modifiés dans un ensemble pour éviter de mettre à jour deux fois les mêmes bâtiments
+		// (un HashSet supprimant les doublons)
 		HashSet<GameObject> transformedObjects = new HashSet<GameObject> ();
 
 		// Mise à jour des groupes de noeuds correspondant aux bâtiments déplacés
 		foreach (KeyValuePair<GameObject, Vector3> buildingPositionEntry in buildingsInitPos) {
 			GameObject building = buildingPositionEntry.Key;
-			buildingsTools.UpdateNodes (building);
+			buildingsTools.UpdateNodesPosition (building);
 			transformedObjects.Add (building);
 		}
 
 		// Mise à jour des groupes de noeuds correspondant aux bâtiments tournés
 		foreach (KeyValuePair<GameObject, float> buildingAngleEntry in buildingsInitAngle) {
 			GameObject building = buildingAngleEntry.Key;
-			buildingsTools.UpdateNodes (building);
+			buildingsTools.UpdateNodesPosition (building);
 			transformedObjects.Add (building);
 		}
 
@@ -656,7 +656,7 @@ public class EditionController : MonoBehaviour {
 
 			if (positionContained && angleContained) {
 				if (!building.transform.position.Equals (buildingInitPos) || building.transform.rotation.eulerAngles.y != buildingInitAngle) {
-					buildingsTools.SetLocation (building);
+					buildingsTools.UpdateLocation (building);
 				}
 			}
 		}
@@ -694,7 +694,7 @@ public class EditionController : MonoBehaviour {
 			Vector3 buildingNodesGroupPosition = buildingNodes.transform.position;
 
 			buildingNodes.transform.position = new Vector3 (buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
-			buildingsTools.UpdateNodes (building);
+			buildingsTools.UpdateNodesPosition (building);
 		}
 
 		// Affectation à chaque batiment de l'angle qu'il avait lorsqu'il a été sélectionné par l'utilisateur
@@ -709,16 +709,17 @@ public class EditionController : MonoBehaviour {
 			Quaternion buildingNodesGroupRotation = buildingNodes.transform.rotation;
 
 			buildingNodes.transform.rotation = Quaternion.Euler (buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
-			buildingsTools.UpdateNodes (building);
+			buildingsTools.UpdateNodesPosition (building);
 		}
 
-		// [NON MAINTENU] Affecte à chaque mur la position qu'il avait lorsqu'il a été sélectionné par l'utilisateur
+		// [NON MAINTENU] Affectation à chaque mur de la position qu'il avait lorsqu'il a été sélectionné par
+		// l'utilisateur
 		foreach (KeyValuePair<GameObject, Vector3> wallPositionEntry in wallsInitPos) {
 			GameObject wall = wallPositionEntry.Key;
 			wall.transform.position = wallPositionEntry.Value;
 		}
 
-		// [NON MAINTENU] Affecte à chaque mur l'angle qu'il avait lorsqu'il a été sélectionné par l'utilisateur
+		// [NON MAINTENU] Affectation à chaque mur de l'angle qu'il avait lorsqu'il a été sélectionné par l'utilisateur
 		foreach (KeyValuePair<GameObject, float> wallAngleEntry in wallsInitAngle) {
 			GameObject wall = wallAngleEntry.Key;
 			Quaternion wallRotation = wall.transform.rotation;

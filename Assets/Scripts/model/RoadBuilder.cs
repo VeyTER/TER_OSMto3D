@@ -95,7 +95,7 @@ public class RoadBuilder {
 		mesh_filter.mesh = mesh;
 
 		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load Materials.FOOTWAY) as Material;
+		mesh_renderer.material = Resources.Load (Materials.FOOTWAY) as Material;
 
 		return road;
 	}
@@ -120,7 +120,7 @@ public class RoadBuilder {
 		mesh_filter.mesh = mesh;
 
 		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load Materials.WATERWAY) as Material;
+		mesh_renderer.material = Resources.Load (Materials.WATERWAY) as Material;
 
 		return road;
 	}

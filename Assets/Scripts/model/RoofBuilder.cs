@@ -40,7 +40,7 @@ public class RoofBuilder {
 
 		//On charge le matériel du toit et on l'associe au GO
 		MeshRenderer mesh_renderer = roof.GetComponent<MeshRenderer>();
-		mesh_renderer.material = Resources.Load ("Materials/Roof") as Material;
+		mesh_renderer.material = Resources.Load (Materials.ROOF) as Material;
 
 		return roof;
 	}

@@ -13,7 +13,7 @@ public class ObjectEditor {
 	/// <summary>Nodes 3D correspondant au mur courant sélectionné par l'utilsiateur.</summary>
 	protected GameObject selectedWallNodes;
 
-	/// <summary>Nodes 3D correspondant correspondants au bâtiment courant sélectionné par l'utilsiateur.</summary>
+	/// <summary>Nodes 3D correspondant au bâtiment courant sélectionné par l'utilsiateur.</summary>
 	protected GameObject selectedBuildingNodes;
 
 
@@ -46,7 +46,7 @@ public class ObjectEditor {
 		this.SelectedWall = selectedWall;
 		this.SelectedBuilding = selectedBuilding;
 
-		// Initialisation des nodes correspondants au bâtiment sélectionné (les mus n'étant pas gérés)
+		// Initialisation des nodes correspondant au bâtiment sélectionné (les mus n'étant pas gérés)
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 		SelectedBuildingNodes = buildingsTools.BuildingToBuildingNodeGroup (selectedBuilding);
 
