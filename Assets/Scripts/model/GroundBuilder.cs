@@ -30,7 +30,7 @@ public class GroundBuilder {
 
 		//On charge le matériel du background et on l'associe au GO
 		MeshRenderer mesh_renderer = ground.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load ("Materials/Ground") as Material;
+		mesh_renderer.material = Resources.Load (Materials.GROUND) as Material;
 	}
 
 	//On définit dans cette fonction les points qui constitueront à plusieurs les sommets d'au moins 1 triangle (triangles définis dans makeBgTriangles()

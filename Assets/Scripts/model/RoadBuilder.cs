@@ -22,7 +22,7 @@ public class RoadBuilder {
 		mesh_filter.mesh = mesh;
 
 		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load ("Materials/Road") as Material;
+		mesh_renderer.material = Resources.Load (Materials.ROAD) as Material;
 
 		return road;
 	}
@@ -45,7 +45,7 @@ public class RoadBuilder {
 		mesh_filter.mesh = mesh;
 
 		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load ("Materials/Busway") as Material;
+		mesh_renderer.material = Resources.Load (Materials.BUSWAY) as Material;
 
 		return road;
 	}
@@ -70,7 +70,7 @@ public class RoadBuilder {
 		mesh_filter.mesh = mesh;
 
 		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load ("Materials/Cycleway") as Material;
+		mesh_renderer.material = Resources.Load (Materials.CYCLEWAY) as Material;
 
 		return road;
 	}
@@ -95,7 +95,7 @@ public class RoadBuilder {
 		mesh_filter.mesh = mesh;
 
 		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load ("Materials/Footway") as Material;
+		mesh_renderer.material = Resources.Load Materials.FOOTWAY) as Material;
 
 		return road;
 	}
@@ -120,7 +120,7 @@ public class RoadBuilder {
 		mesh_filter.mesh = mesh;
 
 		MeshRenderer mesh_renderer = road.GetComponent<MeshRenderer> ();
-		mesh_renderer.material = Resources.Load ("Materials/Waterway") as Material;
+		mesh_renderer.material = Resources.Load Materials.WATERWAY) as Material;
 
 		return road;
 	}

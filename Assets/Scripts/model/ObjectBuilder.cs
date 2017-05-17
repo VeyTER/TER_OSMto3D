@@ -201,7 +201,7 @@ public class ObjectBuilder {
 						wall.name = ngp.Name + "_wall_" + i;
 
 					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
-					meshRenderer.material = Resources.Load ("Materials/Wall") as Material;
+					meshRenderer.material = Resources.Load (Materials.WALL) as Material;
 				}
 				buildingIdTable [ngp.Id] = wallGroup.transform.GetInstanceID();
 
@@ -339,9 +339,10 @@ public class ObjectBuilder {
 				foliage.transform.localScale = new Vector3 (diameter, diameter, diameter);
 
 				MeshRenderer mesh_renderer1 = trunk.GetComponent<MeshRenderer> ();
-				mesh_renderer1.material = Resources.Load ("Materials/TreeTrunk") as Material;
+				mesh_renderer1.material = Resources.Load (Materials.TREE_TRUNK) as Material;
+
 				MeshRenderer mesh_renderer2 = foliage.GetComponent<MeshRenderer> ();
-				mesh_renderer2.material = Resources.Load ("Materials/TreeLeaf") as Material;
+				mesh_renderer2.material = Resources.Load (Materials.TREE_LEAF) as Material;
 
 				GameObject tree = new GameObject (ngp.Id.ToString());
 				trunk.transform.parent = tree.transform;
@@ -377,10 +378,10 @@ public class ObjectBuilder {
 					lights.transform.localScale = new Vector3 (diameter, diameter * 2f, diameter);
 
 					MeshRenderer meshRenderer1 = mount.GetComponent<MeshRenderer> ();
-					meshRenderer1.material = Resources.Load ("Materials/Metal") as Material;
+					meshRenderer1.material = Resources.Load (Materials.METAL) as Material;
 
 					MeshRenderer meshRenderer2 = lights.GetComponent<MeshRenderer> ();
-					meshRenderer2.material = Resources.Load ("Materials/TrafficLight") as Material;
+					meshRenderer2.material = Resources.Load (Materials.TRAFFIC_LIGHT) as Material;
 
 					GameObject trafficLight = new GameObject (ngp.Id.ToString());
 					mount.transform.parent = trafficLight.transform;

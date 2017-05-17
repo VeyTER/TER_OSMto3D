@@ -44,8 +44,8 @@ public class BuildingsTools {
 	}
 
 	public void ColorAsSelected(GameObject buildingGo) {
-		Material wallMaterial = Resources.Load ("Materials/Wall") as Material;
-		Material selectedElementMaterial = Resources.Load ("Materials/SelectedElement") as Material;
+		Material wallMaterial = Resources.Load (Materials.WALL) as Material;
+		Material selectedElementMaterial = Resources.Load (Materials.SELECTED_ELEMENT) as Material;
 
 		foreach (Transform wallGo in buildingGo.transform) {
 			Renderer meshRenderer = wallGo.GetComponent<Renderer> ();
