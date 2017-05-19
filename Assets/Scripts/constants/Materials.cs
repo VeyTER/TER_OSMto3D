@@ -9,7 +9,8 @@ public class Materials {
 	public const string MATERIALS_FOLDER = "Materials/";
 
 	///<summary>Chemin vers le matériau des murs.</summary>
-	public const string WALL = MATERIALS_FOLDER + "Wall";
+//	public const string WALL = MATERIALS_FOLDER + "Wall";
+	public const string WALL = MATERIALS_FOLDER + "Bricks";
 
 	///<summary>Chemin vers le matériau des toits.</summary>
 	public const string ROOF = MATERIALS_FOLDER + "Roof";
@@ -29,7 +30,7 @@ public class Materials {
 	///<summary>Chemin vers le matériau des chemins piétons.</summary>
 	public const string FOOTWAY = MATERIALS_FOLDER + "Footway";
 
-	///<summary>Chemin vers le matériau des cours d'eau.</summary>
+	///<summary>Chemin vers le matériau des voies maritimes.</summary>
 	public const string WATERWAY = MATERIALS_FOLDER + "Waterway";
 
 	///<summary>Chemin vers le matériau des troncs d'arbre.</summary>

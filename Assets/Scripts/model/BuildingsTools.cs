@@ -101,7 +101,7 @@ public class BuildingsTools {
 		// Récupération du groupe de noeuds correspondant au bâtiment
 		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
 
-		//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier MapCustom, l'ajouter
+		//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier map_custom, l'ajouter
 		if (!this.CustomBuildingExists (buildingNgp.Id))
 			this.AppendCustomBuilding (buildingNgp);
 
@@ -135,7 +135,7 @@ public class BuildingsTools {
 		// Récupération du groupe de noeuds correspondant au bâtiment
 		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
 
-		//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier MapCustom, l'ajouter
+		//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier map_custom, l'ajouter
 		if (!this.CustomBuildingExists (buildingNgp.Id))
 			this.AppendCustomBuilding (buildingNgp);
 
@@ -148,7 +148,7 @@ public class BuildingsTools {
 			XmlNode resumeBuildingNode = mapResumeDocument.SelectSingleNode (xPath).ParentNode;
 			XmlNode customBuildingNode = mapCustomDocument.SelectSingleNode (xPath).ParentNode;
 
-			// Suppression des noeuds fils dans le noeud trouvé à l'intérieur du fichier MapCustom en vue de
+			// Suppression des noeuds fils dans le noeud trouvé à l'intérieur du fichier map_custom en vue de
 			// leur remplacement
 			for (int i = 0; i < customBuildingNode.ChildNodes.Count;) {
 				XmlNode customBuildingChildNode = customBuildingNode.ChildNodes [i];
@@ -158,7 +158,7 @@ public class BuildingsTools {
 					i++;
 			}
 
-			// Importation dans le fichier MapCustom de chaque nd du fichier MapResumed correspondant au noeud courant
+			// Importation dans le fichier map_custom de chaque nd du fichier map_resumedd correspondant au noeud courant
 			// du groupe de noeud correspondant au bâtiment
 			XmlNodeList resumedBuildingNd = resumeBuildingNode.ChildNodes;
 			foreach(Node node in buildingNgp.Nodes) {
@@ -179,7 +179,7 @@ public class BuildingsTools {
 					resumedBuildingNd [i].Attributes [XmlAttributes.LATITUDE].Value = (node.Latitude / Main.SCALE_FACTOR).ToString();
 					resumedBuildingNd [i].Attributes [XmlAttributes.LONGIUDE].Value = (node.Longitude / Main.SCALE_FACTOR).ToString();
 
-					// Importation du nd dans le fichier MapResumed
+					// Importation du nd dans le fichier map_resumedd
 					XmlNode customBuildingNd = mapCustomDocument.ImportNode (resumedBuildingNd [i], true);
 					customBuildingNode.AppendChild (customBuildingNd);
 				}
@@ -192,29 +192,29 @@ public class BuildingsTools {
 
 
 	/// <summary>
-	/// 	Ajoute une entrée représentant un bâtiment dans le fichier MapCustom.
+	/// 	Ajoute une entrée représentant un bâtiment dans le fichier map_custom.
 	/// </summary>
 	/// <param name="nodeGroup">Groupe de noeuds correspondant au bâtiment.</param>
 	public void AppendCustomBuilding(NodeGroup nodeGroup) {
 		if (File.Exists (customFilePath)) {
 			mapCustomDocument.Load (customFilePath);
 
-			// Récupération du noeud englobant tous les objets terrestres et ajout de celui-ci au fichier MapCutom s'il
-			// n'est pas présent
+			// Récupération du noeud XML englobant tous les objets terrestres et ajout de celui-ci au fichier MapCutom
+			// s'il n'est pas présent
 			XmlNodeList earthNodes = mapCustomDocument.GetElementsByTagName (XmlTags.EARTH);
 			if (earthNodes.Count == 0)
 				mapCustomDocument.AppendChild (mapCustomDocument.CreateElement (XmlTags.EARTH));
 
-			// Création d'une balise d'information pour le noeud du bâtiment dans le fichier
+			// Création d'un noeud XML d'information pour le noeud XML du bâtiment
 			XmlNode earthNode = earthNodes [0];
 			XmlNode buildingNode = mapCustomDocument.CreateElement (XmlTags.BUILDING);
 			XmlNode buildingInfoNode = mapCustomDocument.CreateElement (XmlTags.INFO);
 
-			// Ajout de la la balise d'information dans le fichier MapCustom
+			// Ajout du noeud XML d'information dans le fichier map_custom
 			earthNode.AppendChild (buildingNode);
 			buildingNode.AppendChild (buildingInfoNode);
 
-			// Ajout des attributs et de la valeurs dans la balise d'information
+			// Ajout des attributs et de la valeurs dans le noeud XML d'information
 			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ID, nodeGroup.Id.ToString ());
 			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.NAME, nodeGroup.Name);
 			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor.ToString ());
@@ -227,7 +227,7 @@ public class BuildingsTools {
 
 
 	/// <summary>
-	/// 	Indique si une entrée correspondant à un certain bâtiment existe dans le fichier MapCustom.
+	/// 	Indique si une entrée correspondant à un certain bâtiment existe dans le fichier map_custom.
 	/// </summary>
 	/// <returns><c>true</c>, si l'entrée existe, <c>false</c> sinon.</returns>
 	/// <param name="buildingId">ID du bâtiment dont on veut vérifier l'existance.</param>
@@ -244,11 +244,11 @@ public class BuildingsTools {
 
 
 	/// <summary>
-	/// 	Ajoute un attribut en rapport avec un groupe de noeuds dans une balise d'un fichier. L'attribut aura le nom
-	/// 	et la valeur spécifiés en entrée.
+	/// 	Ajoute un attribut en rapport avec un groupe de noeuds dans un noeud XML. L'attribut aura le nom et la
+	/// 	valeur spécifiés en entrée.
 	/// </summary>
 	/// <param name="boundingDocument">Document dans lequel ajouter l'attribut.</param>
-	/// <param name="containerNode">Balise dans laquelle ajouter l'attribut.</param>
+	/// <param name="containerNode">Noeud XML dans laquelle ajouter l'attribut.</param>
 	/// <param name="attributeName">Nom à donner au nouvel attribut.</param>
 	/// <param name="attributeValue">Valeur à donner au nouvel attribut.</param>
 	private void AppendNodeGroupAttribute(XmlDocument boundingDocument, XmlNode containerNode, string attributeName, string attributeValue) {
@@ -259,7 +259,7 @@ public class BuildingsTools {
 
 
 	/// <summary>
-	/// 	Récupère en revoie la hauteur d'un bâtiment à partir de son entrée dans le fichier MapResumed.
+	/// 	Récupère en revoie la hauteur d'un bâtiment à partir de son entrée dans le fichier map_resumedd.
 	/// </summary>
 	/// <returns>Hauteur du bâtiment en nombre d'étages.</returns>
 	/// <param name="building">Bâtiment dont on veut connaître la hauteur.</param>
@@ -303,7 +303,7 @@ public class BuildingsTools {
 		// Récupération du groupe de noeuds correspondant au bâtiment
 		NodeGroup buildingNgp = this.BuildingToNodeGroup (building);
 
-		// Modification de l'attribut contenant le nombre d'étages du bâtiment dans le fichier MapResumed
+		// Modification de l'attribut contenant le nombre d'étages du bâtiment dans le fichier map_resumedd
 		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute (buildingNgp, XmlAttributes.NB_FLOOR);
 		if (floorAttribute != null)
 			floorAttribute.Value = Math.Max(nbFloors, 1).ToString();
@@ -317,10 +317,10 @@ public class BuildingsTools {
 
 
 	/// <summary>
-	/// 	Renvoie l'attribut d'un groupe de noeuds présent dans le fichier MapResumed et identifié par le zonage de
+	/// 	Renvoie l'attribut d'un groupe de noeuds présent dans le fichier map_resumedd et identifié par le zonage de
 	/// 	ce groupe de noeuds et l'ID de ce dernier.
 	/// </summary>
-	/// <returns>Attribut trouvé dans le fichier MapResumed.</returns>
+	/// <returns>Attribut trouvé dans le fichier map_resumedd.</returns>
 	/// <param name="nodeGroup">Groupe de noeuds contenant l'attribut.</param>
 	/// <param name="attributeName">Nom de l'attribut à trouver.</param>
 	private XmlAttribute ResumeNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
@@ -328,7 +328,7 @@ public class BuildingsTools {
 //		if (File.Exists (resumeFilePath)) {
 //			mapResumeDocument.Load (resumeFilePath); 
 
-			// Construction de d'adresse de la balise d'information du bâtiment à partir de son zonage
+			// Construction de d'adresse du noeud XML d'information du bâtiment à partir de son zonage
 			string zoningXPath = "";
 			zoningXPath += "/" + XmlTags.EARTH;
 			zoningXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
@@ -338,7 +338,7 @@ public class BuildingsTools {
 			zoningXPath += "/" + XmlTags.BUILDING;
 			zoningXPath += "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
 
-			// Récupération de la balise d'information et récupération de l'attribut ciblé
+		// Récupération du noeud XML d'information et récupération de l'attribut ciblé
 			XmlNode infoNode = mapResumeDocument.SelectSingleNode (zoningXPath);
 			res = infoNode.Attributes[attributeName];
 
@@ -349,10 +349,10 @@ public class BuildingsTools {
 
 
 	/// <summary>
-	/// 	Renvoie l'attribut d'un groupe de noeuds présents dans le fichier MapCustom et identifié l'ID de ce groupe
+	/// 	Renvoie l'attribut d'un groupe de noeuds présents dans le fichier map_custom et identifié l'ID de ce groupe
 	/// 	de noeuds.
 	/// </summary>
-	/// <returns>Attribut trouvé dans le fichier MapCustom.</returns>
+	/// <returns>Attribut trouvé dans le fichier map_custom.</returns>
 	/// <param name="nodeGroupeId">ID du groupe de noeuds contenant l'attribut.</param>
 	/// <param name="attributeName">Nom de l'attribut à trouver.</param>
 	private XmlAttribute CustomNodeGroupAttribute(long nodeGroupeId, string attributeName) {

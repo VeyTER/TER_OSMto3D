@@ -211,15 +211,14 @@ public class NodeGroup {
 	}
 
 	// Décompose le polygone en triangles
-	public bool DecomposeRight() {
+	public bool RightDecomposition() {
 		LinkedList<Node> nodesTemp = new LinkedList<Node> ();
 		LinkedListNode<Node> cur = new LinkedListNode<Node> (this.GetNode (0));
-		int i;
 
 		//on ajoute le premier élément
 		nodesTemp.AddFirst (cur);
 
-		for (i = 1; i < this.nodes.Count - 1; i++) {
+		for (int i = 1; i < this.nodes.Count - 1; i++) {
 			nodesTemp.AddAfter(cur,new LinkedListNode<Node> (this.GetNode (i)));
 			cur = cur.Next;
 		}
@@ -232,8 +231,8 @@ public class NodeGroup {
 		NodeGroup ng = null;
 		bool sens = true;
 
-		i = 0;
-		while (nodesTemp.Count > 3 && sens ) {
+		int j = 0;
+		while (nodesTemp.Count > 3 && sens) {
 			// si l'angle est ok on ajoute le triangle et on supprime le point de la liste
 			if(IsAtRight(nodeA.Value, nodeB.Value, nodeTest.Value)){
 				// on créé le sous triangle
@@ -270,10 +269,9 @@ public class NodeGroup {
 					nodeTest = nodeB.Next;
 			}
 
-			i++;
-			if (i > 150) {
+			j++;
+			if (j > 150)
 				sens = false;
-			}
 		}
 
 		// on ajoute le dernier triangle
@@ -287,17 +285,16 @@ public class NodeGroup {
 	}
 
 	// Décompose le polygone en triangles
-	public bool DecomposeLeft() {
+	public bool LeftDecomposition() {
 		LinkedList<Node> nodesTemp = new LinkedList<Node> ();
 
 		nodesTemp.Clear ();
 		LinkedListNode<Node> cur = new LinkedListNode<Node> (this.GetNode (0));
-		int i;
 
 		//on ajoute le premier élément
 		nodesTemp.AddFirst (cur);
 
-		for (i = 1; i < this.nodes.Count - 1; i++) {
+		for (int i = 1; i < this.nodes.Count - 1; i++) {
 			nodesTemp.AddAfter(cur,new LinkedListNode<Node> (this.GetNode (i)));
 			cur = cur.Next;
 		}
@@ -310,7 +307,7 @@ public class NodeGroup {
 		NodeGroup ng = null;
 		bool sens = true;
 
-		i = 0;
+		int j = 0;
 		while (nodesTemp.Count > 3 && sens ) {
 			// si l'angle est ok on ajoute le triangle et on supprime le point de la liste
 			if(!IsAtRight(nodeA.Value,nodeB.Value,nodeTest.Value)){
@@ -348,10 +345,9 @@ public class NodeGroup {
 					nodeTest = nodeB.Next;
 			}
 
-			i++;
-			if(i > 150) {
+			j++;
+			if(j > 150)
 				sens = false;
-			}
 		}
 
 		// on ajoute le dernier triangle

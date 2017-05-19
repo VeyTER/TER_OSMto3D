@@ -26,7 +26,6 @@ D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debu
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.dll
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.HoloLens.dll
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Networking.dll
-D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.PlaymodeTestsRunner.dll
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.UI.dll
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.VR.dll
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\Mono.Cecil.dll
@@ -41,10 +40,13 @@ D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debu
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEditor.xml
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.UI.xml
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Networking.xml
-D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.PlaymodeTestsRunner.xml
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.Analytics.xml
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.HoloLens.xml
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.VR.xml
-D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.dll
 D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.pdb
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\nunit.framework.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.TestRunner.dll
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\UnityEngine.TestRunner.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\Temp\bin\Debug\nunit.framework.xml
+D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache

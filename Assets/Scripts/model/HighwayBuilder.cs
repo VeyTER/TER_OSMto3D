@@ -5,7 +5,6 @@ using UnityEngine;
 /// 	Gère la génération des routes.
 /// </summary>
 public class HighwayBuilder {
-
 	/// <summary>
 	/// 	Créé une route classique en appelant toutes les autres fonctions privées de la classe.
 	/// </summary>
@@ -24,12 +23,12 @@ public class HighwayBuilder {
 
 		// Création, construction et texturing du maillage formant la route
 		Mesh mesh = new Mesh ();
-		mesh.vertices = HighwayVertices (length + 0.01f, width);
+		mesh.vertices = HighwayVertices (length + 0.01F, width);
 		mesh.triangles = HighwayTriangles ();
-		mesh.uv = HighwayUV (length + 0.01f, width);
+		mesh.uv = HighwayUV (length + 0.01F, width);
 		mesh.normals = HighwayNormals ();
 
-		// Affactiation du maillage à la route pour lui donner la forme voulue
+		// Affectation du maillage à la route pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
 		meshFilter.mesh = mesh;
 
@@ -64,7 +63,7 @@ public class HighwayBuilder {
 		mesh.uv = HighwayUV (length, width);
 		mesh.normals = HighwayNormals ();
 
-		// Affactiation du maillage à la voie pour lui donner la forme voulue
+		// Affectation du maillage à la voie pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
 		meshFilter.mesh = mesh;
 
@@ -86,8 +85,6 @@ public class HighwayBuilder {
 	/// <param name="width">Largeur de la piste cyclable.</param>
 	/// <param name="angle">Orientation de la piste cyclable.</param>
 	public GameObject BuildCycleway(float posX, float posZ, float length, float width, float angle) {
-		width /= 2F;
-
 		// Création et paramétrage de l'objet 3D destiné à former une piste cyclable
 		GameObject highway = new GameObject ("Cycleway", typeof(MeshFilter), typeof(MeshRenderer));
 		highway.tag = NodeTags.CYCLEWAY_TAG;
@@ -101,7 +98,7 @@ public class HighwayBuilder {
 		mesh.uv = HighwayUV (length, width);
 		mesh.normals = HighwayNormals ();
 
-		// Affactiation du maillage à la piste pour lui donner la forme voulue
+		// Affectation du maillage à la piste pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
 		meshFilter.mesh = mesh;
 
@@ -123,8 +120,6 @@ public class HighwayBuilder {
 	/// <param name="width">Largeur du chemin piéton.</param>
 	/// <param name="angle">Orientation du chemin piéton.</param>
 	public GameObject BuildFootway(float posX, float posZ, float length, float width, float angle) {
-		width /= 1.5F;
-
 		// Création et paramétrage de l'objet 3D destiné à former un chemin piéton
 		GameObject highway = new GameObject ("Footway", typeof(MeshFilter), typeof(MeshRenderer));
 		highway.tag = NodeTags.FOOTWAY_TAG;
@@ -138,7 +133,7 @@ public class HighwayBuilder {
 		mesh.uv = HighwayUV (length, width);
 		mesh.normals = HighwayNormals ();
 
-		// Affactiation du maillage au chemin pour lui donner la forme voulue
+		// Affectation du maillage au chemin pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
 		meshFilter.mesh = mesh;
 
@@ -153,15 +148,13 @@ public class HighwayBuilder {
 	/// <summary>
 	/// 	Créé une voie maritime toutes les autres fonctions privées de la classe.
 	/// </summary>
-	/// <returns>Nouveau cours d'eau.</returns>
+	/// <returns>Nouvelle voie maritime.</returns>
 	/// <param name="posX">Position en X de la voie maritime.</param>
 	/// <param name="posZ">Position en Z de la voie maritime.</param>
 	/// <param name="length">Longueur de la voie maritime.</param>
 	/// <param name="width">Largeur de la voie maritime.</param>
 	/// <param name="angle">Orientation de la voie maritime.</param>
 	public GameObject BuildWaterway(float posX, float posZ, float length, float width, float angle) {
-		width /= 1.5F;
-
 		// Création et paramétrage de l'objet 3D destiné à former une voie maritime
 		GameObject highway = new GameObject ("Waterway", typeof(MeshFilter), typeof(MeshRenderer));
 		//highway.tag = "Waterway";
@@ -175,7 +168,7 @@ public class HighwayBuilder {
 		mesh.uv = HighwayUV (length, width);
 		mesh.normals = HighwayNormals ();
 
-		// Affactiation du maillage à la voie pour lui donner la forme voulue
+		// Affectation du maillage à la voie pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
 		meshFilter.mesh = mesh;
 
@@ -207,11 +200,11 @@ public class HighwayBuilder {
 	/// <summary>
 	/// 	Définit les points qui constituront, à plusieurs, les sommets d'au moins un triangle.
 	/// </summary>
-	/// <returns>Triangles formant un tronçont de route.</returns>
+	/// <returns>Triangles formant un tronçon de route.</returns>
 	private int[] HighwayTriangles() {
 		int [] res = {
-			1, 0, 2, //triangle 1
-			2, 0, 3  //triangle 2
+			1, 0, 2, // triangle 1
+			2, 0, 3  // triangle 2
 		};
 		return res;
 	}
@@ -235,7 +228,7 @@ public class HighwayBuilder {
 
 
 	/// <summary>
-	/// 	Permet d'obtenir une texture épurée sur le sol. Sans ce traitement, le rendu de la texture serait vraiment
+	/// 	Permet d'obtenir une texture épurée sur la route. Sans ce traitement, le rendu de la texture serait vraiment
 	/// 	trop sombre.
 	/// </summary>
 	/// <returns>Normales de la texture.</returns>

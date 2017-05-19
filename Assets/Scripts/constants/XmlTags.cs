@@ -78,7 +78,7 @@ public class XmlTags {
 	/// <summary>Nom de la balise symbolisant la route courante.</summary>
 	public const string HIGHWAY = "highway";
 
-	/// <summary>Nom de la balise symbolisant le cours d'eau courant (haha).</summary>
+	/// <summary>Nom de la balise symbolisant la voie maritime courante.</summary>
 	public const string WATERWAY = "waterway";
 
 	/// <summary>Nom de la balise symbolisant la voie de bus courante.</summary>

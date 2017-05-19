@@ -2,7 +2,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 	Générateur de carte, représenté par un sol vert.
+/// 	Générateur de sol, représenté par un sol vert.
 /// </summary>
 public class GroundBuilder {
 	
@@ -11,14 +11,14 @@ public class GroundBuilder {
 	/// </summary>
 	/// <param name="length">Longueur du sol.</param>
 	/// <param name="width">Largeur du sol.</param>
-	/// <param name="angle">orientation du sol sur l'axe Y.</param>
+	/// <param name="angle">Orientation du sol sur l'axe Y.</param>
 	/// <param name="minlat">Latitude maximale du sol.</param>
-	/// <param name="minlon">Longitude minimale du so</param>
+	/// <param name="minlon">Longitude minimale du sol.</param>
 	public void BuildGround(float length, float width, float angle, float minLat, float minLon) {
-		// Création du GameObject sol
+		// Création de l'objet 3D destiné à former le sol
 		GameObject ground = new GameObject ("Ground", typeof(MeshFilter), typeof(MeshRenderer));
 
-		// Positionnement et rotation du sol
+		// Positionnement et orientation du sol
 		ground.transform.position = new Vector3 ((float)(minLon * Main.SCALE_FACTOR), -0.02F, (float)(minLat * Main.SCALE_FACTOR));
 		ground.transform.rotation = Quaternion.Euler (0, angle, 0);
 
@@ -31,17 +31,17 @@ public class GroundBuilder {
 		// Définition des points formant chaque triangle
 		groundMesh.triangles = GroundTriangles ();
 
-		// Reglage de l'étirement de l'image qui sert de texture sur le GO
+		// Reglage de l'étirement de l'image qui sert de texture sur l'objet 3D
 		groundMesh.uv = GroundUV (length, width);
 
-		// Pour un rendu plus clair au niveau de la texture
+		// Correction du rendu de la texture
 		groundMesh.normals = GroundNormals ();
 
-		// On associe le mesh créé au GO
+		// Affectation du maillage au sol pour lui donner la forme voulue
 		MeshFilter meshFilter = ground.GetComponent<MeshFilter> ();
 		meshFilter.mesh = groundMesh;
 
-		// Récupération du matériau du sol et affectation de celui-ci à ce dernier
+		// Affectation du matériau au sol pour lui donner la texture voulue
 		MeshRenderer meshRenderer = ground.GetComponent<MeshRenderer> ();
 		meshRenderer.material = Resources.Load (Materials.GROUND) as Material;
 	}
@@ -66,7 +66,7 @@ public class GroundBuilder {
 
 
 	/// <summary>
-	/// 	Créé de 2 triangles qui vont former à eux deux une portion de route.
+	/// 	Créé de 2 triangles qui vont former à eux deux une portion du sol.
 	/// </summary>
 	/// <returns>Triangles sur le sol.</returns>
 	private int[] GroundTriangles() {
