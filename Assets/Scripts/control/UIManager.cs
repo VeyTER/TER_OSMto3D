@@ -159,7 +159,6 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
 		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()
 			&& (editionController.EditionState == EditionController.EditionStates.NONE_SELECTION || editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT)) {
-			objectBuilder = ObjectBuilder.GetInstance ();
 			editionController.SwitchBuilding (gameObject);
 		}
 	}
@@ -212,18 +211,18 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			// Préparation du déplacement d'un objet si le controlleur est prêt
 			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
 				editionController.EnterMovingMode ();
-				movingEditor.InitializeMovingMode (editionController.SelectionRange);
 			}
 			break;
 		case UiNames.TURN_BUTTON:
 			// Préparation de la rotation d'un objet si le controlleur est prêt
 			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
 				editionController.EnterTurningMode ();
-				turningEditor.InitializeTurningMode (editionController.SelectionRange);
 			}
 			break;
 		case UiNames.CHANGE_HEIGHT_BUTTON:
-			
+			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
+				editionController.EnterHeightChangingMode();
+			}
 			break;
 		case UiNames.CHANGE_COLOR_BUTTON:
 			
@@ -261,7 +260,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 					movingEditor.InitializeMovingMode (editionController.SelectionRange);
 				else if(editionController.EditionState == EditionController.EditionStates.TURNING_MODE)
 					turningEditor.InitializeTurningMode (editionController.SelectionRange);
-				this.enableWallRangeButton ();
+				this.EnableWallRangeButton ();
 			}
 			break;
 		case UiNames.BUILDING_RANGE_BUTTON:
@@ -273,7 +272,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 					movingEditor.InitializeMovingMode (editionController.SelectionRange);
 				else if(editionController.EditionState == EditionController.EditionStates.TURNING_MODE)
 					turningEditor.InitializeTurningMode (editionController.SelectionRange);
-				this.enableBuildingRangeButton ();
+				this.EnableBuildingRangeButton ();
 			}
 			break;
 		case UiNames.VALDIATE_EDITION_BUTTON:
@@ -360,7 +359,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// <summary>
 	/// 	Met le bouton d'étendude de sélection correspondant aux murs en surbrillance.
 	/// </summary>
-	public void enableWallRangeButton() {
+	public void EnableWallRangeButton() {
 		GameObject buildingRangeButton = GameObject.Find (UiNames.BUILDING_RANGE_BUTTON);
 
 		Button buildingButtonComponent = buildingRangeButton.GetComponent<Button> ();
@@ -374,7 +373,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// <summary>
 	/// 	Met le bouton d'étendude de sélection correspondant aux bâtiments en surbrillance.
 	/// </summary>
-	public void enableBuildingRangeButton() {
+	public void EnableBuildingRangeButton() {
 		GameObject wallRangeButton = GameObject.Find (UiNames.WALL_RANGE_BUTTON);
 
 		Button wallButtonComponent = wallRangeButton.GetComponent<Button> ();

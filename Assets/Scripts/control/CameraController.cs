@@ -144,32 +144,39 @@ public class CameraController : MonoBehaviour {
 	/// <returns>Temporisateur servant à générer une animation.</returns>
 	/// <param name="building">Bâtiment au-dessus duquel se positionner.</param>
 	/// <param name="finalAction">Action finale à effectuer à la fin du déplacement.</param>
-	public IEnumerator MoveToBuilding(GameObject building, Action finalAction) {
+	public IEnumerator MoveToBuilding(GameObject building, float orientation, Action finalAction) {
 		cameraState = CameraStates.FLYING;
 
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
+
+		GameObject firstWall = building.transform.GetChild(0).gameObject;
 
 		// Enregistrement de la situation initale de la caméra
 		Vector3 initPosition = transform.position;
 		Quaternion initRotation = transform.rotation;
 
-		// Enregistrement de la situation à atteindre
-		Vector3 buildingCenterPosition = buildingsTools.BuildingCenter (building);
-		Vector3 targetPosition = new Vector3(buildingCenterPosition.x, building.transform.position.y, buildingCenterPosition.z);
-		Quaternion targetRotation = Quaternion.Euler (new Vector3 (90, 90, 0));
-
-		// Un peu de trigo pour pouvoir être à la bonne hauteur par rapport au bâtiment
+		// Un peu de trigo pour pouvoir être à la bonne hauteur par rapport au à la taille du bâtiment
 		float cameraFOV = Camera.main.fieldOfView;
-		float buildingHeight = building.transform.localScale.y;
+		float buildingHeight = firstWall.transform.localScale.y;
 		double buildingRadius = buildingsTools.BuildingRadius (building);
 		float targetPosZ = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
+
+		// Calcul de la position à adopter par rapport à l'orientation de la caméra
+		orientation = 0;
+		double horizontalShift = (targetPosZ - buildingHeight) * Math.Cos(orientation * Mathf.Deg2Rad);
+		double verticalShift = (targetPosZ - buildingHeight) * Math.Sin(orientation * Mathf.Deg2Rad);
+
+		// Enregistrement de la situation à atteindre
+		Vector3 buildingCenterPosition = buildingsTools.BuildingCenter (building);
+		Vector3 targetPosition = new Vector3(buildingCenterPosition.x - (float) horizontalShift, firstWall.transform.position.y + buildingHeight/* - (float)verticalShift*/, buildingCenterPosition.z);
+		Quaternion targetRotation = Quaternion.Euler (new Vector3 (orientation, 90, 0));
 
 		// Génération de l'animation
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float) Math.Sin (i * (Math.PI) / 2F);
 
 			// Calcul de la situation courante
-			Vector3 cameraCurrentPosition = Vector3.Lerp (initPosition, new Vector3(targetPosition.x, targetPosZ, targetPosition.z), cursor);
+			Vector3 cameraCurrentPosition = Vector3.Lerp (initPosition, new Vector3(targetPosition.x, targetPosition.y, targetPosition.z), cursor);
 			Quaternion cameraCurrentRotation = Quaternion.Lerp (initRotation, targetRotation, cursor);
 
 			transform.position = cameraCurrentPosition;
@@ -179,7 +186,7 @@ public class CameraController : MonoBehaviour {
 		}
 
 		// Affectation de la situation finale pour éviter les imprécisions
-		transform.position = new Vector3(targetPosition.x, targetPosZ, targetPosition.z);
+		transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
 		transform.rotation = targetRotation;
 
 		cameraState = CameraStates.FIXED;

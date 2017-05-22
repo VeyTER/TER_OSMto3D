@@ -1,9 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using System.Collections.Generic;
 
 /// <summary>
@@ -38,7 +36,7 @@ public class EditionController : MonoBehaviour {
 		RENAMING_MODE,
 		MOVING_MODE,
 		TURNING_MODE,
-		CHANGING_HEIGHT_MODE,
+		HEIGHT_CHANGING_MODE,
 		CHANGING_COLOR_MDOE,
 		MOVING_TO_INITIAL_SITUATION
 	}
@@ -75,6 +73,8 @@ public class EditionController : MonoBehaviour {
 
 	/// <summary>Editeur de l'orientation des objets, permet de controler la rotation d'un objet.</summary>
 	private TurningEditor turningEditor;
+
+	private HeightChangingEditor heightChangingEditor;
 
 
 	/// <summary>Unique instance du singleton BuildingsTools contenant des outils pour les bâtiments.</summary>
@@ -124,7 +124,7 @@ public class EditionController : MonoBehaviour {
 	private Dictionary<GameObject, float> buildingsInitAngle;
 
 
-	/// <summary>Instance de la classe de contrôle de la caméra.</summary>
+	/// <summary>Unique instance de la classe CameraCOntroller permettant de contrôler la caméra.</summary>
 	private CameraController cameraController;
 
 
@@ -157,6 +157,7 @@ public class EditionController : MonoBehaviour {
 
 		this.movingEditor = new MovingEditor (GameObject.Find(UiNames.MOVE_HANDLER));
 		this.turningEditor = new TurningEditor (GameObject.Find(UiNames.TURN_HANDLER));
+		this.heightChangingEditor = new HeightChangingEditor();
 
 		this.buildingsTools = BuildingsTools.GetInstance ();
 
@@ -216,7 +217,6 @@ public class EditionController : MonoBehaviour {
 			textInputs[i].text = selectedBuilding.name;
 
 		// Changement de la couleur du bâtiment sélectionné
-		buildingsTools.DiscolorAll ();
 		buildingsTools.ColorAsSelected (selectedBuilding);
 
 		// Enregistrement de la situation initiale du mur courant
@@ -242,7 +242,7 @@ public class EditionController : MonoBehaviour {
 		// du déplacement
 		editionState = EditionStates.MOVING_TO_OBJECT;
 		cameraController.StartCoroutine (
-			cameraController.MoveToBuilding(selectedBuilding, () => {
+			cameraController.MoveToBuilding(selectedBuilding, 90, () => {
 				editionState = EditionStates.READY_TO_EDIT;
 			})
 		);
@@ -254,11 +254,11 @@ public class EditionController : MonoBehaviour {
 	/// 	caméra à la position qu'elle occupait avant modification.
 	/// </summary>
 	public void ExitBuilding() {
+		// Décoloration du bâtiment courant
+		buildingsTools.DiscolorAsSelected(selectedBuilding);
+
 		selectedBuilding = null;
 		selectedWall = null;
-
-		// Décoloration du bâtiment courant
-		buildingsTools.DiscolorAll ();
 
 		// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
 		this.ClosePanel (() => {
@@ -460,6 +460,7 @@ public class EditionController : MonoBehaviour {
 		this.EnterTransformMode ();
 		movingEditor.Initialize(selectedWall, selectedBuilding);
 		movingEditor.MoveHandler.SetActive (true);
+		movingEditor.InitializeMovingMode(selectionRange);
 		editionState = EditionStates.MOVING_MODE;
 	}
 
@@ -471,7 +472,19 @@ public class EditionController : MonoBehaviour {
 		this.EnterTransformMode ();
 		turningEditor.Initialize(selectedWall, selectedBuilding);
 		turningEditor.TurnHandler.SetActive (true);
+		turningEditor.InitializeTurningMode(SelectionRange);
 		editionState = EditionStates.TURNING_MODE;
+	}
+
+	public void EnterHeightChangingMode() {
+		this.EnterTransformMode();
+		heightChangingEditor.Initialize(selectedWall, selectedBuilding);
+		//heightChangingEditor.HeightChangingHandler.SetActive(true);
+		//movingEditor.InitializeHeightChangingMode(selectionRange);
+
+		cameraController.StartCoroutine( cameraController.MoveToBuilding(selectedBuilding, 45, null) );
+
+		editionState = EditionStates.HEIGHT_CHANGING_MODE;
 	}
 
 	/// <summary>
@@ -504,7 +517,7 @@ public class EditionController : MonoBehaviour {
 		// probablement bougé
 		editionState = EditionStates.MOVING_TO_OBJECT;
 		cameraController.StartCoroutine (
-			cameraController.MoveToBuilding (selectedBuilding, () => {
+			cameraController.MoveToBuilding (selectedBuilding, 90, () => {
 				editionState = EditionStates.READY_TO_EDIT;
 			})
 		);
@@ -584,7 +597,7 @@ public class EditionController : MonoBehaviour {
 		return editionState == EditionStates.MOVING_MODE
 			|| editionState == EditionStates.TURNING_MODE
 			|| editionState == EditionStates.RENAMING_MODE
-			|| editionState == EditionStates.CHANGING_HEIGHT_MODE
+			|| editionState == EditionStates.HEIGHT_CHANGING_MODE
 			|| editionState == EditionStates.CHANGING_COLOR_MDOE;
 	}
 

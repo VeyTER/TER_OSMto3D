@@ -58,6 +58,7 @@
      <Compile Include="Assets\Scripts\constants\XmlValues.cs" />
      <Compile Include="Assets\Scripts\control\CameraController.cs" />
      <Compile Include="Assets\Scripts\control\EditionController.cs" />
+     <Compile Include="Assets\Scripts\control\HeightChangingEditor.cs" />
      <Compile Include="Assets\Scripts\control\Main.cs" />
      <Compile Include="Assets\Scripts\control\MovingEditor.cs" />
      <Compile Include="Assets\Scripts\control\ObjectEditor.cs" />

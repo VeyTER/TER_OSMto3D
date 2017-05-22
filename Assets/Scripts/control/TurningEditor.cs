@@ -121,7 +121,6 @@ public class TurningEditor : ObjectEditor {
 		if (selectionRange == EditionController.SelectionRanges.WALL) {
 			Quaternion selectedWallRotation = selectedWall.transform.rotation;
 			selectedWall.transform.rotation = Quaternion.Euler (selectedWallRotation.x, turnHandlerAngle, selectedWallRotation.z);
-
 		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
 			Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
 			selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);

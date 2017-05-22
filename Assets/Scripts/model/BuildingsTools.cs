@@ -59,8 +59,8 @@ public class BuildingsTools {
 		this.customFilePath = FilePaths.MAPS_CUSTOM_FOLDER + "map_custom.osm";
 		this.mapCustomDocument = new XmlDocument ();
 
-		this.buildingToNodeGroupTable = new Dictionary<GameObject, NodeGroup>();
-		this.nodeGroupToBuildingTable = new Dictionary<NodeGroup, GameObject>();
+		this.buildingToNodeGroupTable = new Dictionary<GameObject, NodeGroup> ();
+		this.nodeGroupToBuildingTable = new Dictionary<NodeGroup, GameObject> ();
 
 		this.buildingNodeGroupToNodeGroupTable = new Dictionary<GameObject, NodeGroup> ();
 		this.nodeGroupToBuildingNodeGroupTable = new Dictionary<NodeGroup, GameObject> ();
@@ -70,28 +70,6 @@ public class BuildingsTools {
 
 	public static BuildingsTools GetInstance() {
 		return BuildingsToolsInstanceHolder.instance;
-	}
-
-
-	/// <summary>
-	/// 	Enlève la surcouche de couleur de tous les bâtiments.
-	/// </summary>
-	public void DiscolorAll() {
-		// Suppression de tous les autres matériaux que que celui de base pour chaque mur
-		foreach (Transform currentBuildingGo in ObjectBuilder.GetInstance().WallGroups.transform) {
-			foreach (Transform currentWallGo in currentBuildingGo.transform) {
-				Renderer meshRenderer = currentWallGo.GetComponent<Renderer> ();
-
-				// Ecrasement du stock de matériaux du mur avec un nouveau stock contenant uniquement son premier
-				// matériau s'il contient bien au moins un matériau
-				if (meshRenderer.materials.Length != 1) {
-					Material firstMaterial = meshRenderer.materials [0];
-					meshRenderer.materials = new Material[] {
-						firstMaterial
-					};
-				}
-			}
-		}
 	}
 
 
@@ -107,12 +85,32 @@ public class BuildingsTools {
 		foreach (Transform wall in building.transform) {
 			Renderer meshRenderer = wall.GetComponent<Renderer> ();
 			if (meshRenderer != null) {
-
 				// Ecrasement de stock de matériaux du mur avec un nouveau stock contenant son matériau de base et le
 				// matériau de sélection
 				meshRenderer.materials = new Material[] {
 					wallMaterial,
 					selectedElementMaterial
+				};
+			}
+		}
+	}
+
+
+	/// <summary>
+	/// 	Ajoute une couche de couleur à un bâtiment pour le marquer comme sélectionné.
+	/// </summary>
+	/// <param name="building">Bâtiment à colorier.</param>
+	public void DiscolorAsSelected(GameObject building) {
+		Material wallMaterial = Resources.Load(Materials.WALL) as Material;
+
+		// Supperposition du matériau de base avec celui de la couleur de sélection pour le bâtiment sélectionné
+		foreach (Transform wall in building.transform) {
+			Renderer meshRenderer = wall.GetComponent<Renderer>();
+			if (meshRenderer != null) {
+				// Ecrasement de stock de matériaux du mur avec un nouveau stock contenant son matériau de base et le
+				// matériau de sélection
+				meshRenderer.materials = new Material[] {
+					wallMaterial,
 				};
 			}
 		}
@@ -128,13 +126,13 @@ public class BuildingsTools {
 		// Récupération du groupe de noeuds correspondant au bâtiment
 		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 
-		if (File.Exists (resumeFilePath) && File.Exists (customFilePath)) {
-			mapResumeDocument.Load (resumeFilePath);
-			mapCustomDocument.Load (customFilePath);
-			
+		if (File.Exists(resumeFilePath) && File.Exists(customFilePath)) {
+			mapResumeDocument.Load(resumeFilePath);
+			mapCustomDocument.Load(customFilePath);
+
 			//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier map_custom, l'ajouter
-			if (!this.CustomBuildingExists (nodeGroup.Id))
-				this.AppendCustomBuilding (nodeGroup);
+			if (!this.CustomBuildingExists(nodeGroup.Id))
+				this.AppendCustomBuilding(nodeGroup);
 
 			// Récupération de l'attribut de nom du bâtiment dans les fichiers MapResumed et MapCustom
 			XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
@@ -331,7 +329,7 @@ public class BuildingsTools {
 
 		// Modification de la hauteur du bâtiment 3D
 		ObjectBuilder objectBuilder = ObjectBuilder.GetInstance();
-		objectBuilder.EditUniqueBuilding (building, nbFloors);
+		objectBuilder.RebuildBuilding (building, nbFloors);
 	}
 
 

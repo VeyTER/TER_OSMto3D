@@ -7,10 +7,6 @@ using System;
 /// 	Contient une suite d'outils permettant la construction des différents objets d'une ville.
 /// </summary>
 public class ObjectBuilder {
-	/// <summary>Hauteur par défaut des bâtiments.</summary>
-	private static float FLOOR_HEIGHT = 0.08F;
-
-
 	/// <summary>
 	/// 	Groupes de noeuds contenant toutes les informations sur les objets de la scène 3D.
 	/// </summary>
@@ -217,8 +213,6 @@ public class ObjectBuilder {
 
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 
-		const float THICKNESS = 0.01f;
-
 		// Construction et ajout des bâtiments
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.IsBuilding()) {
@@ -249,8 +243,8 @@ public class ObjectBuilder {
 
 					// Paramétrage du mur 3D
 					int nbFloor = ngp.NbFloor;
-					wall.transform.localScale = new Vector3((float) length + THICKNESS * 1.5F, FLOOR_HEIGHT * nbFloor, THICKNESS);
-					wall.transform.position = new Vector3((float) posX, (FLOOR_HEIGHT / 2F) * (float) nbFloor, (float) posY);
+					wall.transform.localScale = new Vector3((float) length + Dimensions.WALL_THICKNESS * 1.5F, Dimensions.FLOOR_HEIGHT * nbFloor, Dimensions.WALL_THICKNESS);
+					wall.transform.position = new Vector3((float) posX, (Dimensions.FLOOR_HEIGHT / 2F) * (float) nbFloor, (float) posY);
 
 					// Récupération et configuration de la boite de collision du mur
 					BoxCollider wallBoxColliser = wall.GetComponent<BoxCollider> ();
@@ -312,10 +306,10 @@ public class ObjectBuilder {
 	/// </summary>
 	/// <param name="wallSetGo">Bâtiment à modifier.</param>
 	/// <param name="nbFloor">Nombre d'étages qui doivent former le bâtiment.</param>
-	public void EditUniqueBuilding(GameObject building, int nbFloor) {
+	public void RebuildBuilding(GameObject building, int nbFloor) {
 		foreach(Transform wall in building.transform) {
-			wall.localScale = new Vector3(wall.localScale.x, FLOOR_HEIGHT * nbFloor, wall.localScale.z);
-			wall.position = new Vector3 (wall.position.x, (FLOOR_HEIGHT / 2F) * (float)nbFloor, wall.position.z);
+			wall.localScale = new Vector3(wall.localScale.x, Dimensions.FLOOR_HEIGHT * nbFloor, wall.localScale.z);
+			wall.position = new Vector3 (wall.position.x, (Dimensions.FLOOR_HEIGHT / 2F) * (float)nbFloor, wall.position.z);
 		}
 	}
 
@@ -340,7 +334,7 @@ public class ObjectBuilder {
 				float posZ = (float)triangulation.Triangles[0].NodeA.Latitude;
 
 				// Construction et paramétrage de l'objet 3D destiné à former un toit
-				GameObject newRoof = roofBuilder.BuildRoof(posX, posZ, triangulation, ngp.NbFloor, FLOOR_HEIGHT);
+				GameObject newRoof = roofBuilder.BuildRoof(posX, posZ, triangulation, ngp.NbFloor, Dimensions.FLOOR_HEIGHT);
 				newRoof.name = ngp.Id.ToString();
 
 				// Ajout du toit au groupe de toits
@@ -392,7 +386,7 @@ public class ObjectBuilder {
 					double posY = 0;
 
 					double length = 0.06;
-					double width = 0.06;
+					double width = Dimensions.ROAD_WIDTH;
 
 					double angle = 0;
 
