@@ -62,7 +62,7 @@ public class MapLoader {
 			}
 
 			// Extraction et stockage des noeuds décrivant les objets de la ville
-			ArrayList extractedNodes = this.ExtractUnfoldedNodes (OSMDocument);
+			List<Node> extractedNodes = this.ExtractUnfoldedNodes (OSMDocument);
 			this.FoldExtractedNodes (OSMDocument, extractedNodes);
 		}
 	}
@@ -75,9 +75,9 @@ public class MapLoader {
 	/// </summary>
 	/// <returns>Noeuds extraits.</returns>
 	/// <param name="OSMDocument">Document OSM contenant la carte.</param>
-	private ArrayList ExtractUnfoldedNodes(XmlDocument OSMDocument) {
+	private List<Node> ExtractUnfoldedNodes(XmlDocument OSMDocument) {
 		// Liste des noeuds extraits du fichier OSM
-		ArrayList extractedNodes = new ArrayList();
+		List<Node> extractedNodes = new List<Node>();
 
 		// Parcours de tous les sous-noeuds XML pour les extraitre et, éventuellement, les rattacher à des
 		// objets simples
@@ -134,7 +134,7 @@ public class MapLoader {
 	/// </summary>
 	/// <param name="OSMDocument">Document OSM contenant la carte.</param>
 	/// <param name="extractedNodes">Sous-noeuds extraits du fichier OSM.</param>
-	private void FoldExtractedNodes(XmlDocument OSMDocument, ArrayList extractedNodes) {
+	private void FoldExtractedNodes(XmlDocument OSMDocument, List<Node> extractedNodes) {
 		// extraits précédemment. Dans un même temps, stockage des sous-noeuds extraits dans des groupes de noeuds
 		XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XmlTags.WAY);
 		foreach (XmlNode wayNode in wayNodes) {
@@ -334,7 +334,7 @@ public class MapLoader {
 	/// <summary>
 	/// 	Extrait les cacractéristiques par défaut dans une certaine zone pour tous les bâtiment s'y trouvant.
 	/// </summary>
-	/// <returns>Tableau contenant les caractéristiques par défaut à extraire.</returns>
+	/// <returns>Tableau contenant les caractéristiques par défaut sur les bâtiments.</returns>
 	/// <param name="infoNode">Noeud XML contenant les informations à extraire dans ses attributs.</param>
 	private string[] BuildingInfo(XmlNode infoNode) {
 		string[] res = new string[3];
@@ -348,6 +348,12 @@ public class MapLoader {
 		return res;
 	}
 
+
+	/// <summary>
+	/// 	Extrait les cacractéristiques par défaut dans une certaine zone pour toutes les routes s'y trouvant.
+	/// </summary>
+	/// <returns>Tableau contenant les caractéristiques sur les routes.</returns>
+	/// <param name="infoNode">Noeud XML contenant les informations à extraire dans ses attributs.</param>
 	private string[] HighwayInfo(XmlNode infoNode) {
 		string[] res = new string[3];
 		res [0] = this.AttributeValue (infoNode, XmlAttributes.ROAD_TYPE);
@@ -356,6 +362,12 @@ public class MapLoader {
 		return res;
 	}
 
+
+	/// <summary>
+	/// 	Extrait les cacractéristiques de localisation d'une certaine zone.
+	/// </summary>
+	/// <returns>Tableau contenant les caractéristiques de localisation.</returns>
+	/// <param name="infoNode">Info node.</param>
 	private double[] AttributeLocationInfo(XmlNode infoNode) {
 		double[] res = new double[3];
 		res[0] = double.Parse (this.AttributeValue(infoNode, XmlAttributes.LATITUDE));
@@ -364,6 +376,13 @@ public class MapLoader {
 		return res;
 	}
 
+
+	/// <summary>
+	/// 	Extrait la valeur d'un attribut identifié par son nom dans un certain noeud XML.
+	/// </summary>
+	/// <returns>Valeur extraite de l'attribut.</returns>
+	/// <param name="containerNode">Noeud XML contenant l'attribut.</param>
+	/// <param name="attributeName">Nom de l'attribut dont on veut connaître la valeur.</param>
 	private string AttributeValue(XmlNode containerNode, string attributeName) {
 		XmlNode attribute = containerNode.Attributes.GetNamedItem (attributeName);
 		if (attribute != null)
@@ -371,6 +390,7 @@ public class MapLoader {
 		else
 			return null;
 	}
+
 
 	/// <summary>
 	///     Génère un fichier de données (MapResumed) contenant les objets de la ville rangés dans les zones auxquelles
@@ -406,7 +426,7 @@ public class MapLoader {
 				XmlNode boundsNode = this.NewBoundsNode (mapResumedDocument);
 				earthNode.InsertBefore (boundsNode, earthNode.FirstChild);
 
-				// 
+				// Ajout d'un nouveau noeud XML pour chaque groupe de noeuds contenus dans l'application
 				foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
 					// Construction du chemin xPath vers le noeud XML correspondant à la zone la plus locale au groupe
 					// de noeuds et récupération de de noeud
@@ -513,7 +533,7 @@ public class MapLoader {
 	/// <param name="parentElement">Noeud XML ou document XML contenant les noeuds XML à explorer.param>
 	private void RemoveUnusedNodes(XmlNode parentElement) {
 		// Création de la liste des noeuds à supprimer pour ce niveau
-		ArrayList oldNodes = new ArrayList(); 
+		List<XmlNode> oldNodes = new List<XmlNode>(); 
 
 		// Ajout des noeuds XML à la liste des noeuds XML à supprimer pour chaque noeud XML fils si ce dernier est vide
 		// et que ce n'est pas un noeuds important ou d'information

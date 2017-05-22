@@ -14,25 +14,25 @@ public class ObjectBuilder {
 	/// <summary>
 	/// 	Groupes de noeuds contenant toutes les informations sur les objets de la scène 3D.
 	/// </summary>
-	private ArrayList nodeGroups;
+	private List<NodeGroup> nodeGroups;
 
 
 	/// <summary>
 	/// 	Table faisant la correspondance entre les ID de bâtiments 3D et les groupes de noeuds correspondant.
 	/// </summary>
-	private Hashtable buildingIdTable;
+	private Dictionary<long, int> buildingIdTable;
 
 
 	/// <summary>
 	/// 	Table faisant la correspondance entre les ID de groupes de noeuds de bâtiments 3D et les groupes de noeuds
 	/// 	correspondant.
 	/// </summary>
-	private Hashtable buildingNodeGroupsIdTable;
+	private Dictionary<long, int> buildingNodeGroupsIdTable;
 
 	/// <summary>
 	/// 	Table faisant la correspondance entre les ID de noeuds de bâtiments 3D et les noeuds.
 	/// </summary>
-	private Hashtable buildingNodesIdTable;
+	private Dictionary<string, int> buildingNodesIdTable;
 
 
 	/// <summary>Latitude minimale de la ville.</summary>
@@ -107,12 +107,12 @@ public class ObjectBuilder {
 
 
 	private ObjectBuilder() {
-		this.nodeGroups = new ArrayList ();
+		this.nodeGroups = new List<NodeGroup> ();
 
-		this.buildingIdTable = new Hashtable ();
+		this.buildingIdTable = new Dictionary<long, int> ();
 
-		this.buildingNodeGroupsIdTable = new Hashtable ();
-		this.buildingNodesIdTable = new Hashtable ();
+		this.buildingNodeGroupsIdTable = new Dictionary<long, int> ();
+		this.buildingNodesIdTable = new Dictionary<string, int> ();
 
 		this.roadBuilder = new HighwayBuilder ();
 		this.roofBuilder = new RoofBuilder ();
@@ -129,7 +129,7 @@ public class ObjectBuilder {
 	/// </summary>
 	/// <param name="scaleFactor">Facteur d'échelle.</param>
 	public void ScaleNodes(double scaleFactor) {
-		ArrayList groupsMemo = new ArrayList();
+		List<Node> groupsMemo = new List<Node>();
 		foreach (NodeGroup nodeGroup in nodeGroups) {
 			foreach (Node node in nodeGroup.Nodes) {
 				if (!groupsMemo.Contains(node)) {
@@ -618,19 +618,19 @@ public class ObjectBuilder {
 		groundBuilder.BuildGround ((float)length, (float)length, (float)angle, (float) minLat, (float)minLon);
 	}
 
-	public ArrayList NodeGroups {
+	public List<NodeGroup> NodeGroups {
 		get { return nodeGroups; }
 	}
 
-	public Hashtable BuildingIdTable {
+	public Dictionary<long, int> BuildingIdTable {
 		get { return buildingIdTable; }
 	}
 
-	public Hashtable BuildingNodeGroupsIdTable {
+	public Dictionary<long, int> BuildingNodeGroupsIdTable {
 		get { return buildingNodeGroupsIdTable; }
 	}
 
-	public Hashtable BuildingNodesIdTable {
+	public Dictionary<string, int> BuildingNodesIdTable {
 		get { return buildingNodesIdTable; }
 	}
 

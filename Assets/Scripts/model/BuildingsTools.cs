@@ -5,6 +5,7 @@ using System.Xml.Serialization;
 using System.IO;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// 	Suite d'outils en rapport avec la modification des bâtiments. Certaines des méthodes vont modifier le bâtiment
@@ -423,34 +424,32 @@ public class BuildingsTools {
 	/// </summary>
 	/// <returns>Groupe de noeuds correspondant au bâtiment.</returns>
 	/// <param name="buildingNodeGroupGo">Bâtiment ou groupe de noeuds 3D de type GameObject</param>
-	public NodeGroup ObjectToNodeGroup(GameObject gameObject, Hashtable idTable) {
+	public NodeGroup ObjectToNodeGroup(GameObject gameObject, Dictionary<long, int> idTable) {
 		NodeGroup res = null;
 
 		// Recherche du groupe de noeuds correspondant au groupe de noeuds 3D ou au bâtiment 3D en entrée
 		// en se servant de chaque association entre l'ID du groupe de noeuds et l'ID de l'objet correspondant
-		foreach (DictionaryEntry objectEntry in idTable) {
-			if (objectEntry.Key.GetType () == typeof(long) && objectEntry.Value.GetType () == typeof(int)) {
-				// Récupération des ID
-				long nodeGroupId = (long)objectEntry.Key;
-				int currentGameObjectId = (int)objectEntry.Value;
+		foreach (KeyValuePair<long, int> objectEntry in idTable) {
+			// Récupération des ID
+			long nodeGroupId = objectEntry.Key;
+			int currentGameObjectId = objectEntry.Value;
 
-				// Recherche et renvoi du bon groupe de noeuds si l'ID de bâtiment 3D récupéré correspond à l'ID du
-				// bâtiment en entrée
-				if (currentGameObjectId == gameObject.transform.GetInstanceID()) {
-					int nbNodeGroup = objectBuilder.NodeGroups.Count;
+			// Recherche et renvoi du bon groupe de noeuds si l'ID de bâtiment 3D récupéré correspond à l'ID du
+			// bâtiment en entrée
+			if (currentGameObjectId == gameObject.transform.GetInstanceID()) {
+				int nbNodeGroup = objectBuilder.NodeGroups.Count;
 
-					// Recherche du groupe de noeud correspondant au bâtiment trouvé
-					int i = 0;
-					for (; i < nbNodeGroup && ((NodeGroup)objectBuilder.NodeGroups[i]).Id != nodeGroupId; i++);
+				// Recherche du groupe de noeud correspondant au bâtiment trouvé
+				int i = 0;
+				for (; i < nbNodeGroup && ((NodeGroup)objectBuilder.NodeGroups[i]).Id != nodeGroupId; i++);
 
-					// Retour du groupe de noeuds s'il a été trouvé
-					if (i < nbNodeGroup)
-						res = ((NodeGroup)objectBuilder.NodeGroups[i]);
-					else
-						res = null;
-					
-					break;
-				}
+				// Retour du groupe de noeuds s'il a été trouvé
+				if (i < nbNodeGroup)
+					res = ((NodeGroup)objectBuilder.NodeGroups[i]);
+				else
+					res = null;
+				
+				break;
 			}
 		}
 
@@ -481,32 +480,30 @@ public class BuildingsTools {
 
 		// Recherche du noeud correspondant au noeud 3D en entrée en se servant de chaque association entre l'ID du
 		// noeud et l'ID du noeud 3D
-		foreach (DictionaryEntry objectEntry in objectBuilder.BuildingNodesIdTable) {
-			if (objectEntry.Key.GetType () == typeof(string) && objectEntry.Value.GetType () == typeof(int)) {
-				string nodeId = (string)objectEntry.Key;
-				int currentGameObjectId = (int)objectEntry.Value;
+		foreach (KeyValuePair<string, int> objectEntry in objectBuilder.BuildingNodesIdTable) {
+			string nodeId = objectEntry.Key;
+			int currentGameObjectId = objectEntry.Value;
 
-				// Récupération de la référence et de l'index du noeud courant par décomposition de son ID dans la table
-				string[] nodeIdArraySplit = nodeId.Split ('|');
-				long nodeReference = long.Parse (nodeIdArraySplit[0]);
-				int nodeIndex = int.Parse (nodeIdArraySplit[1]);
+			// Récupération de la référence et de l'index du noeud courant par décomposition de son ID dans la table
+			string[] nodeIdArraySplit = nodeId.Split ('|');
+			long nodeReference = long.Parse (nodeIdArraySplit[0]);
+			int nodeIndex = int.Parse (nodeIdArraySplit[1]);
 
-				// Recherche et renvoi du bon noeud si l'ID de noeud récupéré correspond à l'ID du noeud 3D en entrée
-				if (currentGameObjectId == buildingNodeGo.transform.GetInstanceID()) {
-					int nbNode = parentNodeGoup.Nodes.Count;
+			// Recherche et renvoi du bon noeud si l'ID de noeud récupéré correspond à l'ID du noeud 3D en entrée
+			if (currentGameObjectId == buildingNodeGo.transform.GetInstanceID()) {
+				int nbNode = parentNodeGoup.Nodes.Count;
 
-					// Recherche du noeud correspondant au noeud 3D trouvé
-					int i = 0;
-					for (; i < nbNode && (((Node)parentNodeGoup.GetNode(i)).Reference != nodeReference || ((Node)parentNodeGoup.GetNode(i)).Index != nodeIndex); i++);
+				// Recherche du noeud correspondant au noeud 3D trouvé
+				int i = 0;
+				for (; i < nbNode && (((Node)parentNodeGoup.GetNode(i)).Reference != nodeReference || ((Node)parentNodeGoup.GetNode(i)).Index != nodeIndex); i++);
 
-					// Retour du noeud s'il a été trouvé
-					if (i < nbNode)
-						res = ((Node)parentNodeGoup.GetNode (i));
-					else
-						res = null;
+				// Retour du noeud s'il a été trouvé
+				if (i < nbNode)
+					res = ((Node)parentNodeGoup.GetNode (i));
+				else
+					res = null;
 
-					break;
-				}
+				break;
 			}
 		}
 

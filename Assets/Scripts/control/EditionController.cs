@@ -82,7 +82,7 @@ public class EditionController : MonoBehaviour {
 
 
 	/// <summary>Bâtiments renommés durant la période de modification.</summary>
-	private Hashtable renamedBuildings;
+	private Dictionary<GameObject, string> renamedBuildings;
 
 	/// <summary>Objets déplacés durant la période de modification.</summary>
 	private List<GameObject> movedObjects;
@@ -160,7 +160,7 @@ public class EditionController : MonoBehaviour {
 
 		this.buildingsTools = BuildingsTools.GetInstance ();
 
-		this.renamedBuildings = new Hashtable ();
+		this.renamedBuildings = new Dictionary<GameObject, string> ();
 		this.movedObjects = new List<GameObject> ();
 		this.turnedObjects = new List<GameObject> ();
 
@@ -614,14 +614,12 @@ public class EditionController : MonoBehaviour {
 	/// </summary>
 	public void ValidateEdit() {
 		// Rennomage des bâtiments et de leurs murs dans les fichiers si ceux-ci ont bien changé le nom
-		foreach (DictionaryEntry buildingEntry in renamedBuildings) {
-			if(buildingEntry.Key.GetType() == typeof(GameObject) && buildingEntry.Value.GetType() == typeof(string)) {
-				GameObject renamedBuilding = (GameObject)buildingEntry.Key;
-				string oldName = (string)buildingEntry.Value;
+		foreach (KeyValuePair<GameObject, string> buildingEntry in renamedBuildings) {
+			GameObject renamedBuilding = (GameObject)buildingEntry.Key;
+			string oldName = buildingEntry.Value;
 
-				if(!renamedBuilding.name.Equals(oldName))
-					buildingsTools.UpdateName (renamedBuilding);
-			}
+			if(!renamedBuilding.name.Equals(oldName))
+				buildingsTools.UpdateName (renamedBuilding);
 		}
 
 		// Stockage des objets modifiés dans un ensemble pour éviter de mettre à jour deux fois les mêmes bâtiments
@@ -672,15 +670,13 @@ public class EditionController : MonoBehaviour {
 	/// </summary>
 	public void CancelEdit() {
 		// Rennomage des bâtiments et de leurs murs avec leur nom initial
-		foreach (DictionaryEntry buildingEntry in renamedBuildings) {
-			if (buildingEntry.Key.GetType () == typeof(GameObject) && buildingEntry.Value.GetType () == typeof(String)) {
-				GameObject renamedBuilding = (GameObject)buildingEntry.Key;
-				string oldName = (string)buildingEntry.Value;
+		foreach (KeyValuePair<GameObject, string> buildingEntry in renamedBuildings) {
+			GameObject renamedBuilding = (GameObject)buildingEntry.Key;
+			string oldName = buildingEntry.Value;
 
-				renamedBuilding.name = oldName;
-				for (int i = 0; i < renamedBuilding.transform.childCount; i++)
-					renamedBuilding.transform.GetChild (i).name = oldName + "_mur_" + i;
-			}
+			renamedBuilding.name = oldName;
+			for (int i = 0; i < renamedBuilding.transform.childCount; i++)
+				renamedBuilding.transform.GetChild (i).name = oldName + "_mur_" + i;
 		}
 
 		// Affectation à chaque batiment de la position qu'il avait lorsqu'il a été sélectionné par l'utilisateur
@@ -768,7 +764,7 @@ public class EditionController : MonoBehaviour {
 		set { panelState = value; }
 	}
 
-	public Hashtable RenamedBuildings {
+	public Dictionary<GameObject, string> RenamedBuildings {
 		get { return renamedBuildings; }
 	}
 

@@ -7,9 +7,9 @@ public class NodeGroup {
 	private long id;
 	private string name;
 
-	private ArrayList nodes;
-	private ArrayList decomposition;
-	private Hashtable tags;
+	private List<Node> nodes;
+	private List<NodeGroup> decomposition;
+	private Dictionary<string, string> tags;
 
 	private double minLon;
 	private double maxLon;
@@ -35,9 +35,9 @@ public class NodeGroup {
 		this.id = id;
 		this.name = "unknown";
 
-		this.nodes = new ArrayList ();
-		this.decomposition = new ArrayList ();
-		this.tags = new Hashtable ();
+		this.nodes = new List<Node> ();
+		this.decomposition = new List<NodeGroup> ();
+		this.tags = new Dictionary<string, string> ();
 
 		this.minLon = 0;
 		this.maxLon = 0;
@@ -64,9 +64,9 @@ public class NodeGroup {
 		this.id = id;
 		this.name = name;
 
-		this.nodes = new ArrayList();
-		this.decomposition = new ArrayList();
-		this.tags = new Hashtable();
+		this.nodes = new List<Node>();
+		this.decomposition = new List<NodeGroup>();
+		this.tags = new Dictionary<string, string>();
 
 		this.minLon = 0;
 		this.maxLon = 0;
@@ -443,7 +443,7 @@ public class NodeGroup {
 		set { name = value; }
 	}
 
-	public ArrayList Nodes {
+	public List<Node> Nodes {
 		get { return nodes; }
 	}
 
