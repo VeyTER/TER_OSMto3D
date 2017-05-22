@@ -32,6 +32,32 @@ public class BuildingsTools {
 	private XmlDocument mapCustomDocument;
 
 
+	/// <summary>
+	/// 	Table faisant la correspondance entre les de bâtiments 3D et les groupes de noeuds correspondant.
+	/// </summary>
+	private Dictionary<GameObject, NodeGroup> buildingToNodeGroupTable;
+
+	/// <summary>
+	/// 	Table faisant la correspondance entre les groupes de noeuds et les bâtiments 3D correspondant.
+	/// </summary>
+	private Dictionary<NodeGroup, GameObject> nodeGroupToBuildingTable;
+
+	/// <summary>
+	/// 	Table faisant la correspondance entre les groupes de noeuds 3D et les groupes de noeuds correspondant.
+	/// </summary>
+	private Dictionary<GameObject, NodeGroup> buildingNodeGroupToNodeGroupTable;
+
+	/// <summary>
+	/// 	Table faisant la correspondance entre les groupes de noeuds et les groupes de noeuds 3D correspondant.
+	/// </summary>
+	private Dictionary<NodeGroup, GameObject> nodeGroupToBuildingNodeGroupTable;
+
+	/// <summary>
+	/// 	Table faisant la correspondance entre les noeuds 3D et les leurs noeuds 3D correspondant.
+	/// </summary>
+	private Dictionary<GameObject, Node> buildingNodeToNodeTable;
+
+
 	private BuildingsTools () {
 		this.objectBuilder = ObjectBuilder.GetInstance ();
 
@@ -40,6 +66,14 @@ public class BuildingsTools {
 
 		this.customFilePath = FilePaths.MAPS_CUSTOM_FOLDER + "map_custom.osm";
 		this.mapCustomDocument = new XmlDocument ();
+
+		this.buildingToNodeGroupTable = new Dictionary<GameObject, NodeGroup>();
+		this.nodeGroupToBuildingTable = new Dictionary<NodeGroup, GameObject>();
+
+		this.buildingNodeGroupToNodeGroupTable = new Dictionary<GameObject, NodeGroup> ();
+		this.nodeGroupToBuildingNodeGroupTable = new Dictionary<NodeGroup, GameObject> ();
+
+		this.buildingNodeToNodeTable = new Dictionary<GameObject, Node> ();
 	}
 
 	public static BuildingsTools GetInstance() {
@@ -73,13 +107,13 @@ public class BuildingsTools {
 	/// 	Ajoute une couche de couleur à un bâtiment pour le marquer comme sélectionné.
 	/// </summary>
 	/// <param name="buildingGo">Bâtiment à colorier.</param>
-	public void ColorAsSelected(GameObject buildingGo) {
+	public void ColorAsSelected(GameObject building) {
 		Material wallMaterial = Resources.Load (Materials.WALL) as Material;
 		Material selectedElementMaterial = Resources.Load (Materials.SELECTED_ELEMENT) as Material;
 
 		// Supperposition du matériau de base avec celui de la couleur de sélection pour le bâtiment sélectionné
-		foreach (Transform wallGo in buildingGo.transform) {
-			Renderer meshRenderer = wallGo.GetComponent<Renderer> ();
+		foreach (Transform wall in building.transform) {
+			Renderer meshRenderer = wall.GetComponent<Renderer> ();
 			if (meshRenderer != null) {
 
 				// Ecrasement de stock de matériaux du mur avec un nouveau stock contenant son matériau de base et le
@@ -98,28 +132,28 @@ public class BuildingsTools {
 	/// </summary>
 	/// <param name="buildingGo">Bâtiment à renommer.</param>
 	/// <param name="newName">Nouveau nom à donner au bâtiment.</param>
-	public void UpdateName(GameObject buildingGo) {
+	public void UpdateName(GameObject building) {
 		// Récupération du groupe de noeuds correspondant au bâtiment
-		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
+		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 
 		if (File.Exists (resumeFilePath) && File.Exists (customFilePath)) {
 			mapResumeDocument.Load (resumeFilePath);
 			mapCustomDocument.Load (customFilePath);
 			
 			//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier map_custom, l'ajouter
-			if (!this.CustomBuildingExists (buildingNgp.Id))
-				this.AppendCustomBuilding (buildingNgp);
+			if (!this.CustomBuildingExists (nodeGroup.Id))
+				this.AppendCustomBuilding (nodeGroup);
 
 			// Récupération de l'attribut de nom du bâtiment dans les fichiers MapResumed et MapCustom
-			XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (buildingNgp, XmlAttributes.NAME);
-			XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (buildingNgp.Id, XmlAttributes.NAME);
+			XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
+			XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (nodeGroup.Id, XmlAttributes.NAME);
 
 			// Changement du nom du groupe de noeuds correspondant au bâtiment
-			buildingNgp.Name = buildingGo.name;
+			nodeGroup.Name = building.name;
 
 			// Changement du nom des attributs de nom dans les fichiers
-			resumeNameAttribute.Value = buildingGo.name;
-			customNameAttribute.Value = buildingGo.name;
+			resumeNameAttribute.Value = building.name;
+			customNameAttribute.Value = building.name;
 
 			mapResumeDocument.Save (resumeFilePath);
 			mapCustomDocument.Save (customFilePath);
@@ -132,20 +166,20 @@ public class BuildingsTools {
 	/// 	et MapCustom.
 	/// </summary>
 	/// <param name="buildingGo">Bâtiment à déplacer.</param>
-	public void UpdateLocation(GameObject buildingGo) {
+	public void UpdateLocation(GameObject building) {
 		// Récupération du groupe de noeuds correspondant au bâtiment
-		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
+		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 
 		if (File.Exists (resumeFilePath) && File.Exists (customFilePath)) {
 			mapResumeDocument.Load (resumeFilePath);
 			mapCustomDocument.Load (customFilePath);
 
 			//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier map_custom, l'ajouter
-			if (!this.CustomBuildingExists (buildingNgp.Id))
-				this.AppendCustomBuilding (buildingNgp);
+			if (!this.CustomBuildingExists (nodeGroup.Id))
+				this.AppendCustomBuilding (nodeGroup);
 			
 			// Récupération des noeuds correspondant au bâtiment dans les fichiers MapResumed et MapCustom
-			string xPath = "/" + XmlTags.EARTH + "//" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + buildingNgp.Id + "\"]";
+			string xPath = "/" + XmlTags.EARTH + "//" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
 			XmlNode resumeBuildingNode = mapResumeDocument.SelectSingleNode (xPath).ParentNode;
 			XmlNode customBuildingNode = mapCustomDocument.SelectSingleNode (xPath).ParentNode;
 
@@ -162,7 +196,7 @@ public class BuildingsTools {
 			// Importation dans le fichier map_custom de chaque nd du fichier map_resumedd correspondant au noeud courant
 			// du groupe de noeud correspondant au bâtiment
 			XmlNodeList resumedBuildingNd = resumeBuildingNode.ChildNodes;
-			foreach(Node node in buildingNgp.Nodes) {
+			foreach(Node node in nodeGroup.Nodes) {
 				// Recherche du nd correspondant au noeud courant à partir le la référence et de l'index du noeud.
 				// En effet, deux nd peuvent avoir la même référence à l'interieur d'un même noeud dans un fichier
 				// (pour faire boucler les bâtiments), c'est pourquoi, un index a été ajouté pour cibler précisément le
@@ -270,9 +304,9 @@ public class BuildingsTools {
 /// 	scène 3D et dans les fichiers MapResumed et MapCustom. 
 	/// </summary>
 	/// <param name="buildingGo">Bâtiment à modifier.</param>
-	public void DecrementHeight(GameObject buildingGo) {
-		int nbFloors = GetHeight(buildingGo);
-		this.UpdateHeight (buildingGo, nbFloors - 1);
+	public void DecrementHeight(GameObject building) {
+		int nbFloors = GetHeight(building);
+		this.UpdateHeight (building, nbFloors - 1);
 	}
 
 	/// <summary>
@@ -280,9 +314,9 @@ public class BuildingsTools {
 /// 	scène 3D et dans les fichiers MapResumed et MapCustom. 
 	/// </summary>
 	/// <param name="buildingGo">Bâtiment à modifier.</param>
-	public void IncrementHeight(GameObject buildingGo) {
-		int nbFloors = GetHeight(buildingGo);
-		this.UpdateHeight (buildingGo, nbFloors + 1);
+	public void IncrementHeight(GameObject building) {
+		int nbFloors = GetHeight(building);
+		this.UpdateHeight (building, nbFloors + 1);
 	}
 
 
@@ -293,10 +327,10 @@ public class BuildingsTools {
 	/// <param name="buildingGo">Bâtiment à modifier.</param>
 	public void UpdateHeight(GameObject building, int nbFloors) {
 		// Récupération du groupe de noeuds correspondant au bâtiment
-		NodeGroup buildingNgp = this.BuildingToNodeGroup (building);
+		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 
 		// Modification de l'attribut contenant le nombre d'étages du bâtiment dans le fichier map_resumedd
-		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute (buildingNgp, XmlAttributes.NB_FLOOR);
+		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
 		if (floorAttribute != null)
 			floorAttribute.Value = Math.Max(nbFloors, 1).ToString();
 
@@ -352,177 +386,6 @@ public class BuildingsTools {
 
 
 	/// <summary>
-	/// 	Renvoie le bâtiment de type GameObject correspondant à un groupe de noeuds grâce à l'ID de ce dernier et à
-	/// 	une table d'ID.
-	/// </summary>
-	/// <returns>Objet 3D correspondant au groupe de noeuds.</returns>
-	/// <param name="buildingGoId">Groupe de noeuds de type NodeGroup.</param>
-	public GameObject NodeGroupToBuilding(NodeGroup nodeGroup) {
-		if (objectBuilder.BuildingIdTable [nodeGroup.Id].GetType() == typeof(int)) {
-			// Récupération de l'ID du bâtiment 3D correspondant à l'ID du groupe de noeuds
-			int buildingGoId = (int)objectBuilder.BuildingIdTable [nodeGroup.Id];
-
-			int nbBuildings = objectBuilder.WallGroups.transform.childCount;
-			
-			// Recherche du bâtiment 3D correspondant à partir de l'ID récupéré
-			int i = 0;
-			for (; i < nbBuildings && objectBuilder.WallGroups.transform.GetChild (i).GetInstanceID () != buildingGoId; i++);
-
-			// Retour du bâtiment 3D s'il a été trouvé
-			if (i < nbBuildings)
-				return objectBuilder.WallGroups.transform.GetChild (i).gameObject;
-			else
-				return null;
-		} else {
-			return null;
-		}
-	}
-
-
-	/// <summary>
-	/// 	Renvoie le groupe de noeuds de type NodeGroup correspondant à un bâtiment de type GameObject grâce à l'ID
-	/// 	de ce dernier et à une table d'ID.
-	/// </summary>
-	/// <returns>Groupe de noeuds correspondant au bâtiment.</returns>
-	/// <param name="buildingGoId">Bâtiment 3D de type GameObject.</param>
-	public NodeGroup BuildingToNodeGroup(GameObject buildingGo) {
-		return this.ObjectToNodeGroup (buildingGo, objectBuilder.BuildingIdTable);
-	}
-
-	/// <summary>
-	/// 	Renvoie le groupe de noeuds de type NodeGroup correspondant à groupe de noeuds 3D de type  GameObject grâce
-	/// 	à l'ID de ce dernier et à une table d'ID.
-	/// </summary>
-	/// <returns>Groupe de noeuds correspondant au bâtiment.</returns>
-	/// <param name="buildingNodeGroupGo">Groupe de noeuds 3D de type GameObject</param>
-	public NodeGroup BuildingNodeGroupToNodeGroup(GameObject buildingNodeGroupGo) {
-		return this.ObjectToNodeGroup (buildingNodeGroupGo, objectBuilder.BuildingNodeGroupsIdTable);
-	}
-
-
-	/// <summary>
-	/// 	Renvoie le groupe de noeuds de type NodeGroup correspondant au bâtiment ou groupe de noeuds 3D de type
-	/// 	GameObject grâce à l'ID de ce dernier et à une table d'ID.
-	/// </summary>
-	/// <returns>Groupe de noeuds correspondant au bâtiment.</returns>
-	/// <param name="buildingNodeGroupGo">Bâtiment ou groupe de noeuds 3D de type GameObject</param>
-	public NodeGroup ObjectToNodeGroup(GameObject gameObject, Dictionary<long, int> idTable) {
-		NodeGroup res = null;
-
-		// Recherche du groupe de noeuds correspondant au groupe de noeuds 3D ou au bâtiment 3D en entrée
-		// en se servant de chaque association entre l'ID du groupe de noeuds et l'ID de l'objet correspondant
-		foreach (KeyValuePair<long, int> objectEntry in idTable) {
-			// Récupération des ID
-			long nodeGroupId = objectEntry.Key;
-			int currentGameObjectId = objectEntry.Value;
-
-			// Recherche et renvoi du bon groupe de noeuds si l'ID de bâtiment 3D récupéré correspond à l'ID du
-			// bâtiment en entrée
-			if (currentGameObjectId == gameObject.transform.GetInstanceID()) {
-				int nbNodeGroup = objectBuilder.NodeGroups.Count;
-
-				// Recherche du groupe de noeud correspondant au bâtiment trouvé
-				int i = 0;
-				for (; i < nbNodeGroup && ((NodeGroup)objectBuilder.NodeGroups[i]).Id != nodeGroupId; i++);
-
-				// Retour du groupe de noeuds s'il a été trouvé
-				if (i < nbNodeGroup)
-					res = ((NodeGroup)objectBuilder.NodeGroups[i]);
-				else
-					res = null;
-				
-				break;
-			}
-		}
-
-		return res;
-	}
-
-
-	/// <summary>
-	/// 	Renvoie le noeud correspondant à l'un des noeuds 3D d'un bâtiment grâce à l'ID de ce dernier et à une
-	/// 	table d'ID.
-	/// </summary>
-	/// <returns>Noeud correspondant au noeud 3D.</returns>
-	/// <param name="buildingNodeGo">Noeud 3D de type Gameobject.</param>
-	public Node BuildingNodeToNode(GameObject buildingNodeGo) {
-		NodeGroup parentNodeGoup = this.BuildingNodeGroupToNodeGroup (buildingNodeGo.transform.parent.gameObject);
-		return this.BuildingNodeToNode (buildingNodeGo, parentNodeGoup);
-	}
-
-
-	/// <summary>
-	/// 	Renvoie le noeud correspondant à l'un des noeuds 3D d'un bâtiment grâce à l'ID de ce dernier, au groupe de
-	/// 	noeuds correspondant au bâtiment 3D contenant les noeuds d'un bâtiment 3D et à une table d'ID.
-	/// </summary>
-	/// <returns>Noeud correspondant au noeud 3D.</returns>
-	/// <param name="buildingNodeGo">Noeud 3D de type Gameobject.</param>
-	public Node BuildingNodeToNode(GameObject buildingNodeGo, NodeGroup parentNodeGoup) {
-		Node res = null;
-
-		// Recherche du noeud correspondant au noeud 3D en entrée en se servant de chaque association entre l'ID du
-		// noeud et l'ID du noeud 3D
-		foreach (KeyValuePair<string, int> objectEntry in objectBuilder.BuildingNodesIdTable) {
-			string nodeId = objectEntry.Key;
-			int currentGameObjectId = objectEntry.Value;
-
-			// Récupération de la référence et de l'index du noeud courant par décomposition de son ID dans la table
-			string[] nodeIdArraySplit = nodeId.Split ('|');
-			long nodeReference = long.Parse (nodeIdArraySplit[0]);
-			int nodeIndex = int.Parse (nodeIdArraySplit[1]);
-
-			// Recherche et renvoi du bon noeud si l'ID de noeud récupéré correspond à l'ID du noeud 3D en entrée
-			if (currentGameObjectId == buildingNodeGo.transform.GetInstanceID()) {
-				int nbNode = parentNodeGoup.Nodes.Count;
-
-				// Recherche du noeud correspondant au noeud 3D trouvé
-				int i = 0;
-				for (; i < nbNode && (((Node)parentNodeGoup.GetNode(i)).Reference != nodeReference || ((Node)parentNodeGoup.GetNode(i)).Index != nodeIndex); i++);
-
-				// Retour du noeud s'il a été trouvé
-				if (i < nbNode)
-					res = ((Node)parentNodeGoup.GetNode (i));
-				else
-					res = null;
-
-				break;
-			}
-		}
-
-		return res;
-	}
-
-	/// <summary>
-	/// 	Renvoie le Groupe de noeuds 3D correspondant à un bâtiment 3D grâce à l'ID de ce dernier et à une table
-	/// 	d'ID.
-	/// </summary>
-	/// <returns>Groupe de noeuds 3D correspondant à un bâtiment 3D.</returns>
-	/// <param name="buildingNodeGo">
-	/// 	Bâtiment 3D, de typeGameObject, dont on veut récupérer le noeud 3D correspondant.
-	/// </param>
-	public GameObject BuildingToBuildingNodeGroup(GameObject buildingGo) {
-		// [GameObject]-building  =>  [NodeGroup]-buildingNodeGroup
-		NodeGroup buildingNodeGroup = this.BuildingToNodeGroup (buildingGo);
-
-		// 							  [NodeGroup]-buildingNodeGroup ID  =>  [GameObject]-BuildingNode ID
-		int buildingNodeGroupId = (int)objectBuilder.BuildingNodeGroupsIdTable[buildingNodeGroup.Id];
-
-		// 							 										[GameObject]-BuildingNode ID  =>  [GameObject]-BuildingNode
-		Transform buildingNodesTransform = objectBuilder.BuildingNodes.transform;
-
-		// Recherche du groupe de noeuds 3D correspondant au groupe de noeuds 3D trouvé
-		int i = 0;
-		for (; i < buildingNodesTransform.childCount && buildingNodesTransform.GetChild(i).GetInstanceID() != buildingNodeGroupId; i++);
-
-		// Retourne le groupe de noeuds 3D s'il a été trouvé
-		if (i < buildingNodesTransform.childCount)
-			return buildingNodesTransform.GetChild (i).gameObject;
-		else
-			return null;
-	}
-
-
-	/// <summary>
 	/// 	Met à jour la position des noeuds correspondant à un bâtiment 3D pour que la position des sommets de ce
 	/// 	dernier corresponde à la position de ses noeuds.
 	/// </summary>
@@ -536,7 +399,7 @@ public class BuildingsTools {
 
 		// Affectation de la position des noeuds 3D de bâtiments aux noeuds correspondants
 		foreach(Transform buildingNodeTransform in buildingNodeGroup.transform) {
-			Node node = this.BuildingNodeToNode (buildingNodeTransform.gameObject, parentNodeGroup);
+			Node node = this.BuildingNodeToNode (buildingNodeTransform.gameObject);
 			node.Latitude = buildingNodeTransform.position.z;
 			node.Longitude = buildingNodeTransform.position.x;
 		}
@@ -548,20 +411,20 @@ public class BuildingsTools {
 	/// </summary>
 	/// <returns>Centre du batiment.</returns>
 	/// <param name="buildingGo">Batiment, de type GameObject, dont on veut calculer le centre.</param>
-	public Vector3 BuildingCenter(GameObject buildingGo) {
-		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
+	public Vector3 BuildingCenter(GameObject building) {
+		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 
 		// Somme des coordonnées des murs de bâtiments
-		if (buildingNgp != null) {
+		if (nodeGroup != null) {
 			Vector3 positionSum = Vector3.zero;
-			GameObject firstWall = buildingGo.transform.GetChild (0).gameObject;
-			for(int i = 0; i < buildingNgp.Nodes.Count - 1; i++) {
-				Node buildingNode = (Node)buildingNgp.Nodes [i];
+			GameObject firstWall = building.transform.GetChild (0).gameObject;
+			for(int i = 0; i < nodeGroup.Nodes.Count - 1; i++) {
+				Node buildingNode = (Node)nodeGroup.Nodes [i];
 				Vector3 nodePosition = new Vector3 ((float)buildingNode.Longitude, (float)firstWall.transform.position.y, (float)buildingNode.Latitude);
 				positionSum += nodePosition;
 			}
 
-			return positionSum / ((buildingNgp.Nodes.Count - 1) * 1F);
+			return positionSum / ((nodeGroup.Nodes.Count - 1) * 1F);
 		} else {
 			return Vector3.zero;
 		}
@@ -577,17 +440,17 @@ public class BuildingsTools {
 	/// <param name="buildingNodeGroup">
 	/// 	Groupe de noeuds, de type NodeGroup, correspondant au groupe de noeuds 3D.
 	/// </param>
-	public Vector3 BuildingNodesCenter(GameObject buildingNodeGroupGo, NodeGroup buildingNodeGroup) {
+	public Vector3 BuildingNodesCenter(GameObject buildingNodeGroup, NodeGroup NodeGroup) {
 		Vector3 positionSum = new Vector3 (0, 0, 0);
 
 		// Somme des coordonnées des noeuds 3D de bâtiments
-		for(int i = 0; i < buildingNodeGroup.Nodes.Count - 1; i++) {
-			Node buildingNode = (Node)buildingNodeGroup.Nodes [i];
-			Vector3 nodePosition = new Vector3 ((float)buildingNode.Longitude, (float)buildingNodeGroupGo.transform.position.y, (float)buildingNode.Latitude);
+		for(int i = 0; i < NodeGroup.Nodes.Count - 1; i++) {
+			Node buildingNode = (Node)NodeGroup.Nodes [i];
+			Vector3 nodePosition = new Vector3 ((float)buildingNode.Longitude, (float)buildingNodeGroup.transform.position.y, (float)buildingNode.Latitude);
 			positionSum += nodePosition;
 		}
 
-		return positionSum / ((buildingNodeGroup.Nodes.Count - 1) * 1F);
+		return positionSum / ((NodeGroup.Nodes.Count - 1) * 1F);
 	}
 
 
@@ -597,20 +460,20 @@ public class BuildingsTools {
 	/// </summary>
 	/// <returns>Rayon du bâtiment.</returns>
 	/// <param name="buildingGo">Bâtiment dont on veut calculer le rayon.</param>
-	public double BuildingRadius(GameObject buildingGo) {
+	public double BuildingRadius(GameObject building) {
 		// Calcul du centre du bâtiment
-		Vector3 buildingCenter = this.BuildingCenter (buildingGo);
+		Vector3 buildingCenter = this.BuildingCenter (building);
 
 		// Récupération du groupe de noeuds correspondant au bâtiment
-		NodeGroup buildingNgp = this.BuildingToNodeGroup (buildingGo);
+		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 
 		// Calcul du rayon si le groupe de noeuds a bien été trouvé
-		if (buildingNgp != null) {
+		if (nodeGroup != null) {
 
 			// Somme des distances de chaque sommet par rapport au centre avec mise à jour du maximum
 			double maxDistance = 0;
-			for(int i = 0; i < buildingNgp.Nodes.Count - 1; i++) {
-				Node buildingNode = (Node)buildingNgp.Nodes [i];
+			for(int i = 0; i < nodeGroup.Nodes.Count - 1; i++) {
+				Node buildingNode = (Node)nodeGroup.Nodes [i];
 				Vector2 nodePosition = new Vector2 ((float)buildingNode.Longitude, (float)buildingNode.Latitude);
 				Vector2 buildingCenter2D = new Vector2 (buildingCenter.x, buildingCenter.z);
 
@@ -625,6 +488,122 @@ public class BuildingsTools {
 		}
 	}
 
+
+	/// <summary>
+	/// 	Ajout une entrée dans la table de correspondance entre les bâtiments 3D et leurs groupes de noeuds
+	/// 	correspondant.
+	/// </summary>
+	/// <param name="building">Bâtiment 3D en temps que clé.</param>
+	/// <param name="nodeGroup">Groupe de noeuds en temps que valeur.</param>
+	public void AddBuildingToNodeGroupEntry(GameObject building, NodeGroup nodeGroup) {
+		nodeGroupToBuildingTable [nodeGroup] = building;
+	}
+
+	/// <summary>
+	/// 	Ajout une entrée dans la table de correspondance entre les groupes de noeuds et leurs bâtiments 3D
+	/// 	correspondant.
+	/// </summary>
+	/// <param name="nodeGroup">Groupe de noeuds en temps que clé.</param>
+	/// <param name="building">Bâtiment 3D en temps que valeur.</param>
+	public void AddNodeGroupToBuildingEntry(NodeGroup nodeGroup, GameObject building) {
+		buildingToNodeGroupTable [building] = nodeGroup;
+	}
+
+	/// <summary>
+	/// 	Ajout une entrée dans la table de correspondance entre les groupes de noeuds 3D et leurs groupes de noeuds
+	/// 	correspondant.
+	/// </summary>
+	/// <param name="buildingNodeGroup">Groupe de noeuds 3D en temps que clé.</param>
+	/// <param name="nodeGroup">Groupe de noeuds en temps que valeur.</param>
+	public void AddBuildingNodeGroupToNodeGroupEntry(GameObject buildingNodeGroup, NodeGroup nodeGroup) {
+		buildingNodeGroupToNodeGroupTable [buildingNodeGroup] = nodeGroup;
+	}
+
+	/// <summary>
+	/// 	Ajout une entrée dans la table de correspondance entre les groupes de noeuds et leurs groupes de noeuds 3D
+	/// 	correspondant.
+	/// </summary>
+	/// <param name="nodeGroup">Groupe de noeuds en temps que clé.</param>
+	/// <param name="buildingNodeGroup">Groupe de noeuds 3D en temps que valeur.</param>
+	public void AddNodeGroupToBuildingNodeGroup(NodeGroup nodeGroup, GameObject buildingNodeGroup) {
+		nodeGroupToBuildingNodeGroupTable [nodeGroup] = buildingNodeGroup;
+	}
+
+	/// <summary>
+	/// 	Ajout une entrée dans la table de correspondance entre les noeuds 3D et leurs noeuds correspondant.
+	/// </summary>
+	/// <param name="buildingNode">Noeuds 3D en temps que clé.</param>
+	/// <param name="node">Noeud en temps que valeur.</param>
+	public void AddBuildingNodeToNodeEntry(GameObject buildingNode, Node node) {
+		buildingNodeToNodeTable [buildingNode] = node;
+	}
+
+
+	/// <summary>
+	/// 	Renvoie le groupe de noeuds correspondant à un bâtiment 3D grâce à une table de correspondance.
+	/// </summary>
+	/// <returns>Groupe de noeuds correspondant à un bâtiment 3D.</returns>
+	/// <param name="building">
+	/// 	Bâtiment 3D  dont on veut récupérer le Groupe de noeuds correspondant.
+	/// </param>
+	public NodeGroup BuildingToNodeGroup(GameObject building) {
+		return buildingToNodeGroupTable [building];
+	}
+
+	/// <summary>
+	/// 	Renvoie le bâtiment 3D correspondant à un groupe de noeuds grâce à une table de correspondance.
+	/// </summary>
+	/// <returns>Bâtiment 3D correspondant à un groupe de noeuds.</returns>
+	/// <param name="nodeGroup">
+	/// 	Groupe de noeuds dont on veut récupérer le bâtiment 3D correspondant.
+	/// </param>
+	public GameObject NodeGroupToBuilding(NodeGroup nodeGroup) {
+		return nodeGroupToBuildingTable [nodeGroup];
+	}
+
+	/// <summary>
+	/// 	Renvoie le groupe de noeuds correspondant à un groupe de noeuds 3D grâce à une table de correspondance.
+	/// </summary>
+	/// <returns>Groupe de noeuds correspondant à un groupe de noeuds 3D.</returns>
+	/// <param name="buildingNodeGroup">
+	/// 	Groupe de noeuds 3D dont on veut récupérer le groupe de noeuds correspondant.
+	/// </param>
+	public NodeGroup BuildingNodeGroupToNodeGroup(GameObject buildingNodeGroup) {
+		return buildingNodeGroupToNodeGroupTable [buildingNodeGroup];
+	}
+
+	/// <summary>
+	/// 	Renvoie le groupe de noeuds 3D correspondant à un groupe de noeuds grâce à une table de correspondance.
+	/// </summary>
+	/// <returns>Groupe de noeuds 3D correspondant à un groupe de noeuds.</returns>
+	/// <param name="nodeGroup">
+	/// 	Groupe de noeuds dont on veut récupérer le groupe de noeuds 3D correspondant.
+	/// </param>
+	public GameObject NodeGroupToBuildingNodeGroup(NodeGroup nodeGroup) {
+		return nodeGroupToBuildingNodeGroupTable [nodeGroup];
+	}
+
+	/// <summary>
+	/// 	Renvoie le noeud correspondant à un noeud 3D grâce à une table de correspondance.
+	/// </summary>
+	/// <returns>Noeud correspondant à un noeud 3D.</returns>
+	/// <param name="buildingNode">
+	/// 	Noeud 3D dont on veut récupérer le noeud correspondant.
+	/// </param>
+	public Node BuildingNodeToNode(GameObject buildingNode) {
+		return buildingNodeToNodeTable [buildingNode];
+	}
+
+	/// <summary>
+	/// 	Renvoie le bâtiment 3D correspondant à un groupe de noeuds 3D.
+	/// </summary>
+	/// <returns>Objet 3D correspondant au groupe de noeuds 3D.</returns>
+	/// <param name="buildingGoId">Bâtiment 3D dont on veut récupérer le groupe de noeuds 3D corresondant.</param>
+	public GameObject BuildingToBuildingNodeGroup(GameObject building) {
+		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
+		GameObject buildingNodeGroup = this.NodeGroupToBuildingNodeGroup(nodeGroup);
+		return buildingNodeGroup;
+	}
 
 	public static class BuildingsToolsInstanceHolder {
 		public static BuildingsTools instance = new BuildingsTools();

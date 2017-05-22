@@ -178,9 +178,8 @@ public class MapLoader {
 
 					// Changement de la vitesse maximale dans le groupe de noeuds courant si la propriété représente
 					// cette valeur
-					// 	TODO Tester, MAX_SPEED étant une valeur et non une clé...
-					//	if (key.Equals (XmlValues.MAX_SPEED))
-					//		nodeGroup.MaxSpeed = int.Parse (value);
+					if (key.Equals (XmlKeys.MAX_SPEED))
+						nodeGroup.MaxSpeed = int.Parse (value);
 
 					// Changement de la forme du toit dans le groupe de noeuds courant si la propriété représente
 					// cette valeur

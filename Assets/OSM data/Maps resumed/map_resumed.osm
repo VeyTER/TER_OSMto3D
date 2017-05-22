@@ -187,7 +187,7 @@
             <nd index="0" ref="3941279947" lat="43.6048076" lon="1.4436095" />
           </highway>
           <highway>
-            <info id="8100654" name="Place Victor Hugo" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="8100654" name="Place Victor Hugo" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60690366" lat="43.6070582" lon="1.4462907" />
             <nd index="1" ref="60966433" lat="43.6066945" lon="1.4463119" />
             <nd index="2" ref="60690367" lat="43.6061845" lon="1.4463976" />
@@ -240,7 +240,7 @@
             <nd index="9" ref="60960462" lat="43.6063064" lon="1.4446163" />
           </highway>
           <highway>
-            <info id="8590752" name="Rue Saint-Pantaléon" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="8590752" name="Rue Saint-Pantaléon" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60967323" lat="43.6035794" lon="1.4448024" />
             <nd index="1" ref="2256050422" lat="43.603022" lon="1.4448151" />
             <nd index="2" ref="60967326" lat="43.6029665" lon="1.4448164" />
@@ -252,7 +252,7 @@
             <nd index="2" ref="83815679" lat="43.6030063" lon="1.4451378" />
           </highway>
           <highway>
-            <info id="5150674" name="Rue Lafayette" roadtype="pedestrian" nbway="1" maxspeed="50" />
+            <info id="5150674" name="Rue Lafayette" roadtype="pedestrian" nbway="1" maxspeed="30" />
             <nd index="0" ref="1606221012" lat="43.6049054" lon="1.445586" />
             <nd index="1" ref="35625722" lat="43.6049029" lon="1.4457093" />
             <nd index="2" ref="2262496469" lat="43.6049015" lon="1.4457761" />
@@ -267,22 +267,22 @@
             <nd index="4" ref="4598101130" lat="43.6033003" lon="1.4397592" />
           </highway>
           <highway>
-            <info id="7813665" name="Impasse Lakanal" roadtype="service" nbway="1" maxspeed="50" />
+            <info id="7813665" name="Impasse Lakanal" roadtype="service" nbway="1" maxspeed="10" />
             <nd index="0" ref="57181723" lat="43.6033804" lon="1.4408451" />
             <nd index="1" ref="4598101128" lat="43.6032797" lon="1.4400369" />
             <nd index="2" ref="426691351" lat="43.6032064" lon="1.4394486" />
           </highway>
           <building>
-            <info id="34923008" name="Office de Tourisme" nbfloor="3" roofangle="15" rooftype="pitched" />
-            <nd index="0" ref="409757996" lat="43.6045859375" lon="1.44352087402344" />
-            <nd index="1" ref="2966745899" lat="43.60459375" lon="1.44356115722656" />
-            <nd index="2" ref="2386804669" lat="43.604609375" lon="1.44362414550781" />
-            <nd index="3" ref="409758000" lat="43.604625" lon="1.44371130371094" />
-            <nd index="4" ref="409758003" lat="43.604515625" lon="1.44374035644531" />
-            <nd index="5" ref="2979069288" lat="43.604484375" lon="1.44360241699219" />
-            <nd index="6" ref="2913234444" lat="43.604484375" lon="1.44358703613281" />
-            <nd index="7" ref="409758007" lat="43.60446875" lon="1.44354406738281" />
-            <nd index="8" ref="409757996" lat="43.6045859375" lon="1.44352087402344" />
+            <info id="34923008" name="Office de Tourismo" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <nd index="0" ref="409757996" lat="43.6046015625" lon="1.44324145507813" />
+            <nd index="1" ref="2966745899" lat="43.6046171875" lon="1.44328149414062" />
+            <nd index="2" ref="2386804669" lat="43.6046328125" lon="1.44334448242188" />
+            <nd index="3" ref="409758000" lat="43.6046484375" lon="1.44343188476562" />
+            <nd index="4" ref="409758003" lat="43.6045390625" lon="1.44346069335938" />
+            <nd index="5" ref="2979069288" lat="43.6045078125" lon="1.44332299804687" />
+            <nd index="6" ref="2913234444" lat="43.6045078125" lon="1.44330737304688" />
+            <nd index="7" ref="409758007" lat="43.6044921875" lon="1.44326440429688" />
+            <nd index="8" ref="409757996" lat="43.6046015625" lon="1.44324145507813" />
           </building>
           <building>
             <info id="35008082" name="Marché Victor Hugo" nbfloor="3" roofangle="15" rooftype="pitched" />
@@ -1225,12 +1225,12 @@
           </building>
           <building>
             <info id="46684195" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
-            <nd index="0" ref="596615145" lat="43.6029843" lon="1.4413917" />
-            <nd index="1" ref="1754051792" lat="43.6029543" lon="1.441427" />
-            <nd index="2" ref="596615158" lat="43.6029295" lon="1.4414562" />
-            <nd index="3" ref="596615150" lat="43.6029492" lon="1.4414865" />
-            <nd index="4" ref="596615149" lat="43.6030146" lon="1.4414416" />
-            <nd index="5" ref="596615145" lat="43.6029843" lon="1.4413917" />
+            <nd index="0" ref="596615145" lat="43.6028984375" lon="1.44114880371094" />
+            <nd index="1" ref="1754051792" lat="43.6028671875" lon="1.44118395996094" />
+            <nd index="2" ref="596615158" lat="43.6028359375" lon="1.44121325683594" />
+            <nd index="3" ref="596615150" lat="43.602859375" lon="1.44124353027344" />
+            <nd index="4" ref="596615149" lat="43.6029296875" lon="1.44119860839844" />
+            <nd index="5" ref="596615145" lat="43.6028984375" lon="1.44114880371094" />
           </building>
           <building>
             <info id="46683991" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
@@ -1333,17 +1333,17 @@
           </building>
           <building>
             <info id="46684689" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
-            <nd index="0" ref="596621571" lat="43.60467578125" lon="1.44381958007813" />
-            <nd index="1" ref="3856830514" lat="43.60469140625" lon="1.44402172851562" />
-            <nd index="2" ref="2457772113" lat="43.60469140625" lon="1.44404272460938" />
-            <nd index="3" ref="596621585" lat="43.60470703125" lon="1.44407006835938" />
-            <nd index="4" ref="1754052551" lat="43.60455078125" lon="1.44410278320313" />
-            <nd index="5" ref="426597790" lat="43.60441015625" lon="1.44413549804688" />
-            <nd index="6" ref="2457772111" lat="43.60441015625" lon="1.44410717773438" />
-            <nd index="7" ref="426597793" lat="43.60439453125" lon="1.44394653320312" />
-            <nd index="8" ref="596723597" lat="43.60445703125" lon="1.44392114257813" />
-            <nd index="9" ref="596723607" lat="43.60466015625" lon="1.44382641601562" />
-            <nd index="10" ref="596621571" lat="43.60467578125" lon="1.44381958007813" />
+            <nd index="0" ref="596621571" lat="43.60478125" lon="1.44366467285156" />
+            <nd index="1" ref="3856830514" lat="43.60465234375" lon="1.44382202148438" />
+            <nd index="2" ref="2457772113" lat="43.604640625" lon="1.44383728027344" />
+            <nd index="3" ref="596621585" lat="43.6046328125" lon="1.44386791992187" />
+            <nd index="4" ref="1754052551" lat="43.60449609375" lon="1.44378405761719" />
+            <nd index="5" ref="426597790" lat="43.60437109375" lon="1.4437109375" />
+            <nd index="6" ref="2457772111" lat="43.604390625" lon="1.4436904296875" />
+            <nd index="7" ref="426597793" lat="43.60448828125" lon="1.44356311035156" />
+            <nd index="8" ref="596723597" lat="43.60455078125" lon="1.44358776855469" />
+            <nd index="9" ref="596723607" lat="43.604765625" lon="1.44365893554688" />
+            <nd index="10" ref="596621571" lat="43.60478125" lon="1.44366467285156" />
           </building>
           <building>
             <info id="46691178" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
@@ -1502,7 +1502,7 @@
             <nd index="5" ref="597216334" lat="43.6058893" lon="1.4413175" />
           </building>
           <highway>
-            <info id="8590708" name="Rue John Fitzgerald Kennedy" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="8590708" name="Rue John Fitzgerald Kennedy" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60698642" lat="43.6057382" lon="1.4442331" />
             <nd index="1" ref="60966702" lat="43.6056893" lon="1.4443236" />
             <nd index="2" ref="60966710" lat="43.6057847" lon="1.4456" />
@@ -1877,7 +1877,7 @@
             <nd index="8" ref="757289577" lat="43.6062102" lon="1.4457815" />
           </building>
           <highway>
-            <info id="7814327" name="Rue Sainte-Ursule" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="7814327" name="Rue Sainte-Ursule" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="57186853" lat="43.6031166" lon="1.4420241" />
             <nd index="1" ref="2138977106" lat="43.6030398" lon="1.4420235" />
             <nd index="2" ref="596203907" lat="43.6029678" lon="1.4420229" />
@@ -2769,7 +2769,7 @@
             <nd index="1" ref="84825917" lat="43.604703" lon="1.4414064" />
           </highway>
           <highway>
-            <info id="22718005" name="Rue des Lois" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="22718005" name="Rue des Lois" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="2386209272" lat="43.6048217" lon="1.4426403" />
             <nd index="1" ref="2386209273" lat="43.604905" lon="1.442601" />
             <nd index="2" ref="60964491" lat="43.6057209" lon="1.4416043" />
@@ -2782,7 +2782,7 @@
             <nd index="9" ref="60964494" lat="43.6073071" lon="1.4396366" />
           </highway>
           <highway>
-            <info id="8100650" name="Rue du Rempart Villeneuve" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="8100650" name="Rue du Rempart Villeneuve" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60690368" lat="43.6059389" lon="1.4464725" />
             <nd index="1" ref="60690369" lat="43.6051215" lon="1.4463937" />
             <nd index="2" ref="60690370" lat="43.6048871" lon="1.4463642" />
@@ -2794,7 +2794,7 @@
             <nd index="2" ref="57192333" lat="43.6038668" lon="1.4473431" />
           </highway>
           <highway>
-            <info id="7814244" name="Rue Mirepoix" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="7814244" name="Rue Mirepoix" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="57187268" lat="43.6033738" lon="1.4421824" />
             <nd index="1" ref="4342463284" lat="43.6034259" lon="1.4420023" />
             <nd index="2" ref="4342463285" lat="43.6034497" lon="1.4419527" />
@@ -2819,14 +2819,14 @@
             <nd index="2" ref="35721382" lat="43.603932" lon="1.4438976" />
           </highway>
           <highway>
-            <info id="8590709" name="Rue Caussette" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="8590709" name="Rue Caussette" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60966434" lat="43.6061618" lon="1.446111" />
             <nd index="1" ref="60966712" lat="43.6053247" lon="1.4462605" />
             <nd index="2" ref="60966713" lat="43.6051625" lon="1.4463549" />
             <nd index="3" ref="60690369" lat="43.6051215" lon="1.4463937" />
           </highway>
           <highway>
-            <info id="22937307" name="Impasse Baour-Lormian" roadtype="pedestrian" nbway="1" maxspeed="50" />
+            <info id="22937307" name="Impasse Baour-Lormian" roadtype="pedestrian" nbway="1" maxspeed="30" />
             <nd index="0" ref="247081235" lat="43.6029582" lon="1.444125" />
             <nd index="1" ref="2458144582" lat="43.6029231" lon="1.4441366" />
             <nd index="2" ref="247081236" lat="43.602768" lon="1.4441882" />
@@ -2834,7 +2834,7 @@
             <nd index="4" ref="247081238" lat="43.6026632" lon="1.444328" />
           </highway>
           <highway>
-            <info id="113196799" name="Rue Antoine Deville" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="113196799" name="Rue Antoine Deville" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="755802311" lat="43.6048206" lon="1.4411362" />
             <nd index="1" ref="84825917" lat="43.604703" lon="1.4414064" />
           </highway>
@@ -2931,7 +2931,7 @@
             <nd index="13" ref="426691166" lat="43.605135" lon="1.4457777" />
           </building>
           <highway>
-            <info id="7814259" name="Rue des Jacobins" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="7814259" name="Rue des Jacobins" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="57187264" lat="43.6041754" lon="1.4417854" />
             <nd index="1" ref="1625713705" lat="43.6040634" lon="1.4409087" />
             <nd index="2" ref="57187341" lat="43.6040299" lon="1.4406829" />
@@ -3978,7 +3978,7 @@
             <nd index="5" ref="597216328" lat="43.6060271" lon="1.4411433" />
           </building>
           <highway>
-            <info id="7813457" name="Rue Joseph Lakanal" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="7813457" name="Rue Joseph Lakanal" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="35685344" lat="43.6046005" lon="1.4405223" />
             <nd index="1" ref="57187341" lat="43.6040299" lon="1.4406829" />
           </highway>
@@ -4004,63 +4004,63 @@
             <nd index="1" ref="65161480" lat="43.6034802" lon="1.4457148" />
           </highway>
           <building>
-            <info id="10157283" name="Capilol - Mairie de Toulouse" nbfloor="3" roofangle="15" rooftype="pitched" />
-            <nd index="0" ref="83815655" lat="43.6019296875" lon="1.44362084960938" />
-            <nd index="1" ref="426597782" lat="43.601921875" lon="1.44359887695312" />
-            <nd index="2" ref="426597780" lat="43.6018125" lon="1.4435625" />
-            <nd index="3" ref="426597778" lat="43.60178125" lon="1.44358618164063" />
-            <nd index="4" ref="426597775" lat="43.6015703125" lon="1.44354418945312" />
-            <nd index="5" ref="426597773" lat="43.601546875" lon="1.44351293945313" />
-            <nd index="6" ref="2097748040" lat="43.60146875" lon="1.44349658203125" />
-            <nd index="7" ref="426597771" lat="43.601359375" lon="1.44347412109375" />
-            <nd index="8" ref="426597769" lat="43.6013359375" lon="1.44350463867188" />
-            <nd index="9" ref="426597766" lat="43.601140625" lon="1.44345947265625" />
-            <nd index="10" ref="1308633655" lat="43.601125" lon="1.44344604492187" />
-            <nd index="11" ref="1308633713" lat="43.601109375" lon="1.44343823242188" />
-            <nd index="12" ref="426597764" lat="43.601109375" lon="1.44343115234375" />
-            <nd index="13" ref="426597762" lat="43.60103125" lon="1.44341845703125" />
-            <nd index="14" ref="1308633671" lat="43.60103125" lon="1.44342553710937" />
-            <nd index="15" ref="1308633666" lat="43.601" lon="1.443423828125" />
-            <nd index="16" ref="1308633686" lat="43.6009921875" lon="1.44342797851563" />
-            <nd index="17" ref="83815656" lat="43.600984375" lon="1.44343579101563" />
-            <nd index="18" ref="1308633683" lat="43.6009375" lon="1.44356127929688" />
-            <nd index="19" ref="1308633659" lat="43.600953125" lon="1.44356616210937" />
-            <nd index="20" ref="426597760" lat="43.6008125" lon="1.443970703125" />
-            <nd index="21" ref="426597758" lat="43.6008125" lon="1.44397436523438" />
-            <nd index="22" ref="426597755" lat="43.600796875" lon="1.444033203125" />
-            <nd index="23" ref="1308633672" lat="43.600796875" lon="1.4440341796875" />
-            <nd index="24" ref="1308633709" lat="43.6008125" lon="1.44405297851563" />
-            <nd index="25" ref="1308633651" lat="43.6008125" lon="1.44405786132813" />
-            <nd index="26" ref="1308633685" lat="43.6008203125" lon="1.44406811523438" />
-            <nd index="27" ref="1308633689" lat="43.6008359375" lon="1.44407470703125" />
-            <nd index="28" ref="83815659" lat="43.6008359375" lon="1.44407958984375" />
-            <nd index="29" ref="426597753" lat="43.600953125" lon="1.44410180664063" />
-            <nd index="30" ref="1308633702" lat="43.6009609375" lon="1.44409448242188" />
-            <nd index="31" ref="1308633678" lat="43.600984375" lon="1.44408984375" />
-            <nd index="32" ref="426597751" lat="43.601" lon="1.44407885742188" />
-            <nd index="33" ref="1308645090" lat="43.601171875" lon="1.44411059570313" />
-            <nd index="34" ref="1308645070" lat="43.601171875" lon="1.44411596679688" />
-            <nd index="35" ref="2130192067" lat="43.601265625" lon="1.44413403320312" />
-            <nd index="36" ref="1308645095" lat="43.601296875" lon="1.44413989257813" />
-            <nd index="37" ref="1308645075" lat="43.601296875" lon="1.44413256835938" />
-            <nd index="38" ref="426597749" lat="43.60146875" lon="1.44416040039063" />
-            <nd index="39" ref="1308633653" lat="43.601484375" lon="1.44418994140625" />
-            <nd index="40" ref="1308633661" lat="43.6015" lon="1.44419604492187" />
-            <nd index="41" ref="426597746" lat="43.6014921875" lon="1.44420385742188" />
-            <nd index="42" ref="426597744" lat="43.601625" lon="1.4442275390625" />
-            <nd index="43" ref="1308633681" lat="43.601625" lon="1.44421630859375" />
-            <nd index="44" ref="1308633705" lat="43.601640625" lon="1.444212890625" />
-            <nd index="45" ref="1308633669" lat="43.6016484375" lon="1.44419897460938" />
-            <nd index="46" ref="83815661" lat="43.6016640625" lon="1.44420239257813" />
-            <nd index="47" ref="1308633711" lat="43.601671875" lon="1.44418725585937" />
-            <nd index="48" ref="1308633690" lat="43.60165625" lon="1.44417797851563" />
-            <nd index="49" ref="1308633654" lat="43.6017578125" lon="1.44397412109375" />
-            <nd index="50" ref="1308633710" lat="43.6017578125" lon="1.44397094726563" />
-            <nd index="51" ref="426597740" lat="43.6018125" lon="1.44389770507813" />
-            <nd index="52" ref="1308633664" lat="43.601796875" lon="1.44388891601563" />
-            <nd index="53" ref="1308633712" lat="43.601921875" lon="1.44363793945312" />
-            <nd index="54" ref="1308633670" lat="43.601921875" lon="1.44363598632813" />
-            <nd index="55" ref="83815655" lat="43.6019296875" lon="1.44362084960938" />
+            <info id="10157283" name="Capitol - Mairie de Toulouse" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <nd index="0" ref="83815655" lat="43.604875" lon="1.44399438476562" />
+            <nd index="1" ref="426597782" lat="43.604859375" lon="1.44397412109375" />
+            <nd index="2" ref="426597780" lat="43.60475" lon="1.44398193359375" />
+            <nd index="3" ref="426597778" lat="43.6047265625" lon="1.444015625" />
+            <nd index="4" ref="426597775" lat="43.6045078125" lon="1.4440595703125" />
+            <nd index="5" ref="426597773" lat="43.604484375" lon="1.44403662109375" />
+            <nd index="6" ref="2097748040" lat="43.60440625" lon="1.44405078125" />
+            <nd index="7" ref="426597771" lat="43.604296875" lon="1.44407153320313" />
+            <nd index="8" ref="426597769" lat="43.60428125" lon="1.44411181640625" />
+            <nd index="9" ref="426597766" lat="43.6040859375" lon="1.44414086914063" />
+            <nd index="10" ref="1308633655" lat="43.6040625" lon="1.44413427734375" />
+            <nd index="11" ref="1308633713" lat="43.604046875" lon="1.44413305664063" />
+            <nd index="12" ref="426597764" lat="43.604046875" lon="1.44412646484375" />
+            <nd index="13" ref="426597762" lat="43.60396875" lon="1.44414428710938" />
+            <nd index="14" ref="1308633671" lat="43.60396875" lon="1.44415087890625" />
+            <nd index="15" ref="1308633666" lat="43.6039375" lon="1.4441611328125" />
+            <nd index="16" ref="1308633686" lat="43.6039296875" lon="1.4441708984375" />
+            <nd index="17" ref="83815656" lat="43.6039375" lon="1.44417822265625" />
+            <nd index="18" ref="1308633683" lat="43.6039375" lon="1.44431201171875" />
+            <nd index="19" ref="1308633659" lat="43.603953125" lon="1.444310546875" />
+            <nd index="20" ref="426597760" lat="43.6039765625" lon="1.44473828125" />
+            <nd index="21" ref="426597758" lat="43.6039765625" lon="1.44474169921875" />
+            <nd index="22" ref="426597755" lat="43.603984375" lon="1.44480200195312" />
+            <nd index="23" ref="1308633672" lat="43.603984375" lon="1.444802734375" />
+            <nd index="24" ref="1308633709" lat="43.6040078125" lon="1.444814453125" />
+            <nd index="25" ref="1308633651" lat="43.6040078125" lon="1.44481884765625" />
+            <nd index="26" ref="1308633685" lat="43.604015625" lon="1.44482836914063" />
+            <nd index="27" ref="1308633689" lat="43.60403125" lon="1.44482861328125" />
+            <nd index="28" ref="83815659" lat="43.60403125" lon="1.4448330078125" />
+            <nd index="29" ref="426597753" lat="43.60415625" lon="1.44480639648437" />
+            <nd index="30" ref="1308633702" lat="43.60415625" lon="1.44479956054688" />
+            <nd index="31" ref="1308633678" lat="43.6041796875" lon="1.44478344726562" />
+            <nd index="32" ref="426597751" lat="43.6041875" lon="1.44476733398438" />
+            <nd index="33" ref="1308645090" lat="43.604359375" lon="1.44473168945313" />
+            <nd index="34" ref="1308645070" lat="43.604359375" lon="1.44473681640625" />
+            <nd index="35" ref="2130192067" lat="43.604453125" lon="1.4447177734375" />
+            <nd index="36" ref="1308645095" lat="43.604484375" lon="1.44471142578125" />
+            <nd index="37" ref="1308645075" lat="43.604484375" lon="1.44470458984375" />
+            <nd index="38" ref="426597749" lat="43.60465625" lon="1.44466552734375" />
+            <nd index="39" ref="1308633653" lat="43.6046796875" lon="1.44468676757813" />
+            <nd index="40" ref="1308633661" lat="43.604703125" lon="1.4446865234375" />
+            <nd index="41" ref="426597746" lat="43.6046875" lon="1.44469970703125" />
+            <nd index="42" ref="426597744" lat="43.604828125" lon="1.44466845703125" />
+            <nd index="43" ref="1308633681" lat="43.6048203125" lon="1.44465795898438" />
+            <nd index="44" ref="1308633705" lat="43.6048359375" lon="1.44464892578125" />
+            <nd index="45" ref="1308633669" lat="43.604828125" lon="1.44463598632813" />
+            <nd index="46" ref="83815661" lat="43.60484375" lon="1.44463330078125" />
+            <nd index="47" ref="1308633711" lat="43.6048515625" lon="1.44461328125" />
+            <nd index="48" ref="1308633690" lat="43.6048359375" lon="1.44461083984375" />
+            <nd index="49" ref="1308633654" lat="43.60484375" lon="1.44438647460938" />
+            <nd index="50" ref="1308633710" lat="43.60484375" lon="1.44438354492187" />
+            <nd index="51" ref="426597740" lat="43.604875" lon="1.4442919921875" />
+            <nd index="52" ref="1308633664" lat="43.604859375" lon="1.4442900390625" />
+            <nd index="53" ref="1308633712" lat="43.604875" lon="1.44401025390625" />
+            <nd index="54" ref="1308633670" lat="43.604875" lon="1.44400830078125" />
+            <nd index="55" ref="83815655" lat="43.604875" lon="1.44399438476562" />
           </building>
           <building>
             <info id="166106353" name="Hôtel Caulet-Resseguier" nbfloor="3" roofangle="15" rooftype="pitched" />
@@ -4385,14 +4385,14 @@
             <nd index="61" ref="83815627" lat="43.6048616" lon="1.4427029" />
           </highway>
           <highway>
-            <info id="8613898" name="Rue de la Pomme" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="8613898" name="Rue de la Pomme" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="83815676" lat="43.6038815" lon="1.4444434" />
             <nd index="1" ref="83815672" lat="43.6037653" lon="1.4445681" />
             <nd index="2" ref="60967318" lat="43.6036655" lon="1.4446884" />
             <nd index="3" ref="60967323" lat="43.6035794" lon="1.4448024" />
           </highway>
           <highway>
-            <info id="147397799" name="Rue Lafayette" roadtype="pedestrian" nbway="1" maxspeed="50" />
+            <info id="147397799" name="Rue Lafayette" roadtype="pedestrian" nbway="1" maxspeed="30" />
             <nd index="0" ref="35721385" lat="43.6049675" lon="1.4437149" />
             <nd index="1" ref="2097748042" lat="43.6049555" lon="1.4438162" />
             <nd index="2" ref="2445201732" lat="43.6049519" lon="1.4441163" />
@@ -4411,7 +4411,7 @@
             <nd index="4" ref="60964490" lat="43.6048277" lon="1.4427012" />
           </highway>
           <highway>
-            <info id="10235238" name="Rue du Collège de Foix" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="10235238" name="Rue du Collège de Foix" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="84825872" lat="43.6050228" lon="1.4405767" />
             <nd index="1" ref="1995133257" lat="43.6050508" lon="1.4406071" />
             <nd index="2" ref="1995133264" lat="43.6051621" lon="1.4407277" />
@@ -4436,7 +4436,7 @@
             <nd index="3" ref="60965715" lat="43.6062035" lon="1.4416173" />
           </highway>
           <highway>
-            <info id="22937305" name="Rue des Puits-Clos" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="22937305" name="Rue des Puits-Clos" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60967326" lat="43.6029665" lon="1.4448164" />
             <nd index="1" ref="2256050421" lat="43.6026122" lon="1.4448302" />
             <nd index="2" ref="60967327" lat="43.6024189" lon="1.4448377" />
@@ -4445,7 +4445,7 @@
             <nd index="5" ref="60967347" lat="43.602177" lon="1.4445724" />
           </highway>
           <highway>
-            <info id="22937310" name="Rue des Gestes" roadtype="pedestrian" nbway="1" maxspeed="50" />
+            <info id="22937310" name="Rue des Gestes" roadtype="pedestrian" nbway="1" maxspeed="30" />
             <nd index="0" ref="347264946" lat="43.6031737" lon="1.4434523" />
             <nd index="1" ref="2465994243" lat="43.6031632" lon="1.4434102" />
             <nd index="2" ref="61292787" lat="43.6031066" lon="1.4431835" />
@@ -4465,12 +4465,12 @@
             <nd index="5" ref="65161480" lat="43.6034802" lon="1.4457148" />
           </highway>
           <highway>
-            <info id="419930776" name="Rue du Collège de Foix" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="419930776" name="Rue du Collège de Foix" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60964491" lat="43.6057209" lon="1.4416043" />
             <nd index="1" ref="344761326" lat="43.6058997" lon="1.4419216" />
           </highway>
           <highway>
-            <info id="419930777" name="Rue du Collège de Foix" roadtype="path" nbway="1" maxspeed="50" />
+            <info id="419930777" name="Rue du Collège de Foix" roadtype="path" nbway="1" maxspeed="30" />
             <nd index="0" ref="4199177156" lat="43.6056978" lon="1.4415684" />
             <nd index="1" ref="60964491" lat="43.6057209" lon="1.4416043" />
           </highway>
@@ -4489,7 +4489,7 @@
             <nd index="10" ref="35726905" lat="43.6038624" lon="1.4432955" />
           </highway>
           <highway>
-            <info id="223446990" name="Rue Antoine Deville" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="223446990" name="Rue Antoine Deville" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="84825872" lat="43.6050228" lon="1.4405767" />
             <nd index="1" ref="755802311" lat="43.6048206" lon="1.4411362" />
           </highway>
@@ -6477,7 +6477,7 @@
             <nd index="5" ref="35721385" lat="43.6049675" lon="1.4437149" />
           </highway>
           <highway>
-            <info id="230151142" name="Rue Lapeyrouse" roadtype="pedestrian" nbway="1" maxspeed="50" />
+            <info id="230151142" name="Rue Lapeyrouse" roadtype="pedestrian" nbway="1" maxspeed="10" />
             <nd index="0" ref="57192332" lat="43.6041992" lon="1.4464028" />
             <nd index="1" ref="2258313727" lat="43.6041298" lon="1.4463133" />
             <nd index="2" ref="2189772650" lat="43.6037617" lon="1.4457719" />
@@ -6503,7 +6503,7 @@
             <nd index="3" ref="2250029565" lat="43.606312" lon="1.4408485" />
           </highway>
           <highway>
-            <info id="230573831" name="Rue Joseph Lakanal" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="230573831" name="Rue Joseph Lakanal" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="57187341" lat="43.6040299" lon="1.4406829" />
             <nd index="1" ref="4598101133" lat="43.6034053" lon="1.4408389" />
             <nd index="2" ref="57181723" lat="43.6033804" lon="1.4408451" />
@@ -6515,12 +6515,12 @@
             <nd index="8" ref="57186854" lat="43.6028362" lon="1.441529" />
           </highway>
           <highway>
-            <info id="230573834" name="Rue Mirepoix" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="230573834" name="Rue Mirepoix" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="57187006" lat="43.6047318" lon="1.4417504" />
             <nd index="1" ref="57187264" lat="43.6041754" lon="1.4417854" />
           </highway>
           <highway>
-            <info id="216491033" name="Rue Lafayette" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="216491033" name="Rue Lafayette" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60690370" lat="43.6048871" lon="1.4463642" />
             <nd index="1" ref="2262496468" lat="43.6048755" lon="1.446713" />
             <nd index="2" ref="57190876" lat="43.6048784" lon="1.4468594" />
@@ -7197,7 +7197,7 @@
             <nd index="1" ref="2097748037" lat="43.6038212" lon="1.4429155" />
           </highway>
           <highway>
-            <info id="239336974" name="Rue Léon Gambetta" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="239336974" name="Rue Léon Gambetta" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="2097748037" lat="43.6038212" lon="1.4429155" />
             <nd index="1" ref="2457772110" lat="43.6038181" lon="1.4428883" />
             <nd index="2" ref="57186851" lat="43.6037999" lon="1.4427328" />
@@ -7303,13 +7303,13 @@
             <nd index="5" ref="757289556" lat="43.6058229" lon="1.4455975" />
           </building>
           <highway>
-            <info id="216491032" name="Rue Lafayette" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="216491032" name="Rue Lafayette" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="1163710547" lat="43.6049008" lon="1.445811" />
             <nd index="1" ref="2445201730" lat="43.6048882" lon="1.4462964" />
             <nd index="2" ref="60690370" lat="43.6048871" lon="1.4463642" />
           </highway>
           <highway>
-            <info id="113196793" name="Rue Léon Gambetta" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="113196793" name="Rue Léon Gambetta" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="57186854" lat="43.6028362" lon="1.441529" />
             <nd index="1" ref="57186855" lat="43.6025546" lon="1.4412212" />
             <nd index="2" ref="57186856" lat="43.6024294" lon="1.4411016" />
@@ -7320,7 +7320,7 @@
             <nd index="1" ref="57187006" lat="43.6047318" lon="1.4417504" />
           </highway>
           <highway>
-            <info id="8903490" name="Rue du Lieutenant-Colonel Pélissier" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="8903490" name="Rue du Lieutenant-Colonel Pélissier" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="65161480" lat="43.6034802" lon="1.4457148" />
             <nd index="1" ref="2189772649" lat="43.603479" lon="1.4457713" />
             <nd index="2" ref="65161391" lat="43.6034475" lon="1.4473159" />
@@ -7486,13 +7486,13 @@
             <nd index="4" ref="35726907" lat="43.6029362" lon="1.4435088" />
           </highway>
           <highway>
-            <info id="361129328" name="Rue Rivals" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="361129328" name="Rue Rivals" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="2247809108" lat="43.6061468" lon="1.4457805" />
             <nd index="1" ref="60966434" lat="43.6061618" lon="1.446111" />
             <nd index="2" ref="60690367" lat="43.6061845" lon="1.4463976" />
           </highway>
           <highway>
-            <info id="361129329" name="Rue du Poids de l'Huile" roadtype="living_street" nbway="1" maxspeed="50" />
+            <info id="361129329" name="Rue du Poids de l'Huile" roadtype="living_street" nbway="1" maxspeed="6" />
             <nd index="0" ref="2189772652" lat="43.6042997" lon="1.4457755" />
             <nd index="1" ref="83815663" lat="43.6042998" lon="1.4457151" />
             <nd index="2" ref="2189772651" lat="43.6042696" lon="1.445583" />
@@ -7508,13 +7508,13 @@
             <nd index="6" ref="83815676" lat="43.6038815" lon="1.4444434" />
           </highway>
           <highway>
-            <info id="8590692" name="Rue Rivals" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="8590692" name="Rue Rivals" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60966435" lat="43.6060446" lon="1.4444404" />
             <nd index="1" ref="2966633352" lat="43.6060614" lon="1.4448636" />
             <nd index="2" ref="2247809107" lat="43.6061249" lon="1.4456023" />
           </highway>
           <highway>
-            <info id="91273552" name="Rue Rivals" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="91273552" name="Rue Rivals" roadtype="residential" nbway="1" maxspeed="6" />
             <nd index="0" ref="2247809107" lat="43.6061249" lon="1.4456023" />
             <nd index="1" ref="60966432" lat="43.6061389" lon="1.445716" />
             <nd index="2" ref="2247809108" lat="43.6061468" lon="1.4457805" />
@@ -7542,7 +7542,7 @@
             <nd index="4" ref="2189772648" lat="43.6031854" lon="1.445581" />
           </highway>
           <highway>
-            <info id="192389096" name="Rue Charles de Rémusat" roadtype="residential" nbway="1" maxspeed="50" />
+            <info id="192389096" name="Rue Charles de Rémusat" roadtype="residential" nbway="1" maxspeed="30" />
             <nd index="0" ref="60698641" lat="43.6072227" lon="1.4452448" />
             <nd index="1" ref="1286973526" lat="43.6071644" lon="1.4452048" />
             <nd index="2" ref="60960462" lat="43.6063064" lon="1.4446163" />
@@ -7818,42 +7818,42 @@
           </highway>
           <building>
             <info id="115569015" name="Hôtel de Bernuy" nbfloor="3" roofangle="15" rooftype="pitched" />
-            <nd index="0" ref="1305286854" lat="43.6028975" lon="1.4412457" />
-            <nd index="1" ref="1305286859" lat="43.6028771" lon="1.4412868" />
-            <nd index="2" ref="1305286836" lat="43.6028315" lon="1.4412392" />
-            <nd index="3" ref="1305286767" lat="43.6028714" lon="1.4411363" />
-            <nd index="4" ref="1305286830" lat="43.6028216" lon="1.4410877" />
-            <nd index="5" ref="243668260" lat="43.6027045" lon="1.4413126" />
-            <nd index="6" ref="4342418169" lat="43.6024053" lon="1.4409877" />
-            <nd index="7" ref="448503864" lat="43.6023338" lon="1.4408938" />
-            <nd index="8" ref="4342418167" lat="43.6023728" lon="1.4403433" />
-            <nd index="9" ref="4342418168" lat="43.6023847" lon="1.4403416" />
-            <nd index="10" ref="1305286781" lat="43.6023966" lon="1.4401512" />
-            <nd index="11" ref="4342418161" lat="43.6022949" lon="1.4401321" />
-            <nd index="12" ref="4342418162" lat="43.6022958" lon="1.4401147" />
-            <nd index="13" ref="1305286748" lat="43.6022452" lon="1.4401076" />
-            <nd index="14" ref="1305286807" lat="43.602232" lon="1.4400262" />
-            <nd index="15" ref="4342418163" lat="43.6023009" lon="1.4400355" />
-            <nd index="16" ref="4342418164" lat="43.6023043" lon="1.4400181" />
-            <nd index="17" ref="1305286813" lat="43.6024966" lon="1.4400454" />
-            <nd index="18" ref="4342418176" lat="43.6024902" lon="1.4401606" />
-            <nd index="19" ref="4342418173" lat="43.6024852" lon="1.4401633" />
-            <nd index="20" ref="1305286797" lat="43.6024778" lon="1.4402838" />
-            <nd index="21" ref="1551156348" lat="43.602722" lon="1.4403143" />
-            <nd index="22" ref="1551156351" lat="43.6028131" lon="1.4403257" />
-            <nd index="23" ref="1305286822" lat="43.6028107" lon="1.4403637" />
-            <nd index="24" ref="1305286764" lat="43.6027989" lon="1.4405335" />
-            <nd index="25" ref="1305286798" lat="43.6027771" lon="1.4408253" />
-            <nd index="26" ref="1305286759" lat="43.6029887" lon="1.440911" />
-            <nd index="27" ref="4342418187" lat="43.6029992" lon="1.4408908" />
-            <nd index="28" ref="1305286773" lat="43.6031607" lon="1.4409966" />
-            <nd index="29" ref="1305286749" lat="43.60318" lon="1.4410145" />
-            <nd index="30" ref="596132373" lat="43.6031183" lon="1.441124" />
-            <nd index="31" ref="1305286810" lat="43.6029814" lon="1.4410335" />
-            <nd index="32" ref="1305286838" lat="43.6029448" lon="1.4411197" />
-            <nd index="33" ref="448503871" lat="43.6030563" lon="1.4412072" />
-            <nd index="34" ref="1305286787" lat="43.6029769" lon="1.4413087" />
-            <nd index="35" ref="1305286854" lat="43.6028975" lon="1.4412457" />
+            <nd index="0" ref="1305286854" lat="43.60210546875" lon="1.44140991210938" />
+            <nd index="1" ref="1305286859" lat="43.60208984375" lon="1.44145092773438" />
+            <nd index="2" ref="1305286836" lat="43.60204296875" lon="1.44140356445312" />
+            <nd index="3" ref="1305286767" lat="43.60208203125" lon="1.44130053710938" />
+            <nd index="4" ref="1305286830" lat="43.60202734375" lon="1.44125170898438" />
+            <nd index="5" ref="243668260" lat="43.60191796875" lon="1.44147680664062" />
+            <nd index="6" ref="4342418169" lat="43.60162109375" lon="1.44115185546875" />
+            <nd index="7" ref="448503864" lat="43.60154296875" lon="1.44105786132813" />
+            <nd index="8" ref="4342418167" lat="43.60158203125" lon="1.44050756835938" />
+            <nd index="9" ref="4342418168" lat="43.60158984375" lon="1.44050561523437" />
+            <nd index="10" ref="1305286781" lat="43.60160546875" lon="1.4403154296875" />
+            <nd index="11" ref="4342418161" lat="43.60150390625" lon="1.44029614257813" />
+            <nd index="12" ref="4342418162" lat="43.60151171875" lon="1.44027905273438" />
+            <nd index="13" ref="1305286748" lat="43.60145703125" lon="1.44027172851563" />
+            <nd index="14" ref="1305286807" lat="43.60144140625" lon="1.4401904296875" />
+            <nd index="15" ref="4342418163" lat="43.60151171875" lon="1.44019970703125" />
+            <nd index="16" ref="4342418164" lat="43.60151171875" lon="1.44018237304688" />
+            <nd index="17" ref="1305286813" lat="43.60170703125" lon="1.44020971679688" />
+            <nd index="18" ref="4342418176" lat="43.60169921875" lon="1.44032495117188" />
+            <nd index="19" ref="4342418173" lat="43.60169921875" lon="1.44032739257813" />
+            <nd index="20" ref="1305286797" lat="43.60168359375" lon="1.44044799804688" />
+            <nd index="21" ref="1551156348" lat="43.60193359375" lon="1.440478515625" />
+            <nd index="22" ref="1551156351" lat="43.60202734375" lon="1.44048999023438" />
+            <nd index="23" ref="1305286822" lat="43.60202734375" lon="1.44052783203125" />
+            <nd index="24" ref="1305286764" lat="43.60201171875" lon="1.44069750976562" />
+            <nd index="25" ref="1305286798" lat="43.60198828125" lon="1.44098950195312" />
+            <nd index="26" ref="1305286759" lat="43.60219921875" lon="1.4410751953125" />
+            <nd index="27" ref="4342418187" lat="43.60221484375" lon="1.44105493164062" />
+            <nd index="28" ref="1305286773" lat="43.60237109375" lon="1.44116088867188" />
+            <nd index="29" ref="1305286749" lat="43.60238671875" lon="1.4411787109375" />
+            <nd index="30" ref="596132373" lat="43.60232421875" lon="1.44128833007813" />
+            <nd index="31" ref="1305286810" lat="43.60219140625" lon="1.44119750976563" />
+            <nd index="32" ref="1305286838" lat="43.60215234375" lon="1.44128393554688" />
+            <nd index="33" ref="448503871" lat="43.60226171875" lon="1.44137133789063" />
+            <nd index="34" ref="1305286787" lat="43.60218359375" lon="1.44147290039063" />
+            <nd index="35" ref="1305286854" lat="43.60210546875" lon="1.44140991210938" />
           </building>
         </district>
       </town>

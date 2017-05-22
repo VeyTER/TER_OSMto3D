@@ -17,24 +17,6 @@ public class ObjectBuilder {
 	private List<NodeGroup> nodeGroups;
 
 
-	/// <summary>
-	/// 	Table faisant la correspondance entre les ID de bâtiments 3D et les groupes de noeuds correspondant.
-	/// </summary>
-	private Dictionary<long, int> buildingIdTable;
-
-
-	/// <summary>
-	/// 	Table faisant la correspondance entre les ID de groupes de noeuds de bâtiments 3D et les groupes de noeuds
-	/// 	correspondant.
-	/// </summary>
-	private Dictionary<long, int> buildingNodeGroupsIdTable;
-
-	/// <summary>
-	/// 	Table faisant la correspondance entre les ID de noeuds de bâtiments 3D et les noeuds.
-	/// </summary>
-	private Dictionary<string, int> buildingNodesIdTable;
-
-
 	/// <summary>Latitude minimale de la ville.</summary>
 	private double minLat;
 
@@ -109,11 +91,6 @@ public class ObjectBuilder {
 	private ObjectBuilder() {
 		this.nodeGroups = new List<NodeGroup> ();
 
-		this.buildingIdTable = new Dictionary<long, int> ();
-
-		this.buildingNodeGroupsIdTable = new Dictionary<long, int> ();
-		this.buildingNodesIdTable = new Dictionary<string, int> ();
-
 		this.roadBuilder = new HighwayBuilder ();
 		this.roofBuilder = new RoofBuilder ();
 		this.groundBuilder = new GroundBuilder ();
@@ -180,7 +157,8 @@ public class ObjectBuilder {
 				// Ajout du groupe de noeuds à l'objet contenant les groupes de noeuds de bâtiments
 				// et ajout d'une entrée dans la table de correspondances
 				buildingNodeGroup.transform.parent = buildingNodes.transform;
-				buildingNodeGroupsIdTable [ngp.Id] = buildingNodeGroup.transform.GetInstanceID();
+				buildingsTools.AddBuildingNodeGroupToNodeGroupEntry (buildingNodeGroup, ngp);
+				buildingsTools.AddNodeGroupToBuildingNodeGroup (ngp, buildingNodeGroup);
 
 				// Construction des angles de noeuds de bâtiments
 				foreach(Node n in ngp.Nodes) {
@@ -193,7 +171,7 @@ public class ObjectBuilder {
 
 					// Ajout du noeud au groupe de noeuds et ajout d'une entrée dans la table de correspondances
 					buildingNode.transform.parent = buildingNodeGroup.transform;
-					buildingNodesIdTable [n.Reference + "|" + n.Index] = buildingNode.transform.GetInstanceID();
+					buildingsTools.AddBuildingNodeToNodeEntry (buildingNode, n);
 				}
 
 				// Déplacement des noeuds 3D au sein du groupe pour qu'ils aient une position relative au centre
@@ -305,7 +283,8 @@ public class ObjectBuilder {
 				}
 
 				// Ajout d'une entrée dans la table de correspondances
-				buildingIdTable [ngp.Id] = wallGroup.transform.GetInstanceID();
+				buildingsTools.AddBuildingToNodeGroupEntry(wallGroup, ngp);
+				buildingsTools.AddNodeGroupToBuildingEntry(ngp, wallGroup);
 
 				// Déplacement des murs au sein du bâtiment pour qu'ils aient une position relative au centre
 				Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup);
@@ -620,18 +599,6 @@ public class ObjectBuilder {
 
 	public List<NodeGroup> NodeGroups {
 		get { return nodeGroups; }
-	}
-
-	public Dictionary<long, int> BuildingIdTable {
-		get { return buildingIdTable; }
-	}
-
-	public Dictionary<long, int> BuildingNodeGroupsIdTable {
-		get { return buildingNodeGroupsIdTable; }
-	}
-
-	public Dictionary<string, int> BuildingNodesIdTable {
-		get { return buildingNodesIdTable; }
 	}
 
 	public GameObject CityComponents {
