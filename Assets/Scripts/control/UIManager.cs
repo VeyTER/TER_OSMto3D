@@ -18,10 +18,10 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 
 	/// <summary>Controlleur gérant le déplacement d'un seul objet (déplacement d'un bâtiment par ex).</summary>
-	public static MovingEditor movingEditor;
+	private MovingEditor movingEditor;
 
 	/// <summary>Controlleur gérant la rotation d'un seul objet (déplacement d'un bâtiment par ex).</summary>
-	public static TurningEditor turningEditor;
+	private TurningEditor turningEditor;
 
 
 	/// <summary>

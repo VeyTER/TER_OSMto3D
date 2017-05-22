@@ -12,12 +12,6 @@ using System.Collections.Generic;
 /// 	dans les fichiers de données.
 /// </summary>
 public class BuildingsTools {
-	/// <summary>
-	/// 	Unique instance du singleton ObjectBuilder, servant à construire la ville en 3D à partir des données OSM.
-	/// </summary>
-	private ObjectBuilder objectBuilder;
-
-
 	/// <summary>Chemin vers le fichier résumant la carte OSM.</summary>
 	private string resumeFilePath;
 
@@ -59,8 +53,6 @@ public class BuildingsTools {
 
 
 	private BuildingsTools () {
-		this.objectBuilder = ObjectBuilder.GetInstance ();
-
 		this.resumeFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
 		this.mapResumeDocument = new XmlDocument();
 
@@ -86,7 +78,7 @@ public class BuildingsTools {
 	/// </summary>
 	public void DiscolorAll() {
 		// Suppression de tous les autres matériaux que que celui de base pour chaque mur
-		foreach (Transform currentBuildingGo in objectBuilder.WallGroups.transform) {
+		foreach (Transform currentBuildingGo in ObjectBuilder.GetInstance().WallGroups.transform) {
 			foreach (Transform currentWallGo in currentBuildingGo.transform) {
 				Renderer meshRenderer = currentWallGo.GetComponent<Renderer> ();
 
@@ -106,7 +98,7 @@ public class BuildingsTools {
 	/// <summary>
 	/// 	Ajoute une couche de couleur à un bâtiment pour le marquer comme sélectionné.
 	/// </summary>
-	/// <param name="buildingGo">Bâtiment à colorier.</param>
+	/// <param name="building">Bâtiment à colorier.</param>
 	public void ColorAsSelected(GameObject building) {
 		Material wallMaterial = Resources.Load (Materials.WALL) as Material;
 		Material selectedElementMaterial = Resources.Load (Materials.SELECTED_ELEMENT) as Material;
@@ -130,7 +122,7 @@ public class BuildingsTools {
 	/// <summary>
 	/// 	Change le nom d'un bâtiment dans l'application et dans les fichiers MapResumed et MapCustom.
 	/// </summary>
-	/// <param name="buildingGo">Bâtiment à renommer.</param>
+	/// <param name="building">Bâtiment à renommer.</param>
 	/// <param name="newName">Nouveau nom à donner au bâtiment.</param>
 	public void UpdateName(GameObject building) {
 		// Récupération du groupe de noeuds correspondant au bâtiment
@@ -165,7 +157,7 @@ public class BuildingsTools {
 	/// 	Met à jour la position des noeuds d'un bâtiment dans l'application et dans les fichiers MapResumed
 	/// 	et MapCustom.
 	/// </summary>
-	/// <param name="buildingGo">Bâtiment à déplacer.</param>
+	/// <param name="building">Bâtiment à déplacer.</param>
 	public void UpdateLocation(GameObject building) {
 		// Récupération du groupe de noeuds correspondant au bâtiment
 		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
@@ -258,7 +250,7 @@ public class BuildingsTools {
 	/// 	Indique si une entrée correspondant à un certain bâtiment existe dans le fichier map_custom.
 	/// </summary>
 	/// <returns><c>true</c>, si l'entrée existe, <c>false</c> sinon.</returns>
-	/// <param name="buildingId">ID du bâtiment dont on veut vérifier l'existance.</param>
+	/// <param name="nodeGroupId">ID du bâtiment dont on veut vérifier l'existance.</param>
 	public bool CustomBuildingExists(long nodeGroupId) {
 		if (File.Exists (customFilePath)) {
 			string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroupId + "\"]";
@@ -303,7 +295,7 @@ public class BuildingsTools {
 /// 	Diminue la hauteur d'un bâtiment d'un étage à la fois au niveau du groupe de noeuds correspondant, de la 
 /// 	scène 3D et dans les fichiers MapResumed et MapCustom. 
 	/// </summary>
-	/// <param name="buildingGo">Bâtiment à modifier.</param>
+	/// <param name="building">Bâtiment à modifier.</param>
 	public void DecrementHeight(GameObject building) {
 		int nbFloors = GetHeight(building);
 		this.UpdateHeight (building, nbFloors - 1);
@@ -313,7 +305,7 @@ public class BuildingsTools {
 /// 	Augmente la hauteur d'un bâtiment d'un étage à la fois au niveau du groupe de noeuds correspondant, de la 
 /// 	scène 3D et dans les fichiers MapResumed et MapCustom. 
 	/// </summary>
-	/// <param name="buildingGo">Bâtiment à modifier.</param>
+	/// <param name="building">Bâtiment à modifier.</param>
 	public void IncrementHeight(GameObject building) {
 		int nbFloors = GetHeight(building);
 		this.UpdateHeight (building, nbFloors + 1);
@@ -324,7 +316,8 @@ public class BuildingsTools {
 /// 	Change la hauteur d'un bâtiment d'un étage à la fois au niveau du groupe de noeuds correspondant, de la 
 /// 	scène 3D et dans les fichiers MapResumed et MapCustom. 
 	/// </summary>
-	/// <param name="buildingGo">Bâtiment à modifier.</param>
+	/// <param name="building">Bâtiment à modifier.</param>
+	/// <param name="nbFloors">nombre d'étage que doit avoir le bâtiment.</param>
 	public void UpdateHeight(GameObject building, int nbFloors) {
 		// Récupération du groupe de noeuds correspondant au bâtiment
 		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
@@ -410,7 +403,7 @@ public class BuildingsTools {
 	/// 	Calcule et renvoie le centre d'un bâtiment 3D en faisant la moyenne de la position de ses murs.
 	/// </summary>
 	/// <returns>Centre du batiment.</returns>
-	/// <param name="buildingGo">Batiment, de type GameObject, dont on veut calculer le centre.</param>
+	/// <param name="building">Batiment, de type GameObject, dont on veut calculer le centre.</param>
 	public Vector3 BuildingCenter(GameObject building) {
 		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 
@@ -436,8 +429,8 @@ public class BuildingsTools {
 	/// 	de ces noeuds 3D.
 	/// </summary>
 	/// <returns>Centre du groupe de noeuds 3D.</returns>
-	/// <param name="buildingGo">Groupe de noeuds 3D, de type GameObject, dont on veut calculer le centre.</param>
-	/// <param name="buildingNodeGroup">
+	/// <param name="buildingNodeGroup">Groupe de noeuds 3D, de type GameObject, dont on veut calculer le centre.</param>
+	/// <param name="NodeGroup">
 	/// 	Groupe de noeuds, de type NodeGroup, correspondant au groupe de noeuds 3D.
 	/// </param>
 	public Vector3 BuildingNodesCenter(GameObject buildingNodeGroup, NodeGroup NodeGroup) {
@@ -459,7 +452,7 @@ public class BuildingsTools {
 	/// 	centre du bâtiment et ce dernier.
 	/// </summary>
 	/// <returns>Rayon du bâtiment.</returns>
-	/// <param name="buildingGo">Bâtiment dont on veut calculer le rayon.</param>
+	/// <param name="building">Bâtiment dont on veut calculer le rayon.</param>
 	public double BuildingRadius(GameObject building) {
 		// Calcul du centre du bâtiment
 		Vector3 buildingCenter = this.BuildingCenter (building);
@@ -598,7 +591,7 @@ public class BuildingsTools {
 	/// 	Renvoie le bâtiment 3D correspondant à un groupe de noeuds 3D.
 	/// </summary>
 	/// <returns>Objet 3D correspondant au groupe de noeuds 3D.</returns>
-	/// <param name="buildingGoId">Bâtiment 3D dont on veut récupérer le groupe de noeuds 3D corresondant.</param>
+	/// <param name="building">Bâtiment 3D dont on veut récupérer le groupe de noeuds 3D corresondant.</param>
 	public GameObject BuildingToBuildingNodeGroup(GameObject building) {
 		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 		GameObject buildingNodeGroup = this.NodeGroupToBuildingNodeGroup(nodeGroup);

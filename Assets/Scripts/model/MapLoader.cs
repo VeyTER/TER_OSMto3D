@@ -6,7 +6,7 @@ using System.IO;
 using System.Xml;
 
 /// <summary>
-/// 	Suite d'outils mis à disposition destinés au chargement et au stockage des différents objects de la carte OSM.
+/// 	Suite d'outils destinés au chargement et au stockage des différents objects d'une carte OSM.
 /// </summary>
 public class MapLoader {
 	/// <summary>
@@ -41,8 +41,8 @@ public class MapLoader {
 
 
 	/// <summary>
-	///		Extrait les données du fichier OSM contenant la carte le stocke dans des noeuds eux-même contenus dans des
-	/// 	groupes de noeuds
+	///		Extrait les données du fichier OSM contenant la carte les stocke dans des noeuds eux-même contenus dans des
+	/// 	groupes de noeuds.
 	/// </summary>
 	/// <param name="mapName">Nom du fichier OSM contenant la carte à charger.</param>
 	public void LoadOsmData(string mapName) {
@@ -99,9 +99,9 @@ public class MapLoader {
 					string value = this.AttributeValue (tagNode, XmlAttributes.VALUE);
 
 					// Si l'objet est un objet naturel ou une voie de route, l'objet est complet, car ne contenant qu'un
-					// seul noeud, on peut alors directement créer un group de noeud et y insérer le noeud courant.
+					// seul noeud, on peut alors directement créer un groupe de noeuds et y insérer le noeud courant.
 					if (key.Equals (XmlKeys.NATURAL) || key.Equals (XmlKeys.HIGHWAY)) {
-						// Création et paramétrage du groupe de noeud correspondant à l'objet extrait
+						// Création et paramétrage du groupe de noeuds correspondant à l'objet extrait
 						NodeGroup nodeGroup = new NodeGroup (id);
 						nodeGroup.AddTag (key, value);
 
@@ -109,7 +109,7 @@ public class MapLoader {
 						if (nodeGroup.IsTree() || nodeGroup.IsTrafficLight())
 							nodeGroup.Name = value;
 
-						// Ajout d'un noeud, correspondant à l'objet simple, au groupe de noeud courant, et ajout de ce
+						// Ajout d'un noeud, correspondant à l'objet simple, au groupe de noeuds courant, et ajout de ce
 						// dernier à la liste des groupes de noeuds de l'application
 						nodeGroup.AddNode (new Node (id, latitude, longitude));
 						objectBuilder.NodeGroups.Add (nodeGroup);
@@ -130,12 +130,13 @@ public class MapLoader {
 	/// 	de sous-noeuds extraits précédemment grâce à la référence de ces derniers. Cette opération permet de
 	/// 	savoir à la fois à quel objet complexe appartiennent les sous-noeuds XML et de récupérer les informations
 	/// 	relatives à ce sous-noeud XML. Cette boucle va aussi chercher le noeud (objet Node) correspondant à chaque
-	/// 	noeud de l'objet complexe courant pour le rattacher au groupe de noeud correspondant à cet objet.
+	/// 	noeud de l'objet complexe courant pour le rattacher au groupe de noeuds correspondant à cet objet.
 	/// </summary>
 	/// <param name="OSMDocument">Document OSM contenant la carte.</param>
 	/// <param name="extractedNodes">Sous-noeuds extraits du fichier OSM.</param>
 	private void FoldExtractedNodes(XmlDocument OSMDocument, List<Node> extractedNodes) {
-		// extraits précédemment. Dans un même temps, stockage des sous-noeuds extraits dans des groupes de noeuds
+		// Rangement dand des noeuds XML des sous-noeuds XML extraits précédemment. Dans un même temps, stockage des
+		// sous-noeuds XML extraits dans des groupes de noeuds
 		XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XmlTags.WAY);
 		foreach (XmlNode wayNode in wayNodes) {
 			// Extraction de l'ID de l'objet complexe
@@ -163,7 +164,7 @@ public class MapLoader {
 				} else if (ndNode.Name.Equals (XmlTags.TAG)) {
 					XmlNode tagNode = ndNode;
 
-					// Récupération du nom et de la valeur de propriété
+					// Récupération du nom et de la valeur de la propriété
 					string key = this.AttributeValue (tagNode, XmlAttributes.KEY);
 					string value = this.AttributeValue (tagNode, XmlAttributes.VALUE);
 
@@ -171,7 +172,7 @@ public class MapLoader {
 					if (key.Equals (XmlKeys.NAME))
 						nodeGroup.Name = value;
 					
-					// Changement de la du nombre de voies dans le groupe de noeuds courant si la propriété représente
+					// Changement de du nombre de voies dans le groupe de noeuds courant si la propriété représente
 					// cette valeur
 					if (key.Equals (XmlValues.LANES))
 						nodeGroup.NbWay = int.Parse (value);
@@ -186,12 +187,12 @@ public class MapLoader {
 					if (key.Equals (XmlKeys.ROOF_SHAPE))
 						nodeGroup.RoofType = value;
 
-					// Ajout de la propriété et de sa valeur au groupe de noeud courant
+					// Ajout de la propriété et de sa valeur au groupe de noeuds courant
 					nodeGroup.AddTag (key, value);
 				}
 			}
 
-			// Ajout du groupe de noeuds à la liste de globale s'il représente un bâtiment, une route ou une
+			// Ajout du groupe de noeuds à la liste globale s'il représente un bâtiment, une route ou une
 			// voie maritime
 			if ((nodeGroup.IsBuilding () || nodeGroup.IsHighway ()) || nodeGroup.IsWaterway ())
 				objectBuilder.NodeGroups.Add (nodeGroup);
@@ -200,10 +201,9 @@ public class MapLoader {
 
 
 	/// <summary>
-	/// 	Charge les données de zonage des bâtiment, et qui permettent de changer le propriétés des bâtiments en
+	/// 	Charge les données de zonage des bâtiment. Ces dernières permettent de changer les propriétés des bâtiments en
 	/// 	fonction de la zone dans laquelle ils se trouvent.
 	/// </summary>
-	/// <param name="nameFile"> nom du fichier setting a lire </param>
 	public void LoadSettingsData() {
 		string mapSettingsFilePath = FilePaths.MAPS_SETTINGS_FOLDER + "map_settings.osm";
 		XmlDocument mapsSettingsDocument = new XmlDocument(); 
@@ -220,7 +220,7 @@ public class MapLoader {
 				// Récupération du noeud XML contenant des informations sur le noeud XML père
 				XmlNode earthInfoNode = earthNode.FirstChild;
 
-				// Mettre à jour les groupes de noeuds si le noeud XML d'infromations existe bien
+				// Mise à jour les groupes de noeuds si le noeud XML d'information existe bien
 				if (earthInfoNode != null && earthInfoNode.Name.Equals (XmlTags.INFO)) {
 					// Récupération des valeurs par défaut pour les bâtiments se trouvant sur Terre et changement de la
 					// valeur des attributs correspondant dans les groupes de noeuds concernés
@@ -247,11 +247,11 @@ public class MapLoader {
 
 
 	/// <summary>
-	/// 	Méthode récursive permettant d'affecter aux groupes de noeuds les caractéristiques propres à la zones dans
+	/// 	Méthode récursive permettant d'affecter aux groupes de noeuds les caractéristiques propres à la zone dans
 	/// 	lequel se trouve le bâtiment correspondant. La méthode se sert du tableau contenant les différentes zones et
-	/// 	et son indice associé pour connaitre la "porfondeur" à laquelle il se trouve dans le doucment.
+	/// 	et son indice associé pour connaitre la "profondeur" à laquelle il se trouve dans le document.
 	/// </summary>
-	/// <param name="boundingAreaNode">Noeud XML de zone courant.</param>
+	/// <param name="boundingAreaNode">Noeud XML de la zone courante.</param>
 	/// <param name="areaTypes">Types de zones pouvant être rencontrée et classées par ordre de profondeur.</param>
 	/// <param name="areaTypeIndex">Index utilisé par la méthode pour connaître sa profondeur dans le fichier.</param>
 	private void UpdateNodeGroupsProperties(XmlNode boundingAreaNode, string[] areaTypes, int areaTypeIndex) {
@@ -270,7 +270,7 @@ public class MapLoader {
 				// caractéristiques par défaut de la zone courante. 
 				XmlNode areaInfoNode = areaNode.FirstChild;
 
-				// Extraction de la localisation et des caractéristiques par défaut des bâtiment se trouvant dans le
+				// Extraction de la localisation et des caractéristiques par défaut des bâtiment se trouvant dans la
 				// zone inférieure
 				double[] areaLocationInfo = this.AttributeLocationInfo (areaInfoNode);
 				string[] areaBuildingInfo = this.BuildingInfo (areaInfoNode);
@@ -288,8 +288,8 @@ public class MapLoader {
 
 
 	/// <summary>
-	/// 	Change caractéristiques des groupes de noeud se trouvant dans une certaine zone avec les valeurs par défaut
-	/// 	de cette zone.
+	/// 	Change les caractéristiques des groupes de noeud se trouvant dans une certaine zone avec les valeurs par
+	/// 	défaut de cette zone.
 	/// </summary>
 	/// <param name="designation">Nom de la zone (ex : France, Toulouse etc...).</param>
 	/// <param name="locationData">Données sur la localisation de la zone.</param>
@@ -297,7 +297,6 @@ public class MapLoader {
 	/// <param name="tagName">Type de zone.</param>
 	private void SetupAreaNodeGroups(string designation, double[] locationData, string[] buildingData, string tagName) {
 		foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
-			
 			// Calcul de la distance du bâtiment avec le centre de la zone
 			double nodeGroupDistance = Math.Sqrt (Math.Pow (locationData [0] - (nodeGroup.GetNode (0).Latitude), 2) + Math.Pow (locationData [1] - (nodeGroup.GetNode (0).Longitude), 2));
 
@@ -318,7 +317,7 @@ public class MapLoader {
 					break;
 				}
 
-				// Change les caractéristiques des données relative aux bâtiments si le groupe de noeuds courant
+				// Change les caractéristiques des données relatives aux bâtiments si le groupe de noeuds courant
 				// représente un tel objet
 				if (nodeGroup.IsBuilding ()) {
 					nodeGroup.NbFloor = int.Parse (buildingData [0]);
@@ -331,10 +330,10 @@ public class MapLoader {
 
 
 	/// <summary>
-	/// 	Extrait les cacractéristiques par défaut dans une certaine zone pour tous les bâtiment s'y trouvant.
+	/// 	Extrait les caractéristiques par défaut dans une certaine zone pour tous les bâtiments s'y trouvant.
 	/// </summary>
 	/// <returns>Tableau contenant les caractéristiques par défaut sur les bâtiments.</returns>
-	/// <param name="infoNode">Noeud XML contenant les informations à extraire dans ses attributs.</param>
+	/// <param name="infoNode">Noeud XML contenant les informations à extraire dans les attributs du noeud XML.</param>
 	private string[] BuildingInfo(XmlNode infoNode) {
 		string[] res = new string[3];
 
@@ -349,7 +348,7 @@ public class MapLoader {
 
 
 	/// <summary>
-	/// 	Extrait les cacractéristiques par défaut dans une certaine zone pour toutes les routes s'y trouvant.
+	/// 	Extrait les caractéristiques par défaut dans une certaine zone pour toutes les routes s'y trouvant.
 	/// </summary>
 	/// <returns>Tableau contenant les caractéristiques sur les routes.</returns>
 	/// <param name="infoNode">Noeud XML contenant les informations à extraire dans ses attributs.</param>
@@ -363,10 +362,10 @@ public class MapLoader {
 
 
 	/// <summary>
-	/// 	Extrait les cacractéristiques de localisation d'une certaine zone.
+	/// 	Extrait les caractéristiques de localisation d'une certaine zone.
 	/// </summary>
 	/// <returns>Tableau contenant les caractéristiques de localisation.</returns>
-	/// <param name="infoNode">Info node.</param>
+	/// <param name="infoNode">Noeud XML contenant les informations à extraire dans ses attributs.</param>
 	private double[] AttributeLocationInfo(XmlNode infoNode) {
 		double[] res = new double[3];
 		res[0] = double.Parse (this.AttributeValue(infoNode, XmlAttributes.LATITUDE));
@@ -395,10 +394,10 @@ public class MapLoader {
 	///     Génère un fichier de données (MapResumed) contenant les objets de la ville rangés dans les zones auxquelles
     ///     ils appartiennent. Contrairement au fichier OSM, les sous-noeuds d'objets sont maintenant contenus à
 	/// 	l'intérieur des noeuds XML représentant ces objets. Les objets et leurs sous-noeuds XML conservent néanmoins
-	/// 	leurs identifiants (ID pour les objets et couples référence pour les sous-noeuds XML) d'origine, même si les
+	/// 	leurs identifiants (ID pour les objets et référence pour les sous-noeuds XML) d'origine, même si les
 	/// 	sous-noeuds se sont vu ajouter un index pour les identifier au sein de l'objet auquel ils appartiennent.
-	/// 	Enfin, les bâtiments (et seulement eux pour l'instant), ont dans ce fichier les caractéristiques par défaut
-	/// 	de leur zone.
+	/// 	Enfin, les bâtiments et les routes (et seulement eux pour l'instant), ont dans ce fichier les
+	/// 	caractéristiques par défaut de leur zone.
 	/// </summary>
 	public void GenerateResumeFile() {
 		string mapSettingsFilePath = FilePaths.MAPS_SETTINGS_FOLDER + "map_settings.osm";
@@ -425,10 +424,10 @@ public class MapLoader {
 				XmlNode boundsNode = this.NewBoundsNode (mapResumedDocument);
 				earthNode.InsertBefore (boundsNode, earthNode.FirstChild);
 
-				// Ajout d'un nouveau noeud XML pour chaque groupe de noeuds contenus dans l'application
+				// Ajout d'un nouveau noeud XML pour chaque groupe de noeuds contenu dans l'application
 				foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
 					// Construction du chemin xPath vers le noeud XML correspondant à la zone la plus locale au groupe
-					// de noeuds et récupération de de noeud
+					// de noeuds et récupération de ce noeud
 					string zoningXPath = "";
 					zoningXPath += "/" + XmlTags.EARTH;
 					zoningXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
@@ -446,8 +445,9 @@ public class MapLoader {
 						XmlNode objectNode = null;
 						XmlNode objectInfoNode = null;
 
-						// Récupération du noeud XML d'information de l'objet personnalisé courant soit en le récupérant
-						// à partir du noeud XML correspondant à l'objet, soit en le créant si ce sernier n'existe pas
+						// Récupération du noeud XML d'information de l'objet personnalisé courant, soit en le
+						// récupérant à partir du noeud XML correspondant à l'objet, soit en le créant si ce sernier
+						// n'existe pas
 						if (customObjectNode == null) {
 							objectNode = mapResumedDocument.CreateElement (nodeGroup.Type ());
 							objectInfoNode = mapResumedDocument.CreateElement (XmlTags.INFO);
@@ -457,7 +457,7 @@ public class MapLoader {
 							objectInfoNode = customObjectNode.FirstChild;
 						}
 
-						// Ajout de l'ID de l'objet au noeud XML d'information correspondant à dernier
+						// Ajout de l'ID de l'objet au noeud XML d'information correspondant au dernier
 						this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.ID, nodeGroup.Id.ToString ());
 
 						// Ajout des sous-noeuds XM au noeud XML correspondnant au groupe de noeuds courant
@@ -489,7 +489,7 @@ public class MapLoader {
 	/// 	Genère un noeud XML contenant les coordonnées minimales et maximales du terrain.
 	/// </summary>
 	/// <returns>Noeud XML contenant les coordonnées minimales et maximales du terrain.</returns>
-	/// <param name="document">Document.</param>
+	/// <param name="document">Fichier XML dans lequel ajouter les bornes du terrain.</param>
 	private XmlNode NewBoundsNode(XmlDocument document) {
 		// Ajout d'un nouveau noeud XML au document et ajout des informations à ce noeud.
 		XmlNode res = document.CreateElement (XmlTags.BOUNDS);
@@ -502,7 +502,7 @@ public class MapLoader {
 
 
 	/// <summary>
-	/// 	Transfère les noeuds XML de zones (autre que ceux d'infromations) depuis un document XML vers un autre.
+	/// 	Transfère les noeuds XML de zones (autre que ceux d'information) depuis un document XML vers un autre.
 	/// </summary>
 	/// <param name="targetDocument">Document XML destinée à recevoir les noeuds XML.</param>
 	/// <param name="sourceParentElement">
@@ -550,7 +550,7 @@ public class MapLoader {
 			}
 		}
 
-		// Supprression des noeuds à supprimer
+		// Suppression des noeuds à supprimer
 		foreach(XmlNode oldNode in oldNodes)
 			parentElement.RemoveChild (oldNode);
 	}
@@ -558,7 +558,7 @@ public class MapLoader {
 
 	/// <summary>
 	/// 	Ajoute des sous-noeuds XML au noeuds XML corredpondant à un groupe de noeuds. La méthode ajoute également
-	/// 	des informations d'identification et de localisation au sous-noeuds XML ajoutés.
+	/// 	des informations d'identification et de localisation aux sous-noeuds XML ajoutés.
 	/// </summary>
 	/// <param name="mapResumedDocument">Document dans lequel ajouter les sous-noeuds.</param>
 	/// <param name="nodeGroup">Groupe de noeuds contenant les noeuds à retranscrire dans le document.</param>
@@ -586,7 +586,7 @@ public class MapLoader {
 
 
 	/// <summary>
-	/// 	Ajoute une série d'attributs contenant des infromations relatives aux bâtiments dans un noeud XML
+	/// 	Ajoute une série d'attributs contenant des information relatives aux bâtiments dans un noeud XML
 	/// 	représentant un bâtiment.
 	/// </summary>
 	/// <param name="mapResumedDocument">Document dans lequel se trouve le noeud XML à modifier.</param>
@@ -603,7 +603,7 @@ public class MapLoader {
 
 
 	/// <summary>
-	/// 	Ajoute une série d'attributs contenant des infromations relatives aux routes dans un noeud XML représentant
+	/// 	Ajoute une série d'attributs contenant des informations relatives aux routes dans un noeud XML représentant
 	/// 	une route.
 	/// </summary>
 	/// <param name="mapResumedDocument">Document dans lequel se trouve le noeud XML à modifier.</param>
@@ -640,7 +640,6 @@ public class MapLoader {
 	/// 	Extrait les informations necessaires à la construction de la ville depuis le fichier map_resumed en appelant
 	/// 	notamment la fonction récursive d'extraction d'objets.
 	/// </summary>
-	/// <param name="nameFile"> nom du fichier resume a lire </param>
 	public void LoadResumedData() {
 		string mapResumedFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
 		XmlDocument mapsSettingsDocument = new XmlDocument (); 
@@ -692,8 +691,8 @@ public class MapLoader {
 	/// <param name="areaTypes">Types de zones pouvant être rencontrée et classées par ordre de profondeur.</param>
 	/// <param name="areaTypeIndex">Index utilisé par la méthode pour connaître sa profondeur dans le fichier.</param>
 	private void ExtractResumedNodes(XmlNode parentAreaNode, string[] areaDesignations, string[] areaTypes, int areaTypeIndex) {
-		// Poursuite du parcours récursif si les noeuds XML fils sont des noeuds XML de zones, extration et stockage des
-		// noeuds XML fils sinon
+		// Poursuite du parcours récursif si les noeuds XML fils sont des noeuds XML de zones, extraction et stockage
+		// des noeuds XML fils sinon
 		foreach (XmlNode childNode in parentAreaNode.ChildNodes) {
 			if (areaTypeIndex < areaTypes.Length) {
 				// Extraction du nom de la zone courante et ajout de celle-ci au chemin emprunté
@@ -707,8 +706,8 @@ public class MapLoader {
 				XmlNode objectInfoNode = childNode.FirstChild;
 				long id = long.Parse(this.AttributeValue (objectInfoNode, XmlAttributes.ID));
 
-				// Création et remplissage d'un nouveau noeud avec les identifiant et coordonnées extraits de chacun des
-				// sous-noeuds XML du noeud XML courant
+				// Création et remplissage d'un nouveau noeud avec les identifiants et coordonnées extraits de chacun
+				// des sous-noeuds XML du noeud XML courant
 				NodeGroup nodeGroup = new NodeGroup (id);
 				for (int i = 1; i < childNode.ChildNodes.Count; i++) {
 					XmlNode ndNode = childNode.ChildNodes[i];
@@ -730,11 +729,12 @@ public class MapLoader {
 				nodeGroup.Town = areaDesignations [2];
 				nodeGroup.District = areaDesignations [3];
 
-				// Ajout des caractéristiques aux groupes de noeuds en fonction du type d'objet extrait
+				// Ajout des caractéristiques et des tags aux groupes de noeuds en fonction du type d'objet extrait
 				if (childNode.Name.Equals (XmlTags.BUILDING)) {
 					nodeGroup.Name = this.AttributeValue (objectInfoNode, XmlAttributes.NAME);
 
 					string[] areaBuildingInfo = this.BuildingInfo (objectInfoNode);
+					// Ajout des caractéristiques aux groupes de noeuds
 					nodeGroup.NbFloor = int.Parse(areaBuildingInfo [0]);
 					nodeGroup.RoofAngle = int.Parse(areaBuildingInfo [1]);
 					nodeGroup.RoofType = areaBuildingInfo [2];
@@ -743,6 +743,7 @@ public class MapLoader {
 				} else if (childNode.Name.Equals (XmlTags.HIGHWAY)) {
 					nodeGroup.Name = this.AttributeValue (objectInfoNode, XmlAttributes.NAME);
 
+					// Ajout des caractéristiques aux groupes de noeuds
 					string[] areaHighwayInfo = this.HighwayInfo (objectInfoNode);
 					nodeGroup.NbWay = int.Parse (areaHighwayInfo[1]);
 					nodeGroup.MaxSpeed = int.Parse (areaHighwayInfo[2]);
