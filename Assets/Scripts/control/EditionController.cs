@@ -437,8 +437,8 @@ public class EditionController : MonoBehaviour {
 	public void RenameBuilding(GameObject building, string newName) {
 		// Enregistrement du nom initial si c'est la 1ère fois qu'il est modifié durant la période courante
 		// de modification.
-		if (!renamedBuildings.ContainsKey (building))
-			renamedBuildings.Add (building, building.name);
+		if (!renamedBuildings.ContainsKey(building))
+			renamedBuildings.Add(building, building.name);
 
 		// Changement du nom du GameObject et du NodeGroupe correspondant au bâtiment
 		NodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup (building);
@@ -743,6 +743,8 @@ public class EditionController : MonoBehaviour {
 	///		Supprime la situation initiale de chaque bâtiment et de chaque mur.
 	/// </summary>
 	private void CleanHistory() {
+		renamedBuildings.Clear();
+
 		wallsInitPos.Clear();
 		wallsInitAngle.Clear ();
 
