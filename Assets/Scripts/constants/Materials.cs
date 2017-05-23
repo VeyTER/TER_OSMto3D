@@ -45,7 +45,10 @@ public class Materials {
 	///<summary>Chemin vers le matériau métal.</summary>
 	public const string METAL = MATERIALS_FOLDER + "Metal";
 
-	///<summary>Chemin vers le matériau des éléments sélectionnés.</summary>
-	public const string SELECTED_ELEMENT = MATERIALS_FOLDER + "SelectedElement";
+	public const string BLUE_OVERLAY = MATERIALS_FOLDER + "BlueOverlay";
+
+	public const string GREEN_OVERLAY = MATERIALS_FOLDER + "GreenOverlay";
+
+	public const string RED_OVERLAY = MATERIALS_FOLDER + "RedOverlay";
 }
 

@@ -23,6 +23,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// <summary>Controlleur gérant la rotation d'un seul objet (déplacement d'un bâtiment par ex).</summary>
 	private static TurningEditor turningEditor;
 
+	private static HeightChangingEditor heightChangingEditor;
 
 	/// <summary>
 	/// 	Unique instance du singleton ObjectBuilder servant construire la ville en 3D à partir des données OSM.
@@ -36,9 +37,10 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void Start() {
 		// Initialisation des "transformateurs" d'objet s'ils sont null
-		if(editionController != null && (movingEditor == null || turningEditor == null)) {
+		if(editionController != null && (movingEditor == null || turningEditor == null || heightChangingEditor == null)) {
 			movingEditor = editionController.MovingEditor;
 			turningEditor = editionController.TurningEditor;
+			heightChangingEditor = editionController.HeightChangingEditor;
 		}
 	}
 
@@ -157,9 +159,17 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// </summary>
 	public void OnMouseUp () {
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
-		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()
-			&& (editionController.EditionState == EditionController.EditionStates.NONE_SELECTION || editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT)) {
-			editionController.SwitchBuilding (gameObject);
+		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
+			if (editionController.EditionState == EditionController.EditionStates.NONE_SELECTION || editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
+				editionController.SwitchBuilding(gameObject);
+			} else if(editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
+				int expansionDirection = heightChangingEditor.ExpansionDirection(gameObject);
+				if (expansionDirection > 0)
+					heightChangingEditor.IncrementObjectHeight();
+				else if (expansionDirection < 0)
+					heightChangingEditor.DecrementObjectHeight();
+
+			}
 		}
 	}
 

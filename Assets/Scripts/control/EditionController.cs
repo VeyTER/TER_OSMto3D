@@ -80,6 +80,8 @@ public class EditionController : MonoBehaviour {
 	/// <summary>Unique instance du singleton BuildingsTools contenant des outils pour les bâtiments.</summary>
 	private BuildingsTools buildingsTools;
 
+	private ObjectBuilder objectBuilder;
+
 
 	/// <summary>Bâtiments renommés durant la période de modification.</summary>
 	private Dictionary<GameObject, string> renamedBuildings;
@@ -89,6 +91,8 @@ public class EditionController : MonoBehaviour {
 
 	/// <summary>Objets tournés durant la période de modification.</summary>
 	private List<GameObject> turnedObjects;
+
+	private List<GameObject> expandedBuildings;
 
 
 	/// <summary>Mur sélectionné pour modification.</summary>
@@ -122,6 +126,8 @@ public class EditionController : MonoBehaviour {
 	/// 	de modification.
 	/// </summary>
 	private Dictionary<GameObject, float> buildingsInitAngle;
+
+	private Dictionary<GameObject, int> buildingsInitHeight;
 
 
 	/// <summary>Unique instance de la classe CameraCOntroller permettant de contrôler la caméra.</summary>
@@ -160,16 +166,20 @@ public class EditionController : MonoBehaviour {
 		this.heightChangingEditor = new HeightChangingEditor();
 
 		this.buildingsTools = BuildingsTools.GetInstance ();
+		this.objectBuilder = ObjectBuilder.GetInstance();
 
 		this.renamedBuildings = new Dictionary<GameObject, string> ();
 		this.movedObjects = new List<GameObject> ();
 		this.turnedObjects = new List<GameObject> ();
+		this.expandedBuildings = new List<GameObject> ();
 
 		this.wallsInitPos = new Dictionary<GameObject, Vector3>();
 		this.buildingsInitPos = new Dictionary<GameObject, Vector3>();
 
 		this.wallsInitAngle = new Dictionary<GameObject, float>();
 		this.buildingsInitAngle = new Dictionary<GameObject, float>();
+
+		this.buildingsInitHeight = new Dictionary<GameObject, int>();
 
 		this.validateEditionButton = GameObject.Find(UiNames.VALDIATE_EDITION_BUTTON);
 		this.cancelEditionButton = GameObject.Find(UiNames.CANCEL_EDITION_BUTTON);
@@ -200,6 +210,9 @@ public class EditionController : MonoBehaviour {
 	/// </summary>
 	/// <param name="selectedWall">Mur sur lequel l'utilisateur a cliqué.</param>
 	public void SwitchBuilding(GameObject selectedWall) {
+		if(selectedBuilding != null)
+			buildingsTools.DiscolorAsSelected(selectedBuilding);
+
 		this.selectedWall = selectedWall;
 		selectedBuilding = selectedWall.transform.parent.gameObject;
 
@@ -229,6 +242,11 @@ public class EditionController : MonoBehaviour {
 		if (!buildingsInitPos.ContainsKey(selectedBuilding) && !buildingsInitAngle.ContainsKey(selectedBuilding)) {
 			buildingsInitPos.Add (selectedBuilding, selectedBuilding.transform.position);
 			buildingsInitAngle.Add (selectedBuilding, selectedBuilding.transform.rotation.eulerAngles.y);
+		}
+
+		if (!buildingsInitHeight.ContainsKey(SelectedBuilding)) {
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+			buildingsInitHeight.Add (selectedBuilding, nodeGroup.NbFloor);
 		}
 
 		// Enregistrement de la situation initiale de la caméra
@@ -478,13 +496,11 @@ public class EditionController : MonoBehaviour {
 	public void EnterHeightChangingMode() {
 		this.EnterTransformMode();
 		heightChangingEditor.Initialize(selectedWall, selectedBuilding);
-		//heightChangingEditor.HeightChangingHandler.SetActive(true);
-		//movingEditor.InitializeHeightChangingMode(selectionRange);
-
-		cameraController.StartCoroutine( cameraController.MoveToBuilding(selectedBuilding, null, 30, 2) );
-
+		heightChangingEditor.InitializeHeightChangingMode();
+		cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, null, 15, 1.25F));
 		editionState = EditionStates.HEIGHT_CHANGING_MODE;
 	}
+
 
 	/// <summary>
 	/// 	Active le mode de transformation d'un bâtiment en fermant le panneau latéral et en inversant
@@ -505,8 +521,11 @@ public class EditionController : MonoBehaviour {
 		movingEditor.MoveHandler.SetActive (false);
 		turningEditor.TurnHandler.SetActive (false);
 
+		Destroy(HeightChangingEditor.TopFloor);
+		Destroy(HeightChangingEditor.BottomFloor);
+
 		// Ouverture du panneau latéral
-		if(panelState == PanelStates.CLOSED)
+		if (panelState == PanelStates.CLOSED)
 			this.OpenPanel (null);
 
 		// Inversion de l'affichage des boutons latéraux
@@ -545,6 +564,9 @@ public class EditionController : MonoBehaviour {
 			
 			buildingsTools.UpdateNodesPosition (selectedBuilding);
 		}
+
+		if (editionState == EditionStates.HEIGHT_CHANGING_MODE && !expandedBuildings.Contains(selectedBuilding))
+			expandedBuildings.Add(selectedBuilding);
 	}
 
 
@@ -560,7 +582,7 @@ public class EditionController : MonoBehaviour {
 				selectedWall.transform.position = movingEditor.SelectedWallStartPos;
 			} else if (editionState == EditionStates.TURNING_MODE) {
 				Quaternion selectedWallRotation = selectedWall.transform.rotation;
-				selectedWall.transform.rotation = Quaternion.Euler (selectedWallRotation.x, turningEditor.SelectedWallStartAngle, selectedWallRotation.z);
+				selectedWall.transform.rotation = Quaternion.Euler(selectedWallRotation.x, turningEditor.SelectedWallStartAngle, selectedWallRotation.z);
 			}
 		}
 
@@ -572,18 +594,24 @@ public class EditionController : MonoBehaviour {
 				Vector3 buildingPosition = selectedBuilding.transform.position;
 				Vector3 buildingNodesGroupPosition = movingEditor.SelectedBuildingNodes.transform.position;
 
-				movingEditor.SelectedBuildingNodes.transform.position = new Vector3 (buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
+				movingEditor.SelectedBuildingNodes.transform.position = new Vector3(buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
 			} else if (editionState == EditionStates.TURNING_MODE) {
 				Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
-				selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turningEditor.SelectedBuildingStartAngle, selectedBuildingRotation.z);
-			
+				selectedBuilding.transform.rotation = Quaternion.Euler(selectedBuildingRotation.x, turningEditor.SelectedBuildingStartAngle, selectedBuildingRotation.z);
+
 				float buildingAngle = selectedBuilding.transform.rotation.eulerAngles.y;
 				Quaternion buildingNodesGroupRotation = turningEditor.SelectedBuildingNodes.transform.rotation;
 
-				turningEditor.SelectedBuildingNodes.transform.rotation = Quaternion.Euler (buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
+				turningEditor.SelectedBuildingNodes.transform.rotation = Quaternion.Euler(buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
 			}
 
-			buildingsTools.UpdateNodesPosition (selectedBuilding);
+			buildingsTools.UpdateNodesPosition(selectedBuilding);
+		}
+
+		if (editionState == EditionStates.HEIGHT_CHANGING_MODE) {
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+			nodeGroup.NbFloor = HeightChangingEditor.SelectedBuildingStartHeight;
+			objectBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor);
 		}
 	}
 
@@ -658,19 +686,23 @@ public class EditionController : MonoBehaviour {
 
 		// Mise à jour, dans les fichiers, des données conernant les bâtiments modifiés
 		foreach (GameObject building in transformedObjects) {
-			Vector3 buildingInitPos = Vector3.zero;
-			float buildingInitAngle = 0F;
+			Vector3 buildingInitPos = buildingsInitPos[building];
+			float buildingInitAngle = buildingsInitAngle[building];
 
-			bool positionContained = buildingsInitPos.TryGetValue (building, out buildingInitPos);
-			bool angleContained = buildingsInitAngle.TryGetValue (building, out buildingInitAngle);
-
-			if (positionContained && angleContained) {
-				if (!building.transform.position.Equals (buildingInitPos) || building.transform.rotation.eulerAngles.y != buildingInitAngle) {
-					buildingsTools.UpdateLocation (building);
-				}
-			}
+			if (!building.transform.position.Equals (buildingInitPos) || building.transform.rotation.eulerAngles.y != buildingInitAngle)
+				buildingsTools.UpdateLocation (building);
 		}
-			
+
+		foreach(GameObject building in expandedBuildings) { 
+			int buildingInitHeight = buildingsInitHeight[building];
+
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+			nodeGroup.NbFloor = HeightChangingEditor.SelectedBuildingStartHeight;
+
+			if (buildingInitHeight != nodeGroup.NbFloor)
+				buildingsTools.UpdateHeight(building, nodeGroup.NbFloor);
+		}
+
 		// Suppression des situations initiales des objets modifiés
 		this.CleanHistory ();
 	}
@@ -734,6 +766,16 @@ public class EditionController : MonoBehaviour {
 			wall.transform.rotation = wall.transform.rotation = Quaternion.Euler (wallRotation.x, wallAngleEntry.Value, wallRotation.z);
 		}
 
+		foreach (KeyValuePair<GameObject, int> buildingHeightEntry in buildingsInitHeight) {
+			GameObject building = buildingHeightEntry.Key;
+			int buildingHeight = buildingHeightEntry.Value;
+
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+			nodeGroup.NbFloor = buildingHeight;
+
+			objectBuilder.RebuildBuilding(building, buildingHeight);
+		}
+
 		// Suppression des situations initiales des objets modifiés
 		this.CleanHistory ();
 	}
@@ -750,6 +792,8 @@ public class EditionController : MonoBehaviour {
 
 		buildingsInitPos.Clear();
 		buildingsInitAngle.Clear ();
+
+		expandedBuildings.Clear();
 	}
 
 
@@ -771,6 +815,11 @@ public class EditionController : MonoBehaviour {
 	public TurningEditor TurningEditor {
 		get { return turningEditor; }
 		set { turningEditor = value; }
+	}
+
+	public HeightChangingEditor HeightChangingEditor {
+		get { return heightChangingEditor; }
+		set { heightChangingEditor = value; }
 	}
 
 	public PanelStates PanelState {

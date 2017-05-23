@@ -79,11 +79,11 @@ public class BuildingsTools {
 	/// <param name="building">Bâtiment à colorier.</param>
 	public void ColorAsSelected(GameObject building) {
 		Material wallMaterial = Resources.Load (Materials.WALL) as Material;
-		Material selectedElementMaterial = Resources.Load (Materials.SELECTED_ELEMENT) as Material;
+		Material selectedElementMaterial = Resources.Load (Materials.BLUE_OVERLAY) as Material;
 
 		// Supperposition du matériau de base avec celui de la couleur de sélection pour le bâtiment sélectionné
-		foreach (Transform wall in building.transform) {
-			Renderer meshRenderer = wall.GetComponent<Renderer> ();
+		foreach (Transform wallTransform in building.transform) {
+			Renderer meshRenderer = wallTransform.GetComponent<Renderer> ();
 			if (meshRenderer != null) {
 				// Ecrasement de stock de matériaux du mur avec un nouveau stock contenant son matériau de base et le
 				// matériau de sélection
@@ -104,8 +104,8 @@ public class BuildingsTools {
 		Material wallMaterial = Resources.Load(Materials.WALL) as Material;
 
 		// Supperposition du matériau de base avec celui de la couleur de sélection pour le bâtiment sélectionné
-		foreach (Transform wall in building.transform) {
-			Renderer meshRenderer = wall.GetComponent<Renderer>();
+		foreach (Transform wallTransform in building.transform) {
+			Renderer meshRenderer = wallTransform.GetComponent<Renderer>();
 			if (meshRenderer != null) {
 				// Ecrasement de stock de matériaux du mur avec un nouveau stock contenant son matériau de base et le
 				// matériau de sélection

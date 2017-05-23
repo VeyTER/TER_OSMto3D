@@ -307,10 +307,44 @@ public class ObjectBuilder {
 	/// <param name="wallSetGo">Bâtiment à modifier.</param>
 	/// <param name="nbFloor">Nombre d'étages qui doivent former le bâtiment.</param>
 	public void RebuildBuilding(GameObject building, int nbFloor) {
-		foreach(Transform wall in building.transform) {
-			wall.localScale = new Vector3(wall.localScale.x, Dimensions.FLOOR_HEIGHT * nbFloor, wall.localScale.z);
-			wall.position = new Vector3 (wall.position.x, (Dimensions.FLOOR_HEIGHT / 2F) * (float)nbFloor, wall.position.z);
+		foreach(Transform wallTransform in building.transform) {
+			wallTransform.position = new Vector3 (wallTransform.position.x, (Dimensions.FLOOR_HEIGHT / 2F) * (float)nbFloor, wallTransform.position.z);
+			wallTransform.localScale = new Vector3(wallTransform.localScale.x, Dimensions.FLOOR_HEIGHT * nbFloor, wallTransform.localScale.z);
 		}
+	}
+
+	public GameObject BuildVirtualFloor(GameObject building, int floorIndex, Material floorMaterial) {
+		List<GameObject> virtualWalls = new List<GameObject>();
+		foreach (Transform childTransform in building.transform) {
+			GameObject virtualWall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			virtualWall.tag = NodeTags.WALL_TAG;
+
+			virtualWall.transform.position = new Vector3(childTransform.position.x, (Dimensions.FLOOR_HEIGHT) * floorIndex - Dimensions.FLOOR_HEIGHT / 2F, childTransform.position.z);
+			virtualWall.transform.rotation = childTransform.rotation;
+			virtualWall.transform.localScale = new Vector3(childTransform.localScale.x, Dimensions.FLOOR_HEIGHT, childTransform.localScale.z * 1.35F);
+
+			BoxCollider wallBoxColliser = virtualWall.GetComponent<BoxCollider>();
+			wallBoxColliser.isTrigger = true;
+
+			virtualWall.AddComponent<UiManager>();
+
+			MeshRenderer virtualWallRenderer = virtualWall.GetComponent<MeshRenderer>();
+			virtualWallRenderer.material = floorMaterial;
+
+			virtualWalls.Add(virtualWall);
+		}
+
+		GameObject virtualFloor = new GameObject(building.name + "virtual_stage_" + floorIndex);
+		virtualFloor.transform.position = building.transform.position;
+		virtualFloor.transform.rotation = building.transform.rotation;
+
+		foreach (GameObject virtualWall in virtualWalls)
+			virtualWall.transform.parent = virtualFloor.transform;
+
+		Vector3 buildingScale = building.transform.localScale;
+		virtualFloor.transform.localScale = new Vector3(buildingScale.x, virtualFloor.transform.localScale.y, buildingScale.z);
+
+		return virtualFloor;
 	}
 
 
