@@ -242,9 +242,9 @@ public class EditionController : MonoBehaviour {
 		// du déplacement
 		editionState = EditionStates.MOVING_TO_OBJECT;
 		cameraController.StartCoroutine (
-			cameraController.MoveToBuilding(selectedBuilding, 90, () => {
+			cameraController.MoveToBuilding(selectedBuilding, () => {
 				editionState = EditionStates.READY_TO_EDIT;
-			})
+			}, 90)
 		);
 	}
 
@@ -264,7 +264,6 @@ public class EditionController : MonoBehaviour {
 		this.ClosePanel (() => {
 			lateralPanel.SetActive (false);
 		});
-
 
 		// Déplacement de la caméra à sa position initiale et réinitialisation de l'état de modification à la fin du
 		// déplacement
@@ -482,7 +481,7 @@ public class EditionController : MonoBehaviour {
 		//heightChangingEditor.HeightChangingHandler.SetActive(true);
 		//movingEditor.InitializeHeightChangingMode(selectionRange);
 
-		cameraController.StartCoroutine( cameraController.MoveToBuilding(selectedBuilding, 45, null) );
+		cameraController.StartCoroutine( cameraController.MoveToBuilding(selectedBuilding, null, 30, 2) );
 
 		editionState = EditionStates.HEIGHT_CHANGING_MODE;
 	}
@@ -517,9 +516,9 @@ public class EditionController : MonoBehaviour {
 		// probablement bougé
 		editionState = EditionStates.MOVING_TO_OBJECT;
 		cameraController.StartCoroutine (
-			cameraController.MoveToBuilding (selectedBuilding, 90, () => {
+			cameraController.MoveToBuilding (selectedBuilding, () => {
 				editionState = EditionStates.READY_TO_EDIT;
-			})
+			}, 90)
 		);
 	}
 

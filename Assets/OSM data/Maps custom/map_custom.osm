@@ -167,4 +167,7 @@
     <nd index="4" ref="596615149" lat="43.6029296875" lon="1.44119860839844" />
     <nd index="5" ref="596615145" lat="43.6028984375" lon="1.44114880371094" />
   </building>
+  <building>
+    <info id="10157283" name="The Cap'" nbfloor="30" roofangle="15" rooftype="pitched" />
+  </building>
 </earth>

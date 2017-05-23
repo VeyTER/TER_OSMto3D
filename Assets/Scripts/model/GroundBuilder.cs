@@ -19,7 +19,7 @@ public class GroundBuilder {
 		GameObject ground = new GameObject ("Ground", typeof(MeshFilter), typeof(MeshRenderer));
 
 		// Positionnement et orientation du sol
-		ground.transform.position = new Vector3 ((float)(minLon * Main.SCALE_FACTOR), -0.02F, (float)(minLat * Main.SCALE_FACTOR));
+		ground.transform.position = new Vector3 ((float)(minLon * Main.SCALE_FACTOR), 0, (float)(minLat * Main.SCALE_FACTOR));
 		ground.transform.rotation = Quaternion.Euler (0, angle, 0);
 
 		// Création du maillage du sol

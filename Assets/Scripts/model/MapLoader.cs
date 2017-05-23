@@ -797,7 +797,7 @@ public class MapLoader {
 
 					if (matchingResumedInfoNode != null) {
 
-						Debug.Log(matchingResumedInfoNode.Attributes[XmlAttributes.NAME].Value);
+						//Debug.Log(matchingResumedInfoNode.Attributes[XmlAttributes.NAME].Value);
 
 						// Récupération du noeud XML correspondant à l'objet du fichier map_resumed
 						XmlNode matchingResumedNode = matchingResumedInfoNode.ParentNode;

@@ -4004,7 +4004,7 @@
             <nd index="1" ref="65161480" lat="43.6034802" lon="1.4457148" />
           </highway>
           <building>
-            <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <info id="10157283" name="The Cap'" nbfloor="30" roofangle="15" rooftype="pitched" />
             <nd index="0" ref="83815655" lat="43.6049183" lon="1.4438403" />
             <nd index="1" ref="426597782" lat="43.6048943" lon="1.4438239" />
             <nd index="2" ref="426597780" lat="43.60479" lon="1.4438309" />

@@ -1,9 +1,10 @@
-﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\control\HeightChangingEditor.cs">
+﻿<Properties StartupItem="Code.csproj" RefactoringSettings.EnableRefactorings="True">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\model\MapLoader.cs">
     <Files>
-      <File FileName="Assets\Scripts\control\EditionController.cs" Line="428" Column="3" />
-      <File FileName="Assets\Scripts\control\HeightChangingEditor.cs" Line="5" Column="3" />
+      <File FileName="Assets\Scripts\control\EditionController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\control\HeightChangingEditor.cs" Line="5" Column="1" />
+      <File FileName="Assets\Scripts\model\MapLoader.cs" Line="800" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

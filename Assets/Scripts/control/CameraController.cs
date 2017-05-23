@@ -144,7 +144,7 @@ public class CameraController : MonoBehaviour {
 	/// <returns>Temporisateur servant à générer une animation.</returns>
 	/// <param name="building">Bâtiment au-dessus duquel se positionner.</param>
 	/// <param name="finalAction">Action finale à effectuer à la fin du déplacement.</param>
-	public IEnumerator MoveToBuilding(GameObject building, float orientation, Action finalAction) {
+	public IEnumerator MoveToBuilding(GameObject building, Action finalAction, float orientation = 90, float remotenessFactor = 1) {
 		cameraState = CameraStates.FLYING;
 
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
@@ -162,13 +162,12 @@ public class CameraController : MonoBehaviour {
 		float targetPosZ = (float) (buildingHeight + buildingRadius / Math.Tan (cameraFOV)) * 0.8F;
 
 		// Calcul de la position à adopter par rapport à l'orientation de la caméra
-		orientation = 0;
-		double horizontalShift = (targetPosZ - buildingHeight) * Math.Cos(orientation * Mathf.Deg2Rad);
-		double verticalShift = (targetPosZ - buildingHeight) * Math.Sin(orientation * Mathf.Deg2Rad);
+		double horizontalShift = (targetPosZ - buildingHeight) * Math.Cos(orientation * Mathf.Deg2Rad) * remotenessFactor;
+		double verticalShift = (targetPosZ - buildingHeight) * Math.Sin(orientation * Mathf.Deg2Rad) * remotenessFactor;
 
 		// Enregistrement de la situation à atteindre
 		Vector3 buildingCenterPosition = buildingsTools.BuildingCenter (building);
-		Vector3 targetPosition = new Vector3(buildingCenterPosition.x - (float) horizontalShift, firstWall.transform.position.y + buildingHeight/* - (float)verticalShift*/, buildingCenterPosition.z);
+		Vector3 targetPosition = new Vector3(buildingCenterPosition.x - (float) horizontalShift, buildingHeight + (float)verticalShift, buildingCenterPosition.z);
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (orientation, 90, 0));
 
 		// Génération de l'animation
