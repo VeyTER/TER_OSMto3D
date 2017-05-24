@@ -10,6 +10,9 @@ public class HeightChangingEditor : ObjectEditor {
 	private GameObject topFloor;
 	private GameObject bottomFloor;
 
+	private FloorColorController topFloorColorController;
+	private FloorColorController bottomFloorColorController;
+
 	public HeightChangingEditor() {
 		this.objectBuilder = ObjectBuilder.GetInstance();
 		this.buildingTools = BuildingsTools.GetInstance();
@@ -29,25 +32,23 @@ public class HeightChangingEditor : ObjectEditor {
 		topFloor = objectBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor + 1, greenOverlay);
 		bottomFloor = objectBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor, redOverlay);
 
+		topFloor.AddComponent<FloorColorController>();
+		bottomFloor.AddComponent<FloorColorController>();
+
+		topFloorColorController = topFloor.GetComponent<FloorColorController>();
+		bottomFloorColorController = bottomFloor.GetComponent<FloorColorController>();
+
+		topFloorColorController.TargetMaterial = greenOverlay;
+		bottomFloorColorController.TargetMaterial = redOverlay;
+
+		topFloorColorController.ColorHue = 144;
+		bottomFloorColorController.ColorHue = 0;
+
+		topFloorColorController.StartCoroutine( topFloorColorController.Animate() );
+		bottomFloorColorController.StartCoroutine( bottomFloorColorController.Animate() );
+
 		selectedBuildingStartHeight = nodeGroup.NbFloor;
-
-		//Vector2 nearestPoint = this.NearestBuildingPoint(nodeGroup);
 	}
-
-	//private Vector2 NearestBuildingPoint(NodeGroup nodeGroup) {
-	//	Vector2 res = Vector2.zero;
-	//	Vector3 buildingCenter = buildingsTools.BuildingCenter(selectedBuilding);
-	//	float minDistance = float.PositiveInfinity;
-	//	foreach (Node node in nodeGroup.Nodes) {
-	//		Vector2 nodeLocation = new Vector2((float) node.Longitude, (float) node.Latitude);
-	//		float distance = Vector2.Distance(nodeLocation, new Vector2(buildingCenter.x, buildingCenter.z));
-	//		if (distance < minDistance) {
-	//			res = nodeLocation;
-	//			minDistance = distance;
-	//		}
-	//	}
-	//	return res;
-	//}
 
 	public int DesiredDirection(GameObject clickedWall) {
 		Transform topWallsTransform = topFloor.transform;
@@ -116,5 +117,15 @@ public class HeightChangingEditor : ObjectEditor {
 	public GameObject BottomFloor {
 		get { return bottomFloor; }
 		set { bottomFloor = value; }
+	}
+
+	public FloorColorController TopFloorColorController {
+		get { return topFloorColorController; }
+		set { topFloorColorController = value; }
+	}
+
+	public FloorColorController BottomFloorColorController {
+		get { return bottomFloorColorController; }
+		set { bottomFloorColorController = value; }
 	}
 }

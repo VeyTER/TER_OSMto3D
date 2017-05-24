@@ -16,7 +16,6 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// </summary>
 	public static EditionController editionController;
 
-
 	/// <summary>Controlleur gérant le déplacement d'un seul objet (déplacement d'un bâtiment par ex).</summary>
 	private static MovingEditor movingEditor;
 
@@ -153,23 +152,57 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		}
 	}
 
+	public void OnMouseDown() {
+		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
+		if (editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
+			int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
+			if (expansionDirection > 0) {
+				heightChangingEditor.TopFloorColorController.SetPressed();
+			} else if (expansionDirection < 0) {
+				heightChangingEditor.BottomFloorColorController.SetPressed();
+			}
+		}
+	}
 
 	/// <summary>
 	/// 	Méthode appelée lorsque l'utilisateur relâche la pression d'un bouton de la souris sur l'objet sélectionné.
 	/// </summary>
-	public void OnMouseUp () {
+	public void OnMouseUp() {
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
 		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
 			if (editionController.EditionState == EditionController.EditionStates.NONE_SELECTION || editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
 				editionController.SwitchBuilding(gameObject);
-			} else if(editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
+			} else if (editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
 				int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
-				if (expansionDirection > 0)
+				if (expansionDirection > 0) {
 					heightChangingEditor.IncrementObjectHeight();
-				else if (expansionDirection < 0)
+					heightChangingEditor.TopFloorColorController.SetHovered();
+				} else if (expansionDirection < 0) {
 					heightChangingEditor.DecrementObjectHeight();
-
+					heightChangingEditor.BottomFloorColorController.SetHovered();
+				}
 			}
+		}
+	}
+
+	public void OnMouseEnter() {
+		 if (editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
+			int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
+			if (expansionDirection > 0)
+				heightChangingEditor.TopFloorColorController.SetHovered();
+			else if (expansionDirection < 0)
+				heightChangingEditor.BottomFloorColorController.SetHovered();
+
+		}
+	}
+
+	private void OnMouseExit() {
+		 if (editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
+			int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
+			if (expansionDirection > 0)
+				heightChangingEditor.TopFloorColorController.SetInactive();
+			else if (expansionDirection < 0)
+				heightChangingEditor.BottomFloorColorController.SetInactive();
 		}
 	}
 

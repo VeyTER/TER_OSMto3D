@@ -25,7 +25,7 @@
     <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="10157283" name="Le capitole" nbfloor="12" roofangle="15" rooftype="pitched" />
+    <info id="10157283" name="Le capitole" nbfloor="9" roofangle="15" rooftype="pitched" />
   </building>
   <building>
     <info id="45728963" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />

@@ -81,7 +81,13 @@ public class Main : MonoBehaviour {
 			// Paramétrage du panneau latéral
 			Vector3 panelPosition = lateralPanel.transform.localPosition;
 			RectTransform panelRectTransform = (RectTransform)lateralPanel.transform;
-			lateralPanel.transform.localPosition = new Vector3 (panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
+			lateralPanel.transform.localPosition = new Vector3(panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
+
+			Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
+			Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
+
+			greenOverlay.SetColor("_EmissionColor", new Color(0.2382F, 0.6F, 0.3853387F)) ;
+			redOverlay.SetColor("_EmissionColor", new Color(1F, 0.397F, 0.397F));
 		}
 	}
 
