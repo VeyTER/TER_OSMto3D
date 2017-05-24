@@ -136,7 +136,7 @@ public class BuildingsTools {
 
 			// Récupération de l'attribut de nom du bâtiment dans les fichiers MapResumed et MapCustom
 			XmlAttribute resumeNameAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
-			XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (nodeGroup.Id, XmlAttributes.NAME);
+			XmlAttribute customNameAttribute = this.CustomNodeGroupAttribute (nodeGroup, XmlAttributes.NAME);
 
 			// Changement du nom du groupe de noeuds correspondant au bâtiment
 			nodeGroup.Name = building.name;
@@ -214,32 +214,84 @@ public class BuildingsTools {
 
 
 	/// <summary>
+/// 	Change la hauteur d'un bâtiment d'un étage à la fois au niveau du groupe de noeuds correspondant, de la 
+/// 	scène 3D et dans les fichiers MapResumed et MapCustom. 
+	/// </summary>
+	/// <param name="building">Bâtiment à modifier.</param>
+	/// <param name="nbFloors">nombre d'étage que doit avoir le bâtiment.</param>
+	public void UpdateHeight(GameObject building, int nbFloor) {
+		// Récupération du groupe de noeuds correspondant au bâtiment
+		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
+
+		if(File.Exists(resumeFilePath)) {
+			mapResumeDocument.Load (resumeFilePath);
+			mapCustomDocument.Load (customFilePath);
+
+			//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier map_custom, l'ajouter
+			if (!this.CustomBuildingExists(nodeGroup.Id))
+				this.AppendCustomBuilding (nodeGroup);
+
+			nodeGroup.NbFloor = nbFloor;
+
+			// Modification de l'attribut contenant le nombre d'étages du bâtiment dans le fichier map_resumedd
+			XmlAttribute resumefloorAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
+			XmlAttribute customfloorAttribute = this.CustomNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
+
+			resumefloorAttribute.Value = Math.Max(nbFloor, 1).ToString();
+			customfloorAttribute.Value = Math.Max(nbFloor, 1).ToString();
+
+			mapResumeDocument.Save (resumeFilePath);
+			mapCustomDocument.Save (customFilePath);
+		}
+
+		// Modification de la hauteur du bâtiment 3D
+		ObjectBuilder objectBuilder = ObjectBuilder.GetInstance();
+		objectBuilder.RebuildBuilding (building, nbFloor);
+	}
+
+
+	/// <summary>
+	/// 	Récupère en revoie la hauteur d'un bâtiment à partir de son entrée dans le fichier map_resumedd.
+	/// </summary>
+	/// <returns>Hauteur du bâtiment en nombre d'étages.</returns>
+	/// <param name="building">Bâtiment dont on veut connaître la hauteur.</param>
+	private int GetBuildingHeight(GameObject building) {
+		NodeGroup nodeGroup = this.BuildingToNodeGroup(building);
+		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute(nodeGroup, XmlAttributes.NB_FLOOR);
+		if (floorAttribute != null)
+			return int.Parse(floorAttribute.Value);
+		else
+			return -1;
+	}
+
+
+	/// <summary>
 	/// 	Ajoute une entrée représentant un bâtiment dans le fichier map_custom.
 	/// </summary>
 	/// <param name="nodeGroup">Groupe de noeuds correspondant au bâtiment.</param>
-	public void AppendCustomBuilding(NodeGroup nodeGroup) {
-		if (File.Exists (customFilePath)) {
+	private void AppendCustomBuilding(NodeGroup nodeGroup) {
+		if (File.Exists(customFilePath)) {
 			// Récupération du noeud XML englobant tous les objets terrestres et ajout de celui-ci au fichier MapCutom
 			// s'il n'est pas présent
-			XmlNodeList earthNodes = mapCustomDocument.GetElementsByTagName (XmlTags.EARTH);
-			if (earthNodes.Count == 0) 
-				mapCustomDocument.AppendChild (mapCustomDocument.CreateElement (XmlTags.EARTH));
+			XmlNodeList earthNodes = mapCustomDocument.GetElementsByTagName(XmlTags.EARTH);
+			if (earthNodes.Count == 0)
+				mapCustomDocument.AppendChild(mapCustomDocument.CreateElement(XmlTags.EARTH));
 
 			// Création d'un noeud XML d'information pour le noeud XML du bâtiment
-			XmlNode earthNode = earthNodes [0];
-			XmlNode buildingNode = mapCustomDocument.CreateElement (XmlTags.BUILDING);
-			XmlNode buildingInfoNode = mapCustomDocument.CreateElement (XmlTags.INFO);
+			XmlNode earthNode = earthNodes[0];
+			XmlNode buildingNode = mapCustomDocument.CreateElement(XmlTags.BUILDING);
+			XmlNode buildingInfoNode = mapCustomDocument.CreateElement(XmlTags.INFO);
 
 			// Ajout du noeud XML d'information dans le fichier map_custom
-			earthNode.AppendChild (buildingNode);
-			buildingNode.AppendChild (buildingInfoNode);
+			earthNode.AppendChild(buildingNode);
+			buildingNode.AppendChild(buildingInfoNode);
 
 			// Ajout des attributs et de la valeurs dans le noeud XML d'information
-			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ID, nodeGroup.Id.ToString ());
-			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.NAME, nodeGroup.Name);
-			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor.ToString ());
-			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, nodeGroup.RoofAngle.ToString ());
-			this.AppendNodeGroupAttribute (mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_TYPE, nodeGroup.RoofType);
+			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ID, nodeGroup.Id.ToString());
+			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.NAME, nodeGroup.Name);
+			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor.ToString());
+			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, nodeGroup.RoofAngle.ToString());
+			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_TYPE, nodeGroup.RoofType);
 		}
 	}
 
@@ -249,10 +301,10 @@ public class BuildingsTools {
 	/// </summary>
 	/// <returns><c>true</c>, si l'entrée existe, <c>false</c> sinon.</returns>
 	/// <param name="nodeGroupId">ID du bâtiment dont on veut vérifier l'existance.</param>
-	public bool CustomBuildingExists(long nodeGroupId) {
-		if (File.Exists (customFilePath)) {
+	private bool CustomBuildingExists(long nodeGroupId) {
+		if (File.Exists(customFilePath)) {
 			string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroupId + "\"]";
-			return mapCustomDocument.SelectSingleNode (xPath) != null;
+			return mapCustomDocument.SelectSingleNode(xPath) != null;
 		} else {
 			return false;
 		}
@@ -268,68 +320,9 @@ public class BuildingsTools {
 	/// <param name="attributeName">Nom à donner au nouvel attribut.</param>
 	/// <param name="attributeValue">Valeur à donner au nouvel attribut.</param>
 	private void AppendNodeGroupAttribute(XmlDocument boundingDocument, XmlNode containerNode, string attributeName, string attributeValue) {
-		XmlAttribute attribute = boundingDocument.CreateAttribute (attributeName);
+		XmlAttribute attribute = boundingDocument.CreateAttribute(attributeName);
 		attribute.Value = attributeValue;
-		containerNode.Attributes.Append (attribute);
-	}
-
-
-	/// <summary>
-	/// 	Récupère en revoie la hauteur d'un bâtiment à partir de son entrée dans le fichier map_resumedd.
-	/// </summary>
-	/// <returns>Hauteur du bâtiment en nombre d'étages.</returns>
-	/// <param name="building">Bâtiment dont on veut connaître la hauteur.</param>
-	public int GetHeight(GameObject building) {
-		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
-		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
-		if (floorAttribute != null)
-			return int.Parse(floorAttribute.Value);
-		else
-			return -1;
-	}
-
-
-	/// <summary>
-/// 	Diminue la hauteur d'un bâtiment d'un étage à la fois au niveau du groupe de noeuds correspondant, de la 
-/// 	scène 3D et dans les fichiers MapResumed et MapCustom. 
-	/// </summary>
-	/// <param name="building">Bâtiment à modifier.</param>
-	public void DecrementHeight(GameObject building) {
-		int nbFloors = GetHeight(building);
-		this.UpdateHeight (building, nbFloors - 1);
-	}
-
-	/// <summary>
-/// 	Augmente la hauteur d'un bâtiment d'un étage à la fois au niveau du groupe de noeuds correspondant, de la 
-/// 	scène 3D et dans les fichiers MapResumed et MapCustom. 
-	/// </summary>
-	/// <param name="building">Bâtiment à modifier.</param>
-	public void IncrementHeight(GameObject building) {
-		int nbFloors = GetHeight(building);
-		this.UpdateHeight (building, nbFloors + 1);
-	}
-
-
-	/// <summary>
-/// 	Change la hauteur d'un bâtiment d'un étage à la fois au niveau du groupe de noeuds correspondant, de la 
-/// 	scène 3D et dans les fichiers MapResumed et MapCustom. 
-	/// </summary>
-	/// <param name="building">Bâtiment à modifier.</param>
-	/// <param name="nbFloors">nombre d'étage que doit avoir le bâtiment.</param>
-	public void UpdateHeight(GameObject building, int nbFloors) {
-		// Récupération du groupe de noeuds correspondant au bâtiment
-		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
-
-		// Modification de l'attribut contenant le nombre d'étages du bâtiment dans le fichier map_resumedd
-		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute (nodeGroup, XmlAttributes.NB_FLOOR);
-		if (floorAttribute != null)
-			floorAttribute.Value = Math.Max(nbFloors, 1).ToString();
-
-		mapResumeDocument.Save (resumeFilePath);
-
-		// Modification de la hauteur du bâtiment 3D
-		ObjectBuilder objectBuilder = ObjectBuilder.GetInstance();
-		objectBuilder.RebuildBuilding (building, nbFloors);
+		containerNode.Attributes.Append(attribute);
 	}
 
 
@@ -342,6 +335,7 @@ public class BuildingsTools {
 	/// <param name="attributeName">Nom de l'attribut à trouver.</param>
 	private XmlAttribute ResumeNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
 		XmlAttribute res = null;
+
 		// Construction de d'adresse du noeud XML d'information du bâtiment à partir de son zonage
 		string zoningXPath = "";
 		zoningXPath += "/" + XmlTags.EARTH;
@@ -354,6 +348,7 @@ public class BuildingsTools {
 
 		// Récupération du noeud XML d'information et récupération de l'attribut ciblé
 		XmlNode infoNode = mapResumeDocument.SelectSingleNode (zoningXPath);
+
 		res = infoNode.Attributes[attributeName];
 
 		return res;
@@ -367,9 +362,9 @@ public class BuildingsTools {
 	/// <returns>Attribut trouvé dans le fichier map_custom.</returns>
 	/// <param name="nodeGroupeId">ID du groupe de noeuds contenant l'attribut.</param>
 	/// <param name="attributeName">Nom de l'attribut à trouver.</param>
-	private XmlAttribute CustomNodeGroupAttribute(long nodeGroupeId, string attributeName) {
+	private XmlAttribute CustomNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
 		XmlAttribute res = null;
-		string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroupeId + "\"]";
+		string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
 		XmlNode infoNode = mapCustomDocument.SelectSingleNode(xPath);
 		res = infoNode.Attributes[attributeName];
 		return res;

@@ -1,10 +1,11 @@
 ﻿<Properties StartupItem="Code.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\model\MapLoader.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\control\CameraController.cs">
     <Files>
       <File FileName="Assets\Scripts\control\EditionController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\control\HeightChangingEditor.cs" Line="5" Column="1" />
+      <File FileName="Assets\Scripts\control\HeightChangingEditor.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\model\MapLoader.cs" Line="800" Column="1" />
+      <File FileName="Assets\Scripts\control\CameraController.cs" Line="203" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

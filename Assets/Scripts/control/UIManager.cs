@@ -163,7 +163,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (editionController.EditionState == EditionController.EditionStates.NONE_SELECTION || editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
 				editionController.SwitchBuilding(gameObject);
 			} else if(editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
-				int expansionDirection = heightChangingEditor.ExpansionDirection(gameObject);
+				int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
 				if (expansionDirection > 0)
 					heightChangingEditor.IncrementObjectHeight();
 				else if (expansionDirection < 0)
@@ -392,14 +392,5 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		// Verrouillage du bouton des bâtiments et déverrouillage du boutons des murs
 		wallButtonComponent.interactable = true;
 		buildingButtonComponent.interactable = false;
-	}
-
-	/// <summary>
-	/// 	Augmente la hauteur d'un bâtiment en utilisant l'isntancce du singleton de BuildingTools.
-	/// </summary>
-	/// <param name="selectedBuilding">Bâtiment sélectionné.</param>
-	public void IncrementBuildingHeight(GameObject selectedBuilding) {
-		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-		buildingsTools.IncrementHeight (selectedBuilding);
 	}
 }

@@ -244,8 +244,10 @@ public class EditionController : MonoBehaviour {
 			buildingsInitAngle.Add (selectedBuilding, selectedBuilding.transform.rotation.eulerAngles.y);
 		}
 
+
 		if (!buildingsInitHeight.ContainsKey(SelectedBuilding)) {
 			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+
 			buildingsInitHeight.Add (selectedBuilding, nodeGroup.NbFloor);
 		}
 
@@ -693,18 +695,16 @@ public class EditionController : MonoBehaviour {
 				buildingsTools.UpdateLocation (building);
 		}
 
-		foreach(GameObject building in expandedBuildings) { 
+		foreach(GameObject building in expandedBuildings) {
 			int buildingInitHeight = buildingsInitHeight[building];
-
-			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-			nodeGroup.NbFloor = HeightChangingEditor.SelectedBuildingStartHeight;
-
+			
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
 			if (buildingInitHeight != nodeGroup.NbFloor)
 				buildingsTools.UpdateHeight(building, nodeGroup.NbFloor);
 		}
 
 		// Suppression des situations initiales des objets modifiés
-		this.CleanHistory ();
+		this.ClearHistory ();
 	}
 
 
@@ -770,30 +770,34 @@ public class EditionController : MonoBehaviour {
 			GameObject building = buildingHeightEntry.Key;
 			int buildingHeight = buildingHeightEntry.Value;
 
-			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
 			nodeGroup.NbFloor = buildingHeight;
 
 			objectBuilder.RebuildBuilding(building, buildingHeight);
 		}
 
 		// Suppression des situations initiales des objets modifiés
-		this.CleanHistory ();
+		this.ClearHistory ();
 	}
 
 
 	/// <summary>
 	///		Supprime la situation initiale de chaque bâtiment et de chaque mur.
 	/// </summary>
-	private void CleanHistory() {
+	private void ClearHistory() {
 		renamedBuildings.Clear();
 
 		wallsInitPos.Clear();
 		wallsInitAngle.Clear ();
 
 		buildingsInitPos.Clear();
-		buildingsInitAngle.Clear ();
+		buildingsInitAngle.Clear();
+
+		movedObjects.Clear();
+		turnedObjects.Clear();
 
 		expandedBuildings.Clear();
+		buildingsInitHeight.Clear();
 	}
 
 

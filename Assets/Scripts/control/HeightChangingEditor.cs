@@ -3,14 +3,16 @@ using UnityEngine;
 
 public class HeightChangingEditor : ObjectEditor {
 	private ObjectBuilder objectBuilder;
+	private BuildingsTools buildingTools;
 
 	private int selectedBuildingStartHeight;
 
 	private GameObject topFloor;
 	private GameObject bottomFloor;
 
-	public HeightChangingEditor () {
+	public HeightChangingEditor() {
 		this.objectBuilder = ObjectBuilder.GetInstance();
+		this.buildingTools = BuildingsTools.GetInstance();
 
 		this.selectedBuildingStartHeight = -1;
 
@@ -47,12 +49,12 @@ public class HeightChangingEditor : ObjectEditor {
 	//	return res;
 	//}
 
-	public int ExpansionDirection(GameObject clickedWall) {
+	public int DesiredDirection(GameObject clickedWall) {
 		Transform topWallsTransform = topFloor.transform;
 		Transform bottomWallsTransform = bottomFloor.transform;
 
 		int i = 0;
-		for (; i < topWallsTransform.childCount && clickedWall != topWallsTransform.GetChild(i).gameObject; i++);
+		for (; i < topWallsTransform.childCount && clickedWall != topWallsTransform.GetChild(i).gameObject; i++) ;
 
 		if (i < topWallsTransform.childCount) {
 			return 1;
@@ -68,15 +70,37 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public void IncrementObjectHeight() {
-		NodeGroup nodeGroup = BuildingsTools.GetInstance().BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
 		objectBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor + 1);
 		nodeGroup.NbFloor++;
+		this.ShiftFloor(1);
+
+		CameraController cameraController = Camera.main.GetComponent<CameraController>();
+		cameraController.TeleportToBuilding(selectedBuilding, 15, 1.25F);
 	}
 
 	public void DecrementObjectHeight() {
-		NodeGroup nodeGroup = BuildingsTools.GetInstance().BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
 		objectBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor - 1);
 		nodeGroup.NbFloor--;
+		this.ShiftFloor(-1);
+
+		CameraController cameraController = Camera.main.GetComponent<CameraController>();
+		cameraController.TeleportToBuilding(selectedBuilding, 15, 1.25F);
+	}
+
+	private void ShiftFloor(int direction) {
+		int expansionDirection = direction > 0 ? 1 : -1;
+
+		foreach (Transform wallTransform in topFloor.transform) {
+			Vector3 topWallPosition = wallTransform.transform.position;
+			wallTransform.position = new Vector3(topWallPosition.x, topWallPosition.y + (expansionDirection * Dimensions.FLOOR_HEIGHT), topWallPosition.z);
+		}
+
+		foreach (Transform wallTransform in bottomFloor.transform) {
+			Vector3 bottomWallPosition = wallTransform.transform.position;
+			wallTransform.position = new Vector3(bottomWallPosition.x, bottomWallPosition.y + (expansionDirection * Dimensions.FLOOR_HEIGHT), bottomWallPosition.z);
+		}
 	}
 
 	public int SelectedBuildingStartHeight {

@@ -321,7 +321,7 @@ public class ObjectBuilder {
 
 			virtualWall.transform.position = new Vector3(childTransform.position.x, (Dimensions.FLOOR_HEIGHT) * floorIndex - Dimensions.FLOOR_HEIGHT / 2F, childTransform.position.z);
 			virtualWall.transform.rotation = childTransform.rotation;
-			virtualWall.transform.localScale = new Vector3(childTransform.localScale.x, Dimensions.FLOOR_HEIGHT, childTransform.localScale.z * 1.35F);
+			virtualWall.transform.localScale = new Vector3(childTransform.localScale.x, Dimensions.FLOOR_HEIGHT, childTransform.localScale.z * 1.5F);
 
 			BoxCollider wallBoxColliser = virtualWall.GetComponent<BoxCollider>();
 			wallBoxColliser.isTrigger = true;
