@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour {
 	/// <summary>
 	/// 	Les différents états dans laquelle peut se trouver la caméra (détaillés dans la description de la classe).
 	/// </summary>
-	public enum CameraStates { FREE, FLYING, FIXED }
+	public enum CameraStates { FREE, FLYING, FIXED, CIRCULARY_CONSTRAINED }
 
 	/// <summary> Etat courant dans lequel se trouve la caméra. </summary>
 	private CameraStates cameraState;
@@ -43,6 +43,9 @@ public class CameraController : MonoBehaviour {
 	private Quaternion initRotation;
 
 
+	private GameObject targetBuilding;
+
+
 	public void Start() {
 		this.cameraState = CameraStates.FREE;
 
@@ -50,54 +53,75 @@ public class CameraController : MonoBehaviour {
 
 		this.initPosition = Vector3.zero;
 		this.initRotation.eulerAngles = Vector3.zero;
+
+		this.targetBuilding = null;
 	}
 
 
-	void Update () {
+	public void Update () {
+		print(cameraState);
+
 		Vector3 localPosition = transform.localPosition;
+		Quaternion localRoation = transform.localRotation;
 
 		// Contrôle de la caméra avec le touches du clavier
-		if(cameraState == CameraStates.FREE) {
+		if (cameraState == CameraStates.FREE) {
 
 			// Rotation de la caméra
-			if (Input.GetKey (KeyCode.LeftControl)) {
-				if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
-					transform.Rotate (new Vector3 (-1, 0, 0));
+			if (Input.GetKey(KeyCode.LeftControl)) {
+				if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
+					transform.Rotate(new Vector3(-1, 0, 0));
 
-				if (Input.GetKey ("down") || Input.GetKey (KeyCode.S))
-					transform.Rotate (new Vector3 (1, 0, 0));
+				if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
+					transform.Rotate(new Vector3(1, 0, 0));
 
-				if (Input.GetKey ("left") || Input.GetKey (KeyCode.Q))
-					transform.RotateAround (localPosition, Vector3.up, -1);
+				if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
+					transform.RotateAround(localPosition, Vector3.up, -1);
 
-				if (Input.GetKey ("right") || Input.GetKey (KeyCode.D))
-					transform.RotateAround (localPosition, Vector3.up, 1);
-			
-			// Déplacement vertical de la caméra
-			} else if (Input.GetKey (KeyCode.LeftShift)) {
-				if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
-					transform.localPosition = new Vector3 (localPosition.x, localPosition.y + 0.1F, localPosition.z);
+				if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
+					transform.RotateAround(localPosition, Vector3.up, 1);
 
-				if (Input.GetKey ("down") || Input.GetKey (KeyCode.S))
-					transform.localPosition = new Vector3 (localPosition.x, localPosition.y - 0.1F, localPosition.z);
+				// Déplacement vertical de la caméra
+			} else if (Input.GetKey(KeyCode.LeftShift)) {
+				if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
+					transform.localPosition = new Vector3(localPosition.x, localPosition.y + 0.1F, localPosition.z);
 
-			// Déplacement horizontal de la caméra
+				if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
+					transform.localPosition = new Vector3(localPosition.x, localPosition.y - 0.1F, localPosition.z);
+
+				// Déplacement horizontal de la caméra
 			} else {
 				float cameraAngle = Mathf.Deg2Rad * transform.rotation.eulerAngles.y;
-				float cosOffset = 0.1F * (float)Math.Cos (cameraAngle);
-				float sinOffset = 0.1F * (float)Math.Sin (cameraAngle);
+				float cosOffset = 0.1F * (float) Math.Cos(cameraAngle);
+				float sinOffset = 0.1F * (float) Math.Sin(cameraAngle);
 
-				if (Input.GetKey ("up") || Input.GetKey (KeyCode.Z))
-					transform.localPosition = new Vector3 (localPosition.x + sinOffset, localPosition.y, localPosition.z + cosOffset);
+				if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
+					transform.localPosition = new Vector3(localPosition.x + sinOffset, localPosition.y, localPosition.z + cosOffset);
 
-				if (Input.GetKey ("down") || Input.GetKey (KeyCode.S))
+				if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
 					transform.localPosition = new Vector3(localPosition.x - sinOffset, localPosition.y, localPosition.z - cosOffset);
 
-				if (Input.GetKey ("left") || Input.GetKey (KeyCode.Q))
+				if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
 					transform.localPosition = new Vector3(localPosition.x - cosOffset, localPosition.y, localPosition.z + sinOffset);
 
-				if (Input.GetKey ("right") || Input.GetKey (KeyCode.D))
+				if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
 					transform.localPosition = new Vector3(localPosition.x + cosOffset, localPosition.y, localPosition.z - sinOffset);
+			}
+		} else if (cameraState == CameraStates.CIRCULARY_CONSTRAINED) {
+			if (targetBuilding != null) {
+				Vector3 buildingPosition = targetBuilding.transform.position;
+
+				float horizontalOrientation = this.RelativeOrientation(targetBuilding);
+				float distance = Vector2.Distance(new Vector2(buildingPosition.x, buildingPosition.z), new Vector2(localPosition.x, localPosition.z));
+
+				if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
+					horizontalOrientation += 5F * Mathf.Deg2Rad;
+
+				if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
+					horizontalOrientation -= 5F * Mathf.Deg2Rad;
+
+				transform.localPosition = this.RelativePosition(targetBuilding, horizontalOrientation, localRoation.eulerAngles.x);
+				transform.localRotation = Quaternion.Euler(localRoation.eulerAngles.x, localRoation.y - horizontalOrientation * Mathf.Rad2Deg + 90, localRoation.eulerAngles.z);
 			}
 		}
 	}
@@ -136,6 +160,8 @@ public class CameraController : MonoBehaviour {
 		transform.position = targetPosition;
 		transform.rotation = targetRotation;
 
+		targetBuilding = null;
+
 		cameraState = CameraStates.FREE;
 
 		// Appel de la tâche finale s'il y en a une
@@ -150,13 +176,13 @@ public class CameraController : MonoBehaviour {
 	/// <returns>Temporisateur servant à générer une animation.</returns>
 	/// <param name="building">Bâtiment au-dessus duquel se positionner.</param>
 	/// <param name="finalAction">Action finale à effectuer à la fin du déplacement.</param>
-	public IEnumerator MoveToBuilding(GameObject building, Action finalAction, float orientation = 90, float remotenessFactor = 1) {
+	public IEnumerator MoveToBuilding(GameObject building, bool champTo, Action finalAction, float orientation = 90) {
 		cameraState = CameraStates.FLYING;
 
 		Vector3 startPosition = transform.position;
 		Quaternion startRotation = transform.rotation;
 
-		Vector3 targetPosition = this.RelativePosition(building, orientation, remotenessFactor);
+		Vector3 targetPosition = this.RelativePosition(building, 0, orientation);
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (orientation, 90, 0));
 
 		// Génération de l'animation
@@ -177,20 +203,29 @@ public class CameraController : MonoBehaviour {
 		transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
 		transform.rotation = targetRotation;
 
-		cameraState = CameraStates.FIXED;
+		targetBuilding = building;
+
+		if (champTo)
+			cameraState = CameraStates.CIRCULARY_CONSTRAINED;
+		else
+			cameraState = CameraStates.FIXED;
 
 		// Appel de la tâche finale s'il y en a une
 		if(finalAction != null)
 			finalAction ();
 	}
 
-	public void TeleportToBuilding(GameObject building, float orientation = 90, float remotenessFactor = 1) {
-		transform.position = this.RelativePosition(building, orientation, remotenessFactor);
-		transform.rotation = Quaternion.Euler(new Vector3(orientation, 90, 0));
-		cameraState = CameraStates.FIXED;
+	public void TeleportToBuilding(GameObject building, bool champTo, float horizontalOrientation, float verticalOrientation = 90) {
+		transform.position = this.RelativePosition(building, horizontalOrientation, verticalOrientation);
+		transform.rotation = Quaternion.Euler(new Vector3(verticalOrientation, transform.rotation.eulerAngles.y, 0));
+
+		if (champTo)
+			cameraState = CameraStates.CIRCULARY_CONSTRAINED;
+		else
+			cameraState = CameraStates.FIXED;
 	}
 
-	private Vector3 RelativePosition(GameObject building, float orientation, float remotenessFactor) {
+	private Vector3 RelativePosition(GameObject building, float horizontalOrientation, float verticalOrientation) {
 		Vector3 res = Vector3.zero;
 
 		GameObject firstWall = building.transform.GetChild(0).gameObject;
@@ -202,13 +237,26 @@ public class CameraController : MonoBehaviour {
 		float targetPosZ = (float) (buildingHeight + (buildingRadius / Math.Tan(cameraFOV)));
 
 		// Calcul de la position à adopter par rapport à l'orientation de la caméra
-		double horizontalShift = (targetPosZ - buildingHeight) * Math.Cos(orientation * Mathf.Deg2Rad) * remotenessFactor;
-		double verticalShift = (targetPosZ - buildingHeight) * Math.Sin(orientation * Mathf.Deg2Rad) * remotenessFactor;
+		double horizontalShift = (targetPosZ - buildingHeight) * Math.Cos(verticalOrientation * Mathf.Deg2Rad);
+		double verticalShift = (targetPosZ - buildingHeight) * Math.Sin(verticalOrientation * Mathf.Deg2Rad);
+
+		Vector3 buildingPosition = building.transform.position;
+		Vector3 localPosition = transform.position;
+
+		float cosOffset = (float) (Math.Cos(horizontalOrientation) * horizontalShift);
+		float sinOffset = (float) (Math.Sin(horizontalOrientation) * horizontalShift);
 
 		// Enregistrement de la situation à atteindre
 		Vector3 buildingCenterPosition = buildingsTools.BuildingCenter(building);
-		res = new Vector3(buildingCenterPosition.x - (float) horizontalShift, buildingHeight + (float) verticalShift, buildingCenterPosition.z);
+		res = new Vector3(buildingCenterPosition.x - cosOffset, buildingHeight + (float) verticalShift, buildingCenterPosition.z - sinOffset);
 
+		return res;
+	}
+
+	public float RelativeOrientation(GameObject building) {
+		Vector3 localPosition = transform.localPosition;
+		Vector3 buildingPosition = building.transform.position;
+		float res = (float) (Math.Atan2(buildingPosition.z - localPosition.z, buildingPosition.x - localPosition.x));
 		return res;
 	}
 

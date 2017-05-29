@@ -77,7 +77,8 @@ public class HeightChangingEditor : ObjectEditor {
 		this.ShiftFloor(1);
 
 		CameraController cameraController = Camera.main.GetComponent<CameraController>();
-		cameraController.TeleportToBuilding(selectedBuilding, 15, 1.25F);
+		float cameraOrientation = cameraController.RelativeOrientation(selectedBuilding);
+		cameraController.TeleportToBuilding(selectedBuilding, true, cameraOrientation, 15);
 	}
 
 	public void DecrementObjectHeight() {
@@ -87,7 +88,8 @@ public class HeightChangingEditor : ObjectEditor {
 		this.ShiftFloor(-1);
 
 		CameraController cameraController = Camera.main.GetComponent<CameraController>();
-		cameraController.TeleportToBuilding(selectedBuilding, 15, 1.25F);
+		float cameraOrientation = cameraController.RelativeOrientation(selectedBuilding);
+		cameraController.TeleportToBuilding(selectedBuilding, true, cameraOrientation, 15);
 	}
 
 	private void ShiftFloor(int direction) {
