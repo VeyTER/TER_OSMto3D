@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class HeightChangingEditor : ObjectEditor {
 	private ObjectBuilder objectBuilder;
-	private BuildingsTools buildingTools;
 
 	private int selectedBuildingStartHeight;
 
@@ -15,7 +15,6 @@ public class HeightChangingEditor : ObjectEditor {
 
 	public HeightChangingEditor() {
 		this.objectBuilder = ObjectBuilder.GetInstance();
-		this.buildingTools = BuildingsTools.GetInstance();
 
 		this.selectedBuildingStartHeight = -1;
 
@@ -24,7 +23,7 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public void InitializeHeightChangingMode() {
-		NodeGroup nodeGroup = BuildingsTools.GetInstance().BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
 
 		Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 		Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
@@ -104,6 +103,16 @@ public class HeightChangingEditor : ObjectEditor {
 			Vector3 bottomWallPosition = wallTransform.transform.position;
 			wallTransform.position = new Vector3(bottomWallPosition.x, bottomWallPosition.y + (expansionDirection * Dimensions.FLOOR_HEIGHT), bottomWallPosition.z);
 		}
+	}
+
+	override public void ValidateTransform() {
+		if (!transformedObjects.Contains(selectedBuilding))
+			transformedObjects.Add(selectedBuilding);
+	}
+
+	override public void CancelTransform() {
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		objectBuilder.RebuildBuilding(selectedBuilding, selectedBuildingStartHeight);
 	}
 
 	public int SelectedBuildingStartHeight {

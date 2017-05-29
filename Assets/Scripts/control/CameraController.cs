@@ -59,8 +59,6 @@ public class CameraController : MonoBehaviour {
 
 
 	public void Update () {
-		print(cameraState);
-
 		Vector3 localPosition = transform.localPosition;
 		Quaternion localRoation = transform.localRotation;
 

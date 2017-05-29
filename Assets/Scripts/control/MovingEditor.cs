@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -21,7 +22,7 @@ public class MovingEditor : ObjectEditor {
 	/// <summary>Position de départ du bâtiment sélectionné pour le déplacement courant.</summary>
 	protected Vector3 selectedBuildingStartPos;
 
-
+	
 	/// <summary>Poignée permettant à l'utilisateur de choisir la nouvelle position de l'objet sélectionné.</summary>
 	private GameObject moveHandler;
 
@@ -80,9 +81,9 @@ public class MovingEditor : ObjectEditor {
 
 		// Mise à jour des témoins de sélection
 		if (selectionRange == EditionController.SelectionRanges.WALL)
-			wallEdited = true;
+			wallTransformed = true;
 		else if (selectionRange == EditionController.SelectionRanges.BUILDING)
-			buildingEdited = true;
+			buildingTransformed = true;
 
 		// Déplacement de l'objet à sa position initiale
 		this.MoveObject (selectionRange);
@@ -162,6 +163,32 @@ public class MovingEditor : ObjectEditor {
 		mainCamera.transform.localPosition = newCameraPosition;
 	}
 
+	override public void ValidateTransform() {
+		if (wallTransformed) {
+			if (!transformedObjects.Contains(selectedWall))
+				transformedObjects.Add(selectedWall);
+		} else if(buildingTransformed) {
+			if (!transformedObjects.Contains(selectedBuilding))
+				transformedObjects.Add(selectedBuilding);
+
+			buildingTools.UpdateNodesPosition(selectedBuilding);
+		}
+	}
+
+	override public void CancelTransform() {
+		if (wallTransformed) {
+				selectedWall.transform.position = selectedWallStartPos;
+		} else if(buildingTransformed) {
+			selectedBuilding.transform.position = selectedBuildingStartPos;
+
+			Vector3 buildingPosition = selectedBuilding.transform.position;
+			Vector3 buildingNodesGroupPosition = selectedBuildingNodes.transform.position;
+
+			selectedBuildingNodes.transform.position = new Vector3(buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
+
+			buildingTools.UpdateNodesPosition(selectedBuilding);
+		}
+	}
 
 	/// <summary>
 	/// 	Indique si l'objet est immobile.

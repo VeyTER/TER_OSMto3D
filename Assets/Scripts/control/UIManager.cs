@@ -328,6 +328,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.CANCEL_EDITION_BUTTON:
 			// Annulation d'une transformation si le controlleur de modification est bien en cours de modification
 			if (editionController.Transforming ()) {
+
 				editionController.CancelTransform ();
 				editionController.ExitTransformMode ();
 			}

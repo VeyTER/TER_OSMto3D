@@ -86,14 +86,6 @@ public class EditionController : MonoBehaviour {
 	/// <summary>Bâtiments renommés durant la période de modification.</summary>
 	private Dictionary<GameObject, string> renamedBuildings;
 
-	/// <summary>Objets déplacés durant la période de modification.</summary>
-	private List<GameObject> movedObjects;
-
-	/// <summary>Objets tournés durant la période de modification.</summary>
-	private List<GameObject> turnedObjects;
-
-	private List<GameObject> expandedBuildings;
-
 
 	/// <summary>Mur sélectionné pour modification.</summary>
 	private GameObject selectedWall;
@@ -169,9 +161,6 @@ public class EditionController : MonoBehaviour {
 		this.objectBuilder = ObjectBuilder.GetInstance();
 
 		this.renamedBuildings = new Dictionary<GameObject, string> ();
-		this.movedObjects = new List<GameObject> ();
-		this.turnedObjects = new List<GameObject> ();
-		this.expandedBuildings = new List<GameObject> ();
 
 		this.wallsInitPos = new Dictionary<GameObject, Vector3>();
 		this.buildingsInitPos = new Dictionary<GameObject, Vector3>();
@@ -543,80 +532,33 @@ public class EditionController : MonoBehaviour {
 		);
 	}
 
-
-	/// <summary>
-	/// 	Valide la transformation d'un objet en l'ajoutant aux objets modifiés et en mettant à jour les noeuds
-	/// 	correspondants (NodeGroup).
-	/// </summary>
 	public void ValidateTransform() {
-		// [ NON MAINTENU ] Enregistrement du mur courant au dictionnaire des objets déplacés ou tournés
-		if (this.WallTransformed ()) {
-			if(editionState == EditionStates.MOVING_MODE && !movedObjects.Contains (selectedWall))
-				movedObjects.Add (selectedWall);
-			else if(editionState == EditionStates.TURNING_MODE && !turnedObjects.Contains (selectedWall))
-				turnedObjects.Add (selectedWall);
+		switch (editionState) {
+		case EditionStates.MOVING_MODE:
+			movingEditor.ValidateTransform();
+			break;
+		case EditionStates.TURNING_MODE:
+			turningEditor.ValidateTransform();
+			break;
+		case EditionStates.HEIGHT_CHANGING_MODE:
+			heightChangingEditor.ValidateTransform();
+			break;
 		}
-
-		// Enregistrement du bâtiment courant au dictionnaire des objets déplacés ou tournés
-		if (this.BuildingTransformed ()) {
-			if(editionState == EditionStates.MOVING_MODE)
-				movedObjects.Add (selectedBuilding);
-			else if(editionState == EditionStates.TURNING_MODE && !turnedObjects.Contains (selectedBuilding))
-				turnedObjects.Add (selectedBuilding);
-			
-			buildingsTools.UpdateNodesPosition (selectedBuilding);
-		}
-
-		if (editionState == EditionStates.HEIGHT_CHANGING_MODE && !expandedBuildings.Contains(selectedBuilding))
-			expandedBuildings.Add(selectedBuilding);
 	}
 
-
-	/// <summary>
-	/// 	Annule la transformation de l'objet courant en leur affectant la situation qu'ils avaient avant le passage
-	/// 	en mode de transformation (MOVING_MODE par ex) et en mettant à jour les noeuds correspondant (NodeGroup).
-	/// </summary>
 	public void CancelTransform() {
-		// [ NON MAINTENU ] Affecte au mur courant la position ou la rotation de départ en fonction du mode de
-		// 	tranformation courant
-		if (this.WallTransformed()) {
-			if (editionState == EditionStates.MOVING_MODE) {
-				selectedWall.transform.position = movingEditor.SelectedWallStartPos;
-			} else if (editionState == EditionStates.TURNING_MODE) {
-				Quaternion selectedWallRotation = selectedWall.transform.rotation;
-				selectedWall.transform.rotation = Quaternion.Euler(selectedWallRotation.x, turningEditor.SelectedWallStartAngle, selectedWallRotation.z);
-			}
-		}
-
-		// Affecte au bâtiment courant la position ou la rotation de départ en fonction du mode de tranformation courant
-		if (this.BuildingTransformed()) {
-			if (editionState == EditionStates.MOVING_MODE) {
-				selectedBuilding.transform.position = movingEditor.SelectedBuildingStartPos;
-
-				Vector3 buildingPosition = selectedBuilding.transform.position;
-				Vector3 buildingNodesGroupPosition = movingEditor.SelectedBuildingNodes.transform.position;
-
-				movingEditor.SelectedBuildingNodes.transform.position = new Vector3(buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
-			} else if (editionState == EditionStates.TURNING_MODE) {
-				Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
-				selectedBuilding.transform.rotation = Quaternion.Euler(selectedBuildingRotation.x, turningEditor.SelectedBuildingStartAngle, selectedBuildingRotation.z);
-
-				float buildingAngle = selectedBuilding.transform.rotation.eulerAngles.y;
-				Quaternion buildingNodesGroupRotation = turningEditor.SelectedBuildingNodes.transform.rotation;
-
-				turningEditor.SelectedBuildingNodes.transform.rotation = Quaternion.Euler(buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
-			}
-
-			buildingsTools.UpdateNodesPosition(selectedBuilding);
-		}
-
-		if (editionState == EditionStates.HEIGHT_CHANGING_MODE) {
-			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-			nodeGroup.NbFloor = HeightChangingEditor.SelectedBuildingStartHeight;
-			objectBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor);
+		switch (editionState) {
+		case EditionStates.MOVING_MODE:
+			movingEditor.CancelTransform();
+			break;
+		case EditionStates.TURNING_MODE:
+			turningEditor.CancelTransform();
+			break;
+		case EditionStates.HEIGHT_CHANGING_MODE:
+			heightChangingEditor.CancelTransform();
+			break;
 		}
 	}
-
 
 	/// <summary>
 	/// 	Indique si un objet est en cours de transformation (en déplacement par ex).
@@ -628,25 +570,6 @@ public class EditionController : MonoBehaviour {
 			|| editionState == EditionStates.RENAMING_MODE
 			|| editionState == EditionStates.HEIGHT_CHANGING_MODE
 			|| editionState == EditionStates.CHANGING_COLOR_MDOE;
-	}
-
-
-	/// <summary>
-	/// 	Indique si un mur a fait l'objet d'une transformation en vérifiant dans les éditeurs.
-	/// </summary>
-	/// <returns><c>true</c>, si la transformation a concerné un mur <c>false</c> sinon.</returns>
-	private bool WallTransformed() {
-		return editionState == EditionStates.MOVING_MODE && movingEditor.WallTransformed
-			|| editionState == EditionStates.TURNING_MODE && turningEditor.WallTransformed;
-	}
-
-	/// <summary>
-	/// 	Indique si un bâtiment a fait l'objet d'une transformation en vérifiant dans les éditeurs.
-	/// </summary>
-	/// <returns><c>true</c>, si la transformation a concerné un bâtiment <c>false</c> sinon.</returns>
-	private bool BuildingTransformed() {
-		return editionState == EditionStates.MOVING_MODE && movingEditor.BuildingTransformed
-			|| editionState == EditionStates.TURNING_MODE && turningEditor.BuildingTransformed;
 	}
 
 
@@ -666,20 +589,20 @@ public class EditionController : MonoBehaviour {
 
 		// Stockage des objets modifiés dans un ensemble pour éviter de mettre à jour deux fois les mêmes bâtiments
 		// (un HashSet supprimant les doublons)
-		HashSet<GameObject> transformedObjects = new HashSet<GameObject> ();
+		HashSet<GameObject> movedOrTurnedObjects = new HashSet<GameObject> ();
 
 		// Mise à jour des groupes de noeuds correspondant aux bâtiments déplacés
 		foreach (KeyValuePair<GameObject, Vector3> buildingPositionEntry in buildingsInitPos) {
 			GameObject building = buildingPositionEntry.Key;
 			buildingsTools.UpdateNodesPosition (building);
-			transformedObjects.Add (building);
+			movedOrTurnedObjects.Add (building);
 		}
 
 		// Mise à jour des groupes de noeuds correspondant aux bâtiments tournés
 		foreach (KeyValuePair<GameObject, float> buildingAngleEntry in buildingsInitAngle) {
 			GameObject building = buildingAngleEntry.Key;
 			buildingsTools.UpdateNodesPosition (building);
-			transformedObjects.Add (building);
+			movedOrTurnedObjects.Add (building);
 		}
 
 		// [NON MAINTENU] Mise à jour des groupes de noeuds correspondant aux murs déplacés et tournés
@@ -687,7 +610,7 @@ public class EditionController : MonoBehaviour {
 		foreach (KeyValuePair<GameObject, float> wallAngleEntry in wallsInitAngle) {}
 
 		// Mise à jour, dans les fichiers, des données conernant les bâtiments modifiés
-		foreach (GameObject building in transformedObjects) {
+		foreach (GameObject building in movedOrTurnedObjects) {
 			Vector3 buildingInitPos = buildingsInitPos[building];
 			float buildingInitAngle = buildingsInitAngle[building];
 
@@ -695,9 +618,10 @@ public class EditionController : MonoBehaviour {
 				buildingsTools.UpdateLocation (building);
 		}
 
-		foreach(GameObject building in expandedBuildings) {
-			int buildingInitHeight = buildingsInitHeight[building];
-			
+		foreach (KeyValuePair<GameObject, int> buildingAngleEntry in buildingsInitHeight) {
+			GameObject building = buildingAngleEntry.Key;
+			int buildingInitHeight = buildingAngleEntry.Value;
+
 			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
 			if (buildingInitHeight != nodeGroup.NbFloor)
 				buildingsTools.UpdateHeight(building, nodeGroup.NbFloor);
@@ -793,10 +717,10 @@ public class EditionController : MonoBehaviour {
 		buildingsInitPos.Clear();
 		buildingsInitAngle.Clear();
 
-		movedObjects.Clear();
-		turnedObjects.Clear();
+		movingEditor.ClearHistory();
+		turningEditor.ClearHistory();
+		heightChangingEditor.ClearHistory();
 
-		expandedBuildings.Clear();
 		buildingsInitHeight.Clear();
 	}
 

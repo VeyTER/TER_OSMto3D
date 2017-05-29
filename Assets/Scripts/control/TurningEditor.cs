@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -80,9 +81,9 @@ public class TurningEditor : ObjectEditor {
 
 		// Mise à jour des témoins de sélection
 		if (selectionRange == EditionController.SelectionRanges.WALL)
-			wallEdited = true;
+			wallTransformed = true;
 		else if (selectionRange == EditionController.SelectionRanges.BUILDING)
-			buildingEdited = true;
+			buildingTransformed = true;
 
 		// Rotation de l'objet à sa position initiale
 		this.TurnObject (selectionRange);
@@ -136,6 +137,34 @@ public class TurningEditor : ObjectEditor {
 		turningState = TurningStates.MOTIONLESS;
 	}
 
+	override public void ValidateTransform() {
+		if (wallTransformed) {
+			if (!transformedObjects.Contains(selectedWall))
+				transformedObjects.Add(selectedWall);
+		} else if (buildingTransformed) {
+			if (!transformedObjects.Contains(selectedBuilding))
+				transformedObjects.Add(selectedBuilding);
+
+			buildingTools.UpdateNodesPosition(selectedBuilding);
+		}
+	}
+
+	override public void CancelTransform() {
+		if (wallTransformed) {
+			Quaternion selectedWallRotation = selectedWall.transform.rotation;
+			selectedWall.transform.rotation = Quaternion.Euler(selectedWallRotation.x, selectedWallStartAngle, selectedWallRotation.z);
+		} else if (buildingTransformed) {
+			Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
+			selectedBuilding.transform.rotation = Quaternion.Euler(selectedBuildingRotation.x, selectedBuildingStartAngle, selectedBuildingRotation.z);
+
+			float buildingAngle = selectedBuilding.transform.rotation.eulerAngles.y;
+			Quaternion buildingNodesGroupRotation = selectedBuildingNodes.transform.rotation;
+
+			selectedBuildingNodes.transform.rotation = Quaternion.Euler(buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
+
+			buildingTools.UpdateNodesPosition(selectedBuilding);
+		}
+	}
 
 	/// <summary>
 	/// 	Indique si l'objet est immobile.
