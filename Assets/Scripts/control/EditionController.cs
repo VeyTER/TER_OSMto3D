@@ -143,8 +143,8 @@ public class EditionController : MonoBehaviour {
 	private GameObject buildingRangeButton;
 
 
-	/// <summary>Panneau latéral contenant l'interface graphique de modification.</summary>
-	private GameObject lateralPanel;
+	/// <summary>Panneau d'édition contenant l'interface graphique de modification.</summary>
+	private GameObject editPanel;
 
 
 	public void Start() {
@@ -188,8 +188,8 @@ public class EditionController : MonoBehaviour {
 //		Button wallrangeButtonComponent = buildingRangeButton.GetComponent<Button> ();
 //		wallrangeButtonComponent.interactable = false;
 
-		this.lateralPanel = GameObject.Find (UiNames.LATERAL_PANEL);
-		this.lateralPanel.SetActive(false);
+		this.editPanel = GameObject.Find (UiNames.EDIT_PANEL);
+		this.editPanel.SetActive(false);
 	}
 
 
@@ -206,8 +206,8 @@ public class EditionController : MonoBehaviour {
 		selectedBuilding = selectedWall.transform.parent.gameObject;
 
 		// Activation et ourverture du panneau latéral s'il est inactif
-		if (lateralPanel.activeInHierarchy == false) {
-			lateralPanel.SetActive (true);
+		if (editPanel.activeInHierarchy == false) {
+			editPanel.SetActive (true);
 			this.OpenPanel (null);
 		}
 
@@ -271,7 +271,7 @@ public class EditionController : MonoBehaviour {
 
 		// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
 		this.ClosePanel (() => {
-			lateralPanel.SetActive (false);
+			editPanel.SetActive (false);
 		});
 
 		// Déplacement de la caméra à sa position initiale et réinitialisation de l'état de modification à la fin du
@@ -330,8 +330,8 @@ public class EditionController : MonoBehaviour {
 		direction = direction > 0 ? 1 : -1;
 
 		// Configuration courante du panneau
-		Vector3 panelPosition = lateralPanel.transform.localPosition;
-		RectTransform panelRectTransform = (RectTransform)lateralPanel.transform;
+		Vector3 panelPosition = editPanel.transform.localPosition;
+		RectTransform panelRectTransform = (RectTransform)editPanel.transform;
 
 		// Situation courante du bouton de contrôle du panneau
 		Vector3 panelButtonPosition = slidePanelButton.transform.localPosition;
@@ -349,7 +349,7 @@ public class EditionController : MonoBehaviour {
 		float panelButtonInitRotZ = panelButtonRotation.eulerAngles.z;
 		float targetPanelButtonRotZ = panelButtonRotation.eulerAngles.z + (direction * 180);
 
-		Transform panelTransform = lateralPanel.transform;
+		Transform panelTransform = editPanel.transform;
 		Transform panelButtonTransform = slidePanelButton.transform;
 
 		// Génération de l'animation
@@ -724,7 +724,6 @@ public class EditionController : MonoBehaviour {
 		buildingsInitHeight.Clear();
 	}
 
-
 	public EditionStates EditionState {
 		get { return editionState; }
 		set { editionState = value; }
@@ -769,7 +768,7 @@ public class EditionController : MonoBehaviour {
 		set { selectedBuilding = value; }
 	}
 
-	public GameObject LateralPanel {
-		get { return lateralPanel; }
+	public GameObject EditPanel {
+		get { return editPanel; }
 	}
 }

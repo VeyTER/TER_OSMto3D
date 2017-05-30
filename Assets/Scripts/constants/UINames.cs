@@ -82,5 +82,5 @@ public class UiNames {
 
 
 	/// <summary>Nom du panneau latéral coulissant.</summary>
-	public const string LATERAL_PANEL = "LateralPanel";
+	public const string EDIT_PANEL = "EditPanel";
 }

@@ -21,8 +21,7 @@ public class Main : MonoBehaviour {
 	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + "capitole" + ".osm";
 
 
-	/// <summary>Panneau latéral</summary>
-	private GameObject lateralPanel;
+	private GameObject editPanel;
 
 
 	/// <summary>
@@ -45,6 +44,15 @@ public class Main : MonoBehaviour {
 		QualitySettings.shadows = ShadowQuality.All;
 
 		this.SetUpUi ();
+
+
+
+		// TEST
+		GameObject imageTest = GameObject.Find("ImageTest");
+		//imageTest.AddComponent<
+
+
+
 
 		// Si le fichier contennant la carte OSM existe bien, le traitement est effectué
 		if (File.Exists(OSM_FILE_NAME)) {
@@ -76,12 +84,12 @@ public class Main : MonoBehaviour {
 			objectBuilder.Roofs.SetActive (false);
 
 			// Récupération de la référence du panneau et désactivation de ce dernier
-			lateralPanel = GameObject.Find (UiNames.LATERAL_PANEL);
+			editPanel = GameObject.Find (UiNames.EDIT_PANEL);
 
 			// Paramétrage du panneau latéral
-			Vector3 panelPosition = lateralPanel.transform.localPosition;
-			RectTransform panelRectTransform = (RectTransform)lateralPanel.transform;
-			lateralPanel.transform.localPosition = new Vector3(panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
+			Vector3 panelPosition = editPanel.transform.localPosition;
+			RectTransform panelRectTransform = (RectTransform)editPanel.transform;
+			editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
 
 			Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 			Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
