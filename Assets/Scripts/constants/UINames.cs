@@ -56,12 +56,16 @@ public class UiNames {
 	/// <summary>Nom de la poignée de rotation.</summary>
 	public const string TURN_HANDLER = "TurnHandler";
 
+	public const string MATERIALS_BUTTON = "MaterialsButton";
+
+	public const string COLORS_BUTTON = "ColorsButton";
+
 
 	/// <summary>Nom du bouton de coulissement du panneau latéral.</summary>
 	public const string SLIDE_PANEL_BUTTON = "SlidePanelButton";
 
 	/// <summary>Nom de bouton de validation d'une édition.</summary>
-	public const string VALDIATE_EDITION_BUTTON = "ValidateEditionButton";
+	public const string VALIDIATE_EDITION_BUTTON = "ValidateEditionButton";
 
 	/// <summary>Nom de bouton d'annulation d'une édition.</summary>
 	public const string CANCEL_EDITION_BUTTON = "CancelEditionButton";
@@ -83,4 +87,16 @@ public class UiNames {
 
 	/// <summary>Nom du panneau latéral coulissant.</summary>
 	public const string EDIT_PANEL = "EditPanel";
+
+	public const string SKIN_SELECTION_PANEL = "SkinSelectionPanel";
+
+	public const string MATERIALS_PANEL = "ColorContainerPanel";
+
+	public const string COLORS_PANEL = "MaterialsContainerPanel";
+
+
+	public const string MATERIALS_SCROLLBAR = "MaterialsScrollbar";
+
+	public const string COLORS_SCROLLBAR = "ColorsScrollbar";
+
 }

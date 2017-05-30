@@ -170,7 +170,7 @@ public class EditionController : MonoBehaviour {
 
 		this.buildingsInitHeight = new Dictionary<GameObject, int>();
 
-		this.validateEditionButton = GameObject.Find(UiNames.VALDIATE_EDITION_BUTTON);
+		this.validateEditionButton = GameObject.Find(UiNames.VALIDIATE_EDITION_BUTTON);
 		this.cancelEditionButton = GameObject.Find(UiNames.CANCEL_EDITION_BUTTON);
 
 		this.cameraController = Camera.main.GetComponent<CameraController> ();
