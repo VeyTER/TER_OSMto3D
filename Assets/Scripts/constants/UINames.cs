@@ -99,4 +99,6 @@ public class UiNames {
 
 	public const string COLORS_SCROLLBAR = "ColorsScrollbar";
 
+
+	public const string SKIN_SLIDER = "SkinSlider";
 }

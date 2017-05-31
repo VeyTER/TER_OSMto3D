@@ -45,15 +45,6 @@ public class Main : MonoBehaviour {
 
 		this.SetUpUi ();
 
-
-
-		// TEST
-		GameObject imageTest = GameObject.Find("ImageTest");
-		//imageTest.AddComponent<
-
-
-
-
 		// Si le fichier contennant la carte OSM existe bien, le traitement est effectué
 		if (File.Exists(OSM_FILE_NAME)) {
 			// Chargement des données OSM

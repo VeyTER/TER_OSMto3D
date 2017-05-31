@@ -37,7 +37,7 @@ public class EditionController : MonoBehaviour {
 		MOVING_MODE,
 		TURNING_MODE,
 		HEIGHT_CHANGING_MODE,
-		CHANGING_SKIN_MODE,
+		SKIN_CHANGING_MODE,
 		MOVING_TO_INITIAL_SITUATION
 	}
 
@@ -167,8 +167,8 @@ public class EditionController : MonoBehaviour {
 		this.editPanelController = editPanel.GetComponent<EditPanelController>();
 
 		RectTransform editPanelTransform = (RectTransform) this.editPanelController.transform;
-		this.editPanelController.StartPosX = editPanelTransform.localPosition.x - editPanelTransform.rect.width;
-		this.editPanelController.EndPosX = editPanelTransform.localPosition.x;
+		this.editPanelController.StartPosX = editPanelTransform.localPosition.x;
+		this.editPanelController.EndPosX = editPanelTransform.localPosition.x - editPanelTransform.rect.width;
 	}
 
 
@@ -324,6 +324,15 @@ public class EditionController : MonoBehaviour {
 	}
 
 
+	public void EnterSkinChangingMode() {
+		this.EnterTransformMode();
+		skinChangingEditor.Initialize(selectedWall, selectedBuilding);
+		skinChangingEditor.InitializeSkinChangingMode();
+		cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, null, 15));
+		editionState = EditionStates.SKIN_CHANGING_MODE;
+	}
+
+
 	/// <summary>
 	/// 	Active le mode de transformation d'un bâtiment en fermant le panneau latéral et en inversant
 	/// 	l'affichage des boutons flottants.
@@ -340,14 +349,25 @@ public class EditionController : MonoBehaviour {
 	/// 	la configuration d'avant la modification.
 	/// </summary>
 	public void ExitTransformMode() {
-		// Désactivation des poignées
-		movingEditor.MoveHandler.SetActive (false);
-		turningEditor.TurnHandler.SetActive (false);
+		switch (editionState) {
+		case EditionStates.MOVING_MODE:
+			movingEditor.MoveHandler.SetActive (false);
+			break;
+		case EditionStates.TURNING_MODE:
+			turningEditor.TurnHandler.SetActive (false);
+			break;
+		case EditionStates.HEIGHT_CHANGING_MODE:
+			Destroy(HeightChangingEditor.TopFloor);
+			Destroy(HeightChangingEditor.BottomFloor);
+			break;
+		case EditionStates.SKIN_CHANGING_MODE:
+			// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
+			skinChangingEditor.SkinPanelController.ClosePanel(() => {
+				skinChangingEditor.SkinPanel.SetActive(false);
+			});
+			break;
+		}
 
-		Destroy(HeightChangingEditor.TopFloor);
-		Destroy(HeightChangingEditor.BottomFloor);
-
-		// Ouverture du panneau latéral
 		if (editPanelController.IsPanelClosed()) {
 			editPanelController.OpenPanel(null);
 			editPanelController.OpenSlideButton();
@@ -402,7 +422,7 @@ public class EditionController : MonoBehaviour {
 			|| editionState == EditionStates.TURNING_MODE
 			|| editionState == EditionStates.RENAMING_MODE
 			|| editionState == EditionStates.HEIGHT_CHANGING_MODE
-			|| editionState == EditionStates.CHANGING_SKIN_MODE;
+			|| editionState == EditionStates.SKIN_CHANGING_MODE;
 	}
 
 
@@ -580,6 +600,11 @@ public class EditionController : MonoBehaviour {
 	public HeightChangingEditor HeightChangingEditor {
 		get { return heightChangingEditor; }
 		set { heightChangingEditor = value; }
+	}
+
+	public SkinChangingEditor SkinChangingEditor {
+		get { return skinChangingEditor; }
+		set { skinChangingEditor = value; }
 	}
 
 	public Dictionary<GameObject, string> RenamedBuildings {

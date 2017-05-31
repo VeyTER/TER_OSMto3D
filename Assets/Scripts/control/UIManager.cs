@@ -24,6 +24,8 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	private static HeightChangingEditor heightChangingEditor;
 
+	private static SkinChangingEditor skinChangingEditor;
+
 	/// <summary>
 	/// 	Unique instance du singleton ObjectBuilder servant construire la ville en 3D à partir des données OSM.
 	/// </summary>
@@ -36,10 +38,11 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void Start() {
 		// Initialisation des "transformateurs" d'objet s'ils sont null
-		if(editionController != null && (movingEditor == null || turningEditor == null || heightChangingEditor == null)) {
+		if(editionController != null && (movingEditor == null || turningEditor == null || heightChangingEditor == null || skinChangingEditor == null)) {
 			movingEditor = editionController.MovingEditor;
 			turningEditor = editionController.TurningEditor;
 			heightChangingEditor = editionController.HeightChangingEditor;
+			skinChangingEditor = editionController.SkinChangingEditor;
 		}
 	}
 
@@ -268,7 +271,10 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			}
 			break;
 		case UiNames.CHANGE_COLOR_BUTTON:
-			
+			// Préparation du déplacement d'un objet si le controlleur est prêt
+			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
+				editionController.EnterSkinChangingMode();
+			}
 			break;
 		case UiNames.SLIDE_BUTTON:
 			// Inversion du panneau latéral lors du clic sur le bouton correspondant si le controlleur n'est pas en
@@ -323,12 +329,16 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			}
 			break;
 		case UiNames.MATERIALS_BUTTON:
-			this.UpdateChoiceButton();
-			this.ActivateSkinPanel();
+			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
+				skinChangingEditor.UpdateButtons(gameObject);
+				skinChangingEditor.SkinPanelController.SlideSliderRight();
+			}
 			break;
 		case UiNames.COLORS_BUTTON:
-			this.UpdateChoiceButton();
-			this.ActivateSkinPanel();
+			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
+				skinChangingEditor.UpdateButtons(gameObject);
+				skinChangingEditor.SkinPanelController.SlideSliderLeft();
+			}
 			break;
 		case UiNames.VALIDIATE_EDITION_BUTTON:
 			// Validation d'une transformation si le controlleur de modification est bien en cours de modification
@@ -433,96 +443,4 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		wallButtonComponent.interactable = true;
 		buildingButtonComponent.interactable = false;
 	}
-
-	public void UpdateChoiceButton() {
-		GameObject buttonToLight = this.gameObject;
-		GameObject buttonToShadow = null;
-
-		if (name == UiNames.MATERIALS_PANEL)
-			buttonToShadow = GameObject.Find(UiNames.COLORS_BUTTON);
-		else if (name == UiNames.COLORS_BUTTON)
-			buttonToShadow = GameObject.Find(UiNames.MATERIALS_BUTTON);
-		else
-			throw new Exception("Error in buttons naming : button \"" + name + "\" not found.");
-
-		RectTransform lightButtonRect = buttonToLight.GetComponent<RectTransform>();
-		RectTransform shadowButtonRect = buttonToShadow.GetComponent<RectTransform>();
-
-		// Erreur car le bouton est désactivé et donc introuvable en passant par le "find"
-
-		lightButtonRect.sizeDelta = new Vector2(lightButtonRect.sizeDelta.x, 30);
-		shadowButtonRect.sizeDelta = new Vector2(shadowButtonRect.sizeDelta.x, 25);
-
-		Button lightButtonComponent = buttonToLight.GetComponent<Button>();
-		Button shadowButtonComponent = buttonToShadow.GetComponent<Button>();
-
-		lightButtonComponent.interactable = false;
-		shadowButtonComponent.interactable = true;
-		shadowButtonComponent.OnPointerExit(null);
-	}
-
-	public void ActivateSkinPanel() {
-		string activeContainerName = null;
-		string activeScrollBarName = null;
-
-		string inactiveContainerName = null;
-		string inactiveScrollBarName = null;
-
-		GameObject skinSelectionPanel = GameObject.Find(UiNames.SKIN_SELECTION_PANEL);
-
-		if (name.Equals(UiNames.MATERIALS_BUTTON)) {
-			activeContainerName = UiNames.MATERIALS_PANEL;
-			activeScrollBarName = UiNames.MATERIALS_SCROLLBAR;
-			inactiveContainerName = UiNames.COLORS_PANEL;
-			inactiveScrollBarName = UiNames.COLORS_SCROLLBAR;
-		} else if (name.Equals(UiNames.COLORS_BUTTON)) {
-			activeContainerName = UiNames.COLORS_PANEL;
-			activeScrollBarName = UiNames.COLORS_SCROLLBAR;
-			inactiveContainerName = UiNames.MATERIALS_PANEL;
-			inactiveScrollBarName = inactiveScrollBarName = UiNames.MATERIALS_SCROLLBAR;
-		}
-
-		foreach (Transform skinSelectionElement in skinSelectionPanel.transform) {
-			if (skinSelectionElement.name.Equals(activeContainerName) || skinSelectionElement.name.Equals(activeScrollBarName))
-				skinSelectionElement.gameObject.SetActive(true);
-			else if (skinSelectionElement.name.Equals(inactiveContainerName) || skinSelectionElement.name.Equals(inactiveScrollBarName))
-				skinSelectionElement.gameObject.SetActive(false);
-		}
-	}
-
-	//public void ActivateMaterialsButton() {
-	//	GameObject materialsButton = GameObject.Find(UiNames.MATERIALS_BUTTON);
-	//	GameObject colorsButton = GameObject.Find(UiNames.COLORS_BUTTON);
-
-	//	RectTransform materialsButtonRect = materialsButton.GetComponent<RectTransform>();
-	//	RectTransform colorsButtonRect = colorsButton.GetComponent<RectTransform>();
-
-	//	materialsButtonRect.sizeDelta = new Vector2(materialsButtonRect.sizeDelta.x, 30);
-	//	colorsButtonRect.sizeDelta = new Vector2(colorsButtonRect.sizeDelta.x, 25);
-
-	//	Button materialsButtonComponent = materialsButton.GetComponent<Button>();
-	//	Button colorsButtonComponent = colorsButton.GetComponent<Button>();
-
-	//	materialsButtonComponent.interactable = false;
-	//	colorsButtonComponent.interactable = true;
-	//	colorsButtonComponent.OnPointerExit(null);
-	//}
-
-	//public void ActivateColorsButton() {
-	//	GameObject materialsButton = GameObject.Find(UiNames.MATERIALS_BUTTON);
-	//	GameObject colorsButton = GameObject.Find(UiNames.COLORS_BUTTON);
-
-	//	RectTransform materialsButtonRect = materialsButton.GetComponent<RectTransform>();
-	//	RectTransform colorsButtonRect = colorsButton.GetComponent<RectTransform>();
-
-	//	materialsButtonRect.sizeDelta = new Vector2(materialsButtonRect.sizeDelta.x, 25);
-	//	colorsButtonRect.sizeDelta = new Vector2(colorsButtonRect.sizeDelta.x, 30);
-
-	//	Button materialsButtonComponent = materialsButton.GetComponent<Button>();
-	//	Button colorsButtonComponent = colorsButton.GetComponent<Button>();
-
-	//	materialsButtonComponent.interactable = true;
-	//	materialsButtonComponent.OnPointerExit(null);
-	//	colorsButtonComponent.interactable = false;
-	//}
 }

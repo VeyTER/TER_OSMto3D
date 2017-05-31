@@ -22,7 +22,7 @@ public abstract class PanelController : MonoBehaviour {
 	/// <param name="finalAction">Action finale à effectuer à la fin de l'ouverture.</param>
 	public void OpenPanel(Action finalAction) {
 		panelState = PanelStates.CLOSED_TO_OPEN;
-		this.StartCoroutine( this.SlidePanel(finalAction, -1) );
+		this.StartCoroutine( this.SlidePanel(finalAction, 1) );
 	}
 
 
@@ -32,7 +32,7 @@ public abstract class PanelController : MonoBehaviour {
 	/// <param name="finalAction">Action finale à effectuer à la fin de la fermeture.</param>
 	public void ClosePanel(Action finalAction) {
 		panelState = PanelStates.OPEN_TO_CLOSED;
-		this.StartCoroutine( this.SlidePanel(finalAction, 1) );
+		this.StartCoroutine( this.SlidePanel(finalAction, -1) );
 	}
 
 
@@ -43,9 +43,7 @@ public abstract class PanelController : MonoBehaviour {
 	/// <param name="finalAction">Action finale à effectuer à la fin de la glissade.</param>
 	/// <param name="direction">Direction de la glissade.</param>
 	private IEnumerator SlidePanel(Action finalAction, int direction) {
-		// Configuration courante du panneau
 		Vector3 panelPosition = transform.localPosition;
-		RectTransform panelRectTransform = (RectTransform) transform;
 
 		// Position en X initiale puis ciblée du panneau
 		float panelInitPosX = panelPosition.x;

@@ -85,14 +85,14 @@ public class FloorColorController : MonoBehaviour {
 	}
 
 	public void SetInactive() {
-		if(floorState == FloorStates.HOVERED || floorState == FloorStates.INACTIVE_TO_HOVERED)
+		if (floorState == FloorStates.HOVERED || floorState == FloorStates.INACTIVE_TO_HOVERED)
 			floorState = FloorStates.HOVERED_TO_INACTIVE;
 	}
 
 	public void SetHovered() {
-		if(floorState == FloorStates.INACTIVE || floorState == FloorStates.HOVERED_TO_INACTIVE)
+		if (floorState == FloorStates.INACTIVE || floorState == FloorStates.HOVERED_TO_INACTIVE)
 			floorState = FloorStates.INACTIVE_TO_HOVERED;
-		else if(floorState == FloorStates.PRESSED || floorState == FloorStates.HOVERED_TO_PRESSED)
+		else if (floorState == FloorStates.PRESSED || floorState == FloorStates.HOVERED_TO_PRESSED)
 			floorState = FloorStates.PRESSED_TO_HOVERED;
 	}
 
@@ -100,6 +100,7 @@ public class FloorColorController : MonoBehaviour {
 		if (floorState == FloorStates.HOVERED || floorState == FloorStates.PRESSED_TO_HOVERED)
 			floorState = FloorStates.HOVERED_TO_PRESSED;
 	}
+
 
 	public Material TargetMaterial {
 		get { return targetMaterial; }
