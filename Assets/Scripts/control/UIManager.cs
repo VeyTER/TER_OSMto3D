@@ -270,14 +270,18 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.CHANGE_COLOR_BUTTON:
 			
 			break;
-		case UiNames.SLIDE_PANEL_BUTTON:
+		case UiNames.SLIDE_BUTTON:
 			// Inversion du panneau latéral lors du clic sur le bouton correspondant si le controlleur n'est pas en
 			// attente d'une sélection de bâtiment
+			EditPanelController editPanelController = editionController.EditPanelController;
 			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
-				if (editionController.PanelState == EditionController.PanelStates.CLOSED)
-					editionController.TogglePanel (null);
-				else if (editionController.PanelState == EditionController.PanelStates.OPEN)
-					editionController.TogglePanel (null);
+				if (editPanelController.IsPanelClosed()) {
+					editPanelController.OpenPanel(null);
+					editPanelController.OpenSlideButton();
+				} else if (editPanelController.IsPanelOpen()) {
+					editPanelController.ClosePanel(null);
+					editPanelController.CloseSlideButton();
+				}
 			}
 			break;
 		case UiNames.VALIDATE_BUTTON:

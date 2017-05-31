@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.6.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -90,12 +92,16 @@
     <Compile Include="Assets\Scripts\constants\XmlTags.cs" />
     <Compile Include="Assets\Scripts\constants\XmlValues.cs" />
     <Compile Include="Assets\Scripts\control\CameraController.cs" />
+    <Compile Include="Assets\Scripts\control\EditPanelController.cs" />
+    <Compile Include="Assets\Scripts\control\SkinChangingEditor.cs" />
     <Compile Include="Assets\Scripts\control\EditionController.cs" />
     <Compile Include="Assets\Scripts\control\FloorColorController.cs" />
     <Compile Include="Assets\Scripts\control\HeightChangingEditor.cs" />
     <Compile Include="Assets\Scripts\control\Main.cs" />
     <Compile Include="Assets\Scripts\control\MovingEditor.cs" />
     <Compile Include="Assets\Scripts\control\ObjectEditor.cs" />
+    <Compile Include="Assets\Scripts\control\PanelController.cs" />
+    <Compile Include="Assets\Scripts\control\SkinPanelController.cs" />
     <Compile Include="Assets\Scripts\control\TurningEditor.cs" />
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
     <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />

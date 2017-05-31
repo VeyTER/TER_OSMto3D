@@ -137,7 +137,7 @@ public class TurningEditor : ObjectEditor {
 		turningState = TurningStates.MOTIONLESS;
 	}
 
-	override public void ValidateTransform() {
+	public override void ValidateTransform() {
 		if (wallTransformed) {
 			if (!transformedObjects.Contains(selectedWall))
 				transformedObjects.Add(selectedWall);
@@ -149,7 +149,7 @@ public class TurningEditor : ObjectEditor {
 		}
 	}
 
-	override public void CancelTransform() {
+	public override void CancelTransform() {
 		if (wallTransformed) {
 			Quaternion selectedWallRotation = selectedWall.transform.rotation;
 			selectedWall.transform.rotation = Quaternion.Euler(selectedWallRotation.x, selectedWallStartAngle, selectedWallRotation.z);

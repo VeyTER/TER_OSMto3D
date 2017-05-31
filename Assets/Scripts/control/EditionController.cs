@@ -37,7 +37,7 @@ public class EditionController : MonoBehaviour {
 		MOVING_MODE,
 		TURNING_MODE,
 		HEIGHT_CHANGING_MODE,
-		CHANGING_COLOR_MDOE,
+		CHANGING_SKIN_MODE,
 		MOVING_TO_INITIAL_SITUATION
 	}
 
@@ -50,22 +50,11 @@ public class EditionController : MonoBehaviour {
 	public enum SelectionRanges { WALL, BUILDING }
 
 
-	/// <summary>
-	/// 	Les états du panneau latéral. Celui-ci peut-être fermé ou ouvert, mais également en cours d'ouverture ou
-	/// 	de fermeture.
-	/// </summary>
-	public enum PanelStates { CLOSED, CLOSED_TO_OPEN, OPEN, OPEN_TO_CLOSED }
-
-
 	/// <summary>Etat courant de modification.</summary>
 	private EditionStates editionState;
 
 	/// <summary>Etendue courante de sélection.</summary>
 	private SelectionRanges selectionRange;
-
-
-	/// <summary>Etat courant du panneau latéral.</summary>
-	private PanelStates panelState;
 
 
 	/// <summary>Editeur de la position des objets, permet de controler le déplacement un objet.</summary>
@@ -75,6 +64,8 @@ public class EditionController : MonoBehaviour {
 	private TurningEditor turningEditor;
 
 	private HeightChangingEditor heightChangingEditor;
+
+	private SkinChangingEditor skinChangingEditor;
 
 
 	/// <summary>Unique instance du singleton BuildingsTools contenant des outils pour les bâtiments.</summary>
@@ -126,16 +117,6 @@ public class EditionController : MonoBehaviour {
 	private CameraController cameraController;
 
 
-	/// <summary>Bouton permettant d'ouvrir ou fermer le panneau latéral.</summary>
-	private GameObject slidePanelButton;
-
-	/// <summary>Bouton permettant de valider la transformation d'un bâtiment (déplacement par ex).</summary>
-	private GameObject validateEditionButton;
-
-	/// <summary>Bouton permettant d'annuler la transformation d'un bâtiment (déplacement par ex).</summary>
-	private GameObject cancelEditionButton;
-
-
 	/// <summary>Bouton désactivé permettant de ne sélectionner que le mur courant pour modification.</summary>
 	private GameObject wallRangeButton;
 
@@ -146,16 +127,16 @@ public class EditionController : MonoBehaviour {
 	/// <summary>Panneau d'édition contenant l'interface graphique de modification.</summary>
 	private GameObject editPanel;
 
+	private EditPanelController editPanelController;
 
 	public void Start() {
 		this.editionState = EditionStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.BUILDING;
 
-		this.panelState = PanelStates.CLOSED;
-
 		this.movingEditor = new MovingEditor (GameObject.Find(UiNames.MOVE_HANDLER));
 		this.turningEditor = new TurningEditor (GameObject.Find(UiNames.TURN_HANDLER));
 		this.heightChangingEditor = new HeightChangingEditor();
+		this.skinChangingEditor = new SkinChangingEditor(GameObject.Find(UiNames.SKIN_SELECTION_PANEL));
 
 		this.buildingsTools = BuildingsTools.GetInstance ();
 		this.objectBuilder = ObjectBuilder.GetInstance();
@@ -170,15 +151,6 @@ public class EditionController : MonoBehaviour {
 
 		this.buildingsInitHeight = new Dictionary<GameObject, int>();
 
-		this.validateEditionButton = GameObject.Find(UiNames.VALIDIATE_EDITION_BUTTON);
-		this.cancelEditionButton = GameObject.Find(UiNames.CANCEL_EDITION_BUTTON);
-
-		this.cameraController = Camera.main.GetComponent<CameraController> ();
-
-		this.slidePanelButton = GameObject.Find (UiNames.SLIDE_PANEL_BUTTON);
-		this.validateEditionButton.transform.localScale = Vector3.zero;
-		this.cancelEditionButton.transform.localScale = Vector3.zero;
-
 		this.wallRangeButton = GameObject.Find(UiNames.WALL_RANGE_BUTTON);
 		this.buildingRangeButton = GameObject.Find(UiNames.BUILDING_RANGE_BUTTON);
 
@@ -190,6 +162,13 @@ public class EditionController : MonoBehaviour {
 
 		this.editPanel = GameObject.Find (UiNames.EDIT_PANEL);
 		this.editPanel.SetActive(false);
+
+		this.cameraController = Camera.main.GetComponent<CameraController> ();
+		this.editPanelController = editPanel.GetComponent<EditPanelController>();
+
+		RectTransform editPanelTransform = (RectTransform) this.editPanelController.transform;
+		this.editPanelController.StartPosX = editPanelTransform.localPosition.x - editPanelTransform.rect.width;
+		this.editPanelController.EndPosX = editPanelTransform.localPosition.x;
 	}
 
 
@@ -208,7 +187,8 @@ public class EditionController : MonoBehaviour {
 		// Activation et ourverture du panneau latéral s'il est inactif
 		if (editPanel.activeInHierarchy == false) {
 			editPanel.SetActive (true);
-			this.OpenPanel (null);
+			editPanelController.OpenPanel (null);
+			editPanelController.OpenSlideButton();
 		}
 
 		// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
@@ -236,7 +216,6 @@ public class EditionController : MonoBehaviour {
 
 		if (!buildingsInitHeight.ContainsKey(SelectedBuilding)) {
 			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-
 			buildingsInitHeight.Add (selectedBuilding, nodeGroup.NbFloor);
 		}
 
@@ -270,9 +249,12 @@ public class EditionController : MonoBehaviour {
 		selectedWall = null;
 
 		// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
-		this.ClosePanel (() => {
+		editPanelController.ClosePanel (() => {
 			editPanel.SetActive (false);
 		});
+
+		editPanelController.CloseSlideButton();
+
 
 		// Déplacement de la caméra à sa position initiale et réinitialisation de l'état de modification à la fin du
 		// déplacement
@@ -282,157 +264,6 @@ public class EditionController : MonoBehaviour {
 				editionState = EditionController.EditionStates.NONE_SELECTION;
 			})
 		);
-	}
-
-
-	/// <summary>
-	/// 	Inverse l'état d'ouverture du panneau latéral : s'il était fermé, il s'ouvre; s'il était ouvert, il se ferme.
-	/// </summary>
-	/// <param name="finalAction">Action finale à effectuer à la fin de l'inversion.</param>
-	public void TogglePanel(Action finalAction) {
-		if (panelState == PanelStates.CLOSED) {
-			this.StartCoroutine ( this.SlidePanel (finalAction, -1) );
-			panelState = PanelStates.CLOSED_TO_OPEN;
-		} else if (panelState == PanelStates.OPEN) {
-			this.StartCoroutine ( this.SlidePanel (finalAction, 1) );
-			panelState = PanelStates.OPEN_TO_CLOSED;
-		}
-	}
-
-	/// <summary>
-	/// 	Ouvre la panneau latéral.
-	/// </summary>
-	/// <param name="finalAction">Action finale à effectuer à la fin de l'ouverture.</param>
-	public void OpenPanel(Action finalAction) {
-		this.StartCoroutine ( this.SlidePanel(finalAction, -1) );
-		panelState = PanelStates.CLOSED_TO_OPEN;
-	}
-
-
-	/// <summary>
-	/// 	Ferme la panneau latéral.
-	/// </summary>
-	/// <param name="finalAction">Action finale à effectuer à la fin de la fermeture.</param>
-	public void ClosePanel(Action finalAction) {
-		this.StartCoroutine ( this.SlidePanel(finalAction, 1) );
-		panelState = PanelStates.OPEN_TO_CLOSED;
-	}
-
-
-	/// <summary>
-	/// 	Fait glisser le panneau latéral d'une configuration à une autre.
-	/// </summary>
-	/// <returns>Temporisateur servant à générer une animation.</returns>
-	/// <param name="finalAction">Action finale à effectuer à la fin de la glissade.</param>
-	/// <param name="direction">Direction de la glissade.</param>
-	private IEnumerator SlidePanel(Action finalAction, int direction) {
-		// Passage de la direction à -1 si elle est strictement négative et à 1 si elle est positive
-		direction = direction > 0 ? 1 : -1;
-
-		// Configuration courante du panneau
-		Vector3 panelPosition = editPanel.transform.localPosition;
-		RectTransform panelRectTransform = (RectTransform)editPanel.transform;
-
-		// Situation courante du bouton de contrôle du panneau
-		Vector3 panelButtonPosition = slidePanelButton.transform.localPosition;
-		Quaternion panelButtonRotation = slidePanelButton.transform.localRotation;
-
-		// Position en X initiale puis ciblée du panneau
-		float initPanelPosX = panelPosition.x;
-		float targetPanelPosX = panelPosition.x + (direction * panelRectTransform.rect.width);
-
-		// Position en X initiale puis ciblée du bouton de contrôle
-		float panelButtonInitPosX = panelButtonPosition.x;
-		float targetPanelButtonPosX = panelButtonPosition.x - (direction * 20);
-
-		// orientation en Z initiale puis ciblée du bouton de contrôle
-		float panelButtonInitRotZ = panelButtonRotation.eulerAngles.z;
-		float targetPanelButtonRotZ = panelButtonRotation.eulerAngles.z + (direction * 180);
-
-		Transform panelTransform = editPanel.transform;
-		Transform panelButtonTransform = slidePanelButton.transform;
-
-		// Génération de l'animation
-		for (double i = 0; i <= 1; i += 0.1) {
-			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
-
-			// Calcul de la situation courante
-			float currentPanelPosX = initPanelPosX - (initPanelPosX - targetPanelPosX) * cursor;
-			float currentPanelButtonPosX = panelButtonInitPosX - (panelButtonInitPosX - targetPanelButtonPosX) * cursor;
-			float currentPanelButtonRotZ = panelButtonInitRotZ - (panelButtonInitRotZ - targetPanelButtonRotZ) * cursor;
-
-			panelTransform.localPosition = new Vector3 (currentPanelPosX, panelPosition.y, panelPosition.z);
-			panelButtonTransform.localPosition = new Vector3 (currentPanelButtonPosX, panelButtonPosition.y, panelButtonPosition.z);
-			panelButtonTransform.localRotation = Quaternion.Euler (panelButtonRotation.x, panelButtonRotation.y, currentPanelButtonRotZ);
-
-			yield return new WaitForSeconds (0.01F);
-		}
-
-		if(panelState == PanelStates.CLOSED_TO_OPEN)
-			panelState = PanelStates.OPEN;
-		else if (panelState == PanelStates.OPEN_TO_CLOSED)
-			panelState = PanelStates.CLOSED;
-
-		// Appel de la tâche finale s'il y en a une
-		if(finalAction != null)
-			finalAction ();
-	}
-
-
-	/// <summary>
-	/// 	Inverse la visibilité des boutons flottants avec un effet de zoom.
-	/// </summary>
-	/// <returns>The floatting buttons.</returns>
-	private IEnumerator ToggleFloattingButtons() {
-		// Echelle courante des boutons de valdiation et d'annulation
-		Vector3 validateButtonInitScale = validateEditionButton.transform.localScale;
-		Vector3 cancelButtonInitScale = cancelEditionButton.transform.localScale;
-
-		// Echelle courante des boutons d'étendue de mur et de bâtiment
-//		Vector3 wallRangeInitScale = wallRangeButton.transform.localScale;
-//		Vector3 buildingRangeInitScale = buildingRangeButton.transform.localScale;
-
-		// Calcul de l'échelle à atteindre à partir de l'échelle courante
-		Vector3 targetScale = Vector3.zero;
-		if (validateButtonInitScale == Vector3.one && cancelButtonInitScale == Vector3.one /*&& wallRangeInitScale == Vector3.one && buildingRangeInitScale == Vector3.one*/)
-			targetScale = Vector3.zero;
-		else if (validateButtonInitScale == Vector3.zero && cancelButtonInitScale == Vector3.zero /*&& wallRangeInitScale == Vector3.zero && buildingRangeInitScale == Vector3.zero*/)
-			targetScale = Vector3.one;
-
-		Transform validateButtonTransform = validateEditionButton.transform;
-		Transform cancelButtonTransform = cancelEditionButton.transform;
-
-//		Transform wallRangeButtonTransform = wallRangeButton.transform;
-//		Transform buildingRangeButtonTransform = buildingRangeButton.transform;
-
-		// Génération de l'animation
-		for (double i = 0; i <= 1; i += 0.1) {
-			float cursor = (float)Math.Sin (i * (Math.PI) / 2F);
-
-			// Calcul de la situation courante
-			if (validateButtonInitScale.x == 0) {
-				validateButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
-				cancelButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
-
-//				wallRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
-//				buildingRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
-			} else if (validateButtonInitScale.x == 1) {
-				validateButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
-				cancelButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
-
-//				wallRangeButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
-//				buildingRangeButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
-			}
-
-			yield return new WaitForSeconds (0.01F);
-		}
-
-		// Affectation de l'échelle finale pour éviter les imprécisions
-		validateButtonTransform.localScale = targetScale;
-		cancelButtonTransform.localScale = targetScale;
-
-//		wallRangeButtonTransform.localScale = targetScale;
-//		buildingRangeButtonTransform.localScale = targetScale;
 	}
 
 
@@ -498,8 +329,9 @@ public class EditionController : MonoBehaviour {
 	/// 	l'affichage des boutons flottants.
 	/// </summary>
 	private void EnterTransformMode() {
-		this.ClosePanel (null);
-		this.StartCoroutine ("ToggleFloattingButtons");
+		editPanelController.ClosePanel (null);
+		editPanelController.CloseSlideButton();
+		editPanelController.OpenFloattingButtons();
 	}
 
 
@@ -516,11 +348,12 @@ public class EditionController : MonoBehaviour {
 		Destroy(HeightChangingEditor.BottomFloor);
 
 		// Ouverture du panneau latéral
-		if (panelState == PanelStates.CLOSED)
-			this.OpenPanel (null);
+		if (editPanelController.IsPanelClosed()) {
+			editPanelController.OpenPanel(null);
+			editPanelController.OpenSlideButton();
+		}
 
-		// Inversion de l'affichage des boutons latéraux
-		this.StartCoroutine ("ToggleFloattingButtons");
+		editPanelController.CloseFloattingButtons();
 
 		// Mise à jour de la situation de la caméra pour la repositionner au-dessus du bâtiment courant qui aura
 		// probablement bougé
@@ -569,7 +402,7 @@ public class EditionController : MonoBehaviour {
 			|| editionState == EditionStates.TURNING_MODE
 			|| editionState == EditionStates.RENAMING_MODE
 			|| editionState == EditionStates.HEIGHT_CHANGING_MODE
-			|| editionState == EditionStates.CHANGING_COLOR_MDOE;
+			|| editionState == EditionStates.CHANGING_SKIN_MODE;
 	}
 
 
@@ -749,11 +582,6 @@ public class EditionController : MonoBehaviour {
 		set { heightChangingEditor = value; }
 	}
 
-	public PanelStates PanelState {
-		get { return panelState; }
-		set { panelState = value; }
-	}
-
 	public Dictionary<GameObject, string> RenamedBuildings {
 		get { return renamedBuildings; }
 	}
@@ -770,5 +598,10 @@ public class EditionController : MonoBehaviour {
 
 	public GameObject EditPanel {
 		get { return editPanel; }
+	}
+
+	public EditPanelController EditPanelController {
+		get { return editPanelController; }
+		set { editPanelController = value; }
 	}
 }

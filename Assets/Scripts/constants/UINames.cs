@@ -62,7 +62,7 @@ public class UiNames {
 
 
 	/// <summary>Nom du bouton de coulissement du panneau latéral.</summary>
-	public const string SLIDE_PANEL_BUTTON = "SlidePanelButton";
+	public const string SLIDE_BUTTON = "SlidePanelButton";
 
 	/// <summary>Nom de bouton de validation d'une édition.</summary>
 	public const string VALIDIATE_EDITION_BUTTON = "ValidateEditionButton";

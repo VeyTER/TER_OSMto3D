@@ -73,22 +73,18 @@ public class HeightChangingEditor : ObjectEditor {
 		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
 		objectBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor + 1);
 		nodeGroup.NbFloor++;
-		this.ShiftFloor(1);
 
-		CameraController cameraController = Camera.main.GetComponent<CameraController>();
-		float cameraOrientation = cameraController.RelativeOrientation(selectedBuilding);
-		cameraController.TeleportToBuilding(selectedBuilding, true, cameraOrientation, 15);
+		this.ShiftFloor(1);
+		this.UpdateCameraPosition();
 	}
 
 	public void DecrementObjectHeight() {
 		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
 		objectBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor - 1);
 		nodeGroup.NbFloor--;
-		this.ShiftFloor(-1);
 
-		CameraController cameraController = Camera.main.GetComponent<CameraController>();
-		float cameraOrientation = cameraController.RelativeOrientation(selectedBuilding);
-		cameraController.TeleportToBuilding(selectedBuilding, true, cameraOrientation, 15);
+		this.ShiftFloor(-1);
+		this.UpdateCameraPosition();
 	}
 
 	private void ShiftFloor(int direction) {
@@ -105,12 +101,18 @@ public class HeightChangingEditor : ObjectEditor {
 		}
 	}
 
-	override public void ValidateTransform() {
+	private void UpdateCameraPosition() {
+		CameraController cameraController = Camera.main.GetComponent<CameraController>();
+		float cameraOrientation = cameraController.RelativeOrientation(selectedBuilding);
+		cameraController.TeleportToBuilding(selectedBuilding, true, cameraOrientation, 15);
+	}
+
+	public override void ValidateTransform() {
 		if (!transformedObjects.Contains(selectedBuilding))
 			transformedObjects.Add(selectedBuilding);
 	}
 
-	override public void CancelTransform() {
+	public override void CancelTransform() {
 		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
 		objectBuilder.RebuildBuilding(selectedBuilding, selectedBuildingStartHeight);
 	}

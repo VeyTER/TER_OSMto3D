@@ -163,7 +163,7 @@ public class MovingEditor : ObjectEditor {
 		mainCamera.transform.localPosition = newCameraPosition;
 	}
 
-	override public void ValidateTransform() {
+	public override void ValidateTransform() {
 		if (wallTransformed) {
 			if (!transformedObjects.Contains(selectedWall))
 				transformedObjects.Add(selectedWall);
@@ -175,7 +175,7 @@ public class MovingEditor : ObjectEditor {
 		}
 	}
 
-	override public void CancelTransform() {
+	public override void CancelTransform() {
 		if (wallTransformed) {
 				selectedWall.transform.position = selectedWallStartPos;
 		} else if(buildingTransformed) {

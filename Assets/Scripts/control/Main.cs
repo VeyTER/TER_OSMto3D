@@ -83,8 +83,9 @@ public class Main : MonoBehaviour {
 			objectBuilder.HighwayNodes.SetActive (false);
 			objectBuilder.Roofs.SetActive (false);
 
-			// Récupération de la référence du panneau et désactivation de ce dernier
+			// Récupération de la référence du panneau et ajout d'un controlleur
 			editPanel = GameObject.Find (UiNames.EDIT_PANEL);
+			editPanel.AddComponent<EditPanelController>();
 
 			// Paramétrage du panneau latéral
 			Vector3 panelPosition = editPanel.transform.localPosition;
