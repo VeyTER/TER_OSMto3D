@@ -59,4 +59,8 @@ public class SkinPanelController : PanelController {
 		else if (slidingState == SlidingStates.RIGHT_TO_LEFT)
 			slidingState = SlidingStates.LEFT;
 	}
+
+	public bool IsMotionLess() {
+		return slidingState == SlidingStates.RIGHT || slidingState == SlidingStates.LEFT;
+	}
 }
