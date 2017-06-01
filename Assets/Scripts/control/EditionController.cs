@@ -349,6 +349,9 @@ public class EditionController : MonoBehaviour {
 	/// 	la configuration d'avant la modification.
 	/// </summary>
 	public void ExitTransformMode() {
+		GameObject bouton1 = GameObject.FindGameObjectWithTag("Finish");
+		GameObject body = bouton1.transform.GetChild(1).gameObject;
+
 		switch (editionState) {
 		case EditionStates.MOVING_MODE:
 			movingEditor.MoveHandler.SetActive (false);

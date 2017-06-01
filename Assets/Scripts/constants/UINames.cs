@@ -4,6 +4,8 @@
 /// 	Contient le nom des différents éléments graphiques.
 ///</summary>
 public class UiNames {
+	public const string MAIN_CANVAS = "MainCanvas";
+
 	/// <summary>Nom du bouton de visibilité des noeuds de bâtiments.</summary>
 	public const string BUILDING_NODES_BUTTON = "BuildingNodesButton";
 
@@ -94,10 +96,14 @@ public class UiNames {
 
 	public const string COLORS_PANEL = "MaterialsContainerPanel";
 
+	public const string MATERIALS_GRID = "MaterialsGridPanel";
+
 
 	public const string MATERIALS_SCROLLBAR = "MaterialsScrollbar";
 
 	public const string COLORS_SCROLLBAR = "ColorsScrollbar";
+
+	public const string COLORS_GRID = "ColorsGridPanel";
 
 
 	public const string SKIN_SLIDER = "SkinSlider";

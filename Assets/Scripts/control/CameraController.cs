@@ -67,6 +67,7 @@ public class CameraController : MonoBehaviour {
 
 			// Rotation de la caméra
 			if (Input.GetKey(KeyCode.LeftControl)) {
+
 				if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
 					transform.Rotate(new Vector3(-1, 0, 0));
 

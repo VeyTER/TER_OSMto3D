@@ -12,12 +12,6 @@ public class SkinChangingEditor : ObjectEditor {
 	private GameObject materialsPanel;
 	private GameObject colorsPanel;
 
-	private GameObject materialsScrollBar;
-	private GameObject colorsScrollBar;
-
-	private GameObject materialsButton;
-	private GameObject colorsButton;
-
 	private FloorColorController topFloorColorController;
 	private FloorColorController bottomFloorColorController;
 
@@ -30,39 +24,121 @@ public class SkinChangingEditor : ObjectEditor {
 
 		this.skinPanelController = this.skinPanel.GetComponent<SkinPanelController>();
 
-		int i = 0;
-		for (; i < skinPanel.transform.childCount && !skinPanel.transform.GetChild(i).name.Equals(UiNames.SKIN_SLIDER); i++) ;
-
-		if (i < skinPanel.transform.childCount) {
-			GameObject skinSlider = skinPanel.transform.GetChild(i).gameObject;
-
-			this.materialsPanel = this.ChildSkinElement(skinSlider, UiNames.MATERIALS_PANEL);
-			this.colorsPanel = this.ChildSkinElement(skinSlider, UiNames.COLORS_PANEL);
-
-			this.materialsScrollBar = this.ChildSkinElement(skinSlider, UiNames.MATERIALS_SCROLLBAR);
-			this.colorsScrollBar = this.ChildSkinElement(skinSlider, UiNames.COLORS_SCROLLBAR);
-
-			this.materialsButton = this.ChildSkinElement(skinSlider, UiNames.MATERIALS_BUTTON);
-			this.colorsButton = this.ChildSkinElement(skinSlider, UiNames.COLORS_BUTTON);
-		}
-
-
 		RectTransform editPanelTransform = (RectTransform) this.skinPanelController.transform;
 		this.skinPanelController.StartPosX = editPanelTransform.localPosition.x - editPanelTransform.rect.width;
 		this.skinPanelController.EndPosX = editPanelTransform.localPosition.x;
 
 		Vector3 panelPosition = this.skinPanel.transform.localPosition;
 		this.skinPanel.transform.localPosition = new Vector3(this.skinPanelController.StartPosX, panelPosition.y, panelPosition.z);
+
+		this.BuildMaterialsItems();
 	}
 
-	private GameObject ChildSkinElement(GameObject containter, string elementName) {
-		int i = 0;
-		for (; i < containter.transform.childCount && !containter.transform.GetChild(i).name.Equals(elementName); i++) ;
+	public void BuildMaterialsItems() {
+		Transform skinSliderTransform = skinPanel.transform.GetChild(0);
+		Transform materialsContainerPanelTransform = skinSliderTransform.GetChild(0);
 
-		if (i < containter.transform.childCount)
-			return containter.transform.GetChild(i).gameObject;
-		else
-			return null;
+		Transform materialsGridPanelTransform = materialsContainerPanelTransform.GetChild(0);
+
+		GameObject materialItem = new GameObject();
+		materialItem.transform.SetParent(materialsGridPanelTransform.transform, true);
+
+		materialItem.AddComponent<RectTransform>();
+		materialItem.AddComponent<Button>();
+
+		RectTransform itemTransform = materialItem.GetComponent<RectTransform>();
+		itemTransform.sizeDelta = new Vector2(60, 60);
+
+		Button itemButton = materialItem.GetComponent<Button>();
+		// /!\  itemButton.targetGraphic = [ Graphique de l'image interne ];
+
+
+		GameObject decoration = new GameObject("Decorations");
+		decoration.transform.SetParent(materialItem.transform, true);
+
+		decoration.AddComponent<RectTransform>();
+
+		RectTransform decorationTransform = decoration.GetComponent<RectTransform>();
+		decorationTransform.sizeDelta = new Vector2(0, 0);
+		decorationTransform.anchorMin = new Vector2(0, 0);
+		decorationTransform.anchorMax = new Vector2(1, 1);
+		decorationTransform.anchoredPosition3D = new Vector3(0, 0, -1);
+		decorationTransform.pivot = new Vector2(0.5F, 0.5F);
+		//decorationTransform.offsetMin = new Vector2(0, 0);
+		//decorationTransform.offsetMax = new Vector2(0, 0);
+
+		GameObject leftRect = new GameObject("LeftDecoration");
+		leftRect.transform.SetParent(decoration.transform, true);
+		leftRect.transform.position = new Vector3(6.2F, -38.6F, 13.6F);
+		leftRect.transform.rotation = Quaternion.Euler(0, -130, -30);
+		leftRect.transform.localScale = new Vector3(0.549217F, 1, 1);
+
+		leftRect.AddComponent<RectTransform>();
+		leftRect.AddComponent<CanvasRenderer>();
+		leftRect.AddComponent<Image>();
+
+		RectTransform leftRectTransform = leftRect.GetComponent<RectTransform>();
+		leftRectTransform.sizeDelta = new Vector2(75.2F, 14.5F);
+		leftRectTransform.anchorMin = new Vector2(0, 1);
+		leftRectTransform.anchorMax = new Vector2(0, 1);
+		leftRectTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image leftRectImage = leftRect.GetComponent<Image>();
+		leftRectImage.color = new Color(52 / 255F, 77 / 255F, 104 / 255F);
+
+
+		GameObject rightRect = new GameObject("RightDecoration");
+		rightRect.transform.SetParent(decoration.transform, true);
+		rightRect.transform.position = new Vector3(54.8F, -38.6F, 13.6F);
+		rightRect.transform.rotation = Quaternion.Euler(0, -130, 30);
+		rightRect.transform.localScale = new Vector3(0.549217F, 1, 1);
+
+		rightRect.AddComponent<RectTransform>();
+		rightRect.AddComponent<CanvasRenderer>();
+		rightRect.AddComponent<Image>();
+
+		RectTransform rightRectTransform = rightRect.GetComponent<RectTransform>();
+		rightRectTransform.sizeDelta = new Vector2(75.2F, 14.5F);
+		rightRectTransform.anchorMin = new Vector2(0, 1);
+		rightRectTransform.anchorMax = new Vector2(0, 1);
+		rightRectTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image rightRectImage = rightRect.GetComponent<Image>();
+		rightRectImage.color = new Color(52 / 255F, 77 / 255F, 104 / 255F);
+
+
+		GameObject body = new GameObject("Body");
+		body.transform.SetParent(materialItem.transform, true);
+
+		body.AddComponent<RectTransform>();
+
+		RectTransform bodyTransform = body.GetComponent<RectTransform>();
+		bodyTransform.sizeDelta = new Vector2(0, 0);
+		bodyTransform.anchorMin = new Vector2(0, 0);
+		bodyTransform.anchorMax = new Vector2(1, 1);
+		bodyTransform.anchoredPosition3D = new Vector3(0, 0, -1);
+		bodyTransform.pivot = new Vector2(0.5F, 0.5F);
+
+
+		GameObject materialSupport = new GameObject("MaterialSupport");
+		materialSupport.transform.position = new Vector3(30, -49.7F, -1);
+		materialSupport.transform.SetParent(body.transform, true);
+
+		materialSupport.AddComponent<RectTransform>();
+		materialSupport.AddComponent<Image>();
+
+		RectTransform materialSupportTransform = materialSupport.GetComponent<RectTransform>();
+		bodyTransform.sizeDelta = new Vector2(75.2F, 14.5F);
+		bodyTransform.anchorMin = new Vector2(0, 1);
+		bodyTransform.anchorMax = new Vector2(1, 1);
+		bodyTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image materialSupportImage = materialSupport.GetComponent<Image>();
+
+	}
+
+	public void BuildColorsItems() {
+
 	}
 
 	public void InitializeSkinChangingMode() {
@@ -81,8 +157,6 @@ public class SkinChangingEditor : ObjectEditor {
 
 		RectTransform lightButtonRect = buttonToLight.GetComponent<RectTransform>();
 		RectTransform darkButtonRect = buttonToDark.GetComponent<RectTransform>();
-
-		// Erreur car le bouton est désactivé et donc introuvable en passant par le "find"
 
 		lightButtonRect.sizeDelta = new Vector2(lightButtonRect.sizeDelta.x, 30);
 		darkButtonRect.sizeDelta = new Vector2(darkButtonRect.sizeDelta.x, 25);

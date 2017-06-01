@@ -20,7 +20,6 @@ public class Main : MonoBehaviour {
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
 	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + "capitole" + ".osm";
 
-
 	private GameObject editPanel;
 
 
@@ -48,45 +47,45 @@ public class Main : MonoBehaviour {
 		// Si le fichier contennant la carte OSM existe bien, le traitement est effectué
 		if (File.Exists(OSM_FILE_NAME)) {
 			// Chargement des données OSM
-			mapLoader.LoadOsmData (OSM_FILE_NAME);
-			mapLoader.LoadSettingsData ();
-			mapLoader.GenerateResumeFile ();
-			mapLoader.LoadCustomData ();
-			mapLoader.LoadResumedData ();
+			mapLoader.LoadOsmData(OSM_FILE_NAME);
+			mapLoader.LoadSettingsData();
+			mapLoader.GenerateResumeFile();
+			mapLoader.LoadCustomData();
+			mapLoader.LoadResumedData();
 
 			// Réglage de l'échelle et des dimensions
-			objectBuilder.ScaleNodes (Main.SCALE_FACTOR);
-			objectBuilder.SetBounds (mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
+			objectBuilder.ScaleNodes(Main.SCALE_FACTOR);
+			objectBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
 
 			// Construction de la ville
-			objectBuilder.CityComponents = new GameObject (ObjectNames.CITY);
-			objectBuilder.BuildNodes ();
-			objectBuilder.BuildWalls ();
-			objectBuilder.BuildRoofs ();
-			objectBuilder.BuildRoads ();
-			objectBuilder.BuildTrees ();
-			objectBuilder.BuildTrafficLights ();
-			objectBuilder.BuildMainCamera ();
-			objectBuilder.BuildGround ();
+			objectBuilder.CityComponents = new GameObject(ObjectNames.CITY);
+			objectBuilder.BuildNodes();
+			objectBuilder.BuildWalls();
+			objectBuilder.BuildRoofs();
+			objectBuilder.BuildRoads();
+			objectBuilder.BuildTrees();
+			objectBuilder.BuildTrafficLights();
+			objectBuilder.BuildMainCamera();
+			objectBuilder.BuildGround();
 
 			// Désactivation des certains groupes d'objets
-			objectBuilder.BuildingNodes.SetActive (false);
-			objectBuilder.HighwayNodes.SetActive (false);
-			objectBuilder.Roofs.SetActive (false);
+			objectBuilder.BuildingNodes.SetActive(false);
+			objectBuilder.HighwayNodes.SetActive(false);
+			objectBuilder.Roofs.SetActive(false);
 
 			// Récupération de la référence du panneau et ajout d'un controlleur
-			editPanel = GameObject.Find (UiNames.EDIT_PANEL);
+			editPanel = GameObject.Find(UiNames.EDIT_PANEL);
 			editPanel.AddComponent<EditPanelController>();
 
 			// Paramétrage du panneau latéral
 			Vector3 panelPosition = editPanel.transform.localPosition;
-			RectTransform panelRectTransform = (RectTransform)editPanel.transform;
+			RectTransform panelRectTransform = (RectTransform) editPanel.transform;
 			editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
 
 			Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 			Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
 
-			greenOverlay.SetColor("_EmissionColor", new Color(0.2382F, 0.6F, 0.3853387F)) ;
+			greenOverlay.SetColor("_EmissionColor", new Color(0.2382F, 0.6F, 0.3853387F));
 			redOverlay.SetColor("_EmissionColor", new Color(1F, 0.397F, 0.397F));
 		}
 	}
