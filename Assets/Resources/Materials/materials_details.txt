@@ -1,4 +1,4 @@
-﻿Textures/Mur briques/Bricks01_COL_VAR1_1K	Materials/Bricks	Brique de base
-Textures/Mur briques/Bricks01_COL_VAR2_1K	Materials/Bricks	Brique rouges
-Textures/Mur béton/ConcreteWall001_COL_VAR1_1K	Materials/Bricks	Béton monochrome
-Textures/Mur béton/ConcreteWall001_COL_VAR2_1K	Materials/Bricks	Béton coloré
+﻿Textures/Mur briques/Bricks01_COL_VAR1_1K	Materials/BricksBasic	Brique de base
+Textures/Mur briques/Bricks01_COL_VAR2_1K	Materials/BricksOrange	Brique rouges
+Textures/Mur béton/ConcreteWall001_COL_VAR1_1K	Materials/ConcreteMonochromatic	Béton monochrome
+Textures/Mur béton/ConcreteWall001_COL_VAR2_1K	Materials/ConcreteColored	Béton coloré

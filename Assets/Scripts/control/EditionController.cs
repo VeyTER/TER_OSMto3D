@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
@@ -112,6 +111,9 @@ public class EditionController : MonoBehaviour {
 
 	private Dictionary<GameObject, int> buildingsInitHeight;
 
+	private Dictionary<GameObject, Material> buildingsInitMaterial;
+	private Dictionary<GameObject, Color> buildingsInitColor;
+
 
 	/// <summary>Unique instance de la classe CameraCOntroller permettant de contrôler la caméra.</summary>
 	private CameraController cameraController;
@@ -150,6 +152,9 @@ public class EditionController : MonoBehaviour {
 		this.buildingsInitAngle = new Dictionary<GameObject, float>();
 
 		this.buildingsInitHeight = new Dictionary<GameObject, int>();
+
+		this.buildingsInitMaterial = new Dictionary<GameObject, Material>();
+		this.buildingsInitColor = new Dictionary<GameObject, Color>();
 
 		this.wallRangeButton = GameObject.Find(UiNames.WALL_RANGE_BUTTON);
 		this.buildingRangeButton = GameObject.Find(UiNames.BUILDING_RANGE_BUTTON);
@@ -213,11 +218,19 @@ public class EditionController : MonoBehaviour {
 			buildingsInitAngle.Add (selectedBuilding, selectedBuilding.transform.rotation.eulerAngles.y);
 		}
 
-
 		if (!buildingsInitHeight.ContainsKey(SelectedBuilding)) {
 			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 			buildingsInitHeight.Add (selectedBuilding, nodeGroup.NbFloor);
 		}
+
+		GameObject firstWall = SelectedBuilding.transform.GetChild(0).gameObject;
+		MeshRenderer meshRenderer = firstWall.GetComponent<MeshRenderer>();
+
+		if (!buildingsInitMaterial.ContainsKey(SelectedBuilding))
+			buildingsInitMaterial.Add(SelectedBuilding, meshRenderer.materials[0]);
+
+		if (!buildingsInitColor.ContainsKey(SelectedBuilding))
+			buildingsInitColor.Add(SelectedBuilding, meshRenderer.materials[0].color);
 
 		// Enregistrement de la situation initiale de la caméra
 		if (editionState == EditionStates.NONE_SELECTION) {
@@ -328,7 +341,9 @@ public class EditionController : MonoBehaviour {
 		this.EnterTransformMode();
 		skinChangingEditor.Initialize(selectedWall, selectedBuilding);
 		skinChangingEditor.InitializeSkinChangingMode();
+
 		cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, null, 15));
+		buildingsTools.DiscolorAsSelected(selectedBuilding);
 		editionState = EditionStates.SKIN_CHANGING_MODE;
 	}
 
@@ -349,9 +364,6 @@ public class EditionController : MonoBehaviour {
 	/// 	la configuration d'avant la modification.
 	/// </summary>
 	public void ExitTransformMode() {
-		GameObject bouton1 = GameObject.FindGameObjectWithTag("Finish");
-		GameObject body = bouton1.transform.GetChild(1).gameObject;
-
 		switch (editionState) {
 		case EditionStates.MOVING_MODE:
 			movingEditor.MoveHandler.SetActive (false);
@@ -364,6 +376,8 @@ public class EditionController : MonoBehaviour {
 			Destroy(HeightChangingEditor.BottomFloor);
 			break;
 		case EditionStates.SKIN_CHANGING_MODE:
+			buildingsTools.ColorAsSelected(selectedBuilding);
+
 			// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
 			skinChangingEditor.SkinPanelController.ClosePanel(() => {
 				skinChangingEditor.SkinPanel.SetActive(false);
@@ -399,6 +413,9 @@ public class EditionController : MonoBehaviour {
 		case EditionStates.HEIGHT_CHANGING_MODE:
 			heightChangingEditor.ValidateTransform();
 			break;
+		case EditionStates.SKIN_CHANGING_MODE:
+			skinChangingEditor.ValidateTransform();
+			break;
 		}
 	}
 
@@ -412,6 +429,9 @@ public class EditionController : MonoBehaviour {
 			break;
 		case EditionStates.HEIGHT_CHANGING_MODE:
 			heightChangingEditor.CancelTransform();
+			break;
+		case EditionStates.SKIN_CHANGING_MODE:
+			skinChangingEditor.CancelTransform();
 			break;
 		}
 	}
@@ -474,13 +494,27 @@ public class EditionController : MonoBehaviour {
 				buildingsTools.UpdateLocation (building);
 		}
 
-		foreach (KeyValuePair<GameObject, int> buildingAngleEntry in buildingsInitHeight) {
-			GameObject building = buildingAngleEntry.Key;
-			int buildingInitHeight = buildingAngleEntry.Value;
+		foreach (KeyValuePair<GameObject, int> buildingHeightEntry in buildingsInitHeight) {
+			GameObject building = buildingHeightEntry.Key;
+			int buildingInitHeight = buildingHeightEntry.Value;
 
 			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
 			if (buildingInitHeight != nodeGroup.NbFloor)
 				buildingsTools.UpdateHeight(building, nodeGroup.NbFloor);
+		}
+
+		foreach (KeyValuePair<GameObject, Material> buildingMaterialEntry in buildingsInitMaterial) {
+			GameObject building = buildingMaterialEntry.Key;
+			Material buildingInitMaterial = buildingMaterialEntry.Value;
+
+			// Chaagement du matériau dans le BuildingTools ici
+		}
+
+		foreach (KeyValuePair<GameObject, Color> buildingColorEntry in buildingsInitColor) {
+			GameObject building = buildingColorEntry.Key;
+			Color buildingInitColor = buildingColorEntry.Value;
+
+			// Chaagement de couleur dans le BuildingTools ici
 		}
 
 		// Suppression des situations initiales des objets modifiés
@@ -556,6 +590,18 @@ public class EditionController : MonoBehaviour {
 			objectBuilder.RebuildBuilding(building, buildingHeight);
 		}
 
+		foreach (KeyValuePair<GameObject, Material> buildingMaterialEntry in buildingsInitMaterial) {
+			GameObject building = buildingMaterialEntry.Key;
+			Material buildingInitMaterial = buildingMaterialEntry.Value;
+			buildingsTools.ReplaceMaterial(building, buildingInitMaterial);
+		}
+
+		foreach (KeyValuePair<GameObject, Color> buildingColorEntry in buildingsInitColor) {
+			GameObject building = buildingColorEntry.Key;
+			Color buildingInitColor = buildingColorEntry.Value;
+			buildingsTools.ReplaceColor(building, buildingInitColor);
+		}
+
 		// Suppression des situations initiales des objets modifiés
 		this.ClearHistory ();
 	}
@@ -573,11 +619,15 @@ public class EditionController : MonoBehaviour {
 		buildingsInitPos.Clear();
 		buildingsInitAngle.Clear();
 
+		buildingsInitHeight.Clear();
+
+		buildingsInitMaterial.Clear();
+		buildingsInitColor.Clear();
+
 		movingEditor.ClearHistory();
 		turningEditor.ClearHistory();
 		heightChangingEditor.ClearHistory();
-
-		buildingsInitHeight.Clear();
+		skinChangingEditor.ClearHistory();
 	}
 
 	public EditionStates EditionState {

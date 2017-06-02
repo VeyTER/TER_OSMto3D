@@ -216,7 +216,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// </summary>
 	/// <param name="eventData">Données sur l'évènement.</param>
 	public void OnPointerUp (PointerEventData eventData) {
-		switch (name) {
+		switch (name.Split('_')[0]) {
 		// ==== Gestion des boutons controllant la visibilité des objets ====
 		case UiNames.BUILDING_NODES_BUTTON:
 			this.ToggleBuildingNodesVisibility ();
@@ -330,14 +330,20 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 		case UiNames.MATERIALS_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
-				skinChangingEditor.UpdateButtons(gameObject);
+				skinChangingEditor.SwitchGrid(gameObject);
 				skinChangingEditor.SkinPanelController.SlideSliderRight();
 			}
 			break;
 		case UiNames.COLORS_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
-				skinChangingEditor.UpdateButtons(gameObject);
+				skinChangingEditor.SwitchGrid(gameObject);
 				skinChangingEditor.SkinPanelController.SlideSliderLeft();
+			}
+			break;
+		case UiNames.MATERIAL_ITEM_BUTTON:
+			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
+				skinChangingEditor.UpdateMaterialItems(gameObject);
+				skinChangingEditor.ChangeBuildingMaterial(gameObject);
 			}
 			break;
 		case UiNames.VALIDIATE_EDITION_BUTTON:

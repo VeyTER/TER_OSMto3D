@@ -105,6 +105,7 @@ public class UiNames {
 
 	public const string COLORS_GRID = "ColorsGridPanel";
 
-
 	public const string SKIN_SLIDER = "SkinSlider";
+
+	public const string MATERIAL_ITEM_BUTTON = "MaterialButton";
 }

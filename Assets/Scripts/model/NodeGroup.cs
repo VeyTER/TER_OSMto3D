@@ -30,6 +30,9 @@ public class NodeGroup {
 	private int nbWay;
 	private int maxSpeed;
 
+	private Material customMaterial;
+	private Color overlayColor;
+
 	//constructeur
 	public NodeGroup(long id) {
 		this.id = id;
@@ -57,10 +60,13 @@ public class NodeGroup {
 
 		this.nbWay = 1;
 		this.maxSpeed = 50;
+
+		this.customMaterial = null;
+		this.overlayColor = Color.white;
 	}
 
 	//Surcharge du constructeur
-	public NodeGroup(long id, string name, string country, string region, string town, string district, string roofType, int roofAngle, int nbWay, int maxSpeed) {
+	public NodeGroup(long id, string name, string country, string region, string town, string district, string roofType, int roofAngle, int nbWay, int maxSpeed, Material customMaterial, Color overlayColor) {
 		this.id = id;
 		this.name = name;
 
@@ -86,6 +92,9 @@ public class NodeGroup {
 
 		this.nbWay = nbWay;
 		this.maxSpeed = maxSpeed;
+
+		this.customMaterial = customMaterial;
+		this.overlayColor = overlayColor;
 	}
 
 	// ajoute une node à l'ensemble 
@@ -515,5 +524,15 @@ public class NodeGroup {
 	public int MaxSpeed {
 		get { return maxSpeed; }
 		set { maxSpeed = value; }
+	}
+
+	public Material CustomMaterial {
+		get { return customMaterial; }
+		set { customMaterial = value; }
+	}
+
+	public Color OverlayColor {
+		get { return overlayColor; }
+		set { overlayColor = value; }
 	}
 }

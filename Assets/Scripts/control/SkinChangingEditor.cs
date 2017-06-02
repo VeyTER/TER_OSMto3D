@@ -6,7 +6,8 @@ using System.IO;
 using System.Collections.Generic;
 
 public class SkinChangingEditor : ObjectEditor {
-	private int selectedBuildingStartHeight;
+	private Material selectedBuildingStartMaterial;
+	private Color selectedBuildingStartColor;
 
 	private GameObject skinPanel;
 	private SkinPanelController skinPanelController;
@@ -14,11 +15,14 @@ public class SkinChangingEditor : ObjectEditor {
 	private GameObject materialsPanel;
 	private GameObject colorsPanel;
 
-	private FloorColorController topFloorColorController;
-	private FloorColorController bottomFloorColorController;
+	private GameObject materialsGridPanel;
+	private GameObject colorsGridPanel;
+
+	private Dictionary<int, Material> instanceIdToMaterialTable;
 
 	public SkinChangingEditor(GameObject skinPanel) {
-		this.selectedBuildingStartHeight = -1;
+		this.selectedBuildingStartMaterial = null;
+		this.selectedBuildingStartColor = Color.white;
 
 		this.skinPanel = skinPanel;
 		this.skinPanel.AddComponent<SkinPanelController>();
@@ -33,6 +37,16 @@ public class SkinChangingEditor : ObjectEditor {
 		Vector3 panelPosition = this.skinPanel.transform.localPosition;
 		this.skinPanel.transform.localPosition = new Vector3(this.skinPanelController.StartPosX, panelPosition.y, panelPosition.z);
 
+		this.instanceIdToMaterialTable = new Dictionary<int, Material>();
+
+		Transform skinSliderTransform = skinPanel.transform.GetChild(0);
+
+		Transform materialsContainerPanelTransform = skinSliderTransform.GetChild(0);
+		materialsGridPanel = materialsContainerPanelTransform.GetChild(0).gameObject;
+
+		Transform colorsContainerPanelTransform = skinSliderTransform.GetChild(1);
+		colorsGridPanel = colorsContainerPanelTransform.GetChild(0).gameObject;
+
 		this.BuildMaterialsItems();
 	}
 
@@ -40,127 +54,177 @@ public class SkinChangingEditor : ObjectEditor {
 		List<MaterialData> materialsData = this.MaterialsDetails();
 
 		foreach(MaterialData materialData in materialsData) {
-			Transform skinSliderTransform = skinPanel.transform.GetChild(0);
-			Transform materialsContainerPanelTransform = skinSliderTransform.GetChild(0);
+			GameObject materialItem = AddMaterialItem(materialData);
+			this.AddDecorations(materialItem);
+			GameObject body = this.AddBody(materialData, materialItem);
 
-			Transform materialsGridPanelTransform = materialsContainerPanelTransform.GetChild(0);
-
-			GameObject materialItem = new GameObject();
-			materialItem.transform.SetParent(materialsGridPanelTransform.transform, false);
-
-			RectTransform itemTransform = materialItem.AddComponent<RectTransform>();
-			itemTransform.sizeDelta = new Vector2(60, 60);
-
-			Button itemButton = materialItem.AddComponent<Button>();
-
-
-			GameObject decoration = new GameObject("Decorations");
-			decoration.transform.SetParent(materialItem.transform, false);
-			decoration.transform.localPosition = new Vector3(0, 0, -1);
-
-			RectTransform decorationTransform = decoration.AddComponent<RectTransform>();
-			decorationTransform.sizeDelta = new Vector2(0, 0);
-			decorationTransform.anchorMin = new Vector2(0, 0);
-			decorationTransform.anchorMax = new Vector2(1, 1);
-			decorationTransform.pivot = new Vector2(0.5F, 0.5F);
-
-
-			GameObject leftRect = new GameObject("LeftDecoration");
-			leftRect.transform.SetParent(decoration.transform, false);
-			leftRect.transform.localPosition = new Vector3(-23.8F, -8.6F, 13.6F);
-			leftRect.transform.rotation = Quaternion.Euler(0, -130, -30);
-			leftRect.transform.localScale = new Vector3(0.549217F, 1, 1);
-
-			RectTransform leftRectTransform = leftRect.AddComponent<RectTransform>();
-			leftRectTransform.sizeDelta = new Vector2(75.2F, 14.5F);
-			leftRectTransform.anchorMin = new Vector2(0, 1);
-			leftRectTransform.anchorMax = new Vector2(0, 1);
-			leftRectTransform.anchoredPosition = new Vector2(6.2F, -38.6F);
-			leftRectTransform.pivot = new Vector2(0.5F, 0.5F);
-
-			Image leftRectImage = leftRect.AddComponent<Image>();
-			leftRectImage.color = ThemeColors.DARK_BLUE;
-
-
-			GameObject rightRect = new GameObject("RightDecoration");
-			rightRect.transform.SetParent(decoration.transform, false);
-			rightRect.transform.localPosition = new Vector3(23.7F, -8.6F, 13.6F);
-			rightRect.transform.rotation = Quaternion.Euler(0, -130, 30);
-			rightRect.transform.localScale = new Vector3(0.549217F, 1, 1);
-
-			RectTransform rightRectTransform = rightRect.AddComponent<RectTransform>();
-			rightRectTransform.sizeDelta = new Vector2(75.2F, 14.5F);
-			rightRectTransform.anchorMin = new Vector2(0, 1);
-			rightRectTransform.anchorMax = new Vector2(0, 1);
-			rightRectTransform.anchoredPosition = new Vector2(53.7F, -38.6F);
-			rightRectTransform.pivot = new Vector2(0.5F, 0.5F);
-
-			Image rightRectImage = rightRect.AddComponent<Image>();
-			rightRectImage.color = ThemeColors.DARK_BLUE;
-
-
-			GameObject body = new GameObject("Body");
-			body.transform.SetParent(materialItem.transform, false);
-			body.transform.localPosition = new Vector3(0, 0, -1);
-
-			RectTransform bodyTransform = body.AddComponent<RectTransform>();
-			bodyTransform.sizeDelta = new Vector2(0, 0);
-			bodyTransform.anchorMin = new Vector2(0, 0);
-			bodyTransform.anchorMax = new Vector2(1, 1);
-			bodyTransform.pivot = new Vector2(0.5F, 0.5F);
-
-			Image bodyImage = body.AddComponent<Image>();
-
-			Sprite textureSprite = Resources.Load<Sprite>(materialData.SourceTexturePath);
-			Debug.Log((textureSprite != null) + "  " + materialData.SourceTexturePath);
-			bodyImage.sprite = textureSprite;
-
-			var test = System.IO.Path.AltDirectorySeparatorChar;
-
-			GameObject label = new GameObject("MaterialLabel");
-			label.transform.SetParent(body.transform, false);
-			label.transform.localPosition = new Vector3(0, -19.7F, -1);
-
-			RectTransform labelTransform = label.AddComponent<RectTransform>();
-			labelTransform.sizeDelta = new Vector2(75.2F, 14.5F);
-			labelTransform.anchorMin = new Vector2(0, 1);
-			labelTransform.anchorMax = new Vector2(0, 1);
-			labelTransform.anchoredPosition = new Vector2(30, -49.7F);
-			labelTransform.pivot = new Vector2(0.5F, 0.5F);
-
-			Image labelImage = label.AddComponent<Image>();
-			labelImage.color = ThemeColors.LIGHT_BLUE;
-
-			Shadow labelTopShadow = label.AddComponent<Shadow>();
-			labelTopShadow.effectDistance = new Vector2(0.71F, 1.15F);
-			labelTopShadow.effectColor = new Color(0, 0, 0, 60 / 255F);
-
-			Shadow labelBottomShadow = label.AddComponent<Shadow>();
-			labelBottomShadow.effectDistance = new Vector2(0.77F, -1);
-			labelBottomShadow.effectColor = new Color(0, 0, 0, 60 / 255F);
-
-			GameObject title = new GameObject("Title");
-			title.transform.SetParent(label.transform, false);
-
-			RectTransform titleTransform = title.AddComponent<RectTransform>();
-			titleTransform.sizeDelta = new Vector2(0, 0);
-			titleTransform.anchorMin = new Vector2(0, 0);
-			titleTransform.anchorMax = new Vector2(1, 1);
-			titleTransform.anchoredPosition = new Vector3(0, 0);
-			titleTransform.pivot = new Vector2(0.5F, 0.5F);
-
-			Font arialFont = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-
-			Text titleText = title.AddComponent<Text>();
-			titleText.text = materialData.ReadableName;
-			titleText.font = arialFont;
-			titleText.fontSize = 10;
-			titleText.color = Color.black;
-			titleText.alignment = TextAnchor.MiddleCenter;
-
-
+			Button itemButton = materialItem.GetComponent<Button>();
+			Image bodyImage = body.GetComponent<Image>();
 			itemButton.targetGraphic = bodyImage;
 		}
+	}
+
+	private GameObject AddMaterialItem(MaterialData materialData) {
+		GameObject materialItem = new GameObject("MaterialButton_" + materialData.ReadableName);
+		materialItem.transform.SetParent(materialsGridPanel.transform, false);
+
+		RectTransform itemTransform = materialItem.AddComponent<RectTransform>();
+		itemTransform.sizeDelta = new Vector2(60, 60);
+
+		materialItem.AddComponent<Button>();
+
+		materialItem.AddComponent<UiManager>();
+
+		Material targetMaterial = Resources.Load(materialData.TargetMaterialPath) as Material;
+		instanceIdToMaterialTable.Add(materialItem.GetInstanceID(), targetMaterial);
+
+		return materialItem;
+	}
+
+	private GameObject AddDecorations(GameObject materialItem) {
+		GameObject decorations = new GameObject("Decorations");
+		decorations.transform.SetParent(materialItem.transform, false);
+		decorations.transform.localPosition = new Vector3(0, 0, -1);
+
+		RectTransform decorationsTransform = decorations.AddComponent<RectTransform>();
+		decorationsTransform.sizeDelta = new Vector2(0, 0);
+		decorationsTransform.anchorMin = new Vector2(0, 0);
+		decorationsTransform.anchorMax = new Vector2(1, 1);
+		decorationsTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		this.AddLeftRect(decorations);
+		this.AddRightRect(decorations);
+		this.AddSelectionBackground(decorations);
+
+		return decorations;
+	}
+
+	private GameObject AddLeftRect(GameObject decoration) {
+		GameObject leftRect = new GameObject("LeftDecoration");
+		leftRect.transform.SetParent(decoration.transform, false);
+		leftRect.transform.localPosition = new Vector3(-23.8F, -8.6F, 13.6F);
+		leftRect.transform.rotation = Quaternion.Euler(0, -130, -30);
+		leftRect.transform.localScale = new Vector3(0.549217F, 1, 1);
+
+		RectTransform leftRectTransform = leftRect.AddComponent<RectTransform>();
+		leftRectTransform.sizeDelta = new Vector2(75.2F, 14.5F);
+		leftRectTransform.anchorMin = new Vector2(0, 1);
+		leftRectTransform.anchorMax = new Vector2(0, 1);
+		leftRectTransform.anchoredPosition = new Vector2(6.2F, -38.6F);
+		leftRectTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image leftRectImage = leftRect.AddComponent<Image>();
+		leftRectImage.color = ThemeColors.DARK_BLUE;
+
+		return leftRect;
+	}
+
+	private GameObject AddRightRect(GameObject decoration) {
+		GameObject rightRect = new GameObject("RightDecoration");
+		rightRect.transform.SetParent(decoration.transform, false);
+		rightRect.transform.localPosition = new Vector3(23.7F, -8.6F, 13.6F);
+		rightRect.transform.rotation = Quaternion.Euler(0, -130, 30);
+		rightRect.transform.localScale = new Vector3(0.549217F, 1, 1);
+
+		RectTransform rightRectTransform = rightRect.AddComponent<RectTransform>();
+		rightRectTransform.sizeDelta = new Vector2(75.2F, 14.5F);
+		rightRectTransform.anchorMin = new Vector2(0, 1);
+		rightRectTransform.anchorMax = new Vector2(0, 1);
+		rightRectTransform.anchoredPosition = new Vector2(53.7F, -38.6F);
+		rightRectTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image rightRectImage = rightRect.AddComponent<Image>();
+		rightRectImage.color = ThemeColors.DARK_BLUE;
+
+		return rightRect;
+	}
+
+	private GameObject AddSelectionBackground(GameObject decoration) {
+		GameObject backgroundRect = new GameObject("SelectionBackground");
+		backgroundRect.transform.SetParent(decoration.transform, false);
+
+		RectTransform backgroundRectTransform = backgroundRect.AddComponent<RectTransform>();
+		backgroundRectTransform.sizeDelta = new Vector2(4.5F, 4.5F);
+		backgroundRectTransform.anchorMin = new Vector2(0, 0);
+		backgroundRectTransform.anchorMax = new Vector2(1, 1);
+		backgroundRectTransform.anchoredPosition = new Vector2(0, 0);
+		backgroundRectTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image backgroundRectImage = backgroundRect.AddComponent<Image>();
+		backgroundRectImage.color = ThemeColors.LIGHT_BLUE;
+		backgroundRectImage.enabled = false;
+
+		return backgroundRect;
+	}
+
+	private GameObject AddBody(MaterialData materialData, GameObject materialItem) {
+		GameObject body = new GameObject("Body");
+		body.transform.SetParent(materialItem.transform, false);
+		body.transform.localPosition = new Vector3(0, 0, -1);
+
+		RectTransform bodyTransform = body.AddComponent<RectTransform>();
+		bodyTransform.sizeDelta = new Vector2(0, 0);
+		bodyTransform.anchorMin = new Vector2(0, 0);
+		bodyTransform.anchorMax = new Vector2(1, 1);
+		bodyTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image bodyImage = body.AddComponent<Image>();
+		Sprite textureSprite = Resources.Load<Sprite>(materialData.SourceTexturePath);
+		bodyImage.sprite = textureSprite;
+
+		GameObject label = this.AddLabel(body);
+		this.AddTitle(materialData, label);
+
+		return body;
+	}
+
+	private GameObject AddLabel(GameObject body) {
+		GameObject label = new GameObject("MaterialLabel");
+		label.transform.SetParent(body.transform, false);
+		label.transform.localPosition = new Vector3(0, -19.7F, -1);
+
+		RectTransform labelTransform = label.AddComponent<RectTransform>();
+		labelTransform.sizeDelta = new Vector2(75.2F, 14.5F);
+		labelTransform.anchorMin = new Vector2(0, 1);
+		labelTransform.anchorMax = new Vector2(0, 1);
+		labelTransform.anchoredPosition = new Vector2(30, -49.7F);
+		labelTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image labelImage = label.AddComponent<Image>();
+		labelImage.color = ThemeColors.LIGHT_BLUE;
+
+		Shadow labelTopShadow = label.AddComponent<Shadow>();
+		labelTopShadow.effectDistance = new Vector2(0.71F, 1.15F);
+		labelTopShadow.effectColor = new Color(0, 0, 0, 60 / 255F);
+
+		Shadow labelBottomShadow = label.AddComponent<Shadow>();
+		labelBottomShadow.effectDistance = new Vector2(0.77F, -1);
+		labelBottomShadow.effectColor = new Color(0, 0, 0, 60 / 255F);
+
+		return label;
+	}
+
+	private GameObject AddTitle(MaterialData materialData, GameObject label) {
+		GameObject title = new GameObject("Title");
+		title.transform.SetParent(label.transform, false);
+
+		RectTransform titleTransform = title.AddComponent<RectTransform>();
+		titleTransform.sizeDelta = new Vector2(0, 0);
+		titleTransform.anchorMin = new Vector2(0, 0);
+		titleTransform.anchorMax = new Vector2(1, 1);
+		titleTransform.anchoredPosition = new Vector3(0, 0);
+		titleTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Font arialFont = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+
+		Text titleText = title.AddComponent<Text>();
+		titleText.text = materialData.ReadableName;
+		titleText.font = arialFont;
+		titleText.fontSize = 10;
+		titleText.color = Color.black;
+		titleText.alignment = TextAnchor.MiddleCenter;
+
+		return title;
 	}
 
 	public void BuildColorsItems() {
@@ -187,9 +251,24 @@ public class SkinChangingEditor : ObjectEditor {
 	public void InitializeSkinChangingMode() {
 		skinPanel.SetActive(true);
 		skinPanelController.OpenPanel(null);
+
+		GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
+		MeshRenderer meshRenderer = firstWall.GetComponent<MeshRenderer>();
+		selectedBuildingStartMaterial = meshRenderer.materials[0];
+
+		for (int i = 0; i < materialsGridPanel.transform.childCount; i++) {
+			GameObject itemButton = materialsGridPanel.transform.GetChild(i).gameObject;
+			Material itemMaterial = instanceIdToMaterialTable[itemButton.GetInstanceID()];
+
+			string startMaterialName = selectedBuildingStartMaterial.name.Replace(" (Instance)", "");
+			if (itemMaterial.name.Equals(startMaterialName)) {
+				this.UpdateMaterialItems(itemButton);
+				break;
+			}
+		}
 	}
 
-	public void UpdateButtons(GameObject buttonToLight) {
+	public void SwitchGrid(GameObject buttonToLight) {
 		if (skinPanelController.IsMotionLess()) {
 			GameObject buttonToDark = null;
 			if (buttonToLight.name.Equals(UiNames.MATERIALS_BUTTON))
@@ -214,12 +293,44 @@ public class SkinChangingEditor : ObjectEditor {
 		}
 	}
 
+	public void UpdateMaterialItems(GameObject selectedButton) {
+		foreach (Transform materialButtonTransform in selectedButton.transform.parent.transform) {
+			Transform decorationsTrasform = materialButtonTransform.transform.GetChild(0);
+
+			GameObject body = materialButtonTransform.transform.GetChild(1).gameObject;
+			Image bodyImage = body.GetComponent<Image>();
+
+			GameObject selectionBackground = decorationsTrasform.GetChild(2).gameObject;
+			Image selectionBackgroundImage = selectionBackground.GetComponent<Image>();
+
+			bool isSelected = materialButtonTransform.gameObject.GetInstanceID() == selectedButton.GetInstanceID();
+
+			if (isSelected) {
+				selectionBackgroundImage.enabled = true;
+
+				Color selectionOverlay = ThemeColors.LIGHT_BLUE;
+				selectionOverlay.a = 0.5F;
+				bodyImage.color = selectionOverlay;
+			} else {
+				selectionBackgroundImage.enabled = false;
+				bodyImage.color = Color.white;
+			}
+		}
+	}
+
+	public void ChangeBuildingMaterial(GameObject sourceButton) {
+		Material newMaterial = instanceIdToMaterialTable[sourceButton.GetInstanceID()];
+		buildingTools.ReplaceMaterial(selectedBuilding, newMaterial);
+	}
+
 	public override void ValidateTransform() {
-		throw new NotImplementedException();
+		if (!transformedObjects.Contains(selectedBuilding))
+			transformedObjects.Add(selectedBuilding);
 	}
 
 	public override void CancelTransform() {
-		throw new NotImplementedException();
+		GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
+		buildingTools.ReplaceMaterial(selectedBuilding, selectedBuildingStartMaterial);
 	}
 
 	public GameObject SkinPanel {
@@ -232,3 +343,12 @@ public class SkinChangingEditor : ObjectEditor {
 		set { skinPanelController = value; }
 	}
 }
+
+/*
+
+foreach (Transform wall in selectedBuilding.transform) {
+	MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
+	meshRenderer.materials[0].color = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+}
+
+*/

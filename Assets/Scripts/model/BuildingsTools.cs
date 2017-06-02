@@ -72,13 +72,36 @@ public class BuildingsTools {
 		return BuildingsToolsInstanceHolder.instance;
 	}
 
+	public void ReplaceMaterial(GameObject building, Material newMaterial) {
+		foreach (Transform wallTransform in building.transform) {
+			Renderer meshRenderer = wallTransform.GetComponent<Renderer>();
+
+			if (meshRenderer != null) {
+				meshRenderer.materials = new Material[] {
+					newMaterial,
+					//meshRenderer.materials[1]
+				};
+			}
+		}
+	}
+
+	public void ReplaceColor(GameObject building, Color newColor) {
+		foreach (Transform wallTransform in building.transform) {
+			Renderer meshRenderer = wallTransform.GetComponent<Renderer>();
+
+			if (meshRenderer != null) {
+				Material mainMaterial = meshRenderer.materials[0];
+				mainMaterial.color = newColor;
+			}
+		}
+	}
 
 	/// <summary>
 	/// 	Ajoute une couche de couleur à un bâtiment pour le marquer comme sélectionné.
 	/// </summary>
 	/// <param name="building">Bâtiment à colorier.</param>
 	public void ColorAsSelected(GameObject building) {
-		Material wallMaterial = Resources.Load (Materials.WALL) as Material;
+		Material wallMaterial = Resources.Load (Materials.WALL_DEFAULT) as Material;
 		Material selectedElementMaterial = Resources.Load (Materials.BLUE_OVERLAY) as Material;
 
 		// Supperposition du matériau de base avec celui de la couleur de sélection pour le bâtiment sélectionné
@@ -88,7 +111,8 @@ public class BuildingsTools {
 				// Ecrasement de stock de matériaux du mur avec un nouveau stock contenant son matériau de base et le
 				// matériau de sélection
 				meshRenderer.materials = new Material[] {
-					wallMaterial,
+					meshRenderer.materials[0],
+					//meshRenderer.materials[1],
 					selectedElementMaterial
 				};
 			}
@@ -101,7 +125,7 @@ public class BuildingsTools {
 	/// </summary>
 	/// <param name="building">Bâtiment à colorier.</param>
 	public void DiscolorAsSelected(GameObject building) {
-		Material wallMaterial = Resources.Load(Materials.WALL) as Material;
+		Material wallMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
 
 		// Supperposition du matériau de base avec celui de la couleur de sélection pour le bâtiment sélectionné
 		foreach (Transform wallTransform in building.transform) {
@@ -110,7 +134,8 @@ public class BuildingsTools {
 				// Ecrasement de stock de matériaux du mur avec un nouveau stock contenant son matériau de base et le
 				// matériau de sélection
 				meshRenderer.materials = new Material[] {
-					wallMaterial,
+					meshRenderer.materials[0],
+					//meshRenderer.materials[1],
 				};
 			}
 		}

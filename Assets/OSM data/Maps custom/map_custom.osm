@@ -185,4 +185,7 @@
     <nd index="18" ref="755802414" lat="43.60551171875" lon="1.44327355957031" />
     <nd index="19" ref="755802383" lat="43.605578125" lon="1.44325952148438" />
   </building>
+  <building>
+    <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="6" roofangle="15" rooftype="pitched" />
+  </building>
 </earth>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 /// <summary>
 /// 	Contient une suite d'outils permettant la construction des différents objets d'une ville.
@@ -241,6 +242,9 @@ public class ObjectBuilder {
 					GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
 					wall.tag = NodeTags.WALL_TAG;
 
+					Image wallImage = wall.AddComponent<Image>();
+					wallImage.color = new Color(1, 0, 0, 0.5F);
+
 					// Paramétrage du mur 3D
 					int nbFloor = ngp.NbFloor;
 					wall.transform.localScale = new Vector3((float) length + Dimensions.WALL_THICKNESS * 1.5F, Dimensions.FLOOR_HEIGHT * nbFloor, Dimensions.WALL_THICKNESS);
@@ -255,7 +259,7 @@ public class ObjectBuilder {
 					wall.AddComponent<UiManager>();
 
 					// Ajout du mur au bâtiment
-					wall.transform.parent = wallGroup.transform;
+					wall.transform.SetParent(wallGroup.transform);
 
 					// Modification de l'angle en fonction de l'ordre des points
 					if((currentNode.Latitude > nextNode.Latitude && currentNode.Longitude < nextNode.Longitude) 
@@ -273,7 +277,7 @@ public class ObjectBuilder {
 
 					// Affectation du matériau au mur pour lui donner la texture voulue
 					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
-					meshRenderer.material = Resources.Load (Materials.WALL) as Material;
+					meshRenderer.material = Resources.Load (Materials.WALL_DEFAULT) as Material;
 				}
 
 				// Ajout d'une entrée dans la table de correspondances
