@@ -108,4 +108,5 @@ public class UiNames {
 	public const string SKIN_SLIDER = "SkinSlider";
 
 	public const string MATERIAL_ITEM_BUTTON = "MaterialButton";
+	public const string COLOR_ITEM_BUTTON = "ColorButton";
 }

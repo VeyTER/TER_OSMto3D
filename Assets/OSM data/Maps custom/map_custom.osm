@@ -188,4 +188,21 @@
   <building>
     <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="6" roofangle="15" rooftype="pitched" />
   </building>
+  <building>
+    <info id="36707002" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+    <nd index="0" ref="426691290" lat="43.6050625" lon="1.44325634765625" />
+    <nd index="1" ref="426691305" lat="43.6050390625" lon="1.44337329101562" />
+    <nd index="2" ref="426691307" lat="43.6049765625" lon="1.44335766601563" />
+    <nd index="3" ref="426691309" lat="43.604953125" lon="1.44346118164063" />
+    <nd index="4" ref="426691311" lat="43.604921875" lon="1.44344750976563" />
+    <nd index="5" ref="426691313" lat="43.604890625" lon="1.44356201171875" />
+    <nd index="6" ref="426691315" lat="43.6048515625" lon="1.44353662109375" />
+    <nd index="7" ref="426691318" lat="43.60484375" lon="1.44352319335938" />
+    <nd index="8" ref="426691320" lat="43.6048359375" lon="1.44348315429687" />
+    <nd index="9" ref="2070906865" lat="43.6048359375" lon="1.44347631835938" />
+    <nd index="10" ref="426691277" lat="43.6048125" lon="1.44330224609375" />
+    <nd index="11" ref="426691285" lat="43.6049921875" lon="1.44330200195313" />
+    <nd index="12" ref="426691288" lat="43.6049921875" lon="1.44327368164063" />
+    <nd index="13" ref="426691290" lat="43.6050625" lon="1.44325634765625" />
+  </building>
 </earth>

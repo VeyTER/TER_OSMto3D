@@ -346,6 +346,12 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				skinChangingEditor.ChangeBuildingMaterial(gameObject);
 			}
 			break;
+		case UiNames.COLOR_ITEM_BUTTON:
+			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
+				skinChangingEditor.UpdateColorItems(gameObject);
+				skinChangingEditor.ChangeBuildingColor(gameObject);
+			}
+			break;
 		case UiNames.VALIDIATE_EDITION_BUTTON:
 			// Validation d'une transformation si le controlleur de modification est bien en cours de modification
 			if (editionController.Transforming ()) {

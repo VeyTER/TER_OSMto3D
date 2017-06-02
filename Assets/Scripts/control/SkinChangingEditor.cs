@@ -18,7 +18,8 @@ public class SkinChangingEditor : ObjectEditor {
 	private GameObject materialsGridPanel;
 	private GameObject colorsGridPanel;
 
-	private Dictionary<int, Material> instanceIdToMaterialTable;
+	private Dictionary<int, Material> buttonIdToMaterialTable;
+	private Dictionary<int, Color> buttonIdToColorTable;
 
 	public SkinChangingEditor(GameObject skinPanel) {
 		this.selectedBuildingStartMaterial = null;
@@ -37,7 +38,8 @@ public class SkinChangingEditor : ObjectEditor {
 		Vector3 panelPosition = this.skinPanel.transform.localPosition;
 		this.skinPanel.transform.localPosition = new Vector3(this.skinPanelController.StartPosX, panelPosition.y, panelPosition.z);
 
-		this.instanceIdToMaterialTable = new Dictionary<int, Material>();
+		this.buttonIdToMaterialTable = new Dictionary<int, Material>();
+		this.buttonIdToColorTable = new Dictionary<int, Color>();
 
 		Transform skinSliderTransform = skinPanel.transform.GetChild(0);
 
@@ -48,6 +50,7 @@ public class SkinChangingEditor : ObjectEditor {
 		colorsGridPanel = colorsContainerPanelTransform.GetChild(0).gameObject;
 
 		this.BuildMaterialsItems();
+		this.BuildColorsItems();
 	}
 
 	public void BuildMaterialsItems() {
@@ -76,7 +79,7 @@ public class SkinChangingEditor : ObjectEditor {
 		materialItem.AddComponent<UiManager>();
 
 		Material targetMaterial = Resources.Load(materialData.TargetMaterialPath) as Material;
-		instanceIdToMaterialTable.Add(materialItem.GetInstanceID(), targetMaterial);
+		buttonIdToMaterialTable.Add(materialItem.GetInstanceID(), targetMaterial);
 
 		return materialItem;
 	}
@@ -139,24 +142,6 @@ public class SkinChangingEditor : ObjectEditor {
 		return rightRect;
 	}
 
-	private GameObject AddSelectionBackground(GameObject decoration) {
-		GameObject backgroundRect = new GameObject("SelectionBackground");
-		backgroundRect.transform.SetParent(decoration.transform, false);
-
-		RectTransform backgroundRectTransform = backgroundRect.AddComponent<RectTransform>();
-		backgroundRectTransform.sizeDelta = new Vector2(4.5F, 4.5F);
-		backgroundRectTransform.anchorMin = new Vector2(0, 0);
-		backgroundRectTransform.anchorMax = new Vector2(1, 1);
-		backgroundRectTransform.anchoredPosition = new Vector2(0, 0);
-		backgroundRectTransform.pivot = new Vector2(0.5F, 0.5F);
-
-		Image backgroundRectImage = backgroundRect.AddComponent<Image>();
-		backgroundRectImage.color = ThemeColors.LIGHT_BLUE;
-		backgroundRectImage.enabled = false;
-
-		return backgroundRect;
-	}
-
 	private GameObject AddBody(MaterialData materialData, GameObject materialItem) {
 		GameObject body = new GameObject("Body");
 		body.transform.SetParent(materialItem.transform, false);
@@ -191,7 +176,7 @@ public class SkinChangingEditor : ObjectEditor {
 		labelTransform.pivot = new Vector2(0.5F, 0.5F);
 
 		Image labelImage = label.AddComponent<Image>();
-		labelImage.color = ThemeColors.LIGHT_BLUE;
+		labelImage.color = ThemeColors.BRIGHT_BLUE;
 
 		Shadow labelTopShadow = label.AddComponent<Shadow>();
 		labelTopShadow.effectDistance = new Vector2(0.71F, 1.15F);
@@ -228,7 +213,67 @@ public class SkinChangingEditor : ObjectEditor {
 	}
 
 	public void BuildColorsItems() {
+		int nbLevels = 4;
 
+		for (int r = 0; r < nbLevels; r++) {
+			for (int v = 0; v < nbLevels; v++) {
+				for (int b = 0; b < nbLevels; b++) {
+					GameObject colorItem = new GameObject(UiNames.COLOR_ITEM_BUTTON);
+					colorItem.transform.SetParent(colorsGridPanel.transform, false);
+
+					Color color = new Color(r / (nbLevels * 1F), v / (nbLevels * 1F), b / (nbLevels * 1F));
+
+					colorItem.AddComponent<Image>();
+
+					Button supportButton = colorItem.AddComponent<Button>();
+
+					colorItem.AddComponent<UiManager>();
+
+					this.AddSelectionBackground(colorItem);
+					GameObject colorSupport = this.AddColorSupport(colorItem, color);
+
+					Image supportImage = colorSupport.GetComponent<Image>();
+					supportButton.targetGraphic = supportImage;
+
+					buttonIdToColorTable.Add(colorItem.GetInstanceID(), color);
+				}
+			}
+		}
+	}
+
+	private GameObject AddColorSupport(GameObject colorItem, Color color) {
+		GameObject colorSupport = new GameObject("ColorSupport");
+		colorSupport.transform.SetParent(colorItem.transform, false);
+
+		RectTransform colorSupportTransform = colorSupport.AddComponent<RectTransform>();
+		colorSupportTransform.sizeDelta = new Vector2(0, 0);
+		colorSupportTransform.anchorMin = new Vector2(0, 0);
+		colorSupportTransform.anchorMax = new Vector2(1, 1);
+		colorSupportTransform.anchoredPosition = new Vector2(0, 0);
+		colorSupportTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image supportImage = colorSupport.AddComponent<Image>();
+		supportImage.color = color;
+
+		return colorSupport;
+	}
+
+	private GameObject AddSelectionBackground(GameObject colorItem) {
+		GameObject backgroundRect = new GameObject("SelectionBackground");
+		backgroundRect.transform.SetParent(colorItem.transform, false);
+
+		RectTransform backgroundRectTransform = backgroundRect.AddComponent<RectTransform>();
+		backgroundRectTransform.sizeDelta = new Vector2(4.5F, 4.5F);
+		backgroundRectTransform.anchorMin = new Vector2(0, 0);
+		backgroundRectTransform.anchorMax = new Vector2(1, 1);
+		backgroundRectTransform.anchoredPosition = new Vector2(0, 0);
+		backgroundRectTransform.pivot = new Vector2(0.5F, 0.5F);
+
+		Image backgroundRectImage = backgroundRect.AddComponent<Image>();
+		backgroundRectImage.color = ThemeColors.BRIGHT_BLUE;
+		backgroundRectImage.enabled = false;
+
+		return backgroundRect;
 	}
 
 	private List<MaterialData> MaterialsDetails() {
@@ -258,7 +303,7 @@ public class SkinChangingEditor : ObjectEditor {
 
 		for (int i = 0; i < materialsGridPanel.transform.childCount; i++) {
 			GameObject itemButton = materialsGridPanel.transform.GetChild(i).gameObject;
-			Material itemMaterial = instanceIdToMaterialTable[itemButton.GetInstanceID()];
+			Material itemMaterial = buttonIdToMaterialTable[itemButton.GetInstanceID()];
 
 			string startMaterialName = selectedBuildingStartMaterial.name.Replace(" (Instance)", "");
 			if (itemMaterial.name.Equals(startMaterialName)) {
@@ -308,7 +353,7 @@ public class SkinChangingEditor : ObjectEditor {
 			if (isSelected) {
 				selectionBackgroundImage.enabled = true;
 
-				Color selectionOverlay = ThemeColors.LIGHT_BLUE;
+				Color selectionOverlay = ThemeColors.BRIGHT_BLUE;
 				selectionOverlay.a = 0.5F;
 				bodyImage.color = selectionOverlay;
 			} else {
@@ -318,9 +363,38 @@ public class SkinChangingEditor : ObjectEditor {
 		}
 	}
 
+	public void UpdateColorItems(GameObject selectedButton) {
+		Debug.Log("ok1");
+
+		foreach (Transform colorButtonTransform in selectedButton.transform.parent.transform) {
+			GameObject colorSupport = colorButtonTransform.transform.GetChild(1).gameObject;
+
+			GameObject selectionBackground = colorButtonTransform.GetChild(0).gameObject;
+			Image selectionBackgroundImage = selectionBackground.GetComponent<Image>();
+
+			bool isSelected = colorButtonTransform.gameObject.GetInstanceID() == selectedButton.GetInstanceID();
+
+			if (isSelected) {
+				selectionBackgroundImage.enabled = true;
+
+				Color selectionOverlay = ThemeColors.BRIGHT_BLUE;
+				selectionOverlay.a = 0.5F;
+			} else {
+				selectionBackgroundImage.enabled = false;
+			}
+		}
+	}
+
 	public void ChangeBuildingMaterial(GameObject sourceButton) {
-		Material newMaterial = instanceIdToMaterialTable[sourceButton.GetInstanceID()];
+		Material newMaterial = buttonIdToMaterialTable[sourceButton.GetInstanceID()];
 		buildingTools.ReplaceMaterial(selectedBuilding, newMaterial);
+	}
+
+	public void ChangeBuildingColor(GameObject sourceButton) {
+		Debug.Log("ok2");
+
+		Color newColor = buttonIdToColorTable[sourceButton.GetInstanceID()];
+		buildingTools.ReplaceColor(selectedBuilding, newColor);
 	}
 
 	public override void ValidateTransform() {
