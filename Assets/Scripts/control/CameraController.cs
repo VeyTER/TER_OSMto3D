@@ -25,10 +25,11 @@ public class CameraController : MonoBehaviour {
 	/// <summary>
 	/// 	Les différents états dans laquelle peut se trouver la caméra (détaillés dans la description de la classe).
 	/// </summary>
-	public enum CameraStates { FREE, FLYING, FIXED, CIRCULARY_CONSTRAINED }
+	public enum CameraStates { FREE, FLYING, FIXED, CIRCULARY_CONSTRAINED, TURNING_AROUND }
 
 	/// <summary> Etat courant dans lequel se trouve la caméra. </summary>
 	private CameraStates cameraState;
+	private CameraStates stateBeforeTuringAround;
 
 	private BuildingsTools buildingsTools;
 
@@ -48,6 +49,7 @@ public class CameraController : MonoBehaviour {
 
 	public void Start() {
 		this.cameraState = CameraStates.FREE;
+		this.stateBeforeTuringAround = CameraStates.CIRCULARY_CONSTRAINED;
 
 		this.buildingsTools = BuildingsTools.GetInstance();
 
@@ -87,8 +89,6 @@ public class CameraController : MonoBehaviour {
 
 				if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
 					transform.localPosition = new Vector3(localPosition.x, localPosition.y - 0.1F, localPosition.z);
-
-				// Déplacement horizontal de la caméra
 			} else {
 				float cameraAngle = Mathf.Deg2Rad * transform.rotation.eulerAngles.y;
 				float cosOffset = 0.1F * (float) Math.Cos(cameraAngle);
@@ -224,6 +224,24 @@ public class CameraController : MonoBehaviour {
 			cameraState = CameraStates.FIXED;
 	}
 
+	public IEnumerator TurnAroundBuilding(GameObject building, float verticalOrientation) {
+		stateBeforeTuringAround = cameraState;
+		cameraState = CameraStates.TURNING_AROUND;
+
+		float horizontalOrientation = this.RelativeOrientation(building);
+		while (cameraState == CameraStates.TURNING_AROUND) {
+			horizontalOrientation += 1 * Mathf.Deg2Rad;
+
+			Vector3 cameraCurrentPosition = this.RelativePosition(building, horizontalOrientation, verticalOrientation);
+			Quaternion cameraCurrentRotation = Quaternion.Euler(new Vector3(verticalOrientation, -horizontalOrientation * Mathf.Rad2Deg + 90, 0));
+
+			transform.position = cameraCurrentPosition;
+			transform.rotation = cameraCurrentRotation;
+
+			yield return new WaitForSeconds(0.01F);
+		}
+	}
+
 	private Vector3 RelativePosition(GameObject building, float horizontalOrientation, float verticalOrientation) {
 		Vector3 res = Vector3.zero;
 
@@ -255,8 +273,11 @@ public class CameraController : MonoBehaviour {
 	public float RelativeOrientation(GameObject building) {
 		Vector3 localPosition = transform.localPosition;
 		Vector3 buildingPosition = building.transform.position;
-		float res = (float) (Math.Atan2(buildingPosition.z - localPosition.z, buildingPosition.x - localPosition.x));
-		return res;
+		return (float) (Math.Round(Math.Atan2(buildingPosition.z - localPosition.z, buildingPosition.x - localPosition.x), 3));
+	}
+
+	public void StopTurningAround() {
+		cameraState = stateBeforeTuringAround;
 	}
 
 	public CameraStates CameraState {

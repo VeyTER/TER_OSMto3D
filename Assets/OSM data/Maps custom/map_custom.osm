@@ -186,7 +186,7 @@
     <nd index="19" ref="755802383" lat="43.605578125" lon="1.44325952148438" />
   </building>
   <building>
-    <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="11" roofangle="15" rooftype="pitched" color="1;0.25;0" custmat="ConcreteMonochromatic" />
+    <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="11" roofangle="15" rooftype="pitched" color="0;0.75;0" custmat="BricksBasic" />
   </building>
   <building>
     <info id="36707002" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" color="1;1;0.75" />

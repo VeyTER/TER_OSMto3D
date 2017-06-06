@@ -345,7 +345,9 @@ public class EditionController : MonoBehaviour {
 		skinChangingEditor.Initialize(selectedWall, selectedBuilding);
 		skinChangingEditor.InitializeSkinChangingMode();
 
-		cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, null, 15));
+		cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, () => {
+			cameraController.StartCoroutine( cameraController.TurnAroundBuilding(selectedBuilding, 15) );
+		}, 15));
 		buildingsTools.DiscolorAsSelected(selectedBuilding);
 		editionState = EditionStates.SKIN_CHANGING_MODE;
 	}
@@ -382,6 +384,7 @@ public class EditionController : MonoBehaviour {
 			buildingsTools.ColorAsSelected(selectedBuilding);
 
 			// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
+			cameraController.StopTurningAround();
 			skinChangingEditor.SkinPanelController.ClosePanel(() => {
 				skinChangingEditor.SkinPanel.SetActive(false);
 			});
