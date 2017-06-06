@@ -12,9 +12,6 @@ public class SkinChangingEditor : ObjectEditor {
 	private GameObject skinPanel;
 	private SkinPanelController skinPanelController;
 
-	private GameObject materialsPanel;
-	private GameObject colorsPanel;
-
 	private GameObject materialsGridPanel;
 	private GameObject colorsGridPanel;
 
@@ -215,14 +212,13 @@ public class SkinChangingEditor : ObjectEditor {
 	public void BuildColorsItems() {
 		int nbLevels = 4;
 
-		for (int r = 0; r < nbLevels; r++) {
-			for (int v = 0; v < nbLevels; v++) {
-				for (int b = 0; b < nbLevels; b++) {
+		for (int r = nbLevels; r >= 0; r--) {
+			for (int v = nbLevels; v >= 0; v--) {
+				for (int b = nbLevels; b >= 0; b--) {
 					Color color = new Color(r / (nbLevels * 1F), v / (nbLevels * 1F), b / (nbLevels * 1F));
 
 					GameObject colorItem = new GameObject(UiNames.COLOR_ITEM_BUTTON + "_" + color.ToString());
 					colorItem.transform.SetParent(colorsGridPanel.transform, false);
-
 
 					colorItem.AddComponent<Image>();
 
@@ -254,7 +250,12 @@ public class SkinChangingEditor : ObjectEditor {
 		colorSupportTransform.pivot = new Vector2(0.5F, 0.5F);
 
 		Image supportImage = colorSupport.AddComponent<Image>();
-		supportImage.color = color;
+		if (color.r == 1 && color.g == 1 && color.b == 1) {
+			Sprite noneColorIcon = Resources.Load<Sprite>(Icons.NONE_COLOR);
+			supportImage.sprite = noneColorIcon;
+		} else {
+			supportImage.color = color;
+		}
 
 		return colorSupport;
 	}
@@ -294,23 +295,6 @@ public class SkinChangingEditor : ObjectEditor {
 		return materialsData;
 	}
 
-	private string TextureNameToMaterialName(string textureName) {
-		if (File.Exists(FilePaths.MATERIAL_DETAILS_FILE)) {
-			String detailsFileContent = System.IO.File.ReadAllText(FilePaths.MATERIAL_DETAILS_FILE);
-			String[] lines = detailsFileContent.Split('\n');
-
-			int i = 0;
-			for (; i < lines.Length && lines[i].Split('\t').Equals(textureName); i++);
-
-			if (i < lines.Length)
-				return lines[i].Split('\t')[1];
-			else
-				return null;
-		} else {
-			return null;
-		}
-	}
-
 	public void InitializeSkinChangingMode() {
 		skinPanel.SetActive(true);
 		skinPanelController.OpenPanel(null);
@@ -320,6 +304,10 @@ public class SkinChangingEditor : ObjectEditor {
 		selectedBuildingStartMaterial = meshRenderer.materials[0];
 		selectedBuildingStartColor = selectedBuildingStartMaterial.color;
 
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		nodeGroup.CustomMaterial = meshRenderer.materials[0];
+		nodeGroup.OverlayColor = selectedBuildingStartMaterial.color;
+
 		int i = 0;
 		for (; i < materialsGridPanel.transform.childCount; i++) {
 			GameObject itemButton = materialsGridPanel.transform.GetChild(i).gameObject;
@@ -328,7 +316,8 @@ public class SkinChangingEditor : ObjectEditor {
 			string selectedMaterialName = buttonIdToMaterialTable[itemButton.GetInstanceID()].name;
 
 			string textureName = itemBody.GetComponent<Image>().material.name;
-			string itemMaterialName = this.TextureNameToMaterialName(textureName);
+			string itemMaterialName = nodeGroup.CustomMaterial.name.Replace(" (Instance)", "");
+
 			if (selectedMaterialName.Equals(itemMaterialName)) {
 				this.UpdateMaterialItems(itemButton);
 				break;
@@ -340,15 +329,11 @@ public class SkinChangingEditor : ObjectEditor {
 			GameObject itemButton = colorsGridPanel.transform.GetChild(i).gameObject;
 
 			string selectedColorName = buttonIdToColorTable[itemButton.GetInstanceID()].ToString();
-			string itemColorName = itemButton.name.Replace(UiNames.COLOR_ITEM_BUTTON + "_", "");
+			string itemColorName = nodeGroup.OverlayColor.ToString();
 			if (selectedColorName.Equals(itemColorName)) {
 				this.UpdateColorItems(itemButton);
 				break;
 			}
-		}
-
-		if (i >= colorsGridPanel.transform.childCount) {
-			// TODO Affecter la non couleur
 		}
 	}
 
@@ -425,11 +410,18 @@ public class SkinChangingEditor : ObjectEditor {
 	public void ChangeBuildingMaterial(GameObject sourceButton) {
 		Material newMaterial = buttonIdToMaterialTable[sourceButton.GetInstanceID()];
 		buildingTools.ReplaceMaterial(selectedBuilding, newMaterial);
+
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		buildingTools.ReplaceColor(selectedBuilding, nodeGroup.OverlayColor);
+		nodeGroup.CustomMaterial = newMaterial;
 	}
 
 	public void ChangeBuildingColor(GameObject sourceButton) {
 		Color newColor = buttonIdToColorTable[sourceButton.GetInstanceID()];
 		buildingTools.ReplaceColor(selectedBuilding, newColor);
+
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		nodeGroup.OverlayColor = newColor;
 	}
 
 	public override void ValidateTransform() {
@@ -440,6 +432,11 @@ public class SkinChangingEditor : ObjectEditor {
 	public override void CancelTransform() {
 		GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
 		buildingTools.ReplaceMaterial(selectedBuilding, selectedBuildingStartMaterial);
+		buildingTools.ReplaceColor(selectedBuilding, selectedBuildingStartColor);
+
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		nodeGroup.CustomMaterial = selectedBuildingStartMaterial;
+		nodeGroup.OverlayColor = selectedBuildingStartColor;
 	}
 
 	public GameObject SkinPanel {

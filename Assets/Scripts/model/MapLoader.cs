@@ -335,13 +335,16 @@ public class MapLoader {
 	/// <returns>Tableau contenant les caractéristiques par défaut sur les bâtiments.</returns>
 	/// <param name="infoNode">Noeud XML contenant les informations à extraire dans les attributs du noeud XML.</param>
 	private string[] BuildingInfo(XmlNode infoNode) {
-		string[] res = new string[3];
+		string[] res = new string[5];
 
 		res [0] = this.AttributeValue(infoNode, XmlAttributes.NB_FLOOR);
 		res [1] = this.AttributeValue (infoNode, XmlAttributes.ROOF_ANGLE);
 
 		string roofType = this.AttributeValue (infoNode, XmlAttributes.ROOF_TYPE);
 		res [2] = roofType.Equals("unknown") ? "" : roofType;
+
+		res[3] = this.AttributeValue(infoNode, XmlAttributes.CUSTOM_MATERIAL);
+		res[4] = this.AttributeValue(infoNode, XmlAttributes.OVERLAY_COLOR);
 
 		return res;
 	}
@@ -512,7 +515,6 @@ public class MapLoader {
 	/// 	Document XML ou noeud XML destiné à recevoir les noeuds extraits depuis le document XML source.
 	/// </param>
 	private void TransfertSettingsToResumed (XmlDocument targetDocument, XmlNode sourceParentElement, XmlNode targetParentElement) {
-		
 		foreach (XmlNode mapSettingsNode in sourceParentElement) {
 			XmlNode mapResumedNode = targetDocument.ImportNode (mapSettingsNode, true);
 			if ((!mapSettingsNode.Name.Equals (XmlTags.INFO) || sourceParentElement.Name.Equals(XmlTags.BUILDING)) && !mapResumedNode.Name.Equals (XmlTags.XML)) {
@@ -637,6 +639,73 @@ public class MapLoader {
 
 
 	/// <summary>
+	///		Extrait les données du MapCustom des objets et écrase les caractéristiques des objets correspondant dans le
+	/// 	fichier map_resumed avec celles de la version personnalisées de l'objet.
+	/// </summary>
+	public void LoadCustomData() {
+		string mapResumedFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
+		string mapCustomFilePath = FilePaths.MAPS_CUSTOM_FOLDER + "map_custom.osm";
+
+		XmlDocument mapResumedDocument = new XmlDocument();
+		XmlDocument mapCustomDocument = new XmlDocument();
+
+		if (File.Exists(mapResumedFilePath) && File.Exists(mapCustomFilePath)) {
+			mapResumedDocument.Load(mapResumedFilePath);
+			mapCustomDocument.Load(mapCustomFilePath);
+
+			// Récupération du noeud XML englobant tous les objets terrestres
+			XmlNode earthNode = mapCustomDocument.ChildNodes[1];
+
+			if (earthNode != null) {
+				// Récupération de chaque noeud représentant un fichier personnalisé puis mise à jour du noeud
+				// correspondant dans le fihcier MapResumed
+				XmlNodeList customNodes = earthNode.ChildNodes;
+				foreach (XmlNode customNode in customNodes) {
+					// Extraction du noeud XML d'information de l'objet personnalisé et récupération de son ID
+					XmlNode customInfoNode = customNode.FirstChild;
+					string objectId = this.AttributeValue(customInfoNode, XmlAttributes.ID);
+
+					// Récupération du noeud XML d'information de l'objet du fichier map_resumed correspondant à l'objet
+					// courant dans le fichier map_custom
+					XmlNode matchingResumedInfoNode = mapResumedDocument.SelectSingleNode("//" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + objectId + "\"]");
+
+					if (matchingResumedInfoNode != null) {
+						// Récupération du noeud XML correspondant à l'objet du fichier map_resumed
+						XmlNode matchingResumedNode = matchingResumedInfoNode.ParentNode;
+
+						// Remplacement du noeud XML d'information seul dans le fichier résumé si la personnalisation ne
+						// concerne que les caractéristiques, sinon, si la personnalisation concerne les sous-noeuds XML
+						// de l'objet, ceux-ci sont aussi remplacés
+						if (customNode.ChildNodes.Count == 1) {
+							// Suppression du noeud XML d'information au niveau de l'objet du fichier map_resumed
+							matchingResumedNode.RemoveChild(matchingResumedNode.FirstChild);
+
+							// Ajout du noeud XML d'information du fichier map_custom avant les sous-noeuds XML de
+							// l'objet du fichier mmap_resumed
+							XmlNode newResumedInfoNode = mapResumedDocument.ImportNode(customInfoNode, true);
+							matchingResumedNode.InsertBefore(newResumedInfoNode, matchingResumedNode.FirstChild);
+						} else {
+							// Suppression de tous les noeuds XML contenus (y compris le noeuds d'information) compris
+							// dans le noeud XML de l'objet du fichier map_resumed
+							matchingResumedNode.RemoveAll();
+
+							// Ajout de tous les noeuds XML contenus dans l'objet du fichier map_custom dans l'objet
+							// correspondant dans le fichier map_resumed
+							foreach (XmlNode customChildNode in customNode.ChildNodes) {
+								XmlNode newResumedChildNode = mapResumedDocument.ImportNode(customChildNode, true);
+								matchingResumedNode.AppendChild(newResumedChildNode);
+							}
+						}
+					}
+				}
+			}
+
+			mapResumedDocument.Save(mapResumedFilePath);
+		}
+	}
+
+
+	/// <summary>
 	/// 	Extrait les informations necessaires à la construction de la ville depuis le fichier map_resumed en appelant
 	/// 	notamment la fonction récursive d'extraction d'objets.
 	/// </summary>
@@ -739,6 +808,21 @@ public class MapLoader {
 					nodeGroup.RoofAngle = int.Parse(areaBuildingInfo [1]);
 					nodeGroup.RoofType = areaBuildingInfo [2];
 
+					if (areaBuildingInfo[3] != null) {
+						Material customMaterial = Resources.Load(FilePaths.MATERIALS_FOLDER_LOCAL + areaBuildingInfo[3]) as Material;
+						nodeGroup.CustomMaterial = customMaterial;
+					} else {
+						nodeGroup.CustomMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
+					}
+
+					if (areaBuildingInfo[4] != null) {
+						String[] colorComponents = areaBuildingInfo[4].Split(';');
+						Color overlayColor = new Color(float.Parse(colorComponents[0]), float.Parse(colorComponents[1]), float.Parse(colorComponents[2]));
+						nodeGroup.OverlayColor = overlayColor;
+					} else {
+						nodeGroup.OverlayColor = new Color(1, 1, 1);
+					}
+
 					nodeGroup.AddTag("building", "yes");
 				} else if (childNode.Name.Equals (XmlTags.HIGHWAY)) {
 					nodeGroup.Name = this.AttributeValue (objectInfoNode, XmlAttributes.NAME);
@@ -760,76 +844,6 @@ public class MapLoader {
 				// Ajout du groupe de noeuds courant à la liste de tous les groupes de noeuds
 				objectBuilder.NodeGroups.Add(nodeGroup);
 			}
-		}
-	}
-
-
-	/// <summary>
-	///		Extrait les données du MapCustom des objets et écrase les caractéristiques des objets correspondant dans le
-	/// 	fichier map_resumed avec celles de la version personnalisées de l'objet.
-	/// </summary>
-	public void LoadCustomData() {
-		string mapResumedFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
-		string mapCustomFilePath = FilePaths.MAPS_CUSTOM_FOLDER + "map_custom.osm";
-
-		XmlDocument mapResumedDocument = new XmlDocument ();
-		XmlDocument mapCustomDocument = new XmlDocument ();
-
-		if (File.Exists (mapResumedFilePath) && File.Exists (mapCustomFilePath)) {
-			mapResumedDocument.Load (mapResumedFilePath);
-			mapCustomDocument.Load (mapCustomFilePath);
-
-			// Récupération du noeud XML englobant tous les objets terrestres
-			XmlNode earthNode = mapCustomDocument.ChildNodes [1];
-
-			if (earthNode != null) {
-				// Récupération de chaque noeud représentant un fichier personnalisé puis mise à jour du noeud
-				// correspondant dans le fihcier MapResumed
-				XmlNodeList customNodes = earthNode.ChildNodes;
-				foreach (XmlNode customNode in customNodes) {
-					// Extraction du noeud XML d'information de l'objet personnalisé et récupération de son ID
-					XmlNode customInfoNode = customNode.FirstChild;
-					string objectId = this.AttributeValue (customInfoNode, XmlAttributes.ID);
-
-					// Récupération du noeud XML d'information de l'objet du fichier map_resumed correspondant à l'objet
-					// courant dans le fichier map_custom
-					XmlNode matchingResumedInfoNode = mapResumedDocument.SelectSingleNode("//" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + objectId + "\"]");
-
-					if (matchingResumedInfoNode != null) {
-
-						//Debug.Log(matchingResumedInfoNode.Attributes[XmlAttributes.NAME].Value);
-
-						// Récupération du noeud XML correspondant à l'objet du fichier map_resumed
-						XmlNode matchingResumedNode = matchingResumedInfoNode.ParentNode;
-
-						// Remplacement du noeud XML d'information seul dans le fichier résumé si la personnalisation ne
-						// concerne que les caractéristiques, sinon, si la personnalisation concerne les sous-noeuds XML
-						// de l'objet, ceux-ci sont aussi remplacés
-						if (customNode.ChildNodes.Count == 1) {
-							// Suppression du noeud XML d'information au niveau de l'objet du fichier map_resumed
-							matchingResumedNode.RemoveChild (matchingResumedNode.FirstChild);
-
-							// Ajout du noeud XML d'information du fichier map_custom avant les sous-noeuds XML de
-							// l'objet du fichier mmap_resumed
-							XmlNode newResumedInfoNode = mapResumedDocument.ImportNode (customInfoNode, true);
-							matchingResumedNode.InsertBefore (newResumedInfoNode, matchingResumedNode.FirstChild);
-						} else {
-							// Suppression de tous les noeuds XML contenus (y compris le noeuds d'information) compris
-							// dans le noeud XML de l'objet du fichier map_resumed
-							matchingResumedNode.RemoveAll ();
-
-							// Ajout de tous les noeuds XML contenus dans l'objet du fichier map_custom dans l'objet
-							// correspondant dans le fichier map_resumed
-							foreach (XmlNode customChildNode in customNode.ChildNodes) {
-								XmlNode newResumedChildNode = mapResumedDocument.ImportNode (customChildNode, true);
-								matchingResumedNode.AppendChild (newResumedChildNode);
-							}
-						}
-					}
-				}
-			}
-
-			mapResumedDocument.Save (mapResumedFilePath);
 		}
 	}
 

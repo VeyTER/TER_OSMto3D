@@ -84,7 +84,6 @@ public class ObjectBuilder {
 	private GameObject highwayNodes;
 
 
-
 	private ObjectBuilder() {
 		this.nodeGroups = new List<NodeGroup> ();
 
@@ -275,9 +274,10 @@ public class ObjectBuilder {
 					else
 						wall.name = ngp.Name + "_wall_" + i;
 
-					// Affectation du matériau au mur pour lui donner la texture voulue
+					// Affectation du matériau et de sa couleur au mur pour lui donner la texture voulue
 					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
-					meshRenderer.material = Resources.Load (Materials.WALL_DEFAULT) as Material;
+					meshRenderer.material = ngp.CustomMaterial;
+					meshRenderer.materials[0].color = ngp.OverlayColor;
 				}
 
 				// Ajout d'une entrée dans la table de correspondances

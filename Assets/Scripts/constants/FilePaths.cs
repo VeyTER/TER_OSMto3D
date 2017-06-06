@@ -31,6 +31,8 @@ public class FilePaths {
 
 	public const string MATERIALS_FOLDER = RESOURCES_FOLDER + "Materials/";
 
-	// Nom + Adresse Image + adresse matériau
 	public const string MATERIAL_DETAILS_FILE = MATERIALS_FOLDER + "materials_details.txt";
+
+
+	public const string ICONS_FOLDER_LOCAL = "Icons/";
 }

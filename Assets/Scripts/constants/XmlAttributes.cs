@@ -122,4 +122,8 @@ public class XmlAttributes {
 	/// 	<para>NE PAS MODIFIER</para>
 	///</summary>
 	public const string MAX_SPEED = "maxspeed";
+
+	public const string CUSTOM_MATERIAL = "custmat";
+
+	public const string OVERLAY_COLOR = "color";
 }

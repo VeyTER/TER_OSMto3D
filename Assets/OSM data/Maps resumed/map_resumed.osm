@@ -527,7 +527,7 @@
             <nd index="10" ref="426691054" lat="43.6051525" lon="1.4438895" />
           </building>
           <building>
-            <info id="36707002" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <info id="36707002" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" color="1;1;0.75" />
             <nd index="0" ref="426691290" lat="43.6050625" lon="1.44325634765625" />
             <nd index="1" ref="426691305" lat="43.6050390625" lon="1.44337329101562" />
             <nd index="2" ref="426691307" lat="43.6049765625" lon="1.44335766601563" />
@@ -4004,7 +4004,7 @@
             <nd index="1" ref="65161480" lat="43.6034802" lon="1.4457148" />
           </highway>
           <building>
-            <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="6" roofangle="15" rooftype="pitched" />
+            <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="11" roofangle="15" rooftype="pitched" color="1;0.25;0" custmat="ConcreteMonochromatic" />
             <nd index="0" ref="83815655" lat="43.6049183" lon="1.4438403" />
             <nd index="1" ref="426597782" lat="43.6048943" lon="1.4438239" />
             <nd index="2" ref="426597780" lat="43.60479" lon="1.4438309" />
@@ -4944,7 +4944,7 @@
             <nd index="9" ref="596621585" lat="43.6041413" lon="1.4428452" />
           </building>
           <building>
-            <info id="36698295" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <info id="36698295" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" custmat="ConcreteColored" color="0.75;0.75;0.5" />
             <nd index="0" ref="426597885" lat="43.603732" lon="1.4445388" />
             <nd index="1" ref="1533781010" lat="43.6036574" lon="1.4446205" />
             <nd index="2" ref="3865022478" lat="43.6036043" lon="1.4446781" />
@@ -6942,7 +6942,7 @@
             <nd index="11" ref="2459885488" lat="43.6040043" lon="1.4454941" />
           </building>
           <building>
-            <info id="238131773" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <info id="238131773" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" color="0.75;0.5;0.75" />
             <nd index="0" ref="2459885440" lat="43.6037777" lon="1.4446415" />
             <nd index="1" ref="426609701" lat="43.6038501" lon="1.4445601" />
             <nd index="2" ref="426609674" lat="43.6039218" lon="1.4446046" />

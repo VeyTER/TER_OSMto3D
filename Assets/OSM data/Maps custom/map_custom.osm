@@ -186,10 +186,10 @@
     <nd index="19" ref="755802383" lat="43.605578125" lon="1.44325952148438" />
   </building>
   <building>
-    <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="6" roofangle="15" rooftype="pitched" />
+    <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="11" roofangle="15" rooftype="pitched" color="1;0.25;0" custmat="ConcreteMonochromatic" />
   </building>
   <building>
-    <info id="36707002" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+    <info id="36707002" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" color="1;1;0.75" />
     <nd index="0" ref="426691290" lat="43.6050625" lon="1.44325634765625" />
     <nd index="1" ref="426691305" lat="43.6050390625" lon="1.44337329101562" />
     <nd index="2" ref="426691307" lat="43.6049765625" lon="1.44335766601563" />
@@ -204,5 +204,11 @@
     <nd index="11" ref="426691285" lat="43.6049921875" lon="1.44330200195313" />
     <nd index="12" ref="426691288" lat="43.6049921875" lon="1.44327368164063" />
     <nd index="13" ref="426691290" lat="43.6050625" lon="1.44325634765625" />
+  </building>
+  <building>
+    <info id="238131773" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" color="0.75;0.5;0.75" />
+  </building>
+  <building>
+    <info id="36698295" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" custmat="ConcreteColored" color="0.75;0.75;0.5" />
   </building>
 </earth>

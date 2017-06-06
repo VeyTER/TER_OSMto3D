@@ -83,6 +83,7 @@
     <Compile Include="Assets\OBJExport\OBJExporter.cs" />
     <Compile Include="Assets\Scripts\constants\Dimensions.cs" />
     <Compile Include="Assets\Scripts\constants\FilePaths.cs" />
+    <Compile Include="Assets\Scripts\constants\Sprites.cs" />
     <Compile Include="Assets\Scripts\constants\Materials.cs" />
     <Compile Include="Assets\Scripts\constants\NodeTags.cs" />
     <Compile Include="Assets\Scripts\constants\ObjectNames.cs" />

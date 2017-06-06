@@ -507,14 +507,18 @@ public class EditionController : MonoBehaviour {
 			GameObject building = buildingMaterialEntry.Key;
 			Material buildingInitMaterial = buildingMaterialEntry.Value;
 
-			// Chaagement du matériau dans le BuildingTools ici
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
+			if (!buildingInitMaterial.Equals(nodeGroup.CustomMaterial))
+				buildingsTools.UpdateMaterial(building, nodeGroup.CustomMaterial);
 		}
 
 		foreach (KeyValuePair<GameObject, Color> buildingColorEntry in buildingsInitColor) {
 			GameObject building = buildingColorEntry.Key;
 			Color buildingInitColor = buildingColorEntry.Value;
 
-			// Chaagement de couleur dans le BuildingTools ici
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
+			if (!buildingInitColor.Equals(nodeGroup.OverlayColor))
+				buildingsTools.UpdateColor(building, nodeGroup.OverlayColor);
 		}
 
 		// Suppression des situations initiales des objets modifiés

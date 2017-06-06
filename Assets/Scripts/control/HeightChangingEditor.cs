@@ -113,8 +113,10 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public override void CancelTransform() {
-		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
 		objectBuilder.RebuildBuilding(selectedBuilding, selectedBuildingStartHeight);
+
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		nodeGroup.NbFloor = selectedBuildingStartHeight;
 	}
 
 	public int SelectedBuildingStartHeight {

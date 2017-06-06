@@ -248,7 +248,7 @@ public class BuildingsTools {
 		// Récupération du groupe de noeuds correspondant au bâtiment
 		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 
-		if(File.Exists(resumeFilePath)) {
+		if(File.Exists(resumeFilePath) && File.Exists(customFilePath)) {
 			mapResumeDocument.Load (resumeFilePath);
 			mapCustomDocument.Load (customFilePath);
 
@@ -274,21 +274,71 @@ public class BuildingsTools {
 		objectBuilder.RebuildBuilding (building, nbFloor);
 	}
 
-
-	/// <summary>
-	/// 	Récupère en revoie la hauteur d'un bâtiment à partir de son entrée dans le fichier map_resumedd.
-	/// </summary>
-	/// <returns>Hauteur du bâtiment en nombre d'étages.</returns>
-	/// <param name="building">Bâtiment dont on veut connaître la hauteur.</param>
-	private int GetBuildingHeight(GameObject building) {
+	public void UpdateMaterial(GameObject building, Material newMaterial) {
+		// Récupération du groupe de noeuds correspondant au bâtiment
 		NodeGroup nodeGroup = this.BuildingToNodeGroup(building);
-		XmlAttribute floorAttribute = this.ResumeNodeGroupAttribute(nodeGroup, XmlAttributes.NB_FLOOR);
-		if (floorAttribute != null)
-			return int.Parse(floorAttribute.Value);
-		else
-			return -1;
+
+		if (File.Exists(resumeFilePath) && File.Exists(customFilePath)) {
+			mapResumeDocument.Load(resumeFilePath);
+			mapCustomDocument.Load(customFilePath);
+
+			//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier map_custom, l'ajouter
+			if (!this.CustomBuildingExists(nodeGroup.Id))
+				this.AppendCustomBuilding(nodeGroup);
+
+			nodeGroup.CustomMaterial = newMaterial;
+
+			XmlNode resumeInfoNode = this.GetResumeInfoNode(nodeGroup);
+			XmlNode customInfoNode = this.GetCustomInfoNode(nodeGroup);
+
+			string materialName = newMaterial.name.Replace(" (Instance)", "");
+			if (resumeInfoNode.Attributes[XmlAttributes.CUSTOM_MATERIAL] == null)
+				this.AppendNodeGroupAttribute(mapResumeDocument, resumeInfoNode, XmlAttributes.CUSTOM_MATERIAL, materialName);
+			else
+				resumeInfoNode.Attributes[XmlAttributes.CUSTOM_MATERIAL].Value = materialName;
+
+			if (customInfoNode.Attributes[XmlAttributes.CUSTOM_MATERIAL] == null)
+				this.AppendNodeGroupAttribute(mapCustomDocument, customInfoNode, XmlAttributes.CUSTOM_MATERIAL, materialName);
+			else
+				customInfoNode.Attributes[XmlAttributes.CUSTOM_MATERIAL].Value = materialName;
+
+			mapResumeDocument.Save(resumeFilePath);
+			mapCustomDocument.Save(customFilePath);
+		}
 	}
 
+	public void UpdateColor(GameObject building, Color newColor) {
+		// Récupération du groupe de noeuds correspondant au bâtiment
+		NodeGroup nodeGroup = this.BuildingToNodeGroup(building);
+
+		if (File.Exists(resumeFilePath)) {
+			mapResumeDocument.Load(resumeFilePath);
+			mapCustomDocument.Load(customFilePath);
+
+			//  S'il n'y a pas encore d'entrée pour le bâtiment dans le fichier map_custom, l'ajouter
+			if (!this.CustomBuildingExists(nodeGroup.Id))
+				this.AppendCustomBuilding(nodeGroup);
+
+			nodeGroup.OverlayColor = newColor;
+
+			XmlNode resumeInfoNode = this.GetResumeInfoNode(nodeGroup);
+			XmlNode customInfoNode = this.GetCustomInfoNode(nodeGroup);
+
+			String colorName = newColor.r + ";" + newColor.g + ";" + newColor.b;
+			if (resumeInfoNode.Attributes[XmlAttributes.OVERLAY_COLOR] == null)
+				this.AppendNodeGroupAttribute(mapResumeDocument, resumeInfoNode, XmlAttributes.OVERLAY_COLOR, colorName);
+			else
+				resumeInfoNode.Attributes[XmlAttributes.OVERLAY_COLOR].Value = colorName;
+
+			if (customInfoNode.Attributes[XmlAttributes.OVERLAY_COLOR] == null)
+				this.AppendNodeGroupAttribute(mapCustomDocument, customInfoNode, XmlAttributes.OVERLAY_COLOR, colorName);
+			else
+				customInfoNode.Attributes[XmlAttributes.OVERLAY_COLOR].Value = colorName;
+
+			mapResumeDocument.Save(resumeFilePath);
+			mapCustomDocument.Save(customFilePath);
+		}
+	}
 
 	/// <summary>
 	/// 	Ajoute une entrée représentant un bâtiment dans le fichier map_custom.
@@ -348,6 +398,24 @@ public class BuildingsTools {
 		XmlAttribute attribute = boundingDocument.CreateAttribute(attributeName);
 		attribute.Value = attributeValue;
 		containerNode.Attributes.Append(attribute);
+	}
+
+	private XmlNode GetResumeInfoNode(NodeGroup nodeGroup) {
+		string zoningXPath = "";
+		zoningXPath += "/" + XmlTags.EARTH;
+		zoningXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
+		zoningXPath += "/" + XmlTags.REGION + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
+		zoningXPath += "/" + XmlTags.TOWN + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
+		zoningXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
+		zoningXPath += "/" + XmlTags.BUILDING;
+		zoningXPath += "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
+
+		return mapResumeDocument.SelectSingleNode(zoningXPath);
+	}
+
+	private XmlNode GetCustomInfoNode(NodeGroup nodeGroup) {
+		string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
+		return mapCustomDocument.SelectSingleNode(xPath);
 	}
 
 
