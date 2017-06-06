@@ -330,13 +330,13 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 		case UiNames.MATERIALS_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
-				skinChangingEditor.SwitchGrid(gameObject);
+				skinChangingEditor.SwitchPallet(gameObject);
 				skinChangingEditor.SkinPanelController.SlideSliderRight();
 			}
 			break;
 		case UiNames.COLORS_BUTTON:
 			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
-				skinChangingEditor.SwitchGrid(gameObject);
+				skinChangingEditor.SwitchPallet(gameObject);
 				skinChangingEditor.SkinPanelController.SlideSliderLeft();
 			}
 			break;
