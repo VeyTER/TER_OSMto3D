@@ -32,7 +32,9 @@ public class UiNames {
 
 
 	/// <summary>Nom du champ de saisie du nom du bâtiment courant.</summary>
-	public const string BUILDING_NAME_TEXT_INPUT = "BuildingNameText";
+	public const string BUILDING_NAME_NPUT_FILED = "BuildingNameTextInput";
+
+	public const string ID_INDICATOR_LABEL = "IdValue";
 
 	/// <summary>Nom de l'étiquette de l'indicateur de température.</summary>
 	public const string TEMPERATURE_INDICATOR_TEXT_INPUT = "TemperatureInputText";

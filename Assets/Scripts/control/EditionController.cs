@@ -189,6 +189,8 @@ public class EditionController : MonoBehaviour {
 		this.selectedWall = selectedWall;
 		selectedBuilding = selectedWall.transform.parent.gameObject;
 
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+
 		// Activation et ourverture du panneau latéral s'il est inactif
 		if (editPanel.activeInHierarchy == false) {
 			editPanel.SetActive (true);
@@ -197,11 +199,13 @@ public class EditionController : MonoBehaviour {
 		}
 
 		// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
-		InputField[] textInputs = GameObject.FindObjectsOfType<InputField> ();
-		int i = 0;
-		for (; i < textInputs.Length && textInputs[i].name.Equals (UiNames.BUILDING_NAME_TEXT_INPUT); i++);
-		if (i < textInputs.Length)
-			textInputs[i].text = selectedBuilding.name;
+		GameObject buildingNameField = GameObject.Find(UiNames.BUILDING_NAME_NPUT_FILED);
+		InputField buildingNameTextInput = buildingNameField.GetComponent<InputField> ();
+		buildingNameTextInput.text = selectedBuilding.name;
+
+		GameObject IdValueLabel = GameObject.Find(UiNames.ID_INDICATOR_LABEL);
+		Text idText = IdValueLabel.GetComponent<Text>();
+		idText.text = nodeGroup.Id.ToString();
 
 		// Changement de la couleur du bâtiment sélectionné
 		buildingsTools.ColorAsSelected (selectedBuilding);
@@ -219,7 +223,6 @@ public class EditionController : MonoBehaviour {
 		}
 
 		if (!buildingsInitHeight.ContainsKey(SelectedBuilding)) {
-			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 			buildingsInitHeight.Add (selectedBuilding, nodeGroup.NbFloor);
 		}
 

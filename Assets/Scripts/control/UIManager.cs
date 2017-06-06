@@ -244,7 +244,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 
 		// ==== Gestion des élément d'interface en rapport avec la modification d'objets ====
-		case UiNames.BUILDING_NAME_TEXT_INPUT:
+		case UiNames.BUILDING_NAME_NPUT_FILED:
 			
 			break;
 		case UiNames.TEMPERATURE_INDICATOR_TEXT_INPUT:
