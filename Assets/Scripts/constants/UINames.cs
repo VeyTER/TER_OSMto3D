@@ -51,8 +51,8 @@ public class UiNames {
 	/// <summary>Nom du bouton de changement de hauteur d'un bâtiment.</summary>
 	public const string CHANGE_HEIGHT_BUTTON = "ChangeHeightButton";
 
-	/// <summary>Nom du bouton de changement de couleur d'un bâtiment.</summary>
-	public const string CHANGE_COLOR_BUTTON = "ChangeColorButton";
+	/// <summary>Nom du bouton de changement du remplissage d'un bâtiment.</summary>
+	public const string CHANGE_SKIN_BUTTON = "ChangeSkinButton";
 
 	/// <summary>Nom de la poignée de translation.</summary>
 	public const string MOVE_HANDLER = "MoveHandler";

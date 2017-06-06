@@ -270,7 +270,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				editionController.EnterHeightChangingMode();
 			}
 			break;
-		case UiNames.CHANGE_COLOR_BUTTON:
+		case UiNames.CHANGE_SKIN_BUTTON:
 			// Préparation du déplacement d'un objet si le controlleur est prêt
 			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
 				editionController.EnterSkinChangingMode();
