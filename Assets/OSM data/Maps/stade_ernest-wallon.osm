@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.6.0 (15715 thorn-03.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <bounds minlat="43.6213000" minlon="1.4148000" maxlat="43.6223000" maxlon="1.4160000"/>
+ <node id="892045453" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T15:56:44Z" user="emarsden" uid="6848" lat="43.6222109" lon="1.4147860"/>
+ <node id="892048043" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T15:57:31Z" user="emarsden" uid="6848" lat="43.6209448" lon="1.4153282"/>
+ <node id="892048937" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T15:57:47Z" user="emarsden" uid="6848" lat="43.6211266" lon="1.4154308"/>
+ <node id="892049289" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T15:57:54Z" user="emarsden" uid="6848" lat="43.6211946" lon="1.4164707"/>
+ <node id="892049697" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T15:58:02Z" user="emarsden" uid="6848" lat="43.6209403" lon="1.4156635"/>
+ <node id="892053483" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T15:59:11Z" user="emarsden" uid="6848" lat="43.6216622" lon="1.4144968"/>
+ <node id="892056319" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:00:00Z" user="emarsden" uid="6848" lat="43.6210675" lon="1.4151706"/>
+ <node id="892056927" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:00:12Z" user="emarsden" uid="6848" lat="43.6213681" lon="1.4163688"/>
+ <node id="892057712" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:00:28Z" user="emarsden" uid="6848" lat="43.6223545" lon="1.4145643"/>
+ <node id="892063286" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:02:08Z" user="emarsden" uid="6848" lat="43.6211115" lon="1.4154564"/>
+ <node id="892070600" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:04:13Z" user="emarsden" uid="6848" lat="43.6211054" lon="1.4154796"/>
+ <node id="892070885" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:04:19Z" user="emarsden" uid="6848" lat="43.6217336" lon="1.4147250"/>
+ <node id="892073767" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:05:22Z" user="emarsden" uid="6848" lat="43.6211268" lon="1.4149106"/>
+ <node id="892076819" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:06:33Z" user="emarsden" uid="6848" lat="43.6209197" lon="1.4154231"/>
+ <node id="892077641" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:06:48Z" user="emarsden" uid="6848" lat="43.6222511" lon="1.4147970"/>
+ <node id="892078001" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:06:56Z" user="emarsden" uid="6848" lat="43.6222337" lon="1.4147876"/>
+ <node id="892080011" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:07:47Z" user="emarsden" uid="6848" lat="43.6209140" lon="1.4155382"/>
+ <node id="892080471" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:07:56Z" user="emarsden" uid="6848" lat="43.6211474" lon="1.4154161"/>
+ <node id="892082435" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:08:56Z" user="emarsden" uid="6848" lat="43.6221990" lon="1.4145180"/>
+ <node id="892085444" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:10:12Z" user="emarsden" uid="6848" lat="43.6216562" lon="1.4145945"/>
+ <node id="892085881" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:10:26Z" user="emarsden" uid="6848" lat="43.6220625" lon="1.4142597"/>
+ <node id="892089424" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:12:05Z" user="emarsden" uid="6848" lat="43.6225427" lon="1.4156679"/>
+ <node id="892090553" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:12:39Z" user="emarsden" uid="6848" lat="43.6209991" lon="1.4152337"/>
+ <node id="892098222" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:15:50Z" user="emarsden" uid="6848" lat="43.6222829" lon="1.4145256"/>
+ <node id="892099346" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:16:25Z" user="emarsden" uid="6848" lat="43.6222875" lon="1.4148607"/>
+ <node id="892100939" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:17:14Z" user="emarsden" uid="6848" lat="43.6224709" lon="1.4147475"/>
+ <node id="892104497" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:18:52Z" user="emarsden" uid="6848" lat="43.6221892" lon="1.4147975"/>
+ <node id="892105581" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:19:21Z" user="emarsden" uid="6848" lat="43.6222705" lon="1.4148184"/>
+ <node id="892106782" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:19:57Z" user="emarsden" uid="6848" lat="43.6217029" lon="1.4147433"/>
+ <node id="892108027" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:20:32Z" user="emarsden" uid="6848" lat="43.6224202" lon="1.4146360"/>
+ <node id="892111737" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:22:57Z" user="emarsden" uid="6848" lat="43.6211129" lon="1.4155605"/>
+ <node id="892115715" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:25:40Z" user="emarsden" uid="6848" lat="43.6211858" lon="1.4151007"/>
+ <node id="892116374" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:26:11Z" user="emarsden" uid="6848" lat="43.6227261" lon="1.4155602"/>
+ <node id="892118320" visible="true" version="1" changeset="5654895" timestamp="2010-09-01T16:27:41Z" user="emarsden" uid="6848" lat="43.6221491" lon="1.4145346"/>
+ <node id="2068023156" visible="true" version="1" changeset="14278801" timestamp="2012-12-15T07:04:37Z" user="briquolo" uid="1102944" lat="43.6214349" lon="1.4162949"/>
+ <node id="2068023157" visible="true" version="1" changeset="14278801" timestamp="2012-12-15T07:04:37Z" user="briquolo" uid="1102944" lat="43.6224543" lon="1.4156663"/>
+ <node id="2068023158" visible="true" version="1" changeset="14278801" timestamp="2012-12-15T07:04:37Z" user="briquolo" uid="1102944" lat="43.6211727" lon="1.4154835"/>
+ <node id="2068023159" visible="true" version="1" changeset="14278801" timestamp="2012-12-15T07:04:37Z" user="briquolo" uid="1102944" lat="43.6221921" lon="1.4148549"/>
+ <way id="75549664" visible="true" version="3" changeset="17574747" timestamp="2013-08-29T16:17:37Z" user="MarcelHerault" uid="860575">
+  <nd ref="892085444"/>
+  <nd ref="892073767"/>
+  <nd ref="892115715"/>
+  <nd ref="892056319"/>
+  <nd ref="892090553"/>
+  <nd ref="892048043"/>
+  <nd ref="892076819"/>
+  <nd ref="892080011"/>
+  <nd ref="892049697"/>
+  <nd ref="892049289"/>
+  <nd ref="892056927"/>
+  <nd ref="892111737"/>
+  <nd ref="892070600"/>
+  <nd ref="892063286"/>
+  <nd ref="892048937"/>
+  <nd ref="892080471"/>
+  <nd ref="892104497"/>
+  <nd ref="892045453"/>
+  <nd ref="892078001"/>
+  <nd ref="892077641"/>
+  <nd ref="892105581"/>
+  <nd ref="892099346"/>
+  <nd ref="892089424"/>
+  <nd ref="892116374"/>
+  <nd ref="892100939"/>
+  <nd ref="892108027"/>
+  <nd ref="892057712"/>
+  <nd ref="892098222"/>
+  <nd ref="892082435"/>
+  <nd ref="892118320"/>
+  <nd ref="892085881"/>
+  <nd ref="892053483"/>
+  <nd ref="892070885"/>
+  <nd ref="892106782"/>
+  <nd ref="892085444"/>
+  <tag k="building" v="yes"/>
+  <tag k="leisure" v="stadium"/>
+  <tag k="name" v="Stade Ernest Wallon"/>
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010"/>
+  <tag k="sport" v="rugby"/>
+ </way>
+ <way id="196470267" visible="true" version="1" changeset="14278801" timestamp="2012-12-15T07:04:37Z" user="briquolo" uid="1102944">
+  <nd ref="2068023157"/>
+  <nd ref="2068023159"/>
+  <nd ref="2068023158"/>
+  <nd ref="2068023156"/>
+  <nd ref="2068023157"/>
+  <tag k="leisure" v="pitch"/>
+  <tag k="sport" v="rugby_union"/>
+ </way>
+</osm>

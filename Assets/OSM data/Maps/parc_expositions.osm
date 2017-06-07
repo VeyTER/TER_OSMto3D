@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.6.0 (15668 thorn-03.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <bounds minlat="43.5869300" minlon="1.4339900" maxlat="43.5873900" maxlon="1.4348000"/>
+ <node id="87824569" visible="true" version="2" changeset="3662631" timestamp="2010-01-19T21:40:13Z" user="Art Penteur" uid="92075" lat="43.5878318" lon="1.4356457"/>
+ <node id="87824570" visible="true" version="2" changeset="3662631" timestamp="2010-01-19T21:40:12Z" user="Art Penteur" uid="92075" lat="43.5869314" lon="1.4351265"/>
+ <node id="87824571" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5869607" lon="1.4350368"/>
+ <node id="87824572" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5866561" lon="1.4348651"/>
+ <node id="87824573" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5870602" lon="1.4334575"/>
+ <node id="87824574" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5875824" lon="1.4337407"/>
+ <node id="87824575" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5873524" lon="1.4344960"/>
+ <node id="87824576" visible="true" version="2" changeset="3662631" timestamp="2010-01-19T21:40:11Z" user="Art Penteur" uid="92075" lat="43.5881093" lon="1.4349333"/>
+ <node id="87824577" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5884217" lon="1.4348737"/>
+ <node id="87824578" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5884839" lon="1.4350797"/>
+ <node id="87824579" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5886455" lon="1.4350110"/>
+ <node id="87824580" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5887387" lon="1.4354574"/>
+ <node id="87824581" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5885958" lon="1.4355088"/>
+ <node id="87824582" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5886579" lon="1.4357492"/>
+ <node id="87824583" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5885087" lon="1.4358178"/>
+ <node id="87824584" visible="true" version="1" changeset="322213" timestamp="2007-10-26T12:18:59Z" user="emarsden" uid="6848" lat="43.5885709" lon="1.4360667"/>
+ <node id="87824585" visible="true" version="2" changeset="3662631" timestamp="2010-01-19T21:40:13Z" user="Art Penteur" uid="92075" lat="43.5879906" lon="1.4363575"/>
+ <node id="616854444" visible="true" version="1" changeset="3662631" timestamp="2010-01-19T21:39:49Z" user="Art Penteur" uid="92075" lat="43.5881187" lon="1.4350067"/>
+ <way id="10360190" visible="true" version="5" changeset="36561188" timestamp="2016-01-13T22:35:34Z" user="Cyril Romain" uid="545701">
+  <nd ref="87824569"/>
+  <nd ref="87824570"/>
+  <nd ref="87824571"/>
+  <nd ref="87824572"/>
+  <nd ref="87824573"/>
+  <nd ref="87824574"/>
+  <nd ref="87824575"/>
+  <nd ref="87824576"/>
+  <nd ref="616854444"/>
+  <nd ref="87824577"/>
+  <nd ref="87824578"/>
+  <nd ref="87824579"/>
+  <nd ref="87824580"/>
+  <nd ref="87824581"/>
+  <nd ref="87824582"/>
+  <nd ref="87824583"/>
+  <nd ref="87824584"/>
+  <nd ref="87824585"/>
+  <nd ref="87824569"/>
+  <tag k="building" v="hall"/>
+  <tag k="name" v="Parc des Expositions de Toulouse"/>
+  <tag k="name:oc" v="Pargue de la exposicions de Tolosa"/>
+  <tag k="roof:shape" v="gabled_row"/>
+ </way>
+</osm>

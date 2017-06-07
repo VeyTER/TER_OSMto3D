@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.6.0 (15655 thorn-03.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <bounds minlat="43.5827500" minlon="1.4332400" maxlat="43.5839000" maxlon="1.4348900"/>
+ <node id="87813304" visible="true" version="8" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5838725" lon="1.4348548"/>
+ <node id="87813305" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5841233" lon="1.4340204"/>
+ <node id="87813306" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5840631" lon="1.4339901"/>
+ <node id="87813307" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5840927" lon="1.4337131"/>
+ <node id="87813308" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5840960" lon="1.4335723"/>
+ <node id="87813309" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5840555" lon="1.4332896"/>
+ <node id="87813310" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5839506" lon="1.4330292"/>
+ <node id="87813311" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5837917" lon="1.4328315"/>
+ <node id="87813312" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5835895" lon="1.4327197"/>
+ <node id="87813313" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5832701" lon="1.4327335"/>
+ <node id="87813314" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5831653" lon="1.4327883"/>
+ <node id="87813315" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5829936" lon="1.4329475"/>
+ <node id="87813316" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5828591" lon="1.4331603"/>
+ <node id="87813317" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5828034" lon="1.4332813"/>
+ <node id="87813318" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5826238" lon="1.4338593"/>
+ <node id="87813320" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5825244" lon="1.4343824"/>
+ <node id="87813321" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5825249" lon="1.4345230"/>
+ <node id="87813322" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5826091" lon="1.4349452"/>
+ <node id="87813323" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:05Z" user="Neverwhere" uid="221878" lat="43.5828279" lon="1.4352644"/>
+ <node id="87813324" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5829267" lon="1.4353328"/>
+ <node id="87813325" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5832448" lon="1.4353908"/>
+ <node id="87813326" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5834481" lon="1.4353109"/>
+ <node id="87813327" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5836225" lon="1.4351473"/>
+ <node id="87813328" visible="true" version="6" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5838142" lon="1.4348170"/>
+ <node id="1411231637" visible="true" version="2" changeset="9167160" timestamp="2011-08-30T13:04:29Z" user="Neverwhere" uid="221878" lat="43.5828030" lon="1.4345507"/>
+ <node id="1411231643" visible="true" version="2" changeset="9167160" timestamp="2011-08-30T13:04:29Z" user="Neverwhere" uid="221878" lat="43.5831947" lon="1.4332333"/>
+ <node id="1411231644" visible="true" version="2" changeset="9167160" timestamp="2011-08-30T13:04:29Z" user="Neverwhere" uid="221878" lat="43.5833669" lon="1.4348703"/>
+ <node id="1411231649" visible="true" version="2" changeset="9167160" timestamp="2011-08-30T13:04:29Z" user="Neverwhere" uid="221878" lat="43.5837587" lon="1.4335529"/>
+ <node id="1418014119" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5831338" lon="1.4353969"/>
+ <node id="1418014122" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5825341" lon="1.4346618"/>
+ <node id="1418014124" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5826903" lon="1.4336312"/>
+ <node id="1418014126" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5825328" lon="1.4342446"/>
+ <node id="1418014132" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5833750" lon="1.4327045"/>
+ <node id="1418014133" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5836945" lon="1.4327638"/>
+ <node id="1418014134" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5830277" lon="1.4353769"/>
+ <node id="1418014135" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5825612" lon="1.4348078"/>
+ <node id="1418014136" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5825582" lon="1.4341068"/>
+ <node id="1418014137" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5827607" lon="1.4334016"/>
+ <node id="1418014138" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5835442" lon="1.4352325"/>
+ <node id="1418014141" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5840820" lon="1.4338542"/>
+ <node id="1418014143" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5826680" lon="1.4350675"/>
+ <node id="1418014145" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5825878" lon="1.4339786"/>
+ <node id="1418014147" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5827256" lon="1.4335205"/>
+ <node id="1418014152" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5829231" lon="1.4330475"/>
+ <node id="1418014154" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5826567" lon="1.4337477"/>
+ <node id="1418014156" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5840823" lon="1.4334331"/>
+ <node id="1418014158" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5840112" lon="1.4331513"/>
+ <node id="1418014160" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5836965" lon="1.4350456"/>
+ <node id="1418014162" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5833500" lon="1.4353608"/>
+ <node id="1418014164" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5834816" lon="1.4326982"/>
+ <node id="1418014166" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5838749" lon="1.4329234"/>
+ <node id="1418014168" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5827457" lon="1.4351779"/>
+ <node id="1418014170" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5837578" lon="1.4349385"/>
+ <node id="1418014171" visible="true" version="3" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5830734" lon="1.4328657"/>
+ <node id="1420032388" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5827630" lon="1.4344014"/>
+ <node id="1420032390" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5830768" lon="1.4350738"/>
+ <node id="1420032391" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5836733" lon="1.4330926"/>
+ <node id="1420032393" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5828479" lon="1.4348753"/>
+ <node id="1420032394" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5827526" lon="1.4345844"/>
+ <node id="1420032395" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5831783" lon="1.4348728"/>
+ <node id="1420032396" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5832027" lon="1.4331407"/>
+ <node id="1420032397" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5831493" lon="1.4331873"/>
+ <node id="1420032398" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5834746" lon="1.4330071"/>
+ <node id="1420032402" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5829346" lon="1.4347356"/>
+ <node id="1420032403" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5832594" lon="1.4331406"/>
+ <node id="1420032404" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5832217" lon="1.4330977"/>
+ <node id="1420032406" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5838643" lon="1.4334935"/>
+ <node id="1420032407" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5829505" lon="1.4350028"/>
+ <node id="1420032409" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5831050" lon="1.4332716"/>
+ <node id="1420032410" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5838705" lon="1.4335938"/>
+ <node id="1420032412" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5833546" lon="1.4350307"/>
+ <node id="1420032413" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5835489" lon="1.4347412"/>
+ <node id="1420032414" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5834015" lon="1.4330083"/>
+ <node id="1420032416" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878" lat="43.5832170" lon="1.4350839"/>
+ <node id="1420032418" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5837977" lon="1.4334440"/>
+ <node id="1420032419" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5828170" lon="1.4346679"/>
+ <node id="1420032420" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5827591" lon="1.4345949"/>
+ <node id="1420032422" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5835904" lon="1.4333459"/>
+ <node id="1420032423" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5837811" lon="1.4332229"/>
+ <node id="1420032424" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5838179" lon="1.4333081"/>
+ <node id="1420032427" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5834249" lon="1.4349755"/>
+ <node id="1420032428" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5834735" lon="1.4349127"/>
+ <node id="1420032429" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5828037" lon="1.4347936"/>
+ <node id="1420032430" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5832866" lon="1.4350664"/>
+ <node id="1420032434" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:08Z" user="Neverwhere" uid="221878" lat="43.5831486" lon="1.4350884"/>
+ <node id="1420032436" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5834110" lon="1.4348683"/>
+ <node id="1420032437" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:07Z" user="Neverwhere" uid="221878" lat="43.5838120" lon="1.4334953"/>
+ <node id="1420032438" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:06Z" user="Neverwhere" uid="221878" lat="43.5836052" lon="1.4330507"/>
+ <node id="1420037268" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5837782" lon="1.4334521"/>
+ <node id="1420037269" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5832931" lon="1.4349369"/>
+ <node id="1420037270" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5837850" lon="1.4336202"/>
+ <node id="1420037272" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5837654" lon="1.4340072"/>
+ <node id="1420037273" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5835777" lon="1.4346401"/>
+ <node id="1420037274" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5838457" lon="1.4333946"/>
+ <node id="1420037275" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5836266" lon="1.4344674"/>
+ <node id="1420037277" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5832715" lon="1.4331700"/>
+ <node id="1420037278" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5827683" lon="1.4345079"/>
+ <node id="1420037280" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5827910" lon="1.4343036"/>
+ <node id="1420037283" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5830119" lon="1.4350478"/>
+ <node id="1420037285" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5833429" lon="1.4349805"/>
+ <node id="1420037287" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5831493" lon="1.4332441"/>
+ <node id="1420037288" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5837730" lon="1.4334248"/>
+ <node id="1420037290" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:03Z" user="Neverwhere" uid="221878" lat="43.5832408" lon="1.4331553"/>
+ <node id="1420037291" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5833124" lon="1.4330384"/>
+ <node id="1420037292" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5827524" lon="1.4344996"/>
+ <node id="1420037293" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5835433" lon="1.4330208"/>
+ <node id="1420037294" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5832298" lon="1.4331271"/>
+ <node id="1420037295" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5838327" lon="1.4337918"/>
+ <node id="1420037296" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5838566" lon="1.4336962"/>
+ <node id="1420037297" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5833258" lon="1.4349369"/>
+ <node id="1420037300" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5827791" lon="1.4347235"/>
+ <node id="1420037301" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5835177" lon="1.4348304"/>
+ <node id="1420037303" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5837425" lon="1.4334347"/>
+ <node id="1420037304" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5832136" lon="1.4331480"/>
+ <node id="1420037305" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5837308" lon="1.4331566"/>
+ <node id="1420037306" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5833773" lon="1.4349576"/>
+ <node id="1420037308" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5830721" lon="1.4333656"/>
+ <node id="1420037309" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5828911" lon="1.4349459"/>
+ <node id="1420037311" visible="true" version="1" changeset="9184033" timestamp="2011-09-01T12:11:04Z" user="Neverwhere" uid="221878" lat="43.5828023" lon="1.4346727"/>
+ <node id="3953673081" visible="true" version="4" changeset="36778409" timestamp="2016-01-24T15:54:54Z" user="SoulReaper" uid="1816335" lat="43.5833103" lon="1.4339897">
+  <tag k="defibrillator:location" v="Vestiaires SUD Entrée dte vestiaires garçons"/>
+  <tag k="emergency" v="defibrillator"/>
+  <tag k="ref:FR:ToulouseMetropole" v="15.0"/>
+  <tag k="source" v="ToulouseMetropole"/>
+  <tag k="source:date" v="2015-02-14"/>
+ </node>
+ <way id="10359977" visible="true" version="7" changeset="21296993" timestamp="2014-03-25T01:07:03Z" user="Olyon" uid="1443767">
+  <nd ref="87813304"/>
+  <nd ref="87813305"/>
+  <nd ref="87813306"/>
+  <nd ref="1418014141"/>
+  <nd ref="87813307"/>
+  <nd ref="87813308"/>
+  <nd ref="1418014156"/>
+  <nd ref="87813309"/>
+  <nd ref="1418014158"/>
+  <nd ref="87813310"/>
+  <nd ref="1418014166"/>
+  <nd ref="87813311"/>
+  <nd ref="1418014133"/>
+  <nd ref="87813312"/>
+  <nd ref="1418014164"/>
+  <nd ref="1418014132"/>
+  <nd ref="87813313"/>
+  <nd ref="87813314"/>
+  <nd ref="1418014171"/>
+  <nd ref="87813315"/>
+  <nd ref="1418014152"/>
+  <nd ref="87813316"/>
+  <nd ref="87813317"/>
+  <nd ref="1418014137"/>
+  <nd ref="1418014147"/>
+  <nd ref="1418014124"/>
+  <nd ref="1418014154"/>
+  <nd ref="87813318"/>
+  <nd ref="1418014145"/>
+  <nd ref="1418014136"/>
+  <nd ref="1418014126"/>
+  <nd ref="87813320"/>
+  <nd ref="87813321"/>
+  <nd ref="1418014122"/>
+  <nd ref="1418014135"/>
+  <nd ref="87813322"/>
+  <nd ref="1418014143"/>
+  <nd ref="1418014168"/>
+  <nd ref="87813323"/>
+  <nd ref="87813324"/>
+  <nd ref="1418014134"/>
+  <nd ref="1418014119"/>
+  <nd ref="87813325"/>
+  <nd ref="1418014162"/>
+  <nd ref="87813326"/>
+  <nd ref="1418014138"/>
+  <nd ref="87813327"/>
+  <nd ref="1418014160"/>
+  <nd ref="1418014170"/>
+  <nd ref="87813328"/>
+  <nd ref="87813304"/>
+  <tag k="capacity" v="35575"/>
+  <tag k="leisure" v="stadium"/>
+  <tag k="name" v="Stadium Municipal"/>
+  <tag k="operator" v="Toulouse FC"/>
+  <tag k="sport" v="soccer"/>
+  <tag k="start_date" v="1937"/>
+  <tag k="wikipedia" v="fr:Stadium (Toulouse)"/>
+ </way>
+ <way id="127530698" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:10Z" user="Neverwhere" uid="221878">
+  <nd ref="1411231649"/>
+  <nd ref="1411231644"/>
+  <nd ref="1411231637"/>
+  <nd ref="1411231643"/>
+  <nd ref="1411231649"/>
+  <tag k="leisure" v="pitch"/>
+  <tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011"/>
+  <tag k="sport" v="soccer"/>
+ </way>
+ <way id="128505217" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:09Z" user="Neverwhere" uid="221878">
+  <nd ref="1420032418"/>
+  <nd ref="1420032437"/>
+  <nd ref="1420037270"/>
+  <nd ref="1420032436"/>
+  <nd ref="1420037306"/>
+  <nd ref="1420037285"/>
+  <nd ref="1420037297"/>
+  <nd ref="1420037269"/>
+  <nd ref="1420032395"/>
+  <nd ref="1420032402"/>
+  <nd ref="1420032419"/>
+  <nd ref="1420037311"/>
+  <nd ref="1420032420"/>
+  <nd ref="1420037278"/>
+  <nd ref="1420037287"/>
+  <nd ref="1420032396"/>
+  <nd ref="1420037304"/>
+  <nd ref="1420037294"/>
+  <nd ref="1420037290"/>
+  <nd ref="1420032403"/>
+  <nd ref="1420037277"/>
+  <nd ref="1420032422"/>
+  <nd ref="1420037303"/>
+  <nd ref="1420037288"/>
+  <nd ref="1420037268"/>
+  <nd ref="1420032418"/>
+ </way>
+ <way id="128505218" visible="true" version="2" changeset="9184033" timestamp="2011-09-01T12:11:10Z" user="Neverwhere" uid="221878">
+  <nd ref="1420032407"/>
+  <nd ref="1420037283"/>
+  <nd ref="1420032390"/>
+  <nd ref="1420032434"/>
+  <nd ref="1420032416"/>
+  <nd ref="1420032430"/>
+  <nd ref="1420032412"/>
+  <nd ref="1420032427"/>
+  <nd ref="1420032428"/>
+  <nd ref="1420037301"/>
+  <nd ref="1420032413"/>
+  <nd ref="1420037273"/>
+  <nd ref="1420037275"/>
+  <nd ref="1420037272"/>
+  <nd ref="1420037295"/>
+  <nd ref="1420037296"/>
+  <nd ref="1420032410"/>
+  <nd ref="1420032406"/>
+  <nd ref="1420037274"/>
+  <nd ref="1420032424"/>
+  <nd ref="1420032423"/>
+  <nd ref="1420037305"/>
+  <nd ref="1420032391"/>
+  <nd ref="1420032438"/>
+  <nd ref="1420037293"/>
+  <nd ref="1420032398"/>
+  <nd ref="1420032414"/>
+  <nd ref="1420037291"/>
+  <nd ref="1420032404"/>
+  <nd ref="1420032397"/>
+  <nd ref="1420032409"/>
+  <nd ref="1420037308"/>
+  <nd ref="1420037280"/>
+  <nd ref="1420032388"/>
+  <nd ref="1420037292"/>
+  <nd ref="1420032394"/>
+  <nd ref="1420037300"/>
+  <nd ref="1420032429"/>
+  <nd ref="1420032393"/>
+  <nd ref="1420037309"/>
+  <nd ref="1420032407"/>
+ </way>
+ <relation id="1735500" visible="true" version="2" changeset="12476940" timestamp="2012-07-24T21:28:01Z" user="robgeb" uid="336460">
+  <member type="way" ref="128505218" role="outer"/>
+  <member type="way" ref="128505217" role="inner"/>
+  <tag k="building" v="stadium"/>
+  <tag k="type" v="multipolygon"/>
+ </relation>
+ <relation id="1735501" visible="true" version="2" changeset="12476940" timestamp="2012-07-24T21:28:01Z" user="robgeb" uid="336460">
+  <member type="way" ref="10359977" role="outer"/>
+  <member type="way" ref="128505218" role="inner"/>
+  <tag k="building" v="roof"/>
+  <tag k="type" v="multipolygon"/>
+ </relation>
+</osm>

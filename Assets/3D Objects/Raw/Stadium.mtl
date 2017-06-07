@@ -1,0 +1,111 @@
+#
+## Alias OBJ Material File
+# Exported from SketchUp, (c) 2000-2012 Trimble Navigation Limited
+
+newmtl Google_Earth_Snapshot1
+Ka 0.000000 0.000000 0.000000
+Kd 0.470588 0.470588 0.470588
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot1.jpg
+
+newmtl FrontColor
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.330000 0.330000 0.330000
+
+newmtl Google_Earth_Snapshot7
+Ka 0.000000 0.000000 0.000000
+Kd 0.345098 0.407843 0.698039
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot7.jpg
+
+newmtl Google_Earth_Snapshot5
+Ka 0.000000 0.000000 0.000000
+Kd 0.752941 0.721569 0.690196
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot5.jpg
+
+newmtl Google_Earth_Snapshot2
+Ka 0.000000 0.000000 0.000000
+Kd 0.431373 0.466667 0.450980
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot2.jpg
+
+newmtl Google_Earth_Snapshot3
+Ka 0.000000 0.000000 0.000000
+Kd 0.513725 0.592157 0.670588
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot3.jpg
+
+newmtl Google_Earth_Snapshot4
+Ka 0.000000 0.000000 0.000000
+Kd 0.470588 0.533333 0.490196
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot4.jpg
+
+newmtl Google_Earth_Snapshot4_1_
+Ka 0.000000 0.000000 0.000000
+Kd 0.470588 0.533333 0.490196
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot4_1_.jpg
+
+newmtl Google_Earth_Snapshot2_1_
+Ka 0.000000 0.000000 0.000000
+Kd 0.431373 0.466667 0.450980
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot2_1_.jpg
+
+newmtl Google_Earth_Snapshot2_2_
+Ka 0.000000 0.000000 0.000000
+Kd 0.431373 0.466667 0.450980
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot2_2_.jpg
+
+newmtl Google_Earth_Snapshot4_2_
+Ka 0.000000 0.000000 0.000000
+Kd 0.470588 0.533333 0.490196
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot4_2_.jpg
+
+newmtl Google_Earth_Snapshot4_3_
+Ka 0.000000 0.000000 0.000000
+Kd 0.470588 0.533333 0.490196
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot4_3_.jpg
+
+newmtl Google_Earth_Snapshot3_1_
+Ka 0.000000 0.000000 0.000000
+Kd 0.513725 0.592157 0.670588
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot3_1_.jpg
+
+newmtl _1
+Ka 0.000000 0.000000 0.000000
+Kd 0.631373 0.627451 0.603922
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/_1.jpg
+
+newmtl Google_Earth_Snapshot3_2_
+Ka 0.000000 0.000000 0.000000
+Kd 0.513725 0.592157 0.670588
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot3_2_.jpg
+
+newmtl Google_Earth_Snapshot3_3_
+Ka 0.000000 0.000000 0.000000
+Kd 0.513725 0.592157 0.670588
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot3_3_.jpg
+
+newmtl Google_Earth_Snapshot3_4_
+Ka 0.000000 0.000000 0.000000
+Kd 0.513725 0.592157 0.670588
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot3_4_.jpg
+
+newmtl Google_Earth_Snapshot3_5_
+Ka 0.000000 0.000000 0.000000
+Kd 0.513725 0.592157 0.670588
+Ks 0.330000 0.330000 0.330000
+map_Kd Stadium/Google_Earth_Snapshot3_5_.jpg
+

@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
+using System.Net;
 
 /// <summary>
 /// 	<para>
@@ -242,6 +244,8 @@ public class EditionController : MonoBehaviour {
 			cameraController.InitRotation = mainCameraGo.transform.rotation;
 		}
 
+		//this.StartCoroutine( this.LoadData() );
+
 		// Déplacement de la caméra jusqu'au bâtiment sélectionné avec mise à jour de l'état de modification à la fin
 		// du déplacement
 		editionState = EditionStates.MOVING_TO_OBJECT;
@@ -252,6 +256,36 @@ public class EditionController : MonoBehaviour {
 		);
 	}
 
+
+	//private IEnumerator LoadData() {
+	//	string url = "http://neocampus.univ-tlse3.fr:8004/api/u4/*/humidity?xml&pp";
+
+
+	//	WebClient client = new WebClient();
+	//	client.BaseAddress = url;
+
+	//	client.Headers.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+	//	client.Headers.Add("X-Requested-With", "XMLHttpRequest");
+
+	//	string login = string.Format("grant_type=password&username={0}&password={1}", "reader", "readerpassword");
+
+	//	string response = client.UploadString(new Uri(url + "Token"), login);
+
+	//	yield return new WaitForSeconds(0.1f);
+
+	//	if (!string.IsNullOrEmpty(response)) {
+	//		print(response);
+	//	}
+
+		//WWW www = new WWW(url);
+		//print("Chargement..." + www.isDone);
+		//yield return www;
+		//while (!www.isDone) {
+		//	print(www.progress);
+		//}
+		//print("Données chargées");
+		//print(www.error);
+	//}
 
 	/// <summary>
 	/// 	Quitte le bâtiment jusqu'alors en cours de modification en refermant le panneau latéral et en déplaçant la

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using System.IO;
 
 /// <summary>
 /// 	Contient une suite d'outils permettant la construction des différents objets d'une ville.
@@ -83,6 +84,7 @@ public class ObjectBuilder {
 	/// summary>
 	private GameObject highwayNodes;
 
+	private List<ExternalObject> externalObjects;
 
 	private ObjectBuilder() {
 		this.nodeGroups = new List<NodeGroup> ();
@@ -90,6 +92,25 @@ public class ObjectBuilder {
 		this.roadBuilder = new HighwayBuilder ();
 		this.roofBuilder = new RoofBuilder ();
 		this.groundBuilder = new GroundBuilder ();
+
+		this.externalObjects = this.LoadExternalObject();
+	}
+
+	private List<ExternalObject> LoadExternalObject() {
+		List<ExternalObject> externalObjects = new List<ExternalObject>();
+
+		if (File.Exists(FilePaths.EXTERNAL_OBJECTS_FILE)) {
+			String objectsFileContent = File.ReadAllText(FilePaths.EXTERNAL_OBJECTS_FILE);
+			String[] lines = objectsFileContent.Split('\n');
+
+			foreach (String line in lines) {
+				String[] properties = line.Split('\t');
+				ExternalObject materialData = new ExternalObject(properties);
+				externalObjects.Add(materialData);
+			}
+		}
+
+		return externalObjects;
 	}
 
 	public static ObjectBuilder GetInstance() {
@@ -299,8 +320,39 @@ public class ObjectBuilder {
 
 				// Ajout du bâtiment au groupe de bâtiments
 				wallGroup.transform.parent = wallGroups.transform;
+
+				ExternalObject externalObject = this.ExternalBuildingAtPosition(wallGroup.transform.position, buildingsTools.BuildingRadius(wallGroup));
+				if (externalObject != null) {
+					if (externalObject.NeverUsed) {
+						GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + "stadium"));
+						importedObject.transform.position = externalObject.Position;
+						importedObject.transform.localScale = new Vector3(0.015F, 0.015F, 0.015F);
+						importedObject.transform.parent = wallGroups.transform;
+
+						externalObject.NeverUsed = false;
+					}
+
+					Debug.Log("ok");
+
+					wallGroup.SetActive(false);
+				}
 			}
 		}
+	}
+
+	private ExternalObject ExternalBuildingAtPosition(Vector3 position, double radius) {
+		const int PRECISION = 2;
+
+		int i = 0;
+		for (; i < externalObjects.Count
+		&& !(Math.Round(externalObjects[i].Position.x, PRECISION) == Math.Round(position.x, PRECISION)
+		  && Math.Round(externalObjects[i].Position.y, PRECISION) == Math.Round(position.y, PRECISION)
+		  && Math.Round(externalObjects[i].Position.z, PRECISION) == Math.Round(position.z, PRECISION)); i++) ;
+
+		if (i < externalObjects.Count)
+			return externalObjects[i];
+		else
+			return null;
 	}
 
 

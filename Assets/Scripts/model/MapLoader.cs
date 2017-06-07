@@ -35,6 +35,7 @@ public class MapLoader {
 		this.maxLon = 0;
 	}
 
+
 	public static MapLoader GetInstance() {
 		return MapLoaderHolder.instance;
 	}
@@ -407,7 +408,7 @@ public class MapLoader {
 		string mapResumedFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
 
 		XmlDocument mapSettingsDocument = new XmlDocument (); 
-		XmlDocument mapResumedDocument = new XmlDocument (); 
+		XmlDocument mapResumedDocument = new XmlDocument ();
 
 		if (File.Exists (mapSettingsFilePath)) {
 			mapSettingsDocument.Load (mapSettingsFilePath);
@@ -437,7 +438,10 @@ public class MapLoader {
 					zoningXPath += "/" + XmlTags.REGION + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
 					zoningXPath += "/" + XmlTags.TOWN + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
 					zoningXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
+
 					XmlNode locationNode = mapResumedDocument.SelectSingleNode (zoningXPath);
+
+					// TODO Faire un méthode récursive qui s'arrête quand la localisation est à "unknown"
 
 					if (locationNode != null) {
 						// Construction du chemin xPath vers le noeud XML correspondant à la zone la plus locale au groupe
@@ -468,10 +472,12 @@ public class MapLoader {
 
 						// Ajout d'attributs propres à l'objet courant en fonction de son type, contenu dans le groupe
 						// de noeuds courant
-						if (nodeGroup.IsBuilding ())
-							this.AddBuildingNodeAttribute (mapResumedDocument, nodeGroup, objectInfoNode);
-						else if (nodeGroup.IsHighway () && !nodeGroup.IsTrafficLight ())
-							this.AddHighwayNodeAttribute (mapResumedDocument, nodeGroup, objectInfoNode);
+						if (nodeGroup.IsBuilding()) {
+							Debug.Log("ok");
+							this.AddBuildingNodeAttribute(mapResumedDocument, nodeGroup, objectInfoNode);
+						} else if (nodeGroup.IsHighway() && !nodeGroup.IsTrafficLight()) {
+							this.AddHighwayNodeAttribute(mapResumedDocument, nodeGroup, objectInfoNode);
+						}
 
 						// Ajout du nouveau noeud XML créé, représentant l'objet, au neud XML correspondant à la zone à
 						// laquelle il appartient
@@ -540,7 +546,6 @@ public class MapLoader {
 		// et que ce n'est pas un noeuds important ou d'information
 		foreach(XmlNode dataNode in parentElement.ChildNodes) {
 			if (!dataNode.Name.Equals(XmlTags.XML) && !dataNode.Name.Equals(XmlTags.BOUNDS)) {
-
 				// Ajout du noeud XML à la liste de suppression d'il remplit les critères et appel récursif sinon
 				if (dataNode.ChildNodes.Count > 0 && dataNode.FirstChild.Name.Equals (XmlTags.INFO)) {
 					if(dataNode.ChildNodes.Count == 1) {
@@ -553,8 +558,8 @@ public class MapLoader {
 		}
 
 		// Suppression des noeuds à supprimer
-		foreach(XmlNode oldNode in oldNodes)
-			parentElement.RemoveChild (oldNode);
+		foreach (XmlNode oldNode in oldNodes)
+			parentElement.RemoveChild(oldNode);
 	}
 
 
@@ -711,7 +716,7 @@ public class MapLoader {
 	/// </summary>
 	public void LoadResumedData() {
 		string mapResumedFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
-		XmlDocument mapsSettingsDocument = new XmlDocument (); 
+		XmlDocument mapsSettingsDocument = new XmlDocument ();
 
 		// Suppression de tous les groupes de noeuds jusque là stockés
 		objectBuilder.NodeGroups.Clear ();

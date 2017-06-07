@@ -9,6 +9,10 @@ public class FilePaths {
 
 	public const string RESOURCES_FOLDER = ASSETS_FOLDER + "Resources/";
 
+	public const string OBJECTS_3D_FOLDER = ASSETS_FOLDER + "3D Objects/";
+
+	public const string EXTERNAL_OBJECTS_FOLDER = RESOURCES_FOLDER + "External objects/";
+
 
 	///<summary>Chemin vers le dossier des fichiers en lien avec OSM.</summary>
 	public const string OSM_FOLDER = ASSETS_FOLDER + "OSM data/";
@@ -35,4 +39,8 @@ public class FilePaths {
 
 
 	public const string ICONS_FOLDER_LOCAL = "Icons/";
+
+	public const string EXTERNAL_OBJECTS_FOLDER_LOCAL = "External objects/";
+
+	public const string EXTERNAL_OBJECTS_FILE = EXTERNAL_OBJECTS_FOLDER + "objects_properties.txt";
 }

@@ -211,4 +211,7 @@
   <building>
     <info id="36698295" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" custmat="ConcreteColored" color="0.75;0.75;0.5" />
   </building>
+  <building>
+    <info id="10360190" name="Parc des Expositions de Toulouse" nbfloor="17" roofangle="15" rooftype="pitched" custmat="ConcreteColored" color="1;0.75;0" />
+  </building>
 </earth>
