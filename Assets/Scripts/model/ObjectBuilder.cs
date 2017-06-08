@@ -324,15 +324,14 @@ public class ObjectBuilder {
 				ExternalObject externalObject = this.ExternalBuildingAtPosition(wallGroup.transform.position, buildingsTools.BuildingRadius(wallGroup));
 				if (externalObject != null) {
 					if (externalObject.NeverUsed) {
-						GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + "stadium"));
+						GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFilePath));
 						importedObject.transform.position = externalObject.Position;
-						importedObject.transform.localScale = new Vector3(0.015F, 0.015F, 0.015F);
+						importedObject.transform.localScale = new Vector3((float) externalObject.Scale, (float) externalObject.Scale, (float) externalObject.Scale);
+						importedObject.transform.rotation = Quaternion.Euler(importedObject.transform.rotation.x, (float)externalObject.Orientation, importedObject.transform.rotation.z);
 						importedObject.transform.parent = wallGroups.transform;
 
 						externalObject.NeverUsed = false;
 					}
-
-					Debug.Log("ok");
 
 					wallGroup.SetActive(false);
 				}
@@ -345,9 +344,9 @@ public class ObjectBuilder {
 
 		int i = 0;
 		for (; i < externalObjects.Count
-		&& !(Math.Round(externalObjects[i].Position.x, PRECISION) == Math.Round(position.x, PRECISION)
-		  && Math.Round(externalObjects[i].Position.y, PRECISION) == Math.Round(position.y, PRECISION)
-		  && Math.Round(externalObjects[i].Position.z, PRECISION) == Math.Round(position.z, PRECISION)); i++) ;
+		&& !(Math.Round(externalObjects[i].OsmPosition.x, PRECISION) == Math.Round(position.x, PRECISION)
+		  && Math.Round(externalObjects[i].OsmPosition.y, PRECISION) == Math.Round(position.y, PRECISION)
+		  && Math.Round(externalObjects[i].OsmPosition.z, PRECISION) == Math.Round(position.z, PRECISION)); i++) ;
 
 		if (i < externalObjects.Count)
 			return externalObjects[i];

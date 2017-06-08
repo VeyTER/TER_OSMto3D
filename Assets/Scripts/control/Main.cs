@@ -18,7 +18,7 @@ public class Main : MonoBehaviour {
 	public static double SCALE_FACTOR = 1000;
 
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
-	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + "stade_ernest-wallon" + ".osm";
+	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.REPUBLIQUE + ".osm";
 
 	private GameObject editPanel;
 
@@ -35,8 +35,6 @@ public class Main : MonoBehaviour {
 
 
 	public void Start() {
-		GameObject stadium = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + "stadium"));
-
 		objectBuilder = ObjectBuilder.GetInstance();
 		mapLoader = MapLoader.GetInstance ();
 

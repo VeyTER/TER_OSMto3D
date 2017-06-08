@@ -430,23 +430,25 @@ public class MapLoader {
 
 				// Ajout d'un nouveau noeud XML pour chaque groupe de noeuds contenu dans l'application
 				foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
-					// Construction du chemin xPath vers le noeud XML correspondant à la zone la plus locale au groupe
-					// de noeuds et récupération de ce noeud
-					string zoningXPath = "";
-					zoningXPath += "/" + XmlTags.EARTH;
-					zoningXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
-					zoningXPath += "/" + XmlTags.REGION + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
-					zoningXPath += "/" + XmlTags.TOWN + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
-					zoningXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
 
-					XmlNode locationNode = mapResumedDocument.SelectSingleNode (zoningXPath);
+					// Construction d'un tableau contenant les différentes zones. Le niveau d'imbrication des zones est
+					// directement lié à leur ordre dans le tableau (les régions étant comprises dans les pays par ex.)
+					string[] areas = new string[] {
+						XmlTags.COUNTRY,
+						XmlTags.REGION,
+						XmlTags.TOWN,
+						XmlTags.DISTRICT,
+					};
 
-					// TODO Faire un méthode récursive qui s'arrête quand la localisation est à "unknown"
+					// Appel de la fonction récursive mettant à jour les attributs des groupes de noeuds pour le zones
+					// indiquées dans le tableau de zones
+					string zoningXPath = "/" + XmlTags.EARTH + this.MatchingZoningPath(mapResumedDocument, earthNode, nodeGroup, areas, 0, "/" + XmlTags.EARTH);
+					XmlNode locationNode = mapResumedDocument.SelectSingleNode(zoningXPath);
 
 					if (locationNode != null) {
 						// Construction du chemin xPath vers le noeud XML correspondant à la zone la plus locale au groupe
 						// de noeuds et récupération de de noeud
-						string customObjectXPath = zoningXPath + "/" + XmlTags.BUILDING + "/" + nodeGroup.Type () + "[@" + XmlAttributes.NAME + "=\"" + nodeGroup.Name + "\"]";
+						string customObjectXPath = zoningXPath + "/" + XmlTags.BUILDING + "/" + nodeGroup.Type() + "[@" + XmlAttributes.NAME + "=\"" + nodeGroup.Name + "\"]";
 						XmlNode customObjectNode = mapResumedDocument.SelectSingleNode (customObjectXPath);
 
 						XmlNode objectNode = null;
@@ -473,7 +475,6 @@ public class MapLoader {
 						// Ajout d'attributs propres à l'objet courant en fonction de son type, contenu dans le groupe
 						// de noeuds courant
 						if (nodeGroup.IsBuilding()) {
-							Debug.Log("ok");
 							this.AddBuildingNodeAttribute(mapResumedDocument, nodeGroup, objectInfoNode);
 						} else if (nodeGroup.IsHighway() && !nodeGroup.IsTrafficLight()) {
 							this.AddHighwayNodeAttribute(mapResumedDocument, nodeGroup, objectInfoNode);
@@ -509,6 +510,35 @@ public class MapLoader {
 		return res;
 	}
 
+
+	private string MatchingZoningPath(XmlDocument mapResumed, XmlNode parentNode, NodeGroup nodeGroup, string[] areas, int areaLevel, string totalXPath) {
+		string areaDesignation = "";
+
+		switch (areas[areaLevel]) {
+		case XmlTags.COUNTRY:
+			areaDesignation = nodeGroup.Country;
+			break;
+		case XmlTags.REGION:
+			areaDesignation = nodeGroup.Region;
+			break;
+		case XmlTags.TOWN:
+			areaDesignation = nodeGroup.Town;
+			break;
+		case XmlTags.DISTRICT:
+			areaDesignation = nodeGroup.District;
+			break;
+		}
+
+		string localXPath = "/" + areas[areaLevel] + "[@" + XmlAttributes.DESIGNATION + "=\"" + areaDesignation + "\"]";
+		XmlNode zoningNode = mapResumed.SelectSingleNode(totalXPath + localXPath);
+
+		if (zoningNode != null && areaLevel < areas.Length - 1)
+			return localXPath + this.MatchingZoningPath(mapResumed, zoningNode, nodeGroup, areas, areaLevel + 1, totalXPath + localXPath);
+		else if (zoningNode != null && areaLevel >= areas.Length - 1)
+			return localXPath;
+		else
+			return "";
+	}
 
 	/// <summary>
 	/// 	Transfère les noeuds XML de zones (autre que ceux d'information) depuis un document XML vers un autre.
@@ -767,14 +797,17 @@ public class MapLoader {
 	private void ExtractResumedNodes(XmlNode parentAreaNode, string[] areaDesignations, string[] areaTypes, int areaTypeIndex) {
 		// Poursuite du parcours récursif si les noeuds XML fils sont des noeuds XML de zones, extraction et stockage
 		// des noeuds XML fils sinon
+
 		foreach (XmlNode childNode in parentAreaNode.ChildNodes) {
-			if (areaTypeIndex < areaTypes.Length) {
+			if (areaTypeIndex < areaTypes.Length && areaTypes[areaTypeIndex].Contains(childNode.Name)) {
 				// Extraction du nom de la zone courante et ajout de celle-ci au chemin emprunté
 				areaDesignations [areaTypeIndex] = this.AttributeValue (childNode, XmlAttributes.DESIGNATION);
 
+				Debug.Log(childNode.Name);
+
 				// Appel récusrsif pour traiter les noeuds XML fils
 				this.ExtractResumedNodes (childNode, areaDesignations, areaTypes, areaTypeIndex + 1);
-			} else {
+			} else if(!childNode.Name.Equals(XmlTags.BOUNDS)) {
 				// Récupération du noeud XML contenant les informations sur l'objet courant et récupération de l'ID de
 				// cet objet
 				XmlNode objectInfoNode = childNode.FirstChild;
