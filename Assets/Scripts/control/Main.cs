@@ -18,7 +18,7 @@ public class Main : MonoBehaviour {
 	public static double SCALE_FACTOR = 1000;
 
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
-	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.REPUBLIQUE + ".osm";
+	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAPITOLE + ".osm";
 
 	private GameObject editPanel;
 
@@ -29,14 +29,14 @@ public class Main : MonoBehaviour {
 	private MapLoader mapLoader;
 
 	/// <summary>
-	/// 	Unique instance du singleton ObjectBuilder servant construire la ville en 3D à partir des données OSM.
+	/// 	Unique instance du singleton CityBuilder servant construire la ville en 3D à partir des données OSM.
 	/// </summary>
-	private ObjectBuilder objectBuilder;
+	private CityBuilder cityBuilder;
 
 
 	public void Start() {
-		objectBuilder = ObjectBuilder.GetInstance();
-		mapLoader = MapLoader.GetInstance ();
+		this.cityBuilder = CityBuilder.GetInstance();
+		this.mapLoader = MapLoader.GetInstance ();
 
 		// Paramétrage de la qualité graphique
 		QualitySettings.antiAliasing = 8;
@@ -47,40 +47,40 @@ public class Main : MonoBehaviour {
 		// Si le fichier contennant la carte OSM existe bien, le traitement est effectué
 		if (File.Exists(OSM_FILE_NAME)) {
 			// Chargement des données OSM
-			mapLoader.LoadOsmData(OSM_FILE_NAME);
-			mapLoader.LoadSettingsData();
-			mapLoader.GenerateResumeFile();
-			mapLoader.LoadCustomData();
-			mapLoader.LoadResumedData();
+			this.mapLoader.LoadOsmData(OSM_FILE_NAME);
+			this.mapLoader.LoadSettingsData();
+			this.mapLoader.GenerateResumeFile();
+			this.mapLoader.LoadCustomData();
+			this.mapLoader.LoadResumedData();
 
 			// Réglage de l'échelle et des dimensions
-			objectBuilder.ScaleNodes(Main.SCALE_FACTOR);
-			objectBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
+			this.cityBuilder.ScaleNodes(Main.SCALE_FACTOR);
+			this.cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
 
 			// Construction de la ville
-			objectBuilder.CityComponents = new GameObject(ObjectNames.CITY);
-			objectBuilder.BuildNodes();
-			objectBuilder.BuildWalls();
-			objectBuilder.BuildRoofs();
-			objectBuilder.BuildRoads();
-			objectBuilder.BuildTrees();
-			objectBuilder.BuildTrafficLights();
-			objectBuilder.BuildMainCamera();
-			objectBuilder.BuildGround();
+			this.cityBuilder.CityComponents = new GameObject(ObjectNames.CITY);
+			this.cityBuilder.BuildNodes();
+			this.cityBuilder.BuildWalls();
+			this.cityBuilder.BuildRoofs();
+			this.cityBuilder.BuildRoads();
+			this.cityBuilder.BuildTrees();
+			this.cityBuilder.BuildTrafficLights();
+			this.cityBuilder.BuildMainCamera();
+			this.cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
 
 			// Désactivation des certains groupes d'objets
-			objectBuilder.BuildingNodes.SetActive(false);
-			objectBuilder.HighwayNodes.SetActive(false);
-			objectBuilder.Roofs.SetActive(false);
+			this.cityBuilder.BuildingNodes.SetActive(false);
+			this.cityBuilder.HighwayNodes.SetActive(false);
+			this.cityBuilder.Roofs.SetActive(false);
 
 			// Récupération de la référence du panneau et ajout d'un controlleur
-			editPanel = GameObject.Find(UiNames.EDIT_PANEL);
-			editPanel.AddComponent<EditPanelController>();
+			this.editPanel = GameObject.Find(UiNames.EDIT_PANEL);
+			this.editPanel.AddComponent<EditPanelController>();
 
 			// Paramétrage du panneau latéral
 			Vector3 panelPosition = editPanel.transform.localPosition;
 			RectTransform panelRectTransform = (RectTransform) editPanel.transform;
-			editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
+			this.editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
 
 			Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 			Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;

@@ -27,4 +27,8 @@ public class MapNames : ScriptableObject {
 	public static string STADIUM = "stadium";
 
 	public static string SEPTS_DENIERS = "septs-deniers";
+
+	public static string CENTRE_VILLE_TOULOUSE = "centre-ville_toulouse";
+
+	public static string CASTELMAUROU = "castelmaurou";
 }

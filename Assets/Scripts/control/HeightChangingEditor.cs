@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HeightChangingEditor : ObjectEditor {
-	private ObjectBuilder objectBuilder;
+	private CityBuilder cityBuilder;
 
 	private int selectedBuildingStartHeight;
 
@@ -14,7 +14,7 @@ public class HeightChangingEditor : ObjectEditor {
 	private FloorColorController bottomFloorColorController;
 
 	public HeightChangingEditor() {
-		this.objectBuilder = ObjectBuilder.GetInstance();
+		this.cityBuilder = CityBuilder.GetInstance();
 
 		this.selectedBuildingStartHeight = -1;
 
@@ -28,8 +28,8 @@ public class HeightChangingEditor : ObjectEditor {
 		Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 		Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
 
-		topFloor = objectBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor + 1, greenOverlay);
-		bottomFloor = objectBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor, redOverlay);
+		topFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor + 1, greenOverlay);
+		bottomFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor, redOverlay);
 
 		topFloor.AddComponent<FloorColorController>();
 		bottomFloor.AddComponent<FloorColorController>();
@@ -71,7 +71,7 @@ public class HeightChangingEditor : ObjectEditor {
 
 	public void IncrementObjectHeight() {
 		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
-		objectBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor + 1);
+		cityBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor + 1);
 		nodeGroup.NbFloor++;
 
 		this.ShiftFloor(1);
@@ -80,7 +80,7 @@ public class HeightChangingEditor : ObjectEditor {
 
 	public void DecrementObjectHeight() {
 		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
-		objectBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor - 1);
+		cityBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor - 1);
 		nodeGroup.NbFloor--;
 
 		this.ShiftFloor(-1);
@@ -113,7 +113,7 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public override void CancelTransform() {
-		objectBuilder.RebuildBuilding(selectedBuilding, selectedBuildingStartHeight);
+		cityBuilder.RebuildBuilding(selectedBuilding, selectedBuildingStartHeight);
 
 		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
 		nodeGroup.NbFloor = selectedBuildingStartHeight;

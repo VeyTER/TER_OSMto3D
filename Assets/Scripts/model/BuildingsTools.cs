@@ -270,8 +270,8 @@ public class BuildingsTools {
 		}
 
 		// Modification de la hauteur du bâtiment 3D
-		ObjectBuilder objectBuilder = ObjectBuilder.GetInstance();
-		objectBuilder.RebuildBuilding (building, nbFloor);
+		CityBuilder cityBuilder = CityBuilder.GetInstance();
+		cityBuilder.RebuildBuilding (building, nbFloor);
 	}
 
 	public void UpdateMaterial(GameObject building, Material newMaterial) {

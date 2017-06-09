@@ -27,13 +27,13 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	private static SkinChangingEditor skinChangingEditor;
 
 	/// <summary>
-	/// 	Unique instance du singleton ObjectBuilder servant construire la ville en 3D à partir des données OSM.
+	/// 	Unique instance du singleton CityBuilder servant construire la ville en 3D à partir des données OSM.
 	/// </summary>
-	private ObjectBuilder objectBuilder;
+	private CityBuilder cityBuilder;
 
 
 	public UiManager() {
-		this.objectBuilder = ObjectBuilder.GetInstance ();
+		this.cityBuilder = CityBuilder.GetInstance ();
 	}
 
 	public void Start() {
@@ -374,7 +374,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// 	Inverse la visibilité des nodes 3D de bâtiments.
 	/// </summary>
 	public void ToggleBuildingNodesVisibility() {
-		GameObject buildingNodes = objectBuilder.BuildingNodes;
+		GameObject buildingNodes = cityBuilder.BuildingNodes;
 		buildingNodes.SetActive (!buildingNodes.activeInHierarchy);
 	}
 
@@ -382,7 +382,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// 	Inverse la visibilité des nodes 3D de bâtiments.
 	/// </summary>
 	public void ToggleHighwayNodesVisibility() {
-		GameObject highwayNodes = objectBuilder.HighwayNodes;
+		GameObject highwayNodes = cityBuilder.HighwayNodes;
 		highwayNodes.SetActive (!highwayNodes.activeInHierarchy);
 	}
 
@@ -390,7 +390,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// 	Inverse la visibilité des nodes 3D de routes.
 	/// </summary>
 	public void ToggleWallsVisibility() {
-		GameObject walls = objectBuilder.WallGroups;
+		GameObject walls = cityBuilder.WallGroups;
 		walls.SetActive (!walls.activeInHierarchy);
 	}
 
@@ -398,7 +398,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// 	Inverse la visibilité des nodes 3D de toits.
 	/// </summary>
 	public void ToggleRoofsVisibility() {
-		GameObject roofs = objectBuilder.Roofs;
+		GameObject roofs = cityBuilder.Roofs;
 		roofs.SetActive (!roofs.activeInHierarchy);
 	}
 
@@ -406,7 +406,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// 	Inverse la visibilité des routes.
 	/// </summary>
 	public void ToggleHighwaysVisibility() {
-		GameObject highways = objectBuilder.Highways;
+		GameObject highways = cityBuilder.Highways;
 		highways.SetActive (!highways.activeInHierarchy);
 	}
 
@@ -414,7 +414,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// 	Inverse la visibilité des chemins pietons.
 	/// </summary>
 	public void ToggleFootwaysVisibility() {
-		GameObject footways = objectBuilder.Footways;
+		GameObject footways = cityBuilder.Footways;
 		footways.SetActive (!footways.activeInHierarchy);
 	}
 
@@ -422,7 +422,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// 	Inverse la visibilité des pistes cyclables.
 	/// </summary>
 	public void ToggleCyclewaysVisibility() {
-		GameObject cycleways = objectBuilder.Cycleways;
+		GameObject cycleways = cityBuilder.Cycleways;
 		cycleways.SetActive (!cycleways.activeInHierarchy);
 	}
 
@@ -430,7 +430,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// 	Inverse la visibilité des arbres.
 	/// </summary>
 	public void ToggleTreesVisibility() {
-		GameObject trees = objectBuilder.Trees;
+		GameObject trees = cityBuilder.Trees;
 		trees.SetActive (!trees.activeInHierarchy);
 	}
 

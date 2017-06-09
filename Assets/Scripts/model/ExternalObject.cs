@@ -2,7 +2,7 @@
 using UnityEditor;
 
 public class ExternalObject {
-	private string blendFilePath;
+	private string blendFileName;
 
 	private Vector3 osmPosition;
 
@@ -12,24 +12,24 @@ public class ExternalObject {
 
 	private bool neverUsed;
 
-	public ExternalObject(string[] properties) {
-		if (properties.Length == 5) {
-			this.blendFilePath = properties[0];
+	public ExternalObject(string[] objectData) {
+		if (objectData.Length == 5) {
+			this.blendFileName = objectData[0];
 
-			string[] osmPositionComponents = properties[1].Split(';');
+			string[] osmPositionComponents = objectData[1].Split(';');
 			this.osmPosition = new Vector3(float.Parse(osmPositionComponents[0]), float.Parse(osmPositionComponents[1]), float.Parse(osmPositionComponents[2]));
 
-			string[] positionComponents = properties[2].Split(';');
+			string[] positionComponents = objectData[2].Split(';');
 			this.position = new Vector3(float.Parse(positionComponents[0]), float.Parse(positionComponents[1]), float.Parse(positionComponents[2]));
-			this.orientation = double.Parse(properties[3]);
-			this.scale = double.Parse(properties[4]);
+			this.orientation = double.Parse(objectData[3]);
+			this.scale = double.Parse(objectData[4]);
 		}
 
 		this.neverUsed = true;
 	}
 
-	public ExternalObject(string blendFilePath, Vector3 osmPosition, Vector3 position, double orientation, double scale) {
-		this.blendFilePath = blendFilePath;
+	public ExternalObject(string blendFileName, Vector3 osmPosition, Vector3 position, double orientation, double scale) {
+		this.blendFileName = blendFileName;
 
 		this.osmPosition = osmPosition;
 
@@ -40,9 +40,9 @@ public class ExternalObject {
 		this.neverUsed = true;
 	}
 
-	public string ObjectFilePath {
-		get { return blendFilePath; }
-		set { blendFilePath = value; }
+	public string ObjectFileName {
+		get { return blendFileName; }
+		set { blendFileName = value; }
 	}
 
 	public Vector3 OsmPosition {

@@ -6,11 +6,11 @@ public class MaterialData {
 	private string targetMaterialPath;
 	private string readableName;
 
-	public MaterialData(string[] data) {
-		if (data.Length == 3) {
-			this.sourceTexturePath = data[0];
-			this.targetMaterialPath = data[1];
-			this.readableName = data[2];
+	public MaterialData(string[] materialData) {
+		if (materialData.Length == 3) {
+			this.sourceTexturePath = materialData[0];
+			this.targetMaterialPath = materialData[1];
+			this.readableName = materialData[2];
 		}
 	}
 

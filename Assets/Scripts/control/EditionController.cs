@@ -72,7 +72,7 @@ public class EditionController : MonoBehaviour {
 	/// <summary>Unique instance du singleton BuildingsTools contenant des outils pour les bâtiments.</summary>
 	private BuildingsTools buildingsTools;
 
-	private ObjectBuilder objectBuilder;
+	private CityBuilder cityBuilder;
 
 
 	/// <summary>Bâtiments renommés durant la période de modification.</summary>
@@ -143,7 +143,7 @@ public class EditionController : MonoBehaviour {
 		this.skinChangingEditor = new SkinChangingEditor(GameObject.Find(UiNames.SKIN_SELECTION_PANEL));
 
 		this.buildingsTools = BuildingsTools.GetInstance ();
-		this.objectBuilder = ObjectBuilder.GetInstance();
+		this.cityBuilder = CityBuilder.GetInstance();
 
 		this.renamedBuildings = new Dictionary<GameObject, string> ();
 
@@ -631,7 +631,7 @@ public class EditionController : MonoBehaviour {
 			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
 			nodeGroup.NbFloor = buildingHeight;
 
-			objectBuilder.RebuildBuilding(building, buildingHeight);
+			cityBuilder.RebuildBuilding(building, buildingHeight);
 		}
 
 		foreach (KeyValuePair<GameObject, Material> buildingMaterialEntry in buildingsInitMaterial) {

@@ -13,6 +13,7 @@ public class FilePaths {
 
 	public const string EXTERNAL_OBJECTS_FOLDER = RESOURCES_FOLDER + "External objects/";
 
+	public const string TEXTURES_FOLDER = RESOURCES_FOLDER + "Textures/";
 
 	///<summary>Chemin vers le dossier des fichiers en lien avec OSM.</summary>
 	public const string OSM_FOLDER = ASSETS_FOLDER + "OSM data/";
@@ -43,4 +44,9 @@ public class FilePaths {
 	public const string EXTERNAL_OBJECTS_FOLDER_LOCAL = "External objects/";
 
 	public const string EXTERNAL_OBJECTS_FILE = EXTERNAL_OBJECTS_FOLDER + "objects_properties.txt";
+
+
+	public const string TEXTURES_FOLDER_LOCAL = "Textures/";
+
+	public const string MAP_BACKGROUNDS_FILE = FilePaths.TEXTURES_FOLDER + "maps_background_details.txt";
 }

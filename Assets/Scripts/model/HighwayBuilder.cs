@@ -16,17 +16,19 @@ public class HighwayBuilder {
 	/// <param name="angle">Orientation de la route.</param>
 	public GameObject BuildClassicHighway(float posX, float posZ, float length, float width, float angle) {
 		// Création et paramétrage de l'objet 3D destiné à former une route classique
-		GameObject highway = new GameObject ("Highway", typeof(MeshFilter), typeof(MeshRenderer));
-		highway.tag = NodeTags.HIGHWAY_TAG;
+		GameObject highway = new GameObject("Highway", typeof(MeshFilter), typeof(MeshRenderer)) {
+			tag = NodeTags.HIGHWAY_TAG
+		};
 		highway.transform.position = new Vector3 (posX, 0.002F, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
 
 		// Création, construction et texturing du maillage formant la route
-		Mesh mesh = new Mesh ();
-		mesh.vertices = HighwayVertices (length + 0.01F, width);
-		mesh.triangles = HighwayTriangles ();
-		mesh.uv = HighwayUV (length + 0.01F, width);
-		mesh.normals = HighwayNormals ();
+		Mesh mesh = new Mesh() {
+			vertices = this.HighwayVertices(length + 0.01F, width),
+			triangles = this.HighwayTriangles(),
+			uv = this.HighwayUV(length + 0.01F, width),
+			normals = this.HighwayNormals()
+		};
 
 		// Affectation du maillage à la route pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
@@ -51,17 +53,20 @@ public class HighwayBuilder {
 	/// <param name="angle">Orientation de la voie.</param>
 	public GameObject BuildBusLane(float posX, float posZ, float length, float width, float angle) {
 		// Création et paramétrage de l'objet 3D destiné à former une voie de bus
-		GameObject highway = new GameObject ("BusLane", typeof(MeshFilter), typeof(MeshRenderer));
-		highway.tag = NodeTags.BUS_LANE_TAG;
+		GameObject highway = new GameObject("BusLane", typeof(MeshFilter), typeof(MeshRenderer)) {
+			tag = NodeTags.BUS_LANE_TAG
+		};
+
 		highway.transform.position = new Vector3 (posX, 0, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
-		Mesh mesh = new Mesh ();
 
-		// Création, construction et texturing du maillage formant la voie
-		mesh.vertices = HighwayVertices (length, width);
-		mesh.triangles = HighwayTriangles ();
-		mesh.uv = HighwayUV (length, width);
-		mesh.normals = HighwayNormals ();
+		Mesh mesh = new Mesh() {
+			// Création, construction et texturing du maillage formant la voie
+			vertices = this.HighwayVertices(length, width),
+			triangles = this.HighwayTriangles(),
+			uv = this.HighwayUV(length, width),
+			normals = this.HighwayNormals()
+		};
 
 		// Affectation du maillage à la voie pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
@@ -86,17 +91,20 @@ public class HighwayBuilder {
 	/// <param name="angle">Orientation de la piste cyclable.</param>
 	public GameObject BuildCycleway(float posX, float posZ, float length, float width, float angle) {
 		// Création et paramétrage de l'objet 3D destiné à former une piste cyclable
-		GameObject highway = new GameObject ("Cycleway", typeof(MeshFilter), typeof(MeshRenderer));
-		highway.tag = NodeTags.CYCLEWAY_TAG;
+		GameObject highway = new GameObject("Cycleway", typeof(MeshFilter), typeof(MeshRenderer)) {
+			tag = NodeTags.CYCLEWAY_TAG
+		};
+
 		highway.transform.position = new Vector3 (posX, 0, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
-		Mesh mesh = new Mesh ();
 
-		// Création, construction et texturing du maillage formant la piste
-		mesh.vertices = HighwayVertices (length, width);
-		mesh.triangles = HighwayTriangles ();
-		mesh.uv = HighwayUV (length, width);
-		mesh.normals = HighwayNormals ();
+		Mesh mesh = new Mesh() {
+			// Création, construction et texturing du maillage formant la piste
+			vertices = this.HighwayVertices(length, width),
+			triangles = this.HighwayTriangles(),
+			uv = this.HighwayUV(length, width),
+			normals = this.HighwayNormals()
+		};
 
 		// Affectation du maillage à la piste pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
@@ -121,17 +129,20 @@ public class HighwayBuilder {
 	/// <param name="angle">Orientation du chemin piéton.</param>
 	public GameObject BuildFootway(float posX, float posZ, float length, float width, float angle) {
 		// Création et paramétrage de l'objet 3D destiné à former un chemin piéton
-		GameObject highway = new GameObject ("Footway", typeof(MeshFilter), typeof(MeshRenderer));
-		highway.tag = NodeTags.FOOTWAY_TAG;
+		GameObject highway = new GameObject("Footway", typeof(MeshFilter), typeof(MeshRenderer)) {
+			tag = NodeTags.FOOTWAY_TAG
+		};
+
 		highway.transform.position = new Vector3 (posX, 0, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
-		Mesh mesh = new Mesh ();
 
-		// Création, construction et texturing du maillage formant le chemin
-		mesh.vertices = HighwayVertices (length, width);
-		mesh.triangles = HighwayTriangles ();
-		mesh.uv = HighwayUV (length, width);
-		mesh.normals = HighwayNormals ();
+		Mesh mesh = new Mesh() {
+			// Création, construction et texturing du maillage formant le chemin
+			vertices = this.HighwayVertices(length, width),
+			triangles = this.HighwayTriangles(),
+			uv = this.HighwayUV(length, width),
+			normals = this.HighwayNormals()
+		};
 
 		// Affectation du maillage au chemin pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();
@@ -158,15 +169,17 @@ public class HighwayBuilder {
 		// Création et paramétrage de l'objet 3D destiné à former une voie maritime
 		GameObject highway = new GameObject ("Waterway", typeof(MeshFilter), typeof(MeshRenderer));
 		//highway.tag = "Waterway";
-		highway.transform.position = new Vector3 (posX, 0, posZ);
-		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
-		Mesh mesh = new Mesh ();
 
-		// Création, construction et texturing du maillage formant la voie
-		mesh.vertices = HighwayVertices (length, width);
-		mesh.triangles = HighwayTriangles ();
-		mesh.uv = HighwayUV (length, width);
-		mesh.normals = HighwayNormals ();
+		highway.transform.position = new Vector3 (posX, 0, posZ);
+		highway.transform.rotation = Quaternion.Euler(0, angle, 0);
+
+		Mesh mesh = new Mesh() {
+			// Création, construction et texturing du maillage formant la voie
+			vertices = this.HighwayVertices(length, width),
+			triangles = this.HighwayTriangles(),
+			uv = this.HighwayUV(length, width),
+			normals = this.HighwayNormals()
+		};
 
 		// Affectation du maillage à la voie pour lui donner la forme voulue
 		MeshFilter meshFilter = highway.GetComponent<MeshFilter> ();

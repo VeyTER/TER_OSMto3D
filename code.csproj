@@ -112,11 +112,12 @@
     <Compile Include="Assets\Scripts\model\ExternalObject.cs" />
     <Compile Include="Assets\Scripts\model\GroundBuilder.cs" />
     <Compile Include="Assets\Scripts\model\HighwayBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\MapBackground.cs" />
     <Compile Include="Assets\Scripts\model\MapLoader.cs" />
     <Compile Include="Assets\Scripts\model\MaterialData.cs" />
     <Compile Include="Assets\Scripts\model\Node.cs" />
     <Compile Include="Assets\Scripts\model\NodeGroup.cs" />
-    <Compile Include="Assets\Scripts\model\ObjectBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
     <Compile Include="Assets\Scripts\model\PointEditor.cs" />
     <Compile Include="Assets\Scripts\model\RoofBuilder.cs" />
     <Compile Include="Assets\Scripts\model\Triangle.cs" />
@@ -124,6 +125,7 @@
   <ItemGroup>
     <None Include="Assets\Resources\External objects\objects_properties.txt" />
     <None Include="Assets\Resources\Materials\materials_details.txt" />
+    <None Include="Assets\Resources\Textures\maps_background_details.txt" />
     <None Include="Assets\Shaders\Standard.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

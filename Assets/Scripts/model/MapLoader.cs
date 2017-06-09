@@ -10,9 +10,9 @@ using System.Xml;
 /// </summary>
 public class MapLoader {
 	/// <summary>
-	/// 	Unique instance du singleton ObjectBuilder, servant à construire la ville en 3D à partir des données OSM.
+	/// 	Unique instance du singleton CityBuilder, servant à construire la ville en 3D à partir des données OSM.
 	/// </summary>
-	private ObjectBuilder objectBuilder;
+	private CityBuilder cityBuilder;
 
 	/// <summary>Latitude minimale de la ville.</summary>
 	private double minLat;
@@ -27,7 +27,7 @@ public class MapLoader {
 	private double maxLon;
 
 	private MapLoader() {
-		this.objectBuilder = ObjectBuilder.GetInstance ();
+		this.cityBuilder = CityBuilder.GetInstance ();
 
 		this.minLat = 0;
 		this.minLon = 0;
@@ -113,7 +113,7 @@ public class MapLoader {
 						// Ajout d'un noeud, correspondant à l'objet simple, au groupe de noeuds courant, et ajout de ce
 						// dernier à la liste des groupes de noeuds de l'application
 						nodeGroup.AddNode (new Node (id, latitude, longitude));
-						objectBuilder.NodeGroups.Add (nodeGroup);
+						cityBuilder.NodeGroups.Add (nodeGroup);
 					}
 				}
 			}
@@ -196,7 +196,7 @@ public class MapLoader {
 			// Ajout du groupe de noeuds à la liste globale s'il représente un bâtiment, une route ou une
 			// voie maritime
 			if ((nodeGroup.IsBuilding () || nodeGroup.IsHighway ()) || nodeGroup.IsWaterway ())
-				objectBuilder.NodeGroups.Add (nodeGroup);
+				cityBuilder.NodeGroups.Add (nodeGroup);
 		}
 	}
 
@@ -297,7 +297,7 @@ public class MapLoader {
 	/// <param name="buildingData">Caractéristiques par défaut sur les bâtiments se trouvant dans la zone.</param>
 	/// <param name="tagName">Type de zone.</param>
 	private void SetupAreaNodeGroups(string designation, double[] locationData, string[] buildingData, string tagName) {
-		foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
+		foreach (NodeGroup nodeGroup in cityBuilder.NodeGroups) {
 			// Calcul de la distance du bâtiment avec le centre de la zone
 			double nodeGroupDistance = Math.Sqrt (Math.Pow (locationData [0] - (nodeGroup.GetNode (0).Latitude), 2) + Math.Pow (locationData [1] - (nodeGroup.GetNode (0).Longitude), 2));
 
@@ -429,7 +429,7 @@ public class MapLoader {
 				earthNode.InsertBefore (boundsNode, earthNode.FirstChild);
 
 				// Ajout d'un nouveau noeud XML pour chaque groupe de noeuds contenu dans l'application
-				foreach (NodeGroup nodeGroup in objectBuilder.NodeGroups) {
+				foreach (NodeGroup nodeGroup in cityBuilder.NodeGroups) {
 
 					// Construction d'un tableau contenant les différentes zones. Le niveau d'imbrication des zones est
 					// directement lié à leur ordre dans le tableau (les régions étant comprises dans les pays par ex.)
@@ -749,7 +749,7 @@ public class MapLoader {
 		XmlDocument mapsSettingsDocument = new XmlDocument ();
 
 		// Suppression de tous les groupes de noeuds jusque là stockés
-		objectBuilder.NodeGroups.Clear ();
+		cityBuilder.NodeGroups.Clear ();
 
 		if (File.Exists (mapResumedFilePath)) {
 			mapsSettingsDocument.Load (mapResumedFilePath);
@@ -802,8 +802,6 @@ public class MapLoader {
 			if (areaTypeIndex < areaTypes.Length && areaTypes[areaTypeIndex].Contains(childNode.Name)) {
 				// Extraction du nom de la zone courante et ajout de celle-ci au chemin emprunté
 				areaDesignations [areaTypeIndex] = this.AttributeValue (childNode, XmlAttributes.DESIGNATION);
-
-				Debug.Log(childNode.Name);
 
 				// Appel récusrsif pour traiter les noeuds XML fils
 				this.ExtractResumedNodes (childNode, areaDesignations, areaTypes, areaTypeIndex + 1);
@@ -880,7 +878,7 @@ public class MapLoader {
 				}
 
 				// Ajout du groupe de noeuds courant à la liste de tous les groupes de noeuds
-				objectBuilder.NodeGroups.Add(nodeGroup);
+				cityBuilder.NodeGroups.Add(nodeGroup);
 			}
 		}
 	}

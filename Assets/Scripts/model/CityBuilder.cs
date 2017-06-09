@@ -8,7 +8,7 @@ using System.IO;
 /// <summary>
 /// 	Contient une suite d'outils permettant la construction des différents objets d'une ville.
 /// </summary>
-public class ObjectBuilder {
+public class CityBuilder {
 	/// <summary>
 	/// 	Groupes de noeuds contenant toutes les informations sur les objets de la scène 3D.
 	/// </summary>
@@ -86,7 +86,9 @@ public class ObjectBuilder {
 
 	private List<ExternalObject> externalObjects;
 
-	private ObjectBuilder() {
+	private Dictionary<string, MapBackground> mapBackgrounds;
+
+	private CityBuilder() {
 		this.nodeGroups = new List<NodeGroup> ();
 
 		this.roadBuilder = new HighwayBuilder ();
@@ -94,6 +96,7 @@ public class ObjectBuilder {
 		this.groundBuilder = new GroundBuilder ();
 
 		this.externalObjects = this.LoadExternalObject();
+		this.mapBackgrounds = this.LoadMapBackgrounds();
 	}
 
 	private List<ExternalObject> LoadExternalObject() {
@@ -104,8 +107,8 @@ public class ObjectBuilder {
 			String[] lines = objectsFileContent.Split('\n');
 
 			foreach (String line in lines) {
-				String[] properties = line.Split('\t');
-				ExternalObject materialData = new ExternalObject(properties);
+				String[] objectData = line.Split('\t');
+				ExternalObject materialData = new ExternalObject(objectData);
 				externalObjects.Add(materialData);
 			}
 		}
@@ -113,8 +116,25 @@ public class ObjectBuilder {
 		return externalObjects;
 	}
 
-	public static ObjectBuilder GetInstance() {
-		return ObjectBuilderHolder.instance;
+	private Dictionary<string, MapBackground> LoadMapBackgrounds() {
+		Dictionary<string, MapBackground> mapBackgrounds = new Dictionary<string, MapBackground>();
+
+		if (File.Exists(FilePaths.MAP_BACKGROUNDS_FILE)) {
+			String backgroundsFileContent = File.ReadAllText(FilePaths.MAP_BACKGROUNDS_FILE);
+			String[] lines = backgroundsFileContent.Split('\n');
+
+			foreach (String line in lines) {
+				String[] backgroundData = line.Split('\t');
+				MapBackground mapBackground = new MapBackground(backgroundData);
+				mapBackgrounds[backgroundData[0]] = mapBackground;
+			}
+		}
+
+		return mapBackgrounds;
+	}
+
+	public static CityBuilder GetInstance() {
+		return CityBuilderHolder.instance;
 	}
 
 
@@ -324,7 +344,7 @@ public class ObjectBuilder {
 				ExternalObject externalObject = this.ExternalBuildingAtPosition(wallGroup.transform.position, buildingsTools.BuildingRadius(wallGroup));
 				if (externalObject != null) {
 					if (externalObject.NeverUsed) {
-						GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFilePath));
+						GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFileName));
 						importedObject.transform.position = externalObject.Position;
 						importedObject.transform.localScale = new Vector3((float) externalObject.Scale, (float) externalObject.Scale, (float) externalObject.Scale);
 						importedObject.transform.rotation = Quaternion.Euler(importedObject.transform.rotation.x, (float)externalObject.Orientation, importedObject.transform.rotation.z);
@@ -655,29 +675,46 @@ public class ObjectBuilder {
 	/// <summary>
 	/// 	Place le sol dans la scène.
 	/// </summary>
-	public void BuildGround() {
-		// Calcul de la poisition du sol à partir des extrémités
+	public void BuildGround(string backgroundName = null) {
+		Material groundMaterial = null;
+
+
+		if (backgroundName != null) {
+			Texture backgroundTexture = Resources.Load<Texture>(FilePaths.TEXTURES_FOLDER_LOCAL + backgroundName);
+
+			groundMaterial = GameObject.Instantiate(new Material(Shader.Find("Standard"))) as Material;
+			groundMaterial.mainTexture = backgroundTexture;
+
+			MapBackground mapBackground = mapBackgrounds[backgroundName];
+
+			minLat = mapBackground.MinLat;
+			minLon = mapBackground.MinLon;
+
+			maxLat = mapBackground.MaxLat;
+			maxLon = mapBackground.MaxLon;
+		} else {
+			groundMaterial = Resources.Load(Materials.GROUND) as Material;
+			groundMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
+		}
+
 		double lat = (minLat * Main.SCALE_FACTOR + maxLat * Main.SCALE_FACTOR) / 2F;
 		double lon = (minLon * Main.SCALE_FACTOR + maxLon * Main.SCALE_FACTOR) / 2F;
 
-		// Calcul des dimensions du sol à partir des extrémités
-		double width = maxLon * Main.SCALE_FACTOR - minLon * Main.SCALE_FACTOR;
-		double length =  Math.Sqrt(Math.Pow(maxLat * Main.SCALE_FACTOR - minLat * Main.SCALE_FACTOR, 2) + Math.Pow(maxLon * Main.SCALE_FACTOR - minLon * Main.SCALE_FACTOR, 2));
+		double length = maxLon * Main.SCALE_FACTOR - minLon * Main.SCALE_FACTOR;
+		double width = maxLat * Main.SCALE_FACTOR - minLat * Main.SCALE_FACTOR;
 
-		// Calcul des coordonnées du milieu du vectuer formé par les 2 noeuds des extrémités
+		Vector2 textureExpansion = Vector2.one;
+		if (backgroundName == null)
+			textureExpansion = new Vector2((float)length * 4F, (float)width * 4F);
+
+		// Calcul des coordonnées du milieu du vecteur formé par les 2 noeuds des extrémités
 		Vector3 node1 = new Vector3((float)maxLon, 0, (float)maxLat);
 		Vector3 node2 = new Vector3((float)minLon, 0, (float)minLat);
+
 		Vector3 diff = node2 - node1;
 
-		// Calcul de l'angle en fonction du signe de la diagonale
-		double angle = 0;
-		if (diff.z <= 0)
-			angle = (double)Vector3.Angle (Vector3.right, diff) + 180;
-		else
-			angle = (double)Vector3.Angle (Vector3.right,  - diff) + 180;
-
 		// Construction de l'objet 3D (cube) destiné à former un sol 
-		groundBuilder.BuildGround ((float)length, (float)length, (float)angle, (float) minLat, (float)minLon);
+		groundBuilder.BuildGround ((float)length, (float)width, (float)minLat, (float)minLon, groundMaterial, textureExpansion);
 	}
 
 	public List<NodeGroup> NodeGroups {
@@ -720,7 +757,7 @@ public class ObjectBuilder {
 		get { return buildingNodes; }
 	}
 
-	private class ObjectBuilderHolder {
-		public static ObjectBuilder instance = new ObjectBuilder();
+	private class CityBuilderHolder {
+		public static CityBuilder instance = new CityBuilder();
 	}
 }

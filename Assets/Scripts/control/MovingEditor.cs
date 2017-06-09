@@ -140,7 +140,7 @@ public class MovingEditor : ObjectEditor {
 	/// 	trop proche des bors de l'écran. Cela permet de ne pas se cantonner à la vue courante.
 	/// </summary>
 	public void ShiftCamera() {
-		GameObject wallsGroups = ObjectBuilder.GetInstance ().WallGroups;
+		GameObject wallsGroups = CityBuilder.GetInstance ().WallGroups;
 		float cameraAngle = Mathf.Deg2Rad * wallsGroups.transform.rotation.eulerAngles.y;
 
 		float cosOffset = 0.1F * (float)Math.Cos (cameraAngle);
