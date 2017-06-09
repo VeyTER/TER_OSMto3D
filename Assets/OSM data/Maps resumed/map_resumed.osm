@@ -4004,7 +4004,7 @@
             <nd index="1" ref="65161480" lat="43.6034802" lon="1.4457148" />
           </highway>
           <building>
-            <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="11" roofangle="15" rooftype="pitched" color="0;0.75;0" custmat="BricksBasic" />
+            <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="11" roofangle="15" rooftype="pitched" color="1;1;1" custmat="BricksBasic" />
             <nd index="0" ref="83815655" lat="43.6049183" lon="1.4438403" />
             <nd index="1" ref="426597782" lat="43.6048943" lon="1.4438239" />
             <nd index="2" ref="426597780" lat="43.60479" lon="1.4438309" />
@@ -7343,6 +7343,34 @@
             <nd index="13" ref="426609845" lat="43.6042304" lon="1.4463593" />
           </building>
           <building>
+            <info id="287755733" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <nd index="0" ref="2966633334" lat="43.6043217" lon="1.4447384" />
+            <nd index="1" ref="2966633338" lat="43.6043276" lon="1.4447732" />
+            <nd index="2" ref="2913234438" lat="43.6043023" lon="1.4447828" />
+            <nd index="3" ref="2913234441" lat="43.6043093" lon="1.4448181" />
+            <nd index="4" ref="2913234440" lat="43.6043044" lon="1.4448626" />
+            <nd index="5" ref="2913234428" lat="43.6040724" lon="1.4448252" />
+            <nd index="6" ref="59653593" lat="43.6040572" lon="1.4447716" />
+            <nd index="7" ref="2966633334" lat="43.6043217" lon="1.4447384" />
+          </building>
+          <building>
+            <info id="287755732" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <nd index="0" ref="2913234464" lat="43.6047809" lon="1.4454046" />
+            <nd index="1" ref="2913234463" lat="43.6047768" lon="1.4453656" />
+            <nd index="2" ref="2966745922" lat="43.6047494" lon="1.4453622" />
+            <nd index="3" ref="2966745921" lat="43.6047249" lon="1.4453591" />
+            <nd index="4" ref="2966745919" lat="43.6046883" lon="1.4453545" />
+            <nd index="5" ref="2966745917" lat="43.6046608" lon="1.4453511" />
+            <nd index="6" ref="2966745916" lat="43.6046243" lon="1.4453465" />
+            <nd index="7" ref="2966745914" lat="43.6045974" lon="1.4453431" />
+            <nd index="8" ref="2966745911" lat="43.6045594" lon="1.4453383" />
+            <nd index="9" ref="2966745905" lat="43.6045368" lon="1.4453355" />
+            <nd index="10" ref="2913234452" lat="43.6045063" lon="1.4453317" />
+            <nd index="11" ref="2913234451" lat="43.6044923" lon="1.4454432" />
+            <nd index="12" ref="2913234459" lat="43.6046421" lon="1.4454437" />
+            <nd index="13" ref="2913234464" lat="43.6047809" lon="1.4454046" />
+          </building>
+          <building>
             <info id="7975280" name="Square du Général de Gaulle" nbfloor="3" roofangle="15" rooftype="pitched" />
             <nd index="0" ref="59653589" lat="43.6048908" lon="1.4446187" />
             <nd index="1" ref="2913234472" lat="43.6048848" lon="1.4448793" />
@@ -7371,6 +7399,89 @@
             <nd index="24" ref="2966745901" lat="43.6045068" lon="1.4446982" />
             <nd index="25" ref="2913234454" lat="43.6045397" lon="1.4446908" />
             <nd index="26" ref="59653589" lat="43.6048908" lon="1.4446187" />
+          </building>
+          <building>
+            <info id="287755730" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <nd index="0" ref="2913234470" lat="43.604874" lon="1.4453527" />
+            <nd index="1" ref="2913234465" lat="43.6048173" lon="1.4453338" />
+            <nd index="2" ref="2979069321" lat="43.6048188" lon="1.4452986" />
+            <nd index="3" ref="2979069322" lat="43.6048199" lon="1.4452703" />
+            <nd index="4" ref="2979069323" lat="43.6048244" lon="1.4451626" />
+            <nd index="5" ref="2979069324" lat="43.6048257" lon="1.4451312" />
+            <nd index="6" ref="2979069325" lat="43.604829" lon="1.4450505" />
+            <nd index="7" ref="2979069326" lat="43.6048306" lon="1.4450132" />
+            <nd index="8" ref="2913234466" lat="43.6048322" lon="1.4449735" />
+            <nd index="9" ref="2913234471" lat="43.6048827" lon="1.4449719" />
+            <nd index="10" ref="2913234470" lat="43.604874" lon="1.4453527" />
+          </building>
+          <building>
+            <info id="287755734" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <nd index="0" ref="2913234472" lat="43.6048848" lon="1.4448793" />
+            <nd index="1" ref="2913234467" lat="43.604835" lon="1.4448766" />
+            <nd index="2" ref="2979069327" lat="43.6048359" lon="1.444844" />
+            <nd index="3" ref="2979069328" lat="43.6048369" lon="1.4448106" />
+            <nd index="4" ref="2913234468" lat="43.6048389" lon="1.4447406" />
+            <nd index="5" ref="2966745925" lat="43.6048205" lon="1.4447446" />
+            <nd index="6" ref="2979069319" lat="43.6047761" lon="1.4447542" />
+            <nd index="7" ref="2979069316" lat="43.6047561" lon="1.4447586" />
+            <nd index="8" ref="2913234457" lat="43.604617" lon="1.4447888" />
+            <nd index="9" ref="2913234458" lat="43.604622" lon="1.4448315" />
+            <nd index="10" ref="2913234455" lat="43.6045548" lon="1.4448468" />
+            <nd index="11" ref="2979069296" lat="43.6045523" lon="1.4448209" />
+            <nd index="12" ref="2979069295" lat="43.6045501" lon="1.4447986" />
+            <nd index="13" ref="2979069294" lat="43.6045458" lon="1.4447538" />
+            <nd index="14" ref="2979069293" lat="43.6045434" lon="1.4447288" />
+            <nd index="15" ref="2913234454" lat="43.6045397" lon="1.4446908" />
+            <nd index="16" ref="59653589" lat="43.6048908" lon="1.4446187" />
+            <nd index="17" ref="2913234472" lat="43.6048848" lon="1.4448793" />
+          </building>
+          <building>
+            <info id="287755729" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <nd index="0" ref="2913234442" lat="43.6043106" lon="1.4449517" />
+            <nd index="1" ref="2979069281" lat="43.6043081" lon="1.4450275" />
+            <nd index="2" ref="2979069279" lat="43.6043072" lon="1.4450541" />
+            <nd index="3" ref="2979069277" lat="43.6043055" lon="1.4451042" />
+            <nd index="4" ref="2979069276" lat="43.6043038" lon="1.4451552" />
+            <nd index="5" ref="2979069275" lat="43.6043027" lon="1.4451883" />
+            <nd index="6" ref="2913234439" lat="43.6043008" lon="1.4452469" />
+            <nd index="7" ref="2913234432" lat="43.6041966" lon="1.445264" />
+            <nd index="8" ref="2913234429" lat="43.6041048" lon="1.4449398" />
+            <nd index="9" ref="2913234433" lat="43.6042003" lon="1.4449395" />
+            <nd index="10" ref="2966633021" lat="43.6042023" lon="1.4449581" />
+            <nd index="11" ref="2913234434" lat="43.6042031" lon="1.444966" />
+            <nd index="12" ref="2913234430" lat="43.6041876" lon="1.4449694" />
+            <nd index="13" ref="2913234431" lat="43.6041948" lon="1.4450192" />
+            <nd index="14" ref="2913234437" lat="43.6042592" lon="1.4450043" />
+            <nd index="15" ref="2966633030" lat="43.6042548" lon="1.4449719" />
+            <nd index="16" ref="2913234436" lat="43.6042503" lon="1.4449392" />
+            <nd index="17" ref="2913234442" lat="43.6043106" lon="1.4449517" />
+          </building>
+          <building>
+            <info id="287755731" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <nd index="0" ref="2913234453" lat="43.6045213" lon="1.445226" />
+            <nd index="1" ref="2966745909" lat="43.6045525" lon="1.4452372" />
+            <nd index="2" ref="2966745913" lat="43.6045776" lon="1.4452462" />
+            <nd index="3" ref="2979069299" lat="43.604622" lon="1.4452625" />
+            <nd index="4" ref="2979069301" lat="43.6046406" lon="1.4452691" />
+            <nd index="5" ref="2913234461" lat="43.60477" lon="1.4453153" />
+            <nd index="6" ref="2979069318" lat="43.6047656" lon="1.4452793" />
+            <nd index="7" ref="2979069317" lat="43.6047618" lon="1.4452477" />
+            <nd index="8" ref="2979069314" lat="43.6047525" lon="1.4451712" />
+            <nd index="9" ref="2979069313" lat="43.6047477" lon="1.4451313" />
+            <nd index="10" ref="2979069311" lat="43.6047396" lon="1.4450653" />
+            <nd index="11" ref="2979069310" lat="43.6047357" lon="1.4450331" />
+            <nd index="12" ref="2979069309" lat="43.6047267" lon="1.4449585" />
+            <nd index="13" ref="2979069308" lat="43.6047223" lon="1.444923" />
+            <nd index="14" ref="2913234460" lat="43.6047171" lon="1.4448798" />
+            <nd index="15" ref="2979069300" lat="43.6046345" lon="1.44491" />
+            <nd index="16" ref="2913234456" lat="43.6045582" lon="1.4449389" />
+            <nd index="17" ref="2966745910" lat="43.6045533" lon="1.4449768" />
+            <nd index="18" ref="2966745908" lat="43.6045489" lon="1.4450116" />
+            <nd index="19" ref="2966745907" lat="43.6045425" lon="1.4450613" />
+            <nd index="20" ref="2966745906" lat="43.604538" lon="1.4450959" />
+            <nd index="21" ref="2966745904" lat="43.6045311" lon="1.4451494" />
+            <nd index="22" ref="2966745903" lat="43.6045269" lon="1.4451825" />
+            <nd index="23" ref="2913234453" lat="43.6045213" lon="1.445226" />
           </building>
           <building>
             <info id="36707014" name="Pharmacie du Capitole" nbfloor="3" roofangle="15" rooftype="pitched" />
@@ -7487,6 +7598,20 @@
             <nd index="0" ref="2979069288" lat="43.6043419" lon="1.4447517" />
             <nd index="1" ref="2979069286" lat="43.6043332" lon="1.4447547" />
           </highway>
+          <building>
+            <info id="294319376" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <nd index="0" ref="2979069272" lat="43.6042827" lon="1.4455684" />
+            <nd index="1" ref="2979069280" lat="43.604308" lon="1.4455652" />
+            <nd index="2" ref="2979069282" lat="43.6043206" lon="1.4455115" />
+            <nd index="3" ref="2979069284" lat="43.6043274" lon="1.4454828" />
+            <nd index="4" ref="2979069289" lat="43.604351" lon="1.4453824" />
+            <nd index="5" ref="2979069290" lat="43.6043573" lon="1.4453553" />
+            <nd index="6" ref="2979069292" lat="43.604374" lon="1.4452846" />
+            <nd index="7" ref="2979069287" lat="43.6043401" lon="1.4452735" />
+            <nd index="8" ref="2979069283" lat="43.6043215" lon="1.4452675" />
+            <nd index="9" ref="2979069268" lat="43.6042124" lon="1.4453198" />
+            <nd index="10" ref="2979069272" lat="43.6042827" lon="1.4455684" />
+          </building>
           <building>
             <info id="60546399" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
             <nd index="0" ref="756080091" lat="43.6064613" lon="1.4441614" />
