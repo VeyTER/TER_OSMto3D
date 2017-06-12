@@ -219,6 +219,15 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	public void OnPointerUp (PointerEventData eventData) {
 		switch (name.Split('_')[0]) {
 		// ==== Gestion des boutons controllant la visibilité des objets ====
+		case UiNames.TOGGLE_VISIBILITY_BUTTON:
+			visibilityPanelController.VisibilityWheelPanel.SetActive(true);
+			visibilityPanelController.OpenWheel(null);
+			break;
+		case UiNames.CLOSE_VISIBILITY_WHEEL_BUTTON:
+			visibilityPanelController.CloseWheel(() => {
+				visibilityPanelController.VisibilityWheelPanel.SetActive(false);
+			});
+			break;
 		case UiNames.DISABLED_BUILDING_NODES_BUTTON:
 			cityBuilder.BuildingNodes.SetActive(true);
 			visibilityPanelController.EnableButton(transform.parent.gameObject);

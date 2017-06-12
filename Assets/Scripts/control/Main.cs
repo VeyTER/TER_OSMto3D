@@ -69,18 +69,22 @@ public class Main : MonoBehaviour {
 			this.cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
 
 			GameObject visibilityWheelPanel = GameObject.Find(UiNames.VISIBILITY_WHEEL_PANEL);
-			WheelPanelController visibilityWheelPanelContoller = visibilityWheelPanel.GetComponent<WheelPanelController>();
-			UiManager.visibilityPanelController = visibilityWheelPanelContoller;
+			WheelPanelController visibilityPanelContoller = visibilityWheelPanel.GetComponent<WheelPanelController>();
+
+			visibilityPanelContoller.StartPosition = visibilityWheelPanel.transform.parent.localPosition;
+			visibilityPanelContoller.EndPosition = new Vector3(110, visibilityWheelPanel.transform.parent.localPosition.y, 0);
+
+			UiManager.visibilityPanelController = visibilityPanelContoller;
 
 			// Désactivation des certains groupes d'objets
 			this.cityBuilder.BuildingNodes.SetActive(false);
-			visibilityWheelPanelContoller.DisableButton(GameObject.Find(UiNames.BUILDING_NODES_SWITCH));
+			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.BUILDING_NODES_SWITCH));
 
 			this.cityBuilder.HighwayNodes.SetActive(false);
-			visibilityWheelPanelContoller.DisableButton(GameObject.Find(UiNames.HIGHWAY_NODES_SWITCH));
+			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.HIGHWAY_NODES_SWITCH));
 
 			this.cityBuilder.Roofs.SetActive(false);
-			visibilityWheelPanelContoller.DisableButton(GameObject.Find(UiNames.ROOFS_SWITCH));
+			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.ROOFS_SWITCH));
 
 			// Récupération de la référence du panneau et ajout d'un controlleur
 			this.editPanel = GameObject.Find(UiNames.EDIT_PANEL);

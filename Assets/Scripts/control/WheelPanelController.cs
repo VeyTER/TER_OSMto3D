@@ -2,9 +2,21 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class WheelPanelController : MonoBehaviour {
+	private enum WheelState { CLOSED, CLOSED_TO_OPEN, OPEN, OPEN_TO_CLOSED }
+	private WheelState wheelState;
+
+	private GameObject visibilityWheelPanel;
+
+	private Vector3 startPosition;
+	private Vector3 endPosition;
+
 	private void Start() {
+		this.wheelState = WheelState.CLOSED;
+		this.visibilityWheelPanel = GameObject.Find(UiNames.VISIBILITY_WHEEL_PANEL);
+		this.visibilityWheelPanel.SetActive(false);
 		this.BuildWheel();
 	}
 
@@ -63,15 +75,123 @@ public class WheelPanelController : MonoBehaviour {
 			return null;
 	}
 
-	//public IEnumerator OpenWheel(int direction, Action finalAction) {
+	public void OpenWheel(Action finalAction) {
+		if (wheelState == WheelState.CLOSED) {
+			wheelState = WheelState.CLOSED_TO_OPEN;
+			this.StartCoroutine(this.MoveWheel(1, finalAction));
+		}
+	}
 
-	//}
+	public void CloseWheel(Action finalAction) {
+		if (wheelState == WheelState.OPEN) {
+			wheelState = WheelState.OPEN_TO_CLOSED;
+			this.StartCoroutine(this.MoveWheel(-1, finalAction));
+		}
+	}
 
-	//public IEnumerator CloseWheel(int direction, Action finalAction) {
+	private IEnumerator MoveWheel(int direction, Action finalAction) {
+		Vector3 initPosition = Vector3.zero;
+		Vector3 targetPosition = Vector3.zero;
 
-	//}
+		float initAngle = 0;
+		float targetAngle = 0;
 
-	//public IEnumerator MoveWheel(int direction, Action finalAction) {
+		if (direction > 0) {
+			initPosition = startPosition;
+			targetPosition = endPosition;
 
-	//}
+			initAngle = -45;
+			targetAngle = 0;
+		} else if (direction < 0) {
+			initPosition = endPosition;
+			targetPosition = startPosition;
+
+			initAngle = 0;
+			targetAngle = -45;
+		}
+
+		Image visibilitylPanelImage = visibilityWheelPanel.GetComponent<Image>();
+		Color visibilitylPanelImageColor = visibilitylPanelImage.color;
+
+		GameObject toggleVisibilityButton = visibilityWheelPanel.transform.parent.gameObject;
+		GameObject toggleVisibilityIcon = visibilityWheelPanel.transform.parent.GetChild(0).gameObject;
+
+		int nbChildren = visibilityWheelPanel.transform.childCount - 1;
+		GameObject closeVisibilityWheelButton = visibilityWheelPanel.transform.GetChild(nbChildren).gameObject;
+		Image closeButtonImage = closeVisibilityWheelButton.GetComponent<Image>();
+		Color closeButtonImageColor = closeButtonImage.color;
+
+		for (double i = 0; i <= 1; i += 0.1) {
+			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
+
+			float currentAlpha = 0;
+			float currentAngle = 0;
+
+			if (direction > 0) {
+				currentAlpha = cursor;
+				currentAngle = initAngle + (targetAngle - initAngle) * cursor;
+			} else if(direction < 0) {
+				currentAlpha = 1 - cursor;
+				currentAngle = initAngle + (targetAngle - initAngle) * cursor;
+			}
+
+			visibilitylPanelImageColor.a = currentAlpha;
+			visibilitylPanelImage.color = visibilitylPanelImageColor;
+
+			closeButtonImageColor.a = currentAlpha;
+			closeButtonImage.color = closeButtonImageColor;
+			closeButtonImage.transform.rotation = Quaternion.Euler(0, 0, -currentAngle);
+
+			toggleVisibilityButton.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
+			if (direction > 0)
+				toggleVisibilityButton.transform.localPosition = Vector3.Lerp(initPosition, targetPosition, cursor);
+			else if (direction < 0)
+				toggleVisibilityButton.transform.localPosition = Vector3.Lerp(initPosition, targetPosition, cursor);
+
+			toggleVisibilityIcon.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+			for (int j = 0; j < transform.childCount - 1; j++) {
+				Transform switchTransform = visibilityWheelPanel.transform.GetChild(j);
+				switchTransform.rotation = Quaternion.Euler(0, 0, -currentAngle);
+
+				Image disabledButtonImage = switchTransform.GetChild(0).GetComponent<Image>();
+				Image enabledButtonImage = switchTransform.GetChild(1).GetComponent<Image>();
+
+				Color disabledButtonImageColor = disabledButtonImage.color;
+				Color enabledButtonImageColor = disabledButtonImage.color;
+
+				disabledButtonImageColor.a = currentAlpha;
+				enabledButtonImageColor.a = currentAlpha;
+
+				disabledButtonImage.color = disabledButtonImageColor;
+				enabledButtonImage.color = disabledButtonImageColor;
+			}
+
+			yield return new WaitForSeconds(0.01F);
+		}
+
+
+		if (direction > 0)
+			wheelState = WheelState.OPEN;
+		else if (direction < 0)
+			wheelState = WheelState.CLOSED;
+
+		if (finalAction != null)
+			finalAction();
+	}
+
+	public GameObject VisibilityWheelPanel {
+		get { return visibilityWheelPanel; }
+		set { visibilityWheelPanel = value; }
+	}
+
+	public Vector3 StartPosition {
+		get { return startPosition; }
+		set { startPosition = value; }
+	}
+
+	public Vector3 EndPosition {
+		get { return endPosition; }
+		set { endPosition = value; }
+	}
 }

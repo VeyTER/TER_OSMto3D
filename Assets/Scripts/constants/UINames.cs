@@ -29,6 +29,8 @@ public class UiNames {
 
 	public const string TREES_SWITCH = "TreesSwitch";
 
+	public const string CLOSE_VISIBILITY_WHEEL_BUTTON = "CloseVisibilityWheelButton";
+
 
 	/// <summary>Nom du bouton cachant les noeuds de bâtiments.</summary>
 	public const string DISABLED_BUILDING_NODES_BUTTON = "DisabledWallsNodesButton";
