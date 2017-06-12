@@ -94,6 +94,7 @@
     <Compile Include="Assets\Scripts\constants\XmlKeys.cs" />
     <Compile Include="Assets\Scripts\constants\XmlTags.cs" />
     <Compile Include="Assets\Scripts\constants\XmlValues.cs" />
+    <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
     <Compile Include="Assets\Scripts\control\CameraController.cs" />
     <Compile Include="Assets\Scripts\control\EditPanelController.cs" />
     <Compile Include="Assets\Scripts\control\EditionController.cs" />

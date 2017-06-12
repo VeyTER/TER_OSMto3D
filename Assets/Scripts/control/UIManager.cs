@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// 	Gère l'intératction de l'utilisateur avec l'interface et les éléments 3D de la scène. Il y a une instance de
@@ -23,14 +24,14 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	private static TurningEditor turningEditor;
 
 	private static HeightChangingEditor heightChangingEditor;
-
 	private static SkinChangingEditor skinChangingEditor;
+
+	public static WheelPanelController visibilityPanelController;
 
 	/// <summary>
 	/// 	Unique instance du singleton CityBuilder servant construire la ville en 3D à partir des données OSM.
 	/// </summary>
 	private CityBuilder cityBuilder;
-
 
 	public UiManager() {
 		this.cityBuilder = CityBuilder.GetInstance ();
@@ -218,29 +219,70 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	public void OnPointerUp (PointerEventData eventData) {
 		switch (name.Split('_')[0]) {
 		// ==== Gestion des boutons controllant la visibilité des objets ====
-		case UiNames.BUILDING_NODES_BUTTON:
-			this.ToggleBuildingNodesVisibility ();
+		case UiNames.DISABLED_BUILDING_NODES_BUTTON:
+			cityBuilder.BuildingNodes.SetActive(true);
+			visibilityPanelController.EnableButton(transform.parent.gameObject);
 			break;
-		case UiNames.HIGHWAY_NODES_BUTTON:
-			this.ToggleHighwayNodesVisibility ();
+		case UiNames.DISABLED_HIGHWAY_NODES_BUTTON:
+			cityBuilder.HighwayNodes.SetActive(true);
+			visibilityPanelController.EnableButton(transform.parent.gameObject);
 			break;
-		case UiNames.WALLS_BUTTON:
-			this.ToggleWallsVisibility ();
+		case UiNames.DISABLED_WALLS_BUTTON:
+			cityBuilder.WallGroups.SetActive(true);
+			visibilityPanelController.EnableButton(transform.parent.gameObject);
 			break;
-		case UiNames.ROOFS_BUTTON:
-			this.ToggleRoofsVisibility ();
+		case UiNames.DISABLED_ROOFS_BUTTON:
+			cityBuilder.Roofs.SetActive(true);
+			visibilityPanelController.EnableButton(transform.parent.gameObject);
 			break;
-		case UiNames.HIGHWAYS_BUTTON:
-			this.ToggleHighwaysVisibility ();
+		case UiNames.DISABLED_HIGHWAYS_BUTTON:
+			cityBuilder.Highways.SetActive(true);
+			visibilityPanelController.EnableButton(transform.parent.gameObject);
 			break;
-		case UiNames.FOOTWAYS_BUTTON:
-			this.ToggleFootwaysVisibility ();
+		case UiNames.DISABLED_FOOTWAYS_BUTTON:
+			cityBuilder.Footways.SetActive(true);
+			visibilityPanelController.EnableButton(transform.parent.gameObject);
 			break;
-		case UiNames.CYCLEWAYS_BUTTON:
-			this.ToggleCyclewaysVisibility ();
+		case UiNames.DISABLED_CYCLEWAYS_BUTTON:
+			cityBuilder.Cycleways.SetActive(true);
+			visibilityPanelController.EnableButton(transform.parent.gameObject);
 			break;
-		case UiNames.TREES_BUTTON:
-			this.ToggleTreesVisibility ();
+		case UiNames.DISABLED_TREES_BUTTON:
+			cityBuilder.Trees.SetActive(true);
+			visibilityPanelController.EnableButton(transform.parent.gameObject);
+			break;
+
+		case UiNames.ENABLED_BUILDING_NODES_BUTTON:
+			cityBuilder.BuildingNodes.SetActive(false);
+			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			break;
+		case UiNames.ENABLED_HIGHWAY_NODES_BUTTON:
+			cityBuilder.HighwayNodes.SetActive(false);
+			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			break;
+		case UiNames.ENABLED_WALLS_BUTTON:
+			cityBuilder.WallGroups.SetActive(false);
+			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			break;
+		case UiNames.ENABLED_ROOFS_BUTTON:
+			cityBuilder.Roofs.SetActive(false);
+			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			break;
+		case UiNames.ENABLED_HIGHWAYS_BUTTON:
+			cityBuilder.Highways.SetActive(false);
+			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			break;
+		case UiNames.ENABLED_FOOTWAYS_BUTTON:
+			cityBuilder.Footways.SetActive(false);
+			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			break;
+		case UiNames.ENABLED_CYCLEWAYS_BUTTON:
+			cityBuilder.Cycleways.SetActive(false);
+			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			break;
+		case UiNames.ENABLED_TREES_BUTTON:
+			cityBuilder.Trees.SetActive(false);
+			visibilityPanelController.DisableButton(transform.parent.gameObject);
 			break;
 
 		// ==== Gestion des élément d'interface en rapport avec la modification d'objets ====
@@ -368,70 +410,6 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			}
 			break;
 		}
-	}
-
-	/// <summary>
-	/// 	Inverse la visibilité des nodes 3D de bâtiments.
-	/// </summary>
-	public void ToggleBuildingNodesVisibility() {
-		GameObject buildingNodes = cityBuilder.BuildingNodes;
-		buildingNodes.SetActive (!buildingNodes.activeInHierarchy);
-	}
-
-	/// <summary>
-	/// 	Inverse la visibilité des nodes 3D de bâtiments.
-	/// </summary>
-	public void ToggleHighwayNodesVisibility() {
-		GameObject highwayNodes = cityBuilder.HighwayNodes;
-		highwayNodes.SetActive (!highwayNodes.activeInHierarchy);
-	}
-
-	/// <summary>
-	/// 	Inverse la visibilité des nodes 3D de routes.
-	/// </summary>
-	public void ToggleWallsVisibility() {
-		GameObject walls = cityBuilder.WallGroups;
-		walls.SetActive (!walls.activeInHierarchy);
-	}
-
-	/// <summary>
-	/// 	Inverse la visibilité des nodes 3D de toits.
-	/// </summary>
-	public void ToggleRoofsVisibility() {
-		GameObject roofs = cityBuilder.Roofs;
-		roofs.SetActive (!roofs.activeInHierarchy);
-	}
-
-	/// <summary>
-	/// 	Inverse la visibilité des routes.
-	/// </summary>
-	public void ToggleHighwaysVisibility() {
-		GameObject highways = cityBuilder.Highways;
-		highways.SetActive (!highways.activeInHierarchy);
-	}
-
-	/// <summary>
-	/// 	Inverse la visibilité des chemins pietons.
-	/// </summary>
-	public void ToggleFootwaysVisibility() {
-		GameObject footways = cityBuilder.Footways;
-		footways.SetActive (!footways.activeInHierarchy);
-	}
-
-	/// <summary>
-	/// 	Inverse la visibilité des pistes cyclables.
-	/// </summary>
-	public void ToggleCyclewaysVisibility() {
-		GameObject cycleways = cityBuilder.Cycleways;
-		cycleways.SetActive (!cycleways.activeInHierarchy);
-	}
-
-	/// <summary>
-	/// 	Inverse la visibilité des arbres.
-	/// </summary>
-	public void ToggleTreesVisibility() {
-		GameObject trees = cityBuilder.Trees;
-		trees.SetActive (!trees.activeInHierarchy);
 	}
 
 	public void ActivateWallRangeButton() {

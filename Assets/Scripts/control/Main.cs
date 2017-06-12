@@ -68,10 +68,19 @@ public class Main : MonoBehaviour {
 			this.cityBuilder.BuildMainCamera();
 			this.cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
 
+			GameObject visibilityWheelPanel = GameObject.Find(UiNames.VISIBILITY_WHEEL_PANEL);
+			WheelPanelController visibilityWheelPanelContoller = visibilityWheelPanel.GetComponent<WheelPanelController>();
+			UiManager.visibilityPanelController = visibilityWheelPanelContoller;
+
 			// Désactivation des certains groupes d'objets
 			this.cityBuilder.BuildingNodes.SetActive(false);
+			visibilityWheelPanelContoller.DisableButton(GameObject.Find(UiNames.BUILDING_NODES_SWITCH));
+
 			this.cityBuilder.HighwayNodes.SetActive(false);
+			visibilityWheelPanelContoller.DisableButton(GameObject.Find(UiNames.HIGHWAY_NODES_SWITCH));
+
 			this.cityBuilder.Roofs.SetActive(false);
+			visibilityWheelPanelContoller.DisableButton(GameObject.Find(UiNames.ROOFS_SWITCH));
 
 			// Récupération de la référence du panneau et ajout d'un controlleur
 			this.editPanel = GameObject.Find(UiNames.EDIT_PANEL);
@@ -85,8 +94,8 @@ public class Main : MonoBehaviour {
 			Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 			Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
 
-			greenOverlay.SetColor("_EmissionColor", new Color(0.2382F, 0.6F, 0.3853387F));
-			redOverlay.SetColor("_EmissionColor", new Color(1F, 0.397F, 0.397F));
+			greenOverlay.SetColor("_EmissionColor", ThemeColors.GREEN);
+			redOverlay.SetColor("_EmissionColor", ThemeColors.RED);
 		}
 	}
 
