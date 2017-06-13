@@ -10,8 +10,8 @@ public class HeightChangingEditor : ObjectEditor {
 	private GameObject topFloor;
 	private GameObject bottomFloor;
 
-	private FloorColorController topFloorColorController;
-	private FloorColorController bottomFloorColorController;
+	private StageColorController topFloorColorController;
+	private StageColorController bottomFloorColorController;
 
 	public HeightChangingEditor() {
 		this.cityBuilder = CityBuilder.GetInstance();
@@ -31,11 +31,11 @@ public class HeightChangingEditor : ObjectEditor {
 		topFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor + 1, greenOverlay);
 		bottomFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor, redOverlay);
 
-		topFloor.AddComponent<FloorColorController>();
-		bottomFloor.AddComponent<FloorColorController>();
+		topFloor.AddComponent<StageColorController>();
+		bottomFloor.AddComponent<StageColorController>();
 
-		topFloorColorController = topFloor.GetComponent<FloorColorController>();
-		bottomFloorColorController = bottomFloor.GetComponent<FloorColorController>();
+		topFloorColorController = topFloor.GetComponent<StageColorController>();
+		bottomFloorColorController = bottomFloor.GetComponent<StageColorController>();
 
 		topFloorColorController.TargetMaterial = greenOverlay;
 		bottomFloorColorController.TargetMaterial = redOverlay;
@@ -134,12 +134,12 @@ public class HeightChangingEditor : ObjectEditor {
 		set { bottomFloor = value; }
 	}
 
-	public FloorColorController TopFloorColorController {
+	public StageColorController TopFloorColorController {
 		get { return topFloorColorController; }
 		set { topFloorColorController = value; }
 	}
 
-	public FloorColorController BottomFloorColorController {
+	public StageColorController BottomFloorColorController {
 		get { return bottomFloorColorController; }
 		set { bottomFloorColorController = value; }
 	}

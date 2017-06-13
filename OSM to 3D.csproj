@@ -94,10 +94,12 @@
     <Compile Include="Assets\Scripts\constants\XmlKeys.cs" />
     <Compile Include="Assets\Scripts\constants\XmlTags.cs" />
     <Compile Include="Assets\Scripts\constants\XmlValues.cs" />
+    <Compile Include="Assets\Scripts\control\ControlPanelManager.cs" />
+    <Compile Include="Assets\Scripts\control\BuildingCreationEditor.cs" />
     <Compile Include="Assets\Scripts\control\CameraController.cs" />
     <Compile Include="Assets\Scripts\control\EditPanelController.cs" />
     <Compile Include="Assets\Scripts\control\EditionController.cs" />
-    <Compile Include="Assets\Scripts\control\FloorColorController.cs" />
+    <Compile Include="Assets\Scripts\control\StageColorController.cs" />
     <Compile Include="Assets\Scripts\control\HeightChangingEditor.cs" />
     <Compile Include="Assets\Scripts\control\Main.cs" />
     <Compile Include="Assets\Scripts\control\MovingEditor.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="Assets\Scripts\control\SkinPanelController.cs" />
     <Compile Include="Assets\Scripts\control\TurningEditor.cs" />
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
+    <Compile Include="Assets\Scripts\control\BoxPanelController.cs" />
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
     <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
@@ -130,6 +133,7 @@
     <None Include="Assets\Resources\Textures\maps_background_details.txt" />
     <None Include="Assets\Shaders\Standard.shader" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
 </Project>

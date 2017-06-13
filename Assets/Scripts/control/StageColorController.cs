@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 
-public class FloorColorController : MonoBehaviour {
+public class StageColorController : MonoBehaviour {
 	private static float INACTIVE_MIN_BRIGHTNESS = 0.3F;
 	private static float INACTIVE_MAX_BRIGHTNESS = 0.5F;
 
@@ -10,16 +10,16 @@ public class FloorColorController : MonoBehaviour {
 
 	private static float PRESSED_BRIGHTNESS = 0.85F;
 
-	public enum FloorStates { INACTIVE, INACTIVE_TO_HOVERED, HOVERED, HOVERED_TO_INACTIVE,
+	public enum StageStates { INACTIVE, INACTIVE_TO_HOVERED, HOVERED, HOVERED_TO_INACTIVE,
 		HOVERED_TO_PRESSED, PRESSED, PRESSED_TO_HOVERED }
 
-	private FloorStates floorState;
+	private StageStates stageState;
 
 	private Material targetMaterial;
 	private int colorHue;
 
 	public void Start() {
-		this.floorState = FloorStates.INACTIVE;
+		this.stageState = StageStates.INACTIVE;
 	}
 
 	public IEnumerator Animate() {
@@ -27,8 +27,8 @@ public class FloorColorController : MonoBehaviour {
 		float brightness = INACTIVE_MIN_BRIGHTNESS;
 
 		while (true) {
-			switch (floorState) {
-			case FloorStates.INACTIVE:
+			switch (stageState) {
+			case StageStates.INACTIVE:
 				brightness = (float) (INACTIVE_MIN_BRIGHTNESS + ((Math.Cos(cursor) + 1) / 2F) * (INACTIVE_MAX_BRIGHTNESS - INACTIVE_MIN_BRIGHTNESS));
 
 				cursor += 0.05F;
@@ -37,44 +37,44 @@ public class FloorColorController : MonoBehaviour {
 
 				break;
 
-			case FloorStates.INACTIVE_TO_HOVERED:
+			case StageStates.INACTIVE_TO_HOVERED:
 				if (brightness < HOVERED_BRIGHTNESS) {
 					brightness += Math.Min(0.05F, HOVERED_BRIGHTNESS - brightness);
 				} else {
-					floorState = FloorStates.HOVERED;
+					stageState = StageStates.HOVERED;
 				}
 				break;
 
-			case FloorStates.HOVERED:
+			case StageStates.HOVERED:
 				brightness = HOVERED_BRIGHTNESS;
 				break;
 
-			case FloorStates.HOVERED_TO_INACTIVE:
+			case StageStates.HOVERED_TO_INACTIVE:
 				if (brightness > INACTIVE_MAX_BRIGHTNESS) {
 					brightness -= Math.Min(0.05F, brightness - INACTIVE_MAX_BRIGHTNESS);
 				} else {
 					cursor = 0F;
-					floorState = FloorStates.INACTIVE;
+					stageState = StageStates.INACTIVE;
 				}
 				break;
 
-			case FloorStates.HOVERED_TO_PRESSED:
+			case StageStates.HOVERED_TO_PRESSED:
 				if (brightness < PRESSED_BRIGHTNESS) {
 					brightness += Math.Min(0.05F, PRESSED_BRIGHTNESS - brightness);
 				} else {
-					floorState = FloorStates.PRESSED;
+					stageState = StageStates.PRESSED;
 				}
 				break;
 
-			case FloorStates.PRESSED:
+			case StageStates.PRESSED:
 				brightness = PRESSED_BRIGHTNESS;
 				break;
 
-			case FloorStates.PRESSED_TO_HOVERED:
+			case StageStates.PRESSED_TO_HOVERED:
 				if (brightness > HOVERED_BRIGHTNESS) {
 					brightness -= Math.Min(0.05F, brightness - HOVERED_BRIGHTNESS);
 				} else {
-					floorState = FloorStates.HOVERED;
+					stageState = StageStates.HOVERED;
 				}
 				break;
 			}
@@ -85,20 +85,20 @@ public class FloorColorController : MonoBehaviour {
 	}
 
 	public void SetInactive() {
-		if (floorState == FloorStates.HOVERED || floorState == FloorStates.INACTIVE_TO_HOVERED)
-			floorState = FloorStates.HOVERED_TO_INACTIVE;
+		if (stageState == StageStates.HOVERED || stageState == StageStates.INACTIVE_TO_HOVERED)
+			stageState = StageStates.HOVERED_TO_INACTIVE;
 	}
 
 	public void SetHovered() {
-		if (floorState == FloorStates.INACTIVE || floorState == FloorStates.HOVERED_TO_INACTIVE)
-			floorState = FloorStates.INACTIVE_TO_HOVERED;
-		else if (floorState == FloorStates.PRESSED || floorState == FloorStates.HOVERED_TO_PRESSED)
-			floorState = FloorStates.PRESSED_TO_HOVERED;
+		if (stageState == StageStates.INACTIVE || stageState == StageStates.HOVERED_TO_INACTIVE)
+			stageState = StageStates.INACTIVE_TO_HOVERED;
+		else if (stageState == StageStates.PRESSED || stageState == StageStates.HOVERED_TO_PRESSED)
+			stageState = StageStates.PRESSED_TO_HOVERED;
 	}
 
 	public void SetPressed() {
-		if (floorState == FloorStates.HOVERED || floorState == FloorStates.PRESSED_TO_HOVERED)
-			floorState = FloorStates.HOVERED_TO_PRESSED;
+		if (stageState == StageStates.HOVERED || stageState == StageStates.PRESSED_TO_HOVERED)
+			stageState = StageStates.HOVERED_TO_PRESSED;
 	}
 
 
