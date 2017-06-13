@@ -127,6 +127,7 @@ public class EditionController : MonoBehaviour {
 	/// <summary>Bouton désactivé permettant de sélectionner le batiment entier courant pour modification.</summary>
 	private GameObject buildingRangeButton;
 
+	private GameObject controlPanel;
 
 	/// <summary>Panneau d'édition contenant l'interface graphique de modification.</summary>
 	private GameObject editPanel;
@@ -167,6 +168,8 @@ public class EditionController : MonoBehaviour {
 //		Button wallrangeButtonComponent = buildingRangeButton.GetComponent<Button> ();
 //		wallrangeButtonComponent.interactable = false;
 
+		this.controlPanel = GameObject.Find(UiNames.CONTROL_PANEL);
+
 		this.editPanel = GameObject.Find (UiNames.EDIT_PANEL);
 		this.editPanel.SetActive(false);
 
@@ -174,8 +177,8 @@ public class EditionController : MonoBehaviour {
 		this.editPanelController = editPanel.GetComponent<EditPanelController>();
 
 		RectTransform editPanelTransform = (RectTransform) this.editPanelController.transform;
-		this.editPanelController.StartPosX = editPanelTransform.localPosition.x;
-		this.editPanelController.EndPosX = editPanelTransform.localPosition.x - editPanelTransform.rect.width;
+		this.editPanelController.StartPosition = new Vector3(editPanelTransform.localPosition.x, 0, 0);
+		this.editPanelController.EndPosition = new Vector3(editPanelTransform.localPosition.x - editPanelTransform.rect.width, 0, 0);
 	}
 
 
@@ -194,7 +197,7 @@ public class EditionController : MonoBehaviour {
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 
 		// Activation et ourverture du panneau latéral s'il est inactif
-		if (editPanel.activeInHierarchy == false) {
+		if (!editPanel.activeInHierarchy) {
 			editPanel.SetActive (true);
 			editPanelController.OpenPanel (null);
 			editPanelController.OpenSlideButton();
@@ -224,9 +227,8 @@ public class EditionController : MonoBehaviour {
 			buildingsInitAngle.Add (selectedBuilding, selectedBuilding.transform.rotation.eulerAngles.y);
 		}
 
-		if (!buildingsInitHeight.ContainsKey(SelectedBuilding)) {
+		if (!buildingsInitHeight.ContainsKey(SelectedBuilding))
 			buildingsInitHeight.Add (selectedBuilding, nodeGroup.NbFloor);
-		}
 
 		GameObject firstWall = SelectedBuilding.transform.GetChild(0).gameObject;
 		MeshRenderer meshRenderer = firstWall.GetComponent<MeshRenderer>();
@@ -245,6 +247,9 @@ public class EditionController : MonoBehaviour {
 		}
 
 		//this.StartCoroutine( this.LoadData() );
+
+		if (controlPanel.activeInHierarchy)
+			controlPanel.SetActive(false);
 
 		// Déplacement de la caméra jusqu'au bâtiment sélectionné avec mise à jour de l'état de modification à la fin
 		// du déplacement
@@ -305,12 +310,12 @@ public class EditionController : MonoBehaviour {
 
 		editPanelController.CloseSlideButton();
 
-
 		// Déplacement de la caméra à sa position initiale et réinitialisation de l'état de modification à la fin du
 		// déplacement
 		editionState = EditionController.EditionStates.MOVING_TO_INITIAL_SITUATION;
 		cameraController.StartCoroutine (
 			cameraController.MoveToSituation(cameraController.InitPosition, cameraController.InitRotation, () => {
+				controlPanel.SetActive(true);
 				editionState = EditionController.EditionStates.NONE_SELECTION;
 			})
 		);
@@ -369,7 +374,7 @@ public class EditionController : MonoBehaviour {
 		this.EnterTransformMode();
 		heightChangingEditor.Initialize(selectedWall, selectedBuilding);
 		heightChangingEditor.InitializeHeightChangingMode();
-		cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, null, 15));
+		cameraController.StartCoroutine( cameraController.MoveToBuilding(selectedBuilding, true, null, 15) );
 		editionState = EditionStates.HEIGHT_CHANGING_MODE;
 	}
 

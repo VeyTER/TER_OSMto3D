@@ -24,7 +24,7 @@ public class Main : MonoBehaviour {
 
 
 	/// <summary>
-	/// 	Undique isntance du singleton MapLoader servant à charger une carte OSM.
+	/// 	Undique instance du singleton MapLoader servant à charger une carte OSM.
 	/// </summary>
 	private MapLoader mapLoader;
 

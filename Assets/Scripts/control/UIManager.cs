@@ -39,11 +39,18 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void Start() {
 		// Initialisation des "transformateurs" d'objet s'ils sont null
-		if(editionController != null && (movingEditor == null || turningEditor == null || heightChangingEditor == null || skinChangingEditor == null)) {
-			movingEditor = editionController.MovingEditor;
-			turningEditor = editionController.TurningEditor;
-			heightChangingEditor = editionController.HeightChangingEditor;
-			skinChangingEditor = editionController.SkinChangingEditor;
+		if (editionController != null) {
+			if (movingEditor == null)
+				movingEditor = editionController.MovingEditor;
+
+			if (turningEditor == null)
+				turningEditor = editionController.TurningEditor;
+
+			if (heightChangingEditor == null)
+				heightChangingEditor = editionController.HeightChangingEditor;
+
+			if (skinChangingEditor == null)
+				skinChangingEditor = editionController.SkinChangingEditor;
 		}
 	}
 
@@ -220,12 +227,12 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		switch (name.Split('_')[0]) {
 		// ==== Gestion des boutons controllant la visibilité des objets ====
 		case UiNames.TOGGLE_VISIBILITY_BUTTON:
-			visibilityPanelController.VisibilityWheelPanel.SetActive(true);
-			visibilityPanelController.OpenWheel(null);
+			visibilityPanelController.transform.gameObject.SetActive(true);
+			visibilityPanelController.OpenPanel(null);
 			break;
 		case UiNames.CLOSE_VISIBILITY_WHEEL_BUTTON:
-			visibilityPanelController.CloseWheel(() => {
-				visibilityPanelController.VisibilityWheelPanel.SetActive(false);
+			visibilityPanelController.ClosePanel(() => {
+				visibilityPanelController.transform.gameObject.SetActive(false);
 			});
 			break;
 		case UiNames.DISABLED_BUILDING_NODES_BUTTON:
@@ -403,7 +410,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				skinChangingEditor.ChangeBuildingColor(gameObject);
 			}
 			break;
-		case UiNames.VALIDIATE_EDITION_BUTTON:
+		case UiNames.VALIDATE_EDITION_BUTTON:
 			// Validation d'une transformation si le controlleur de modification est bien en cours de modification
 			if (editionController.Transforming ()) {
 				editionController.ValidateTransform ();

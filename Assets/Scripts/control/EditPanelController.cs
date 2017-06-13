@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections;
 using System;
 
-public class EditPanelController : PanelController {
+public class EditPanelController : CommonPanelController {
 	/// <summary>Bouton permettant de valider la transformation d'un bâtiment (déplacement par ex).</summary>
 	protected GameObject validateEditionButton;
 
@@ -13,7 +13,7 @@ public class EditPanelController : PanelController {
 	public void Awake() {
 		this.panelState = PanelStates.CLOSED;
 
-		this.validateEditionButton = GameObject.Find(UiNames.VALIDIATE_EDITION_BUTTON);
+		this.validateEditionButton = GameObject.Find(UiNames.VALIDATE_EDITION_BUTTON);
 		this.cancelEditionButton = GameObject.Find(UiNames.CANCEL_EDITION_BUTTON);
 
 		this.validateEditionButton.transform.localScale = Vector3.zero;

@@ -120,7 +120,7 @@ public class UiNames {
 	public const string SLIDE_BUTTON = "SlidePanelButton";
 
 	/// <summary>Nom de bouton de validation d'une édition.</summary>
-	public const string VALIDIATE_EDITION_BUTTON = "ValidateEditionButton";
+	public const string VALIDATE_EDITION_BUTTON = "ValidateEditionButton";
 
 	/// <summary>Nom de bouton d'annulation d'une édition.</summary>
 	public const string CANCEL_EDITION_BUTTON = "CancelEditionButton";

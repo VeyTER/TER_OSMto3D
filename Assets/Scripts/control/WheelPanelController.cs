@@ -4,19 +4,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class WheelPanelController : MonoBehaviour {
-	private enum WheelState { CLOSED, CLOSED_TO_OPEN, OPEN, OPEN_TO_CLOSED }
-	private WheelState wheelState;
-
-	private GameObject visibilityWheelPanel;
-
-	private Vector3 startPosition;
-	private Vector3 endPosition;
-
+public class WheelPanelController : PanelController {
 	private void Start() {
-		this.wheelState = WheelState.CLOSED;
-		this.visibilityWheelPanel = GameObject.Find(UiNames.VISIBILITY_WHEEL_PANEL);
-		this.visibilityWheelPanel.SetActive(false);
+		this.panelState = PanelStates.CLOSED;
+		this.gameObject.SetActive(false);
 		this.BuildWheel();
 	}
 
@@ -75,16 +66,16 @@ public class WheelPanelController : MonoBehaviour {
 			return null;
 	}
 
-	public void OpenWheel(Action finalAction) {
-		if (wheelState == WheelState.CLOSED) {
-			wheelState = WheelState.CLOSED_TO_OPEN;
+	public override void OpenPanel(Action finalAction) {
+		if (panelState == PanelStates.CLOSED) {
+			panelState = PanelStates.CLOSED_TO_OPEN;
 			this.StartCoroutine(this.MoveWheel(1, finalAction));
 		}
 	}
 
-	public void CloseWheel(Action finalAction) {
-		if (wheelState == WheelState.OPEN) {
-			wheelState = WheelState.OPEN_TO_CLOSED;
+	public override void ClosePanel(Action finalAction) {
+		if (panelState == PanelStates.OPEN) {
+			panelState = PanelStates.OPEN_TO_CLOSED;
 			this.StartCoroutine(this.MoveWheel(-1, finalAction));
 		}
 	}
@@ -97,27 +88,29 @@ public class WheelPanelController : MonoBehaviour {
 		float targetAngle = 0;
 
 		if (direction > 0) {
-			initPosition = startPosition;
-			targetPosition = endPosition;
+			initPosition = StartPosition;
+			targetPosition = EndPosition;
 
-			initAngle = -45;
+			initAngle = 45;
 			targetAngle = 0;
 		} else if (direction < 0) {
 			initPosition = endPosition;
 			targetPosition = startPosition;
 
 			initAngle = 0;
-			targetAngle = -45;
+			targetAngle = 45;
 		}
 
-		Image visibilitylPanelImage = visibilityWheelPanel.GetComponent<Image>();
+		Image visibilitylPanelImage = GetComponent<Image>();
 		Color visibilitylPanelImageColor = visibilitylPanelImage.color;
 
-		GameObject toggleVisibilityButton = visibilityWheelPanel.transform.parent.gameObject;
-		GameObject toggleVisibilityIcon = visibilityWheelPanel.transform.parent.GetChild(0).gameObject;
+		GameObject toggleVisibilityButton = transform.parent.gameObject;
+		GameObject toggleVisibilityIcon = transform.parent.GetChild(0).gameObject;
+		Image visibilityIconImage = toggleVisibilityIcon.GetComponent<Image>();
+		Color visibilityIconColor = visibilityIconImage.color;
 
-		int nbChildren = visibilityWheelPanel.transform.childCount - 1;
-		GameObject closeVisibilityWheelButton = visibilityWheelPanel.transform.GetChild(nbChildren).gameObject;
+		int nbChildren = transform.childCount - 1;
+		GameObject closeVisibilityWheelButton = transform.GetChild(nbChildren).gameObject;
 		Image closeButtonImage = closeVisibilityWheelButton.GetComponent<Image>();
 		Color closeButtonImageColor = closeButtonImage.color;
 
@@ -138,9 +131,9 @@ public class WheelPanelController : MonoBehaviour {
 			visibilitylPanelImageColor.a = currentAlpha;
 			visibilitylPanelImage.color = visibilitylPanelImageColor;
 
+			closeButtonImage.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
 			closeButtonImageColor.a = currentAlpha;
 			closeButtonImage.color = closeButtonImageColor;
-			closeButtonImage.transform.rotation = Quaternion.Euler(0, 0, -currentAngle);
 
 			toggleVisibilityButton.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
 			if (direction > 0)
@@ -148,11 +141,13 @@ public class WheelPanelController : MonoBehaviour {
 			else if (direction < 0)
 				toggleVisibilityButton.transform.localPosition = Vector3.Lerp(initPosition, targetPosition, cursor);
 
-			toggleVisibilityIcon.transform.rotation = Quaternion.Euler(0, 0, 0);
+			toggleVisibilityIcon.transform.rotation = Quaternion.Euler(0, 0, currentAngle - 45);
+			visibilityIconColor.a = 1 - currentAlpha;
+			visibilityIconImage.color = visibilityIconColor;
 
 			for (int j = 0; j < transform.childCount - 1; j++) {
-				Transform switchTransform = visibilityWheelPanel.transform.GetChild(j);
-				switchTransform.rotation = Quaternion.Euler(0, 0, -currentAngle);
+				Transform switchTransform = transform.GetChild(j);
+				switchTransform.rotation = Quaternion.Euler(0, 0, 0);
 
 				Image disabledButtonImage = switchTransform.GetChild(0).GetComponent<Image>();
 				Image enabledButtonImage = switchTransform.GetChild(1).GetComponent<Image>();
@@ -172,26 +167,11 @@ public class WheelPanelController : MonoBehaviour {
 
 
 		if (direction > 0)
-			wheelState = WheelState.OPEN;
+			panelState = PanelStates.OPEN;
 		else if (direction < 0)
-			wheelState = WheelState.CLOSED;
+			panelState = PanelStates.CLOSED;
 
 		if (finalAction != null)
 			finalAction();
-	}
-
-	public GameObject VisibilityWheelPanel {
-		get { return visibilityWheelPanel; }
-		set { visibilityWheelPanel = value; }
-	}
-
-	public Vector3 StartPosition {
-		get { return startPosition; }
-		set { startPosition = value; }
-	}
-
-	public Vector3 EndPosition {
-		get { return endPosition; }
-		set { endPosition = value; }
 	}
 }

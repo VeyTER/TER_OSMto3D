@@ -2,32 +2,32 @@
 using System.Collections;
 using System;
 
-public class SkinPanelController : PanelController {
-	private enum SlidingStates { RIGHT, RIGHT_TO_LEFT, LEFT, LEFT_TO_RIGHT };
-	private SlidingStates slidingState;
+public class SkinPanelController : CommonPanelController {
+	private enum SliderStates { RIGHT, RIGHT_TO_LEFT, LEFT, LEFT_TO_RIGHT };
+	private SliderStates sliderState;
 
 	private GameObject skinSlider;
 
 	private void Awake() {
 		this.skinSlider = GameObject.Find(UiNames.SKIN_SLIDER);
-		this.slidingState = SlidingStates.RIGHT;
+		this.sliderState = SliderStates.RIGHT;
 	}
 
 	public void SlideSliderRight() {
-		if (slidingState == SlidingStates.LEFT) {
-			slidingState = SlidingStates.LEFT_TO_RIGHT;
-			this.StartCoroutine(this.SlidePanel(1));
+		if (sliderState == SliderStates.LEFT) {
+			sliderState = SliderStates.LEFT_TO_RIGHT;
+			this.StartCoroutine(this.SlideSlider(1));
 		}
 	}
 
 	public void SlideSliderLeft() {
-		if (slidingState == SlidingStates.RIGHT) {
-			slidingState = SlidingStates.RIGHT_TO_LEFT;
-			this.StartCoroutine(this.SlidePanel(-1));
+		if (sliderState == SliderStates.RIGHT) {
+			sliderState = SliderStates.RIGHT_TO_LEFT;
+			this.StartCoroutine(this.SlideSlider(-1));
 		}
 	}
 
-	private IEnumerator SlidePanel (int direction) {
+	private IEnumerator SlideSlider(int direction) {
 		// Configuration courante du panneau
 		Vector3 sliderPosition = skinSlider.transform.localPosition;
 		RectTransform panelRectTransform = (RectTransform) transform;
@@ -54,13 +54,13 @@ public class SkinPanelController : PanelController {
 
 		skinSlider.transform.localPosition = new Vector3(sliderTargetPosX, sliderPosition.y, sliderPosition.z);
 
-		if (slidingState == SlidingStates.LEFT_TO_RIGHT)
-			slidingState = SlidingStates.RIGHT;
-		else if (slidingState == SlidingStates.RIGHT_TO_LEFT)
-			slidingState = SlidingStates.LEFT;
+		if (sliderState == SliderStates.LEFT_TO_RIGHT)
+			sliderState = SliderStates.RIGHT;
+		else if (sliderState == SliderStates.RIGHT_TO_LEFT)
+			sliderState = SliderStates.LEFT;
 	}
 
 	public bool IsMotionLess() {
-		return slidingState == SlidingStates.RIGHT || slidingState == SlidingStates.LEFT;
+		return sliderState == SliderStates.RIGHT || sliderState == SliderStates.LEFT;
 	}
 }

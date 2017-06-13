@@ -29,11 +29,11 @@ public class SkinChangingEditor : ObjectEditor {
 		this.skinPanelController = this.skinPanel.GetComponent<SkinPanelController>();
 
 		RectTransform editPanelTransform = (RectTransform) this.skinPanelController.transform;
-		this.skinPanelController.StartPosX = editPanelTransform.localPosition.x - editPanelTransform.rect.width;
-		this.skinPanelController.EndPosX = editPanelTransform.localPosition.x;
+		this.skinPanelController.StartPosition = new Vector3(editPanelTransform.localPosition.x - editPanelTransform.rect.width, 0, 0);
+		this.skinPanelController.EndPosition = new Vector3(editPanelTransform.localPosition.x, 0, 0);
 
 		Vector3 panelPosition = this.skinPanel.transform.localPosition;
-		this.skinPanel.transform.localPosition = new Vector3(this.skinPanelController.StartPosX, panelPosition.y, panelPosition.z);
+		this.skinPanel.transform.localPosition = new Vector3(this.skinPanelController.StartPosition.x, panelPosition.y, panelPosition.z);
 
 		this.buttonIdToMaterialTable = new Dictionary<int, Material>();
 		this.buttonIdToColorTable = new Dictionary<int, Color>();
