@@ -758,6 +758,6 @@ public class CityBuilder {
 	}
 
 	private class CityBuilderHolder {
-		public static CityBuilder instance = new CityBuilder();
+		internal static CityBuilder instance = new CityBuilder();
 	}
 }

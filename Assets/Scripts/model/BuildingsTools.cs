@@ -685,6 +685,6 @@ public class BuildingsTools {
 	}
 
 	public static class BuildingsToolsInstanceHolder {
-		public static BuildingsTools instance = new BuildingsTools();
+		internal static BuildingsTools instance = new BuildingsTools();
 	}
 }

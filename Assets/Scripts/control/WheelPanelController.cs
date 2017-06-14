@@ -20,8 +20,8 @@ public class WheelPanelController : PanelController {
 
 		float currentAngle = 0;
 		for (int i = 0; i < transform.childCount - 1; i++) {
-			float localPosX = (float)(Math.Cos(currentAngle * Mathf.Deg2Rad) * remoteness);
-			float localPosY = (float)(Math.Sin(currentAngle * Mathf.Deg2Rad) * remoteness);
+			float localPosX = (float) (Math.Cos(currentAngle * Mathf.Deg2Rad) * remoteness);
+			float localPosY = (float) (Math.Sin(currentAngle * Mathf.Deg2Rad) * remoteness);
 
 			Transform wheelSwitchTransform = transform.GetChild(i);
 			wheelSwitchTransform.localPosition = new Vector3(localPosX + wheelTransform.sizeDelta.x / 2F, localPosY, 0);
@@ -118,15 +118,12 @@ public class WheelPanelController : PanelController {
 			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
 
 			float currentAlpha = 0;
-			float currentAngle = 0;
+			float currentAngle = initAngle + (targetAngle - initAngle) * cursor;
 
-			if (direction > 0) {
+			if (direction > 0)
 				currentAlpha = cursor;
-				currentAngle = initAngle + (targetAngle - initAngle) * cursor;
-			} else if(direction < 0) {
+			else if (direction < 0)
 				currentAlpha = 1 - cursor;
-				currentAngle = initAngle + (targetAngle - initAngle) * cursor;
-			}
 
 			visibilitylPanelImageColor.a = currentAlpha;
 			visibilitylPanelImage.color = visibilitylPanelImageColor;
@@ -136,35 +133,16 @@ public class WheelPanelController : PanelController {
 			closeButtonImage.color = closeButtonImageColor;
 
 			toggleVisibilityButton.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
-			if (direction > 0)
-				toggleVisibilityButton.transform.localPosition = Vector3.Lerp(initPosition, targetPosition, cursor);
-			else if (direction < 0)
-				toggleVisibilityButton.transform.localPosition = Vector3.Lerp(initPosition, targetPosition, cursor);
+			toggleVisibilityButton.transform.localPosition = Vector3.Lerp(initPosition, targetPosition, cursor);
 
 			toggleVisibilityIcon.transform.rotation = Quaternion.Euler(0, 0, currentAngle - 45);
 			visibilityIconColor.a = 1 - currentAlpha;
 			visibilityIconImage.color = visibilityIconColor;
 
-			for (int j = 0; j < transform.childCount - 1; j++) {
-				Transform switchTransform = transform.GetChild(j);
-				switchTransform.rotation = Quaternion.Euler(0, 0, 0);
-
-				Image disabledButtonImage = switchTransform.GetChild(0).GetComponent<Image>();
-				Image enabledButtonImage = switchTransform.GetChild(1).GetComponent<Image>();
-
-				Color disabledButtonImageColor = disabledButtonImage.color;
-				Color enabledButtonImageColor = disabledButtonImage.color;
-
-				disabledButtonImageColor.a = currentAlpha;
-				enabledButtonImageColor.a = currentAlpha;
-
-				disabledButtonImage.color = disabledButtonImageColor;
-				enabledButtonImage.color = disabledButtonImageColor;
-			}
+			this.FadeInHierarchy(currentAlpha);
 
 			yield return new WaitForSeconds(0.01F);
 		}
-
 
 		if (direction > 0)
 			panelState = PanelStates.OPEN;
@@ -173,5 +151,24 @@ public class WheelPanelController : PanelController {
 
 		if (finalAction != null)
 			finalAction();
+	}
+
+	private void FadeInHierarchy(float alpha) {
+		for (int i = 0; i < transform.childCount - 1; i++) {
+			Transform switchTransform = transform.GetChild(i);
+			switchTransform.rotation = Quaternion.Euler(0, 0, 0);
+
+			Image disabledButtonImage = switchTransform.GetChild(0).GetComponent<Image>();
+			Image enabledButtonImage = switchTransform.GetChild(1).GetComponent<Image>();
+
+			Color disabledButtonImageColor = disabledButtonImage.color;
+			Color enabledButtonImageColor = disabledButtonImage.color;
+
+			disabledButtonImageColor.a = alpha;
+			enabledButtonImageColor.a = alpha;
+
+			disabledButtonImage.color = disabledButtonImageColor;
+			enabledButtonImage.color = disabledButtonImageColor;
+		}
 	}
 }

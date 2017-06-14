@@ -905,6 +905,6 @@ public class MapLoader {
 	}
 
 	private static class MapLoaderHolder {
-		public static MapLoader instance = new MapLoader();
+		internal static MapLoader instance = new MapLoader();
 	}
 }

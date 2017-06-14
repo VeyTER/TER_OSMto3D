@@ -26,7 +26,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	private static HeightChangingEditor heightChangingEditor;
 	private static SkinChangingEditor skinChangingEditor;
 
-	public static WheelPanelController visibilityPanelController;
+	private static ControlPanelManager controlPanelManager;
 
 	/// <summary>
 	/// 	Unique instance du singleton CityBuilder servant construire la ville en 3D à partir des données OSM.
@@ -51,6 +51,10 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 			if (skinChangingEditor == null)
 				skinChangingEditor = editionController.SkinChangingEditor;
+		}
+
+		if (controlPanelManager == null) {
+			controlPanelManager = ControlPanelManager.GetInstance();
 		}
 	}
 
@@ -224,93 +228,163 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// </summary>
 	/// <param name="eventData">Données sur l'évènement.</param>
 	public void OnPointerUp (PointerEventData eventData) {
+		PanelController panelController1 = controlPanelManager.GetPanelController(UiNames.VISIBILITY_WHEEL_PANEL);
+		PanelController panelController2 = controlPanelManager.GetPanelController(UiNames.BUILDING_CREATION_BOX_PANEL);
+
+		WheelPanelController visibilityPanelController = null;
+		if(panelController1.GetType() == typeof(WheelPanelController))
+			visibilityPanelController = (WheelPanelController) panelController1;
+
+		BoxPanelController buildingCreationPanelController = null;
+		if (panelController2.GetType() == typeof(BoxPanelController))
+			buildingCreationPanelController = (BoxPanelController) panelController2;
+
 		switch (name.Split('_')[0]) {
+		case UiNames.CREATE_BUILDING_BUTTON:
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.NONE) {
+				buildingCreationPanelController.transform.gameObject.SetActive(true);
+				buildingCreationPanelController.OpenPanel(null);
+				controlPanelManager.ControlState = ControlPanelManager.ControlStates.BUILDING_CREATION;
+			}
+			break;
+
+		case UiNames.VALIDATE_BUILDING_CREATION_BUTTON:
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.BUILDING_CREATION) {
+
+
+				buildingCreationPanelController.ClosePanel(() => {
+					buildingCreationPanelController.transform.gameObject.SetActive(false);
+					controlPanelManager.ControlState = ControlPanelManager.ControlStates.NONE;
+				});
+			}
+			break;
+
+		case UiNames.CANCEL_BUILDING_CREATION_BUTTON:
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.BUILDING_CREATION) {
+
+
+				buildingCreationPanelController.ClosePanel(() => {
+					buildingCreationPanelController.transform.gameObject.SetActive(false);
+					controlPanelManager.ControlState = ControlPanelManager.ControlStates.NONE;
+				});
+			}
+			break;
+
 		// ==== Gestion des boutons controllant la visibilité des objets ====
 		case UiNames.TOGGLE_VISIBILITY_BUTTON:
-			visibilityPanelController.transform.gameObject.SetActive(true);
-			visibilityPanelController.OpenPanel(null);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.NONE) {
+				visibilityPanelController.transform.gameObject.SetActive(true);
+				visibilityPanelController.OpenPanel(null);
+				controlPanelManager.ControlState = ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING;
+			}
 			break;
 		case UiNames.CLOSE_VISIBILITY_WHEEL_BUTTON:
-			visibilityPanelController.ClosePanel(() => {
-				visibilityPanelController.transform.gameObject.SetActive(false);
-			});
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				visibilityPanelController.ClosePanel(() => {
+					visibilityPanelController.transform.gameObject.SetActive(false);
+					controlPanelManager.ControlState = ControlPanelManager.ControlStates.NONE;
+				});
+			}
 			break;
 		case UiNames.DISABLED_BUILDING_NODES_BUTTON:
-			cityBuilder.BuildingNodes.SetActive(true);
-			visibilityPanelController.EnableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.BuildingNodes.SetActive(true);
+				visibilityPanelController.EnableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.DISABLED_HIGHWAY_NODES_BUTTON:
-			cityBuilder.HighwayNodes.SetActive(true);
-			visibilityPanelController.EnableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.HighwayNodes.SetActive(true);
+				visibilityPanelController.EnableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.DISABLED_WALLS_BUTTON:
-			cityBuilder.WallGroups.SetActive(true);
-			visibilityPanelController.EnableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.WallGroups.SetActive(true);
+				visibilityPanelController.EnableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.DISABLED_ROOFS_BUTTON:
-			cityBuilder.Roofs.SetActive(true);
-			visibilityPanelController.EnableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Roofs.SetActive(true);
+				visibilityPanelController.EnableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.DISABLED_HIGHWAYS_BUTTON:
-			cityBuilder.Highways.SetActive(true);
-			visibilityPanelController.EnableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Highways.SetActive(true);
+				visibilityPanelController.EnableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.DISABLED_FOOTWAYS_BUTTON:
-			cityBuilder.Footways.SetActive(true);
-			visibilityPanelController.EnableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Footways.SetActive(true);
+				visibilityPanelController.EnableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.DISABLED_CYCLEWAYS_BUTTON:
-			cityBuilder.Cycleways.SetActive(true);
-			visibilityPanelController.EnableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Cycleways.SetActive(true);
+				visibilityPanelController.EnableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.DISABLED_TREES_BUTTON:
-			cityBuilder.Trees.SetActive(true);
-			visibilityPanelController.EnableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Trees.SetActive(true);
+				visibilityPanelController.EnableButton(transform.parent.gameObject);
+			}
 			break;
 
 		case UiNames.ENABLED_BUILDING_NODES_BUTTON:
-			cityBuilder.BuildingNodes.SetActive(false);
-			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.BuildingNodes.SetActive(false);
+				visibilityPanelController.DisableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.ENABLED_HIGHWAY_NODES_BUTTON:
-			cityBuilder.HighwayNodes.SetActive(false);
-			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.HighwayNodes.SetActive(false);
+				visibilityPanelController.DisableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.ENABLED_WALLS_BUTTON:
-			cityBuilder.WallGroups.SetActive(false);
-			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.WallGroups.SetActive(false);
+				visibilityPanelController.DisableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.ENABLED_ROOFS_BUTTON:
-			cityBuilder.Roofs.SetActive(false);
-			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Roofs.SetActive(false);
+				visibilityPanelController.DisableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.ENABLED_HIGHWAYS_BUTTON:
-			cityBuilder.Highways.SetActive(false);
-			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Highways.SetActive(false);
+				visibilityPanelController.DisableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.ENABLED_FOOTWAYS_BUTTON:
-			cityBuilder.Footways.SetActive(false);
-			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Footways.SetActive(false);
+				visibilityPanelController.DisableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.ENABLED_CYCLEWAYS_BUTTON:
-			cityBuilder.Cycleways.SetActive(false);
-			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Cycleways.SetActive(false);
+				visibilityPanelController.DisableButton(transform.parent.gameObject);
+			}
 			break;
 		case UiNames.ENABLED_TREES_BUTTON:
-			cityBuilder.Trees.SetActive(false);
-			visibilityPanelController.DisableButton(transform.parent.gameObject);
+			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
+				cityBuilder.Trees.SetActive(false);
+				visibilityPanelController.DisableButton(transform.parent.gameObject);
+			}
 			break;
 
 		// ==== Gestion des élément d'interface en rapport avec la modification d'objets ====
-		case UiNames.BUILDING_NAME_NPUT_FILED:
-			
-			break;
-		case UiNames.TEMPERATURE_INDICATOR_TEXT_INPUT:
-			
-			break;
-		case UiNames.HUMIDITY_INDICATOR_TEXT_INPUT:
-			
-			break;
 		case UiNames.MOVE_BUTTON:
 			// Préparation du déplacement d'un objet si le controlleur est prêt
 			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {

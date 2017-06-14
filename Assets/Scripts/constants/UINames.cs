@@ -6,12 +6,17 @@
 public class UiNames {
 	public const string MAIN_CANVAS = "MainCanvas";
 
-	public const string ADD_BUILDING_BUTTON = "AddBuildingButton";
+	public const string CREATE_BUILDING_BUTTON = "CreateBuildingButton";
 
 	public const string TOGGLE_VISIBILITY_BUTTON = "ToggleVisibilityButton";
 
 	public const string VISIBILITY_WHEEL_PANEL = "VisibilityWheelPanel";
 
+	public const string BUILDING_CREATION_BOX_PANEL = "BuildingCreationBoxPanel";
+
+	public const string VALIDATE_BUILDING_CREATION_BUTTON = "ValidateBuildingCreationButton";
+
+	public const string CANCEL_BUILDING_CREATION_BUTTON = "CancelBuildingCreationButton";
 
 	public const string BUILDING_NODES_SWITCH = "WallsNodesSwitch";
 

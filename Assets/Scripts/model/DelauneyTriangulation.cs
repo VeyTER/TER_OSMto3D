@@ -200,7 +200,6 @@ public class DelauneyTriangulation {
 			return false;
 	}
 
-
 	public List<Triangle> Triangles {
 		get { return triangles; }
 	}

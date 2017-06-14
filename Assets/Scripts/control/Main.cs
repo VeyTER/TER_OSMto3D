@@ -70,11 +70,17 @@ public class Main : MonoBehaviour {
 
 			GameObject visibilityWheelPanel = GameObject.Find(UiNames.VISIBILITY_WHEEL_PANEL);
 			WheelPanelController visibilityPanelContoller = visibilityWheelPanel.GetComponent<WheelPanelController>();
-
 			visibilityPanelContoller.StartPosition = visibilityWheelPanel.transform.parent.localPosition;
 			visibilityPanelContoller.EndPosition = new Vector3(110, visibilityWheelPanel.transform.parent.localPosition.y, 0);
 
-			UiManager.visibilityPanelController = visibilityPanelContoller;
+			GameObject buildingCreationBoxPanel = GameObject.Find(UiNames.BUILDING_CREATION_BOX_PANEL);
+			BoxPanelController buildingCreationPanelContoller = buildingCreationBoxPanel.GetComponent<BoxPanelController>();
+			buildingCreationPanelContoller.StartPosition = buildingCreationBoxPanel.transform.parent.GetChild(0).localPosition;
+			buildingCreationPanelContoller.EndPosition = new Vector3(58.7F, buildingCreationBoxPanel.transform.parent.GetChild(0).localPosition.y, 0);
+
+			ControlPanelManager controlPanelManager = ControlPanelManager.GetInstance();
+			controlPanelManager.AddPanel(visibilityWheelPanel);
+			controlPanelManager.AddPanel(buildingCreationBoxPanel);
 
 			// Désactivation des certains groupes d'objets
 			this.cityBuilder.BuildingNodes.SetActive(false);
