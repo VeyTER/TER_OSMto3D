@@ -28,6 +28,8 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	private static ControlPanelManager controlPanelManager;
 
+	private static BuildingCreationEditor buildingCreationEditor;
+
 	/// <summary>
 	/// 	Unique instance du singleton CityBuilder servant construire la ville en 3D à partir des données OSM.
 	/// </summary>
@@ -53,6 +55,9 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				skinChangingEditor = editionController.SkinChangingEditor;
 		}
 
+		if (buildingCreationEditor == null)
+			buildingCreationEditor = new BuildingCreationEditor(); ;
+
 		if (controlPanelManager == null) {
 			controlPanelManager = ControlPanelManager.GetInstance();
 		}
@@ -69,8 +74,22 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			}
 			break;
 		}
+
+		if (controlPanelManager.ControlState != ControlPanelManager.ControlStates.NONE) {
+			if (this.IsPlayerMoving()) {
+				//buildingCreationEditor.UpdateBuildingSituation();
+			}
+		}
 	}
 
+	private bool IsPlayerMoving() {
+		return (Input.GetKey("up") || Input.GetKey(KeyCode.Z)
+			 || Input.GetKey("down") || Input.GetKey(KeyCode.S)
+			 || Input.GetKey("left") || Input.GetKey(KeyCode.Q)
+			 || Input.GetKey("right") || Input.GetKey(KeyCode.D)
+			 || Input.GetKey("up") || Input.GetKey(KeyCode.Z)
+			 || Input.GetKey("down") || Input.GetKey(KeyCode.S));
+	}
 
 	/// <summary>
 	/// 	Trigger se déclanchant lorsque l'utilisateur entre un nouveau nom pour un bâtiment.

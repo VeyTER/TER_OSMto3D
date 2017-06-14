@@ -264,62 +264,7 @@ public class CityBuilder {
 				// Création et paramétrage de l'objet 3D destiné à former un bâtiment. Pour cela, chaque mur est
 				// construit à partir du noeud courant et du noeud suivant dans le groupe de noeuds courant, puis, il
 				// est ajouté au bâtiment
-				GameObject wallGroup = new GameObject ();
-				for(int i = 0; i < ngp.NodeCount() - 1; i++) {
-					Node currentNode = ngp.GetNode (i);
-					Node nextNode = ngp.GetNode (i + 1);
-
-					// Récupération des coordonnées utiles
-					double posX = (currentNode.Longitude + nextNode.Longitude) / 2;
-					double posY = (currentNode.Latitude + nextNode.Latitude) / 2;
-
-					// Calcul de l'orientation du mur courant
-					double length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
-					double deltaLat = Math.Abs(nextNode.Latitude - currentNode.Latitude);
-					double angle = (Math.Acos(deltaLat / length) * 180 / Math.PI);
-
-					// Création et paramétrage de l'objet 3D destiné à former un mur
-					GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
-					wall.tag = NodeTags.WALL_TAG;
-
-					Image wallImage = wall.AddComponent<Image>();
-					wallImage.color = new Color(1, 0, 0, 0.5F);
-
-					// Paramétrage du mur 3D
-					int nbFloor = ngp.NbFloor;
-					wall.transform.localScale = new Vector3((float) length + Dimensions.WALL_THICKNESS * 1.5F, Dimensions.FLOOR_HEIGHT * nbFloor, Dimensions.WALL_THICKNESS);
-					wall.transform.position = new Vector3((float) posX, (Dimensions.FLOOR_HEIGHT / 2F) * (float) nbFloor, (float) posY);
-
-					// Récupération et configuration de la boite de collision du mur
-					BoxCollider wallBoxColliser = wall.GetComponent<BoxCollider> ();
-					wallBoxColliser.isTrigger = true;
-
-					// Ajout d'une instance du gestionnaire d'interface pour que cette dernière soit déclenchée lors
-					// d'un clic
-					wall.AddComponent<UiManager>();
-
-					// Ajout du mur au bâtiment
-					wall.transform.SetParent(wallGroup.transform);
-
-					// Modification de l'angle en fonction de l'ordre des points
-					if((currentNode.Latitude > nextNode.Latitude && currentNode.Longitude < nextNode.Longitude) 
-					|| (currentNode.Latitude < nextNode.Latitude && currentNode.Longitude > nextNode.Longitude)) {
-						wall.transform.localEulerAngles = new Vector3(0, 90 - (float) angle, 0);
-					} else {
-						wall.transform.localEulerAngles = new Vector3(0, (float) angle + 90, 0);
-					}
-
-					// Nommage du mur à partir du nom du bâtiment s'il existe, sinon, utilisation de la référence du mur
-					if(ngp.Name == "unknown")
-						wall.name = currentNode.Reference  + "_wall_" + i;
-					else
-						wall.name = ngp.Name + "_wall_" + i;
-
-					// Affectation du matériau et de sa couleur au mur pour lui donner la texture voulue
-					MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
-					meshRenderer.material = ngp.CustomMaterial;
-					meshRenderer.materials[0].color = ngp.OverlayColor;
-				}
+				GameObject wallGroup = this.BuildSingleWallGroup(ngp);
 
 				// Ajout d'une entrée dans la table de correspondances
 				buildingsTools.AddBuildingToNodeGroupEntry(wallGroup, ngp);
@@ -357,6 +302,66 @@ public class CityBuilder {
 				}
 			}
 		}
+	}
+
+	public GameObject BuildSingleWallGroup(NodeGroup ngp) {
+		GameObject wallGroup = new GameObject();
+		for (int i = 0; i < ngp.NodeCount() - 1; i++) {
+			Node currentNode = ngp.GetNode(i);
+			Node nextNode = ngp.GetNode(i + 1);
+
+			// Récupération des coordonnées utiles
+			double posX = (currentNode.Longitude + nextNode.Longitude) / 2;
+			double posY = (currentNode.Latitude + nextNode.Latitude) / 2;
+
+			// Calcul de l'orientation du mur courant
+			double length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
+			double deltaLat = Math.Abs(nextNode.Latitude - currentNode.Latitude);
+			double angle = (Math.Acos(deltaLat / length) * 180 / Math.PI);
+
+			// Création et paramétrage de l'objet 3D destiné à former un mur
+			GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			wall.tag = NodeTags.WALL_TAG;
+
+			Image wallImage = wall.AddComponent<Image>();
+			wallImage.color = new Color(1, 0, 0, 0.5F);
+
+			// Paramétrage du mur 3D
+			int nbFloor = ngp.NbFloor;
+			wall.transform.localScale = new Vector3((float) length + Dimensions.WALL_THICKNESS * 1.5F, Dimensions.FLOOR_HEIGHT * nbFloor, Dimensions.WALL_THICKNESS);
+			wall.transform.position = new Vector3((float) posX, (Dimensions.FLOOR_HEIGHT / 2F) * (float) nbFloor, (float) posY);
+
+			// Récupération et configuration de la boite de collision du mur
+			BoxCollider wallBoxColliser = wall.GetComponent<BoxCollider>();
+			wallBoxColliser.isTrigger = true;
+
+			// Ajout d'une instance du gestionnaire d'interface pour que cette dernière soit déclenchée lors
+			// d'un clic
+			wall.AddComponent<UiManager>();
+
+			// Ajout du mur au bâtiment
+			wall.transform.SetParent(wallGroup.transform);
+
+			// Modification de l'angle en fonction de l'ordre des points
+			if ((currentNode.Latitude > nextNode.Latitude && currentNode.Longitude < nextNode.Longitude)
+			|| (currentNode.Latitude < nextNode.Latitude && currentNode.Longitude > nextNode.Longitude)) {
+				wall.transform.localEulerAngles = new Vector3(0, 90 - (float) angle, 0);
+			} else {
+				wall.transform.localEulerAngles = new Vector3(0, (float) angle + 90, 0);
+			}
+
+			// Nommage du mur à partir du nom du bâtiment s'il existe, sinon, utilisation de la référence du mur
+			if (ngp.Name == "unknown")
+				wall.name = currentNode.Reference + "_wall_" + i;
+			else
+				wall.name = ngp.Name + "_wall_" + i;
+
+			// Affectation du matériau et de sa couleur au mur pour lui donner la texture voulue
+			MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
+			meshRenderer.material = ngp.CustomMaterial;
+			meshRenderer.materials[0].color = ngp.OverlayColor;
+		}
+		return wallGroup;
 	}
 
 	private ExternalObject ExternalBuildingAtPosition(Vector3 position, double radius) {

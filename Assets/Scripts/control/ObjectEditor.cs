@@ -52,7 +52,7 @@ public abstract class ObjectEditor {
 	/// </summary>
 	/// <param name="selectedWall">Selected wall.</param>
 	/// <param name="selectedBuilding">Selected building.</param>
-	public void Initialize(GameObject selectedWall, GameObject selectedBuilding) {
+	public void InitializeBasics(GameObject selectedWall, GameObject selectedBuilding) {
 		// Initialisation des objets sélectionnés
 		this.SelectedWall = selectedWall;
 		this.SelectedBuilding = selectedBuilding;
