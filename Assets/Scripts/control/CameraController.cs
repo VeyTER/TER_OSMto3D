@@ -46,15 +46,13 @@ public class CameraController : MonoBehaviour {
 	/// </summary>
 	private Quaternion initRotation;
 
-
 	private GameObject targetBuilding;
-
 
 	public void Start() {
 		this.cameraState = CameraStates.FREE;
 		this.stateBeforeTuringAround = CameraStates.CIRCULARY_CONSTRAINED;
 
-		this.controlMode = ControlModes.FULL_LOCAL;
+		this.controlMode = ControlModes.SEMI_LOCAL;
 
 		this.buildingsTools = BuildingsTools.GetInstance();
 
@@ -76,9 +74,14 @@ public class CameraController : MonoBehaviour {
 
 		float sinVecticalFactor = (float) Math.Sin(cameraVecticalAngle);
 
-		float cosHorizontalOffset = 0.1F * (float) Math.Cos(cameraHorizontalAngle) * (sinVecticalFactor > 0 ? (1 - sinVecticalFactor) : (sinVecticalFactor + 1));
-		float sinHorizontalOffset = 0.1F * (float) Math.Sin(cameraHorizontalAngle) * (sinVecticalFactor > 0 ? (1 - sinVecticalFactor) : (sinVecticalFactor + 1));
+		float rawCosHorizontalOffset = 0.1F * (float) Math.Cos(cameraHorizontalAngle);
+		float rawSinHorizontalOffset = 0.1F * (float) Math.Sin(cameraHorizontalAngle);
+
+		float cosHorizontalOffset = rawCosHorizontalOffset * (sinVecticalFactor > 0 ? (1 - sinVecticalFactor) : (sinVecticalFactor + 1));
+		float sinHorizontalOffset = rawSinHorizontalOffset * (sinVecticalFactor > 0 ? (1 - sinVecticalFactor) : (sinVecticalFactor + 1));
 		float sinVecticalOffset = 0.1F * sinVecticalFactor;
+
+		float temps1 = Time.time;
 
 		// Contrôle de la caméra avec le touches du clavier
 		if (cameraState == CameraStates.FREE) {
@@ -121,13 +124,13 @@ public class CameraController : MonoBehaviour {
 					break;
 				case ControlModes.SEMI_LOCAL:
 					if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
-						transform.localPosition = new Vector3(localPosition.x + sinHorizontalOffset, localPosition.y, localPosition.z + cosHorizontalOffset);
+						transform.position = new Vector3(position.x + rawSinHorizontalOffset, position.y, position.z + rawCosHorizontalOffset);
 					if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
-						transform.localPosition = new Vector3(localPosition.x - sinHorizontalOffset, localPosition.y, localPosition.z - cosHorizontalOffset);
+						transform.position = new Vector3(position.x - rawSinHorizontalOffset, position.y, position.z - rawCosHorizontalOffset);
 					if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
-						transform.localPosition = new Vector3(localPosition.x - cosHorizontalOffset, localPosition.y, localPosition.z + sinHorizontalOffset);
+						transform.position = new Vector3(localPosition.x - rawCosHorizontalOffset, localPosition.y, localPosition.z + rawSinHorizontalOffset);
 					if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
-						transform.localPosition = new Vector3(localPosition.x + cosHorizontalOffset, localPosition.y, localPosition.z - sinHorizontalOffset);
+						transform.position = new Vector3(position.x + rawCosHorizontalOffset, position.y, position.z - rawSinHorizontalOffset);
 					break;
 				case ControlModes.FULL_LOCAL:
 					if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
@@ -135,9 +138,9 @@ public class CameraController : MonoBehaviour {
 					if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
 						transform.position = new Vector3(position.x - sinHorizontalOffset, position.y + sinVecticalOffset, position.z - cosHorizontalOffset);
 					if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
-						transform.position = new Vector3(localPosition.x - cosHorizontalOffset, localPosition.y, localPosition.z + sinHorizontalOffset);
+						transform.position = new Vector3(localPosition.x - rawCosHorizontalOffset, localPosition.y, localPosition.z + rawSinHorizontalOffset);
 					if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
-						transform.position = new Vector3(position.x + cosHorizontalOffset, position.y, position.z - sinHorizontalOffset);
+						transform.position = new Vector3(position.x + rawCosHorizontalOffset, position.y, position.z - rawSinHorizontalOffset);
 					break;
 				}
 			}
@@ -158,8 +161,13 @@ public class CameraController : MonoBehaviour {
 				transform.localRotation = Quaternion.Euler(localRoation.eulerAngles.x, localRoation.y - horizontalOrientation * Mathf.Rad2Deg + 90, localRoation.eulerAngles.z);
 			}
 		}
-	}
 
+		float temps2 = Time.time;
+
+		if (temps1 - temps2 > 0)
+			Debug.Log(temps1 - temps2);
+	}
+	
 
 	/// <summary>
 	/// 	Déplace et oriente la caméra à une certaine situation en effectuant une action lorsque la tâche est

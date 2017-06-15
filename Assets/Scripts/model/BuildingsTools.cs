@@ -217,8 +217,8 @@ public class BuildingsTools {
 				// (pour faire boucler les bâtiments), c'est pourquoi, un index a été ajouté pour cibler précisément le
 				// nd voulu
 				int i = 1;
-				for (; i < resumedBuildingNd.Count && (!resumedBuildingNd [i].Attributes [XmlAttributes.REFERENCE].Value.Equals (node.Reference.ToString ())
-															|| !resumedBuildingNd [i].Attributes [XmlAttributes.INDEX].Value.Equals (node.Index.ToString ())); i++);
+				for (; i < resumedBuildingNd.Count && (!resumedBuildingNd [i].Attributes [XmlAttributes.REFERENCE].Value.Equals (node.Reference)
+													|| !resumedBuildingNd [i].Attributes [XmlAttributes.INDEX].Value.Equals (node.Index.ToString ())); i++);
 
 				// Mise à jour de la position du nd s'il a été trouvé
 				if (i < resumedBuildingNd.Count) {
@@ -362,7 +362,7 @@ public class BuildingsTools {
 			buildingNode.AppendChild(buildingInfoNode);
 
 			// Ajout des attributs et de la valeurs dans le noeud XML d'information
-			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ID, nodeGroup.Id.ToString());
+			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ID, nodeGroup.Id);
 			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.NAME, nodeGroup.Name);
 			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor.ToString());
 			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, nodeGroup.RoofAngle.ToString());
@@ -376,7 +376,7 @@ public class BuildingsTools {
 	/// </summary>
 	/// <returns><c>true</c>, si l'entrée existe, <c>false</c> sinon.</returns>
 	/// <param name="nodeGroupId">ID du bâtiment dont on veut vérifier l'existance.</param>
-	private bool CustomBuildingExists(long nodeGroupId) {
+	private bool CustomBuildingExists(string nodeGroupId) {
 		if (File.Exists(customFilePath)) {
 			string xPath = "/" + XmlTags.EARTH + "/" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroupId + "\"]";
 			return mapCustomDocument.SelectSingleNode(xPath) != null;
@@ -682,6 +682,25 @@ public class BuildingsTools {
 		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
 		GameObject buildingNodeGroup = this.NodeGroupToBuildingNodeGroup(nodeGroup);
 		return buildingNodeGroup;
+	}
+
+	public bool IsInfoAttributeValueUsed(string attributeName, string value) {
+		if (File.Exists(resumeFilePath) && File.Exists(customFilePath)) {
+			mapResumeDocument.Load(resumeFilePath);
+			mapCustomDocument.Load(customFilePath);
+
+			string xPath = "//" + XmlTags.INFO + "[@" + attributeName + "=\"" + value + "\"]";
+
+			XmlNode resumeInfoNode = mapResumeDocument.SelectSingleNode(xPath);
+			XmlNode customInfoNode = mapCustomDocument.SelectSingleNode(xPath);
+
+			mapResumeDocument.Save(resumeFilePath);
+			mapCustomDocument.Save(customFilePath);
+
+			return resumeInfoNode != null || customInfoNode != null;
+		} else {
+			return false;
+		}
 	}
 
 	public static class BuildingsToolsInstanceHolder {

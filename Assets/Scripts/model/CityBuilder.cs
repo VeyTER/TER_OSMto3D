@@ -188,8 +188,9 @@ public class CityBuilder {
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.IsBuilding()) {
 				// Création et paramétrage de l'objet 3D destiné à former un groupe de noeuds de bâtiment
-				GameObject buildingNodeGroup = new GameObject ();;
-				buildingNodeGroup.name = ngp.Id.ToString();
+				GameObject buildingNodeGroup = new GameObject() {
+					name = ngp.Id
+				};
 
 				// Ajout du groupe de noeuds à l'objet contenant les groupes de noeuds de bâtiments
 				// et ajout d'une entrée dans la table de correspondances
@@ -201,7 +202,7 @@ public class CityBuilder {
 				foreach(Node n in ngp.Nodes) {
 					// Création et paramétrage de l'objet 3D destiné à former un noeud de bâtiment
 					GameObject buildingNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
-					buildingNode.name = n.Reference.ToString();
+					buildingNode.name = n.Reference;
 					buildingNode.tag = NodeTags.BUILDING_NODE_TAG;
 					buildingNode.transform.position = new Vector3((float)n.Longitude, 0, (float)n.Latitude);
 					buildingNode.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
@@ -225,7 +226,7 @@ public class CityBuilder {
 					foreach (Node n in ngp.Nodes) {
 						// Création et paramétrage de l'objet 3D destiné à former un noeud de route
 						GameObject highwayNode = GameObject.CreatePrimitive (PrimitiveType.Cube);
-						highwayNode.name = n.Reference.ToString();
+						highwayNode.name = n.Reference;
 						highwayNode.tag = NodeTags.HIGHWAY_NODE_TAG;
 						highwayNode.transform.position = new Vector3 ((float)n.Longitude, 0, (float)n.Latitude);
 						highwayNode.transform.localScale = new Vector3 (0.02F, 0.02F, 0.02F);
@@ -252,8 +253,6 @@ public class CityBuilder {
 		wallGroups.AddComponent<EditionController> ();
 		UiManager.editionController = wallGroups.GetComponent<EditionController>();
 
-		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-
 		// Construction et ajout des bâtiments
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.IsBuilding()) {
@@ -265,41 +264,7 @@ public class CityBuilder {
 				// construit à partir du noeud courant et du noeud suivant dans le groupe de noeuds courant, puis, il
 				// est ajouté au bâtiment
 				GameObject wallGroup = this.BuildSingleWallGroup(ngp);
-
-				// Ajout d'une entrée dans la table de correspondances
-				buildingsTools.AddBuildingToNodeGroupEntry(wallGroup, ngp);
-				buildingsTools.AddNodeGroupToBuildingEntry(ngp, wallGroup);
-
-				// Déplacement des murs au sein du bâtiment pour qu'ils aient une position relative au centre
-				Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup);
-				wallGroup.transform.position = wallGroupCenter;
-				foreach (Transform wallTransform in wallGroup.transform)
-					wallTransform.transform.position -= wallGroup.transform.position;
-
-				// Nommage du bâtiment avec son nom dans les fichiers de données s'il existe, sinon, utilisation de
-				// son ID
-				if(ngp.Name == "unknown")
-					wallGroup.name = "Bâtiment n°" + ngp.Id;
-				else
-					wallGroup.name = ngp.Name;
-
-				// Ajout du bâtiment au groupe de bâtiments
-				wallGroup.transform.parent = wallGroups.transform;
-
-				ExternalObject externalObject = this.ExternalBuildingAtPosition(wallGroup.transform.position, buildingsTools.BuildingRadius(wallGroup));
-				if (externalObject != null) {
-					if (externalObject.NeverUsed) {
-						GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFileName));
-						importedObject.transform.position = externalObject.Position;
-						importedObject.transform.localScale = new Vector3((float) externalObject.Scale, (float) externalObject.Scale, (float) externalObject.Scale);
-						importedObject.transform.rotation = Quaternion.Euler(importedObject.transform.rotation.x, (float)externalObject.Orientation, importedObject.transform.rotation.z);
-						importedObject.transform.parent = wallGroups.transform;
-
-						externalObject.NeverUsed = false;
-					}
-
-					wallGroup.SetActive(false);
-				}
+				this.SetupSingleWallGroup(wallGroup, ngp);
 			}
 		}
 	}
@@ -362,6 +327,46 @@ public class CityBuilder {
 			meshRenderer.materials[0].color = ngp.OverlayColor;
 		}
 		return wallGroup;
+	}
+
+	public void SetupSingleWallGroup(GameObject wallGroup, NodeGroup ngp) {
+		BuildingsTools buildingsTools = BuildingsTools.GetInstance();
+
+
+		// Ajout d'une entrée dans la table de correspondances
+		buildingsTools.AddBuildingToNodeGroupEntry(wallGroup, ngp);
+		buildingsTools.AddNodeGroupToBuildingEntry(ngp, wallGroup);
+
+		// Déplacement des murs au sein du bâtiment pour qu'ils aient une position relative au centre
+		Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup);
+		wallGroup.transform.position = wallGroupCenter;
+		foreach (Transform wallTransform in wallGroup.transform)
+			wallTransform.transform.position -= wallGroup.transform.position;
+
+		// Nommage du bâtiment avec son nom dans les fichiers de données s'il existe, sinon, utilisation de
+		// son ID
+		if (ngp.Name == "unknown")
+			wallGroup.name = "Bâtiment n°" + ngp.Id;
+		else
+			wallGroup.name = ngp.Name;
+
+		// Ajout du bâtiment au groupe de bâtiments
+		wallGroup.transform.parent = wallGroups.transform;
+
+		ExternalObject externalObject = this.ExternalBuildingAtPosition(wallGroup.transform.position, buildingsTools.BuildingRadius(wallGroup));
+		if (externalObject != null) {
+			if (externalObject.NeverUsed) {
+				GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFileName));
+				importedObject.transform.position = externalObject.Position;
+				importedObject.transform.localScale = new Vector3((float) externalObject.Scale, (float) externalObject.Scale, (float) externalObject.Scale);
+				importedObject.transform.rotation = Quaternion.Euler(importedObject.transform.rotation.x, (float) externalObject.Orientation, importedObject.transform.rotation.z);
+				importedObject.transform.parent = wallGroups.transform;
+
+				externalObject.NeverUsed = false;
+			}
+
+			wallGroup.SetActive(false);
+		}
 	}
 
 	private ExternalObject ExternalBuildingAtPosition(Vector3 position, double radius) {
@@ -449,7 +454,7 @@ public class CityBuilder {
 
 				// Construction et paramétrage de l'objet 3D destiné à former un toit
 				GameObject newRoof = roofBuilder.BuildRoof(posX, posZ, triangulation, ngp.NbFloor, Dimensions.FLOOR_HEIGHT);
-				newRoof.name = ngp.Id.ToString();
+				newRoof.name = ngp.Id;
 
 				// Ajout du toit au groupe de toits
 				newRoof.transform.parent = roofs.transform;
@@ -597,7 +602,7 @@ public class CityBuilder {
 				MeshRenderer foliageMeshRenderer = foliage.GetComponent<MeshRenderer> ();
 				foliageMeshRenderer.material = Resources.Load (Materials.TREE_LEAF) as Material;
 
-				GameObject tree = new GameObject (ngp.Id.ToString());
+				GameObject tree = new GameObject (ngp.Id);
 
 				// Ajout du tronc et du feuillage à l'arbre
 				trunk.transform.parent = tree.transform;
@@ -645,7 +650,7 @@ public class CityBuilder {
 					lightsMeshRenderer.material = Resources.Load (Materials.TRAFFIC_LIGHT) as Material;
 
 					// Création de l'objet 3D destiné à former un feu tricolore
-					GameObject trafficLight = new GameObject (ngp.Id.ToString());
+					GameObject trafficLight = new GameObject (ngp.Id);
 
 					// Ajout du support et des feux au feu tricolore
 					mount.transform.parent = trafficLight.transform;

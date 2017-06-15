@@ -2,21 +2,21 @@
 using System.Collections;
 
 public class Node {
-	private long reference;
+	private string reference;
 	private int index;
 
 	private double latitude;
 	private double longitude;
 
 	public Node(double latitude, double longitude) {
-		this.reference = 0;
+		this.reference = "0";
 		this.index = -1;
 
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
 
-	public Node(long reference, double latitude, double longitude) {
+	public Node(string reference, double latitude, double longitude) {
 		this.reference = reference;
 		this.index = -1;
 
@@ -24,7 +24,7 @@ public class Node {
 		this.longitude = longitude;
 	}
 
-	public Node(long reference, int index, double latitude, double longitude) {
+	public Node(string reference, int index, double latitude, double longitude) {
 		this.reference = reference;
 		this.index = index;
 
@@ -32,7 +32,7 @@ public class Node {
 		this.longitude = longitude;
 	}
 
-	public long Reference {
+	public string Reference {
 		get { return reference; }
 		set { reference = value; }
 	}
@@ -52,7 +52,7 @@ public class Node {
 		set { longitude = value; }
 	}
 
-	public string toString(){
+	public override string ToString(){
 		return "Node [" + reference + "/" + index + "] : (" + longitude + " ; " + latitude + ")";
 	}
 }

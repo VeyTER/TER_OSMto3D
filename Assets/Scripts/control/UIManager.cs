@@ -56,11 +56,10 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		}
 
 		if (buildingCreationEditor == null)
-			buildingCreationEditor = new BuildingCreationEditor(); ;
+			buildingCreationEditor = new BuildingCreationEditor();
 
-		if (controlPanelManager == null) {
+		if (controlPanelManager == null)
 			controlPanelManager = ControlPanelManager.GetInstance();
-		}
 	}
 
 	public void Update() {
@@ -77,7 +76,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		if (controlPanelManager.ControlState != ControlPanelManager.ControlStates.NONE) {
 			if (this.IsPlayerMoving()) {
-				//buildingCreationEditor.UpdateBuildingSituation();
+				buildingCreationEditor.UpdateBuildingSituation();
 			}
 		}
 	}
@@ -263,14 +262,14 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.NONE) {
 				buildingCreationPanelController.transform.gameObject.SetActive(true);
 				buildingCreationPanelController.OpenPanel(null);
+				buildingCreationEditor.InitializeBuildingCreation();
 				controlPanelManager.ControlState = ControlPanelManager.ControlStates.BUILDING_CREATION;
 			}
 			break;
 
 		case UiNames.VALIDATE_BUILDING_CREATION_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.BUILDING_CREATION) {
-
-
+				buildingCreationEditor.ValidateTransform();
 				buildingCreationPanelController.ClosePanel(() => {
 					buildingCreationPanelController.transform.gameObject.SetActive(false);
 					controlPanelManager.ControlState = ControlPanelManager.ControlStates.NONE;
@@ -280,8 +279,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		case UiNames.CANCEL_BUILDING_CREATION_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.BUILDING_CREATION) {
-
-
+				buildingCreationEditor.CancelTransform();
 				buildingCreationPanelController.ClosePanel(() => {
 					buildingCreationPanelController.transform.gameObject.SetActive(false);
 					controlPanelManager.ControlState = ControlPanelManager.ControlStates.NONE;

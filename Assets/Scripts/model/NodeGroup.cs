@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 
 public class NodeGroup {
-	private long id;
+	private string id;
 	private string name;
 
 	private List<Node> nodes;
@@ -34,7 +34,7 @@ public class NodeGroup {
 	private Color overlayColor;
 
 	//constructeur
-	public NodeGroup(long id) {
+	public NodeGroup(string id) {
 		this.id = id;
 		this.name = "unknown";
 
@@ -66,7 +66,7 @@ public class NodeGroup {
 	}
 
 	//Surcharge du constructeur
-	public NodeGroup(long id, string name, string country, string region, string town, string district, string roofType, int roofAngle, int nbWay, int maxSpeed, Material customMaterial, Color overlayColor) {
+	public NodeGroup(string id, string name, string country, string region, string town, string district, string roofType, int roofAngle, int nbWay, int maxSpeed, Material customMaterial, Color overlayColor) {
 		this.id = id;
 		this.name = name;
 
@@ -196,7 +196,7 @@ public class NodeGroup {
 
 	// teste l'egalité de deux NodeGroup
 	public bool Equals (NodeGroup ng) {
-		return this.id == ng.id;
+		return this.id.Equals(ng.id);
 	}
 
 	// renvoie la valeur du tag si la clé existe
@@ -248,7 +248,7 @@ public class NodeGroup {
 			// si l'angle est ok on ajoute le triangle et on supprime le point de la liste
 			if(IsAtRight(nodeA.Value, nodeB.Value, nodeTest.Value)){
 				// on créé le sous triangle
-				ng = new NodeGroup(0);
+				ng = new NodeGroup("0");
 				ng.AddNode(nodeA.Value);
 				ng.AddNode(nodeB.Value);
 				ng.AddNode(nodeTest.Value);
@@ -287,7 +287,7 @@ public class NodeGroup {
 		}
 
 		// on ajoute le dernier triangle
-		ng = new NodeGroup(0);
+		ng = new NodeGroup("0");
 		ng.AddNode(nodeA.Value);
 		ng.AddNode(nodeB.Value);
 		ng.AddNode(nodeTest.Value);
@@ -324,7 +324,7 @@ public class NodeGroup {
 			// si l'angle est ok on ajoute le triangle et on supprime le point de la liste
 			if(!IsAtRight(nodeA.Value,nodeB.Value,nodeTest.Value)){
 				// on créé le sous triangle
-				ng = new NodeGroup(1);
+				ng = new NodeGroup("1");
 				ng.AddNode(nodeA.Value);
 				ng.AddNode(nodeB.Value);
 				ng.AddNode(nodeTest.Value);
@@ -363,7 +363,7 @@ public class NodeGroup {
 		}
 
 		// on ajoute le dernier triangle
-		ng = new NodeGroup(1);
+		ng = new NodeGroup("1");
 		ng.AddNode(nodeA.Value);
 		ng.AddNode(nodeB.Value);
 		ng.AddNode(nodeTest.Value);
@@ -379,7 +379,7 @@ public class NodeGroup {
 
 		foreach (NodeGroup ng in this.decomposition) {
 			// on teste pour savoir dans quel sens on doit vérifier les points ( droite ou gauche )
-			if(ng.id == 0 ) {
+			if(ng.id.Equals("0")) {
 				btest = (this.IsAtRight(ng.GetNode(0),ng.GetNode(1),test) && this.IsAtRight(ng.GetNode(1),ng.GetNode(2),test) && this.IsAtRight(ng.GetNode(2),ng.GetNode(0),test));
 				resultat = resultat || btest;
 			} else {
@@ -445,7 +445,7 @@ public class NodeGroup {
 		}
 	}
 
-	public long Id {
+	public string Id {
 		get { return id; }
 		set { id = value; }
 	}

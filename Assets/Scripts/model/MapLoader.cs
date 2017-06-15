@@ -85,7 +85,7 @@ public class MapLoader {
 		XmlNodeList nodeNodes = OSMDocument.GetElementsByTagName (XmlTags.NODE);
 		foreach (XmlNode nodeNode in nodeNodes) {
 			// Récupération de l'ID et des coordonnées 
-			long id = long.Parse (this.AttributeValue (nodeNode, XmlAttributes.ID));
+			string id = this.AttributeValue (nodeNode, XmlAttributes.ID);
 			double latitude = double.Parse(this.AttributeValue (nodeNode, XmlAttributes.LATITUDE));
 			double longitude = double.Parse(this.AttributeValue (nodeNode, XmlAttributes.LONGIUDE));
 
@@ -141,7 +141,7 @@ public class MapLoader {
 		XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XmlTags.WAY);
 		foreach (XmlNode wayNode in wayNodes) {
 			// Extraction de l'ID de l'objet complexe
-			long id = long.Parse (this.AttributeValue (wayNode, XmlAttributes.ID));
+			string id = this.AttributeValue (wayNode, XmlAttributes.ID);
 
 			// Création, paramétrage et remplissage d'un nouveau groupe de noeuds avec les noeuds associés
 			NodeGroup nodeGroup = new NodeGroup (id);
@@ -153,14 +153,15 @@ public class MapLoader {
 				// stockage de ces propriétés dans le groupe de noeuds courant.
 				if (ndNode.Name.Equals (XmlTags.ND)) {
 					// Extraction de la référence du sous-noeud XML
-					long reference = long.Parse (this.AttributeValue (ndNode, XmlAttributes.REFERENCE));
+					string reference = this.AttributeValue (ndNode, XmlAttributes.REFERENCE);
 
 					// Recherche du noeud d'information correspondant au noeud déja extrait
 					Node node = (Node)extractedNodes [0];
-					for (int j = 0; j < extractedNodes.Count && node.Reference != reference; node = (Node)extractedNodes [j], j++);
+
+					for (int j = 0; j < extractedNodes.Count && !node.Reference.Equals(reference); node = (Node) extractedNodes[j], j++);
 
 					// Ajout du noeud correspondant au groupe de noeuds courant
-					if (node != null)
+						if (node != null)
 						nodeGroup.AddNode (node);
 				} else if (ndNode.Name.Equals (XmlTags.TAG)) {
 					XmlNode tagNode = ndNode;
@@ -614,8 +615,9 @@ public class MapLoader {
 			objectNode.AppendChild (objectNd);
 
 			// Ajout d'informations au nouveau sous-noeud XML
+
+			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.REFERENCE, node.Reference);
 			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.INDEX, node.Index.ToString ());
-			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.REFERENCE, node.Reference.ToString());
 			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LATITUDE, node.Latitude.ToString());
 			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LONGIUDE, node.Longitude.ToString());
 		}
@@ -809,7 +811,7 @@ public class MapLoader {
 				// Récupération du noeud XML contenant les informations sur l'objet courant et récupération de l'ID de
 				// cet objet
 				XmlNode objectInfoNode = childNode.FirstChild;
-				long id = long.Parse(this.AttributeValue (objectInfoNode, XmlAttributes.ID));
+				string id = this.AttributeValue (objectInfoNode, XmlAttributes.ID);
 
 				// Création et remplissage d'un nouveau noeud avec les identifiants et coordonnées extraits de chacun
 				// des sous-noeuds XML du noeud XML courant
@@ -818,7 +820,7 @@ public class MapLoader {
 					XmlNode ndNode = childNode.ChildNodes[i];
 
 					// Extraction des données du sous-noeud courant
-					long reference = long.Parse (this.AttributeValue(ndNode, XmlAttributes.REFERENCE));
+					string reference = this.AttributeValue(ndNode, XmlAttributes.REFERENCE);
 					int index = int.Parse (this.AttributeValue(ndNode, XmlAttributes.INDEX));
 					double latitude = double.Parse (this.AttributeValue(ndNode, XmlAttributes.LATITUDE));
 					double longitude = double.Parse (this.AttributeValue(ndNode, XmlAttributes.LONGIUDE));

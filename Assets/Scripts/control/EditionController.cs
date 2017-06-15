@@ -210,7 +210,7 @@ public class EditionController : MonoBehaviour {
 
 		GameObject IdValueLabel = GameObject.Find(UiNames.ID_INDICATOR_LABEL);
 		Text idText = IdValueLabel.GetComponent<Text>();
-		idText.text = nodeGroup.Id.ToString();
+		idText.text = nodeGroup.Id;
 
 		// Changement de la couleur du bâtiment sélectionné
 		buildingsTools.ColorAsSelected (selectedBuilding);

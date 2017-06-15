@@ -139,9 +139,9 @@ public class BoxPanelController : PanelController {
 				Color elementTextColor = elementText.color;
 
 				if(childElementTransform.name.Contains("Placeholder"))
-					elementTextColor.a = alpha;
-				else
 					elementTextColor.a = alpha/2F;
+				else
+					elementTextColor.a = alpha;
 
 				elementText.color = elementTextColor;
 			}
