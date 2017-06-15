@@ -8,6 +8,17 @@ public class UiNames {
 
 	public const string CREATE_BUILDING_BUTTON = "CreateBuildingButton";
 
+	public const string BUILDING_CREATION_X_COORD_INPUT = "BuildingCreationXCoordInput";
+
+	public const string BUILDING_CREATION_Z_COORD_INPUT = "BuildingCreationYCoordInput";
+
+	public const string BUILDING_CREATION_ORIENTATION_INPUT = "BuildingCreationOrientationInput";
+
+	public const string BUILDING_CREATION_LENGTH_INPUT = "BuildingCreationWidthInput";
+
+	public const string BUILDING_CREATION_WIDTH_INPUT = "BuildingCreationWidthInput";
+
+
 	public const string TOGGLE_VISIBILITY_BUTTON = "ToggleVisibilityButton";
 
 	public const string VISIBILITY_WHEEL_PANEL = "VisibilityWheelPanel";
@@ -88,15 +99,15 @@ public class UiNames {
 
 
 	/// <summary>Nom du champ de saisie du nom du bâtiment courant.</summary>
-	public const string BUILDING_NAME_NPUT_FILED = "BuildingNameTextInput";
+	public const string BUILDING_NAME_INPUT = "BuildingNameInput";
 
 	public const string ID_INDICATOR_LABEL = "IdValue";
 
 	/// <summary>Nom de l'étiquette de l'indicateur de température.</summary>
-	public const string TEMPERATURE_INDICATOR_TEXT_INPUT = "TemperatureInputText";
+	public const string TEMPERATURE_INDICATOR_INPUT_TEXT = "TemperatureInputText";
 
 	/// <summary>Nom de l'étiquette de l'indicateur d'humidité.</summary>
-	public const string HUMIDITY_INDICATOR_TEXT_INPUT = "HumidityInputText";
+	public const string HUMIDITY_INDICATOR_INPUT_TEXT = "HumidityInputText";
 
 	/// <summary>Nom du bouton de translation d'un bâtiment.</summary>
 	public const string MOVE_BUTTON = "MoveButton";
@@ -124,11 +135,11 @@ public class UiNames {
 	/// <summary>Nom du bouton de coulissement du panneau latéral.</summary>
 	public const string SLIDE_BUTTON = "SlidePanelButton";
 
-	/// <summary>Nom de bouton de validation d'une édition.</summary>
-	public const string VALIDATE_EDITION_BUTTON = "ValidateEditionButton";
+	/// <summary>Nom de bouton de validation d'une modification.</summary>
+	public const string VALIDATE_EDIT_BUTTON = "ValidateEditButton";
 
-	/// <summary>Nom de bouton d'annulation d'une édition.</summary>
-	public const string CANCEL_EDITION_BUTTON = "CancelEditionButton";
+	/// <summary>Nom de bouton d'annulation d'une modification.</summary>
+	public const string CANCEL_EDIT_BUTTON = "CancelEditButton";
 
 
 	/// <summary>Nom du bouton d'étendue "mur".</summary>

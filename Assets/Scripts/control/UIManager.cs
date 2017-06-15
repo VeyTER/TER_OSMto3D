@@ -15,7 +15,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// <summary>
 	/// 	Controlleur gérant l'enchainement des modifications d'un objet (déplacement de 5 bâtiments par ex).
 	/// </summary>
-	public static EditionController editionController;
+	public static EditController editController;
 
 	/// <summary>Controlleur gérant le déplacement d'un seul objet (déplacement d'un bâtiment par ex).</summary>
 	private static MovingEditor movingEditor;
@@ -41,18 +41,18 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void Start() {
 		// Initialisation des "transformateurs" d'objet s'ils sont null
-		if (editionController != null) {
+		if (editController != null) {
 			if (movingEditor == null)
-				movingEditor = editionController.MovingEditor;
+				movingEditor = editController.MovingEditor;
 
 			if (turningEditor == null)
-				turningEditor = editionController.TurningEditor;
+				turningEditor = editController.TurningEditor;
 
 			if (heightChangingEditor == null)
-				heightChangingEditor = editionController.HeightChangingEditor;
+				heightChangingEditor = editController.HeightChangingEditor;
 
 			if (skinChangingEditor == null)
-				skinChangingEditor = editionController.SkinChangingEditor;
+				skinChangingEditor = editController.SkinChangingEditor;
 		}
 
 		if (buildingCreationEditor == null)
@@ -67,17 +67,19 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.MOVE_HANDLER:
 			// Décalage de la caméra et mise à jour de la position de l'objet sélectionné si on est en cours de
 			// déplacement d'un objet
-			if (Input.GetMouseButton (0) && editionController.EditionState == EditionController.EditionStates.MOVING_MODE && movingEditor.IsMoving()) {
-				movingEditor.UpdateObjectMoving (editionController.SelectionRange);
+			if (Input.GetMouseButton (0) && editController.EditState == EditController.EditStates.MOVING_MODE && movingEditor.IsMoving()) {
+				movingEditor.UpdateObjectMoving (editController.SelectionRange);
 				movingEditor.ShiftCamera ();
 			}
 			break;
-		}
-
-		if (controlPanelManager.ControlState != ControlPanelManager.ControlStates.NONE) {
-			if (this.IsPlayerMoving()) {
-				buildingCreationEditor.UpdateBuildingSituation();
+		case UiNames.CANCEL_BUILDING_CREATION_BUTTON:
+			if (controlPanelManager.ControlState != ControlPanelManager.ControlStates.NONE) {
+				if (this.IsPlayerMoving()) {
+					buildingCreationEditor.CompensateCameraMoves();
+					buildingCreationEditor.UpdateDisplayedPosition();
+				}
 			}
+			break;
 		}
 	}
 
@@ -95,19 +97,62 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// </summary>
 	/// <param name="originInputFiled">Champ de saisie source.</param>
 	public void OnValueChanged(InputField originInputFiled) {
-		// Changement du nom du bâtiment si le nom en entrée est différent du nom courant
-		if(!editionController.SelectedBuilding.name.Equals(originInputFiled.text))
-			editionController.RenameBuilding (editionController.SelectedBuilding, originInputFiled.text);
+		switch (originInputFiled.name) {
+		case UiNames.BUILDING_NAME_INPUT:
+			// Changement du nom du bâtiment si le nom en entrée est différent du nom courant
+			if (!editController.SelectedBuilding.name.Equals(originInputFiled.text))
+				editController.RenameBuilding(editController.SelectedBuilding, originInputFiled.text);
+			break;
+		case UiNames.BUILDING_CREATION_X_COORD_INPUT:
+			Vector3 buildingPositionInXEdit = buildingCreationEditor.SelectedBuilding.transform.position;
+			Quaternion buildingRotationInXEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
+
+			float newPosX = this.ProcessInputValue(originInputFiled);
+			if (!float.IsNaN(newPosX))
+				buildingCreationEditor.UpdateSituation(new Vector3(newPosX, buildingPositionInXEdit.y, buildingPositionInXEdit.z), buildingRotationInXEdit.z);
+
+			break;
+		case UiNames.BUILDING_CREATION_Z_COORD_INPUT:
+			Vector3 buildingPositionInZEdit = buildingCreationEditor.SelectedBuilding.transform.position;
+			Quaternion buildingRotationInZEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
+
+			float newPosZ = this.ProcessInputValue(originInputFiled);
+			if(!float.IsNaN(newPosZ))
+				buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ), buildingRotationInZEdit.z);
+
+			break;
+		}
+	}
+
+	private float ProcessInputValue(InputField originInputFiled) {
+		float parsedValue = 0;
+		string inputValue = originInputFiled.text;
+
+		if (inputValue.Length == 0)
+			return 0;
+
+		bool parsingSuccessinZEdit = float.TryParse(inputValue, out parsedValue);
+		if (parsingSuccessinZEdit) {
+
+			return parsedValue;
+		} else {
+			originInputFiled.selectionColor = ThemeColors.DARK_RED;
+			return float.NaN;
+		}
 	}
 
 	/// <summary>
 	/// 	Trigger se déclanchant lorsque l'utilisateur a terminé d'entrer un nouveau nom pour un bâtiment.
 	/// </summary>
 	/// <param name="originInputFiled">Champ de saisie source.</param>
-	public void OnEndChanged(InputField originInputFiled) {
-		// Changement du nom du bâtiment si le nom en entrée est différent du nom courant
-		if(!editionController.SelectedBuilding.name.Equals(originInputFiled.text))
-			editionController.RenameBuilding (editionController.SelectedBuilding, originInputFiled.text);
+	public void OnEndEdit(InputField originInputFiled) {
+		switch (originInputFiled.name) {
+		case UiNames.BUILDING_NAME_INPUT:
+			// Changement du nom du bâtiment si le nom en entrée est différent du nom courant
+			if (!editController.SelectedBuilding.name.Equals(originInputFiled.text))
+				editController.RenameBuilding(editController.SelectedBuilding, originInputFiled.text);
+			break;
+		}
 	}
 
 
@@ -121,15 +166,15 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.MOVE_HANDLER:
 			// Démarrage du déplacement si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
-			if (editionController.EditionState == EditionController.EditionStates.MOVING_MODE && movingEditor.IsMotionless()) {
-				movingEditor.StartObjectMoving (editionController.SelectionRange);
+			if (editController.EditState == EditController.EditStates.MOVING_MODE && movingEditor.IsMotionless()) {
+				movingEditor.StartObjectMoving (editController.SelectionRange);
 			}
 			break;
 		case UiNames.TURN_HANDLER:
 			// Démarrage de la rotation si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
-			if (editionController.EditionState == EditionController.EditionStates.TURNING_MODE && turningEditor.IsMotionless()) {
-				turningEditor.StartObjectTurning (editionController.SelectionRange);
+			if (editController.EditState == EditController.EditStates.TURNING_MODE && turningEditor.IsMotionless()) {
+				turningEditor.StartObjectTurning (editController.SelectionRange);
 			}
 			break;
 		}
@@ -146,15 +191,15 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.MOVE_HANDLER:
 			// Mise à jour du déplacement si l'objet est immobile et que le controlleur de modification se trouve dans
 			// le bon état
-			if (editionController.EditionState == EditionController.EditionStates.MOVING_MODE && movingEditor.IsMoving()) {
-				movingEditor.UpdateObjectMoving (editionController.SelectionRange);
+			if (editController.EditState == EditController.EditStates.MOVING_MODE && movingEditor.IsMoving()) {
+				movingEditor.UpdateObjectMoving (editController.SelectionRange);
 			}
 			break;
 		case UiNames.TURN_HANDLER:
 			// Mise à jour de la rotation si l'objet est immobile et que le controlleur de modification se trouve dans
 			// le bon état
-			if (editionController.EditionState == EditionController.EditionStates.TURNING_MODE && turningEditor.IsTurning()) {
-				turningEditor.UpdateObjectTurning (editionController.SelectionRange);
+			if (editController.EditState == EditController.EditStates.TURNING_MODE && turningEditor.IsTurning()) {
+				turningEditor.UpdateObjectTurning (editController.SelectionRange);
 			}
 			break;
 		}
@@ -171,14 +216,14 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.MOVE_HANDLER:
 			// Fin du déplacement si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
-			if (editionController.EditionState == EditionController.EditionStates.MOVING_MODE && movingEditor.IsMoving()) {
+			if (editController.EditState == EditController.EditStates.MOVING_MODE && movingEditor.IsMoving()) {
 				movingEditor.EndObjectMoving ();
 			}
 			break;
 		case UiNames.TURN_HANDLER:
 			// Fin de la rotation si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
-			if (editionController.EditionState == EditionController.EditionStates.TURNING_MODE && turningEditor.IsTurning()) {
+			if (editController.EditState == EditController.EditStates.TURNING_MODE && turningEditor.IsTurning()) {
 				turningEditor.EndObjectTurning ();
 			}
 			break;
@@ -187,7 +232,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void OnMouseDown() {
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
-		if (editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
+		if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE) {
 			int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
 			if (expansionDirection > 0) {
 				heightChangingEditor.TopFloorColorController.SetPressed();
@@ -203,9 +248,9 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	public void OnMouseUp() {
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
 		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
-			if (editionController.EditionState == EditionController.EditionStates.NONE_SELECTION || editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
-				editionController.SwitchBuilding(gameObject);
-			} else if (editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
+			if (editController.EditState == EditController.EditStates.NONE_SELECTION || editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+				editController.SwitchBuilding(gameObject);
+			} else if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE) {
 				int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
 				if (expansionDirection > 0) {
 					heightChangingEditor.IncrementObjectHeight();
@@ -219,7 +264,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	}
 
 	public void OnMouseEnter() {
-		 if (editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
+		 if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE) {
 			int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
 			if (expansionDirection > 0)
 				heightChangingEditor.TopFloorColorController.SetHovered();
@@ -230,7 +275,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	}
 
 	private void OnMouseExit() {
-		 if (editionController.EditionState == EditionController.EditionStates.HEIGHT_CHANGING_MODE) {
+		 if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE) {
 			int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
 			if (expansionDirection > 0)
 				heightChangingEditor.TopFloorColorController.SetInactive();
@@ -263,6 +308,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				buildingCreationPanelController.transform.gameObject.SetActive(true);
 				buildingCreationPanelController.OpenPanel(null);
 				buildingCreationEditor.InitializeBuildingCreation();
+				buildingCreationEditor.UpdateDisplayedPosition();
 				controlPanelManager.ControlState = ControlPanelManager.ControlStates.BUILDING_CREATION;
 			}
 			break;
@@ -404,32 +450,32 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		// ==== Gestion des élément d'interface en rapport avec la modification d'objets ====
 		case UiNames.MOVE_BUTTON:
 			// Préparation du déplacement d'un objet si le controlleur est prêt
-			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
-				editionController.EnterMovingMode ();
+			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+				editController.EnterMovingMode ();
 			}
 			break;
 		case UiNames.TURN_BUTTON:
 			// Préparation de la rotation d'un objet si le controlleur est prêt
-			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
-				editionController.EnterTurningMode ();
+			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+				editController.EnterTurningMode ();
 			}
 			break;
 		case UiNames.CHANGE_HEIGHT_BUTTON:
-			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
-				editionController.EnterHeightChangingMode();
+			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+				editController.EnterHeightChangingMode();
 			}
 			break;
 		case UiNames.CHANGE_SKIN_BUTTON:
 			// Préparation du déplacement d'un objet si le controlleur est prêt
-			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
-				editionController.EnterSkinChangingMode();
+			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+				editController.EnterSkinChangingMode();
 			}
 			break;
 		case UiNames.SLIDE_BUTTON:
 			// Inversion du panneau latéral lors du clic sur le bouton correspondant si le controlleur n'est pas en
 			// attente d'une sélection de bâtiment
-			EditPanelController editPanelController = editionController.EditPanelController;
-			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
+			EditPanelController editPanelController = editController.EditPanelController;
+			if (editController.EditState != EditController.EditStates.NONE_SELECTION) {
 				if (editPanelController.IsPanelClosed()) {
 					editPanelController.OpenPanel(null);
 					editPanelController.OpenSlideButton();
@@ -441,79 +487,79 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 		case UiNames.VALIDATE_BUTTON:
 			// Validation de la modification d'une série de bâtiments si le controlleur est prêt
-			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
-				editionController.ValidateEdit ();
-				editionController.ExitBuilding ();
+			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+				editController.ValidateEdit ();
+				editController.ExitBuilding ();
 			}
 			break;
 		case UiNames.CANCEL_BUTTON:
 			// Annulation de la modification d'une série de bâtiments si le controlleur est prêt
-			if (editionController.EditionState == EditionController.EditionStates.READY_TO_EDIT) {
-				editionController.CancelEdit ();
-				editionController.ExitBuilding ();
+			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+				editController.CancelEdit ();
+				editController.ExitBuilding ();
 			}
 			break;
 		case UiNames.WALL_RANGE_BUTTON:
 			// Inversion de l'étendue de sélection et du statuts des boutons de d'étende de sélection si le controlleur
 			// de modification n'est pas en attente d'une sélection de bâtiment et si le bouton est bien actif
-			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
-				editionController.SelectionRange = EditionController.SelectionRanges.WALL;
-				if(editionController.EditionState == EditionController.EditionStates.MOVING_MODE)
-					movingEditor.InitializeMovingMode (editionController.SelectionRange);
-				else if(editionController.EditionState == EditionController.EditionStates.TURNING_MODE)
-					turningEditor.InitializeTurningMode (editionController.SelectionRange);
+			if (editController.EditState != EditController.EditStates.NONE_SELECTION) {
+				editController.SelectionRange = EditController.SelectionRanges.WALL;
+				if(editController.EditState == EditController.EditStates.MOVING_MODE)
+					movingEditor.InitializeMovingMode (editController.SelectionRange);
+				else if(editController.EditState == EditController.EditStates.TURNING_MODE)
+					turningEditor.InitializeTurningMode (editController.SelectionRange);
 				this.ActivateWallRangeButton ();
 			}
 			break;
 		case UiNames.BUILDING_RANGE_BUTTON:
 			// Inversion de l'étendue de sélection et du statuts des boutons de d'étende de sélection si le controlleur
 			// de modification n'est pas en attente d'une sélection de bâtiment et si le bouton est bien actif
-			if (editionController.EditionState != EditionController.EditionStates.NONE_SELECTION) {
-				editionController.SelectionRange = EditionController.SelectionRanges.BUILDING;
-				if(editionController.EditionState == EditionController.EditionStates.MOVING_MODE)
-					movingEditor.InitializeMovingMode (editionController.SelectionRange);
-				else if(editionController.EditionState == EditionController.EditionStates.TURNING_MODE)
-					turningEditor.InitializeTurningMode (editionController.SelectionRange);
+			if (editController.EditState != EditController.EditStates.NONE_SELECTION) {
+				editController.SelectionRange = EditController.SelectionRanges.BUILDING;
+				if(editController.EditState == EditController.EditStates.MOVING_MODE)
+					movingEditor.InitializeMovingMode (editController.SelectionRange);
+				else if(editController.EditState == EditController.EditStates.TURNING_MODE)
+					turningEditor.InitializeTurningMode (editController.SelectionRange);
 				this.ActivateBuildingRangeButton ();
 			}
 			break;
 		case UiNames.MATERIALS_BUTTON:
-			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
+			if (editController.EditState == EditController.EditStates.SKIN_CHANGING_MODE) {
 				skinChangingEditor.SwitchPallet(gameObject);
 				skinChangingEditor.SkinPanelController.SlideSliderRight();
 			}
 			break;
 		case UiNames.COLORS_BUTTON:
-			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
+			if (editController.EditState == EditController.EditStates.SKIN_CHANGING_MODE) {
 				skinChangingEditor.SwitchPallet(gameObject);
 				skinChangingEditor.SkinPanelController.SlideSliderLeft();
 			}
 			break;
 		case UiNames.MATERIAL_ITEM_BUTTON:
-			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
+			if (editController.EditState == EditController.EditStates.SKIN_CHANGING_MODE) {
 				skinChangingEditor.UpdateMaterialItems(gameObject);
 				skinChangingEditor.ChangeBuildingMaterial(gameObject);
 			}
 			break;
 		case UiNames.COLOR_ITEM_BUTTON:
-			if (editionController.EditionState == EditionController.EditionStates.SKIN_CHANGING_MODE) {
+			if (editController.EditState == EditController.EditStates.SKIN_CHANGING_MODE) {
 				skinChangingEditor.UpdateColorItems(gameObject);
 				skinChangingEditor.ChangeBuildingColor(gameObject);
 			}
 			break;
-		case UiNames.VALIDATE_EDITION_BUTTON:
+		case UiNames.VALIDATE_EDIT_BUTTON:
 			// Validation d'une transformation si le controlleur de modification est bien en cours de modification
-			if (editionController.Transforming ()) {
-				editionController.ValidateTransform ();
-				editionController.ExitTransformMode ();
+			if (editController.Transforming ()) {
+				editController.ValidateTransform ();
+				editController.ExitTransformMode ();
 			}
 			break;
-		case UiNames.CANCEL_EDITION_BUTTON:
+		case UiNames.CANCEL_EDIT_BUTTON:
 			// Annulation d'une transformation si le controlleur de modification est bien en cours de modification
-			if (editionController.Transforming ()) {
+			if (editController.Transforming ()) {
 
-				editionController.CancelTransform ();
-				editionController.ExitTransformMode ();
+				editController.CancelTransform ();
+				editController.ExitTransformMode ();
 			}
 			break;
 		}

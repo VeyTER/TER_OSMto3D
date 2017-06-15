@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
+using System;
 
 public class BuildingCreationEditor : ObjectEditor {
 	private CameraController cameraController;
@@ -11,14 +13,18 @@ public class BuildingCreationEditor : ObjectEditor {
 	}
 
 	public void InitializeBuildingCreation() {
-		cameraController.SwitchToFullLocalMode();
+		//cameraController.StartCoroutine(cameraController.MoveToSituation(Camera.main.transform.position, Quaternion.Euler(45, Camera.main.transform.rotation.y, Camera.main.transform.rotation.z), null));
+		//cameraController.RotationLock = new bool [] { true, true, false };
 
-		Vector3 screenPointPosition = new Vector3(Screen.width / 2F, Screen.height / 2F, 0);
-		Vector3 buildingPosition = Camera.main.ScreenToWorldPoint(screenPointPosition);
+		float REMOTNESS = 2;
+		float cosOffset = (float)(Math.Cos(Camera.main.transform.rotation.y) * REMOTNESS);
+		float sinOffset = (float)(Math.Sin(Camera.main.transform.rotation.y) * REMOTNESS);
+
+		Vector3 buildingPosition = Camera.main.transform.position + new Vector3(cosOffset, 0, sinOffset);
 
 		string newBuildingId = this.NewIdOrReference(10);
-		while (buildingTools.IsInfoAttributeValueUsed(XmlAttributes.ID, newBuildingId))
-			newBuildingId = this.NewIdOrReference(10);
+		//while (buildingTools.IsInfoAttributeValueUsed(XmlAttributes.ID, newBuildingId))
+		//	newBuildingId = this.NewIdOrReference(10);
 
 		NodeGroup buildingNodeGroup = new NodeGroup(newBuildingId) {
 			Name = "Nouveau bâtiment",
@@ -38,15 +44,15 @@ public class BuildingCreationEditor : ObjectEditor {
 		GameObject building = cityBuilder.BuildSingleWallGroup(buildingNodeGroup);
 		cityBuilder.SetupSingleWallGroup(building, buildingNodeGroup);
 
-		selectedBuilding = building;
+		building.transform.parent = Camera.main.transform;
 
-		Debug.Log("ok");
+		selectedBuilding = building;
 	}
 
 	private Node NewWallNode(int index, Vector3 buildingCenter, Vector2 localPosition) {
 		string newNodeReference = this.NewIdOrReference(10);
-		while (buildingTools.IsInfoAttributeValueUsed(XmlAttributes.REFERENCE, newNodeReference))
-			newNodeReference = this.NewIdOrReference(10);
+		//while (buildingTools.IsInfoAttributeValueUsed(XmlAttributes.REFERENCE, newNodeReference))
+		//	newNodeReference = this.NewIdOrReference(10);
 		return new Node(newNodeReference, index, buildingCenter.z + localPosition.x, buildingCenter.x + localPosition.y);
 	}
 
@@ -58,9 +64,34 @@ public class BuildingCreationEditor : ObjectEditor {
 		return res;
 	}
 
-	public void UpdateBuildingSituation() {
-		Vector3 screenPointPosition = new Vector3(Screen.width / 2F, Screen.height / 2F, 0);
-		Vector3 buildingPosition = Camera.main.ScreenToWorldPoint(screenPointPosition);
+	public void CompensateCameraMoves() {
+		Vector3 buildingPosition = selectedBuilding.transform.position;
+		Quaternion buildingRotation = selectedBuilding.transform.rotation;
+
+		Transform firstWallTransform = selectedBuilding.transform.GetChild(0);
+		float buildingHeight = firstWallTransform.localScale.y;
+
+		selectedBuilding.transform.position = new Vector3(buildingPosition.x, buildingHeight / 2F, buildingPosition.z);
+		selectedBuilding.transform.rotation = Quaternion.Euler(0, buildingRotation.y, 0);
+	}
+
+	public void UpdateSituation(Vector3 newPosition, float newOrientation) {
+		Vector3 delta = newPosition - selectedBuilding.transform.position;
+		Camera.main.transform.position = Camera.main.transform.position + delta;
+
+		Quaternion buildingRotation = selectedBuilding.transform.rotation;
+		selectedBuilding.transform.rotation = Quaternion.Euler(buildingRotation.x * Mathf.Rad2Deg, buildingRotation.y * Mathf.Rad2Deg, newOrientation);
+	}
+
+	public void UpdateDisplayedPosition() {
+		GameObject buildingCreationXCoordInput = GameObject.Find(UiNames.BUILDING_CREATION_X_COORD_INPUT);
+		GameObject buildingCreationZCoordInput = GameObject.Find(UiNames.BUILDING_CREATION_Z_COORD_INPUT);
+
+		InputField xCoordInputTextInput = buildingCreationXCoordInput.GetComponent<InputField>();
+		InputField yCoordInputTextInput = buildingCreationZCoordInput.GetComponent<InputField>();
+
+		xCoordInputTextInput.text = selectedBuilding.transform.position.x.ToString();
+		yCoordInputTextInput.text = selectedBuilding.transform.position.z.ToString();
 	}
 
 	public override void CancelTransform() {

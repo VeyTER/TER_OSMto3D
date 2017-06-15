@@ -250,8 +250,8 @@ public class CityBuilder {
 
 		// Ajout d'un gestionnaire d'interface au groupe de bâtiments et affectaton du controlleur de modification,
 		// contenu dans ce groupe, à ce gestionnaire
-		wallGroups.AddComponent<EditionController> ();
-		UiManager.editionController = wallGroups.GetComponent<EditionController>();
+		wallGroups.AddComponent<EditController> ();
+		UiManager.editController = wallGroups.GetComponent<EditController>();
 
 		// Construction et ajout des bâtiments
 		foreach (NodeGroup ngp in nodeGroups) {
@@ -288,8 +288,8 @@ public class CityBuilder {
 			GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			wall.tag = NodeTags.WALL_TAG;
 
-			Image wallImage = wall.AddComponent<Image>();
-			wallImage.color = new Color(1, 0, 0, 0.5F);
+			//Image wallImage = wall.AddComponent<Image>();
+			//wallImage.color = new Color(1, 0, 0, 0.5F);
 
 			// Paramétrage du mur 3D
 			int nbFloor = ngp.NbFloor;

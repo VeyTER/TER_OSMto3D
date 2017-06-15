@@ -285,7 +285,7 @@
             <nd ref="409757996" index="8" lat="43.6044443" lon="1.4446702" />
           </building>
           <building>
-            <info id="35008082" name="Marché Victor Hugo" nbfloor="3" roofangle="15" rooftype="pitched" />
+            <info id="35008082" name="Marché Victor Hugo" nbfloor="6" roofangle="15" rooftype="pitched" custmat="BricksBasic" />
             <nd ref="410621830" index="0" lat="43.6070046" lon="1.4463631" />
             <nd ref="410621831" index="1" lat="43.6070423" lon="1.4466763" />
             <nd ref="2463356636" index="2" lat="43.6070377" lon="1.446717" />

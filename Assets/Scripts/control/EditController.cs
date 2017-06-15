@@ -23,14 +23,14 @@ using System.Net;
 /// 		entièrement si elle est réactivée.
 /// 	</para>
 /// </summary>
-public class EditionController : MonoBehaviour {
+public class EditController : MonoBehaviour {
 	/// <summary>
 	/// 	Les différents états dans lesquels peut se trouver le controlleur. L'état NONE_SELECTION signifie que le
 	/// 	controlleur n'est affecté à aucun objet, MOVING_TO_OBJECT symbolise le déplacement vers l'objet courant
 	/// 	tandis que READY_TO_EDIT indique que le controlleur est positionné au niveau de l'objet et prêt à effectuer
 	/// 	les modifications.
 	/// </summary>
-	public enum EditionStates {
+	public enum EditStates {
 		NONE_SELECTION,
 		MOVING_TO_OBJECT,
 		READY_TO_EDIT,
@@ -52,7 +52,7 @@ public class EditionController : MonoBehaviour {
 
 
 	/// <summary>Etat courant de modification.</summary>
-	private EditionStates editionState;
+	private EditStates editState;
 
 	/// <summary>Etendue courante de sélection.</summary>
 	private SelectionRanges selectionRange;
@@ -129,13 +129,13 @@ public class EditionController : MonoBehaviour {
 
 	private GameObject controlPanel;
 
-	/// <summary>Panneau d'édition contenant l'interface graphique de modification.</summary>
+	/// <summary>Panneau d'modification contenant l'interface graphique de modification.</summary>
 	private GameObject editPanel;
 
 	private EditPanelController editPanelController;
 
 	public void Start() {
-		this.editionState = EditionStates.NONE_SELECTION;
+		this.editState = EditStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.BUILDING;
 
 		this.movingEditor = new MovingEditor (GameObject.Find(UiNames.MOVE_HANDLER));
@@ -204,7 +204,7 @@ public class EditionController : MonoBehaviour {
 		}
 
 		// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
-		GameObject buildingNameField = GameObject.Find(UiNames.BUILDING_NAME_NPUT_FILED);
+		GameObject buildingNameField = GameObject.Find(UiNames.BUILDING_NAME_INPUT);
 		InputField buildingNameTextInput = buildingNameField.GetComponent<InputField> ();
 		buildingNameTextInput.text = selectedBuilding.name;
 
@@ -240,7 +240,7 @@ public class EditionController : MonoBehaviour {
 			buildingsInitColor.Add(SelectedBuilding, meshRenderer.materials[0].color);
 
 		// Enregistrement de la situation initiale de la caméra
-		if (editionState == EditionStates.NONE_SELECTION) {
+		if (editState == EditStates.NONE_SELECTION) {
 			GameObject mainCameraGo = Camera.main.gameObject;
 			cameraController.InitPosition = mainCameraGo.transform.position;
 			cameraController.InitRotation = mainCameraGo.transform.rotation;
@@ -253,10 +253,10 @@ public class EditionController : MonoBehaviour {
 
 		// Déplacement de la caméra jusqu'au bâtiment sélectionné avec mise à jour de l'état de modification à la fin
 		// du déplacement
-		editionState = EditionStates.MOVING_TO_OBJECT;
+		editState = EditStates.MOVING_TO_OBJECT;
 		cameraController.StartCoroutine (
 			cameraController.MoveToBuilding(selectedBuilding, false, () => {
-				editionState = EditionStates.READY_TO_EDIT;
+				editState = EditStates.READY_TO_EDIT;
 			}, 90)
 		);
 	}
@@ -312,11 +312,11 @@ public class EditionController : MonoBehaviour {
 
 		// Déplacement de la caméra à sa position initiale et réinitialisation de l'état de modification à la fin du
 		// déplacement
-		editionState = EditionController.EditionStates.MOVING_TO_INITIAL_SITUATION;
+		editState = EditController.EditStates.MOVING_TO_INITIAL_SITUATION;
 		cameraController.StartCoroutine (
 			cameraController.MoveToSituation(cameraController.InitPosition, cameraController.InitRotation, () => {
 				controlPanel.SetActive(true);
-				editionState = EditionController.EditionStates.NONE_SELECTION;
+				editState = EditController.EditStates.NONE_SELECTION;
 			})
 		);
 	}
@@ -355,7 +355,7 @@ public class EditionController : MonoBehaviour {
 		movingEditor.InitializeBasics(selectedWall, selectedBuilding);
 		movingEditor.MoveHandler.SetActive (true);
 		movingEditor.InitializeMovingMode(selectionRange);
-		editionState = EditionStates.MOVING_MODE;
+		editState = EditStates.MOVING_MODE;
 	}
 
 	/// <summary>
@@ -367,7 +367,7 @@ public class EditionController : MonoBehaviour {
 		turningEditor.InitializeBasics(selectedWall, selectedBuilding);
 		turningEditor.TurnHandler.SetActive (true);
 		turningEditor.InitializeTurningMode(SelectionRange);
-		editionState = EditionStates.TURNING_MODE;
+		editState = EditStates.TURNING_MODE;
 	}
 
 	public void EnterHeightChangingMode() {
@@ -375,7 +375,7 @@ public class EditionController : MonoBehaviour {
 		heightChangingEditor.InitializeBasics(selectedWall, selectedBuilding);
 		heightChangingEditor.InitializeHeightChangingMode();
 		cameraController.StartCoroutine( cameraController.MoveToBuilding(selectedBuilding, true, null, 15) );
-		editionState = EditionStates.HEIGHT_CHANGING_MODE;
+		editState = EditStates.HEIGHT_CHANGING_MODE;
 	}
 
 
@@ -388,7 +388,7 @@ public class EditionController : MonoBehaviour {
 			cameraController.StartCoroutine( cameraController.TurnAroundBuilding(selectedBuilding, 15) );
 		}, 15));
 		buildingsTools.DiscolorAsSelected(selectedBuilding);
-		editionState = EditionStates.SKIN_CHANGING_MODE;
+		editState = EditStates.SKIN_CHANGING_MODE;
 	}
 
 
@@ -408,18 +408,18 @@ public class EditionController : MonoBehaviour {
 	/// 	la configuration d'avant la modification.
 	/// </summary>
 	public void ExitTransformMode() {
-		switch (editionState) {
-		case EditionStates.MOVING_MODE:
+		switch (editState) {
+		case EditStates.MOVING_MODE:
 			movingEditor.MoveHandler.SetActive (false);
 			break;
-		case EditionStates.TURNING_MODE:
+		case EditStates.TURNING_MODE:
 			turningEditor.TurnHandler.SetActive (false);
 			break;
-		case EditionStates.HEIGHT_CHANGING_MODE:
+		case EditStates.HEIGHT_CHANGING_MODE:
 			Destroy(HeightChangingEditor.TopFloor);
 			Destroy(HeightChangingEditor.BottomFloor);
 			break;
-		case EditionStates.SKIN_CHANGING_MODE:
+		case EditStates.SKIN_CHANGING_MODE:
 			buildingsTools.ColorAsSelected(selectedBuilding);
 
 			// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
@@ -439,43 +439,43 @@ public class EditionController : MonoBehaviour {
 
 		// Mise à jour de la situation de la caméra pour la repositionner au-dessus du bâtiment courant qui aura
 		// probablement bougé
-		editionState = EditionStates.MOVING_TO_OBJECT;
+		editState = EditStates.MOVING_TO_OBJECT;
 		cameraController.StartCoroutine (
 			cameraController.MoveToBuilding (selectedBuilding, false, () => {
-				editionState = EditionStates.READY_TO_EDIT;
+				editState = EditStates.READY_TO_EDIT;
 			}, 90)
 		);
 	}
 
 	public void ValidateTransform() {
-		switch (editionState) {
-		case EditionStates.MOVING_MODE:
+		switch (editState) {
+		case EditStates.MOVING_MODE:
 			movingEditor.ValidateTransform();
 			break;
-		case EditionStates.TURNING_MODE:
+		case EditStates.TURNING_MODE:
 			turningEditor.ValidateTransform();
 			break;
-		case EditionStates.HEIGHT_CHANGING_MODE:
+		case EditStates.HEIGHT_CHANGING_MODE:
 			heightChangingEditor.ValidateTransform();
 			break;
-		case EditionStates.SKIN_CHANGING_MODE:
+		case EditStates.SKIN_CHANGING_MODE:
 			skinChangingEditor.ValidateTransform();
 			break;
 		}
 	}
 
 	public void CancelTransform() {
-		switch (editionState) {
-		case EditionStates.MOVING_MODE:
+		switch (editState) {
+		case EditStates.MOVING_MODE:
 			movingEditor.CancelTransform();
 			break;
-		case EditionStates.TURNING_MODE:
+		case EditStates.TURNING_MODE:
 			turningEditor.CancelTransform();
 			break;
-		case EditionStates.HEIGHT_CHANGING_MODE:
+		case EditStates.HEIGHT_CHANGING_MODE:
 			heightChangingEditor.CancelTransform();
 			break;
-		case EditionStates.SKIN_CHANGING_MODE:
+		case EditStates.SKIN_CHANGING_MODE:
 			skinChangingEditor.CancelTransform();
 			break;
 		}
@@ -486,16 +486,16 @@ public class EditionController : MonoBehaviour {
 	/// </summary>
 	/// <returns><c>true</c>, un objet est en cours de transformation, <c>false</c> sinon.</returns>
 	public bool Transforming() {
-		return editionState == EditionStates.MOVING_MODE
-			|| editionState == EditionStates.TURNING_MODE
-			|| editionState == EditionStates.RENAMING_MODE
-			|| editionState == EditionStates.HEIGHT_CHANGING_MODE
-			|| editionState == EditionStates.SKIN_CHANGING_MODE;
+		return editState == EditStates.MOVING_MODE
+			|| editState == EditStates.TURNING_MODE
+			|| editState == EditStates.RENAMING_MODE
+			|| editState == EditStates.HEIGHT_CHANGING_MODE
+			|| editState == EditStates.SKIN_CHANGING_MODE;
 	}
 
 
 	/// <summary>
-	/// 	Valide l'édition courante en mettant à jour les groupes de noeuds concernés et en faisant appel à l'instance
+	/// 	Valide l'modification courante en mettant à jour les groupes de noeuds concernés et en faisant appel à l'instance
 	/// 	de BuildingTools pour mettre à jour les objets dans les différents fichiers.
 	/// </summary>
 	public void ValidateEdit() {
@@ -679,9 +679,9 @@ public class EditionController : MonoBehaviour {
 		skinChangingEditor.ClearHistory();
 	}
 
-	public EditionStates EditionState {
-		get { return editionState; }
-		set { editionState = value; }
+	public EditStates EditState {
+		get { return editState; }
+		set { editState = value; }
 	}
 
 	public SelectionRanges SelectionRange {

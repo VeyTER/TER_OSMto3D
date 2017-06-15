@@ -98,7 +98,7 @@
     <Compile Include="Assets\Scripts\control\BuildingCreationEditor.cs" />
     <Compile Include="Assets\Scripts\control\CameraController.cs" />
     <Compile Include="Assets\Scripts\control\EditPanelController.cs" />
-    <Compile Include="Assets\Scripts\control\EditionController.cs" />
+    <Compile Include="Assets\Scripts\control\EditController.cs" />
     <Compile Include="Assets\Scripts\control\StageColorController.cs" />
     <Compile Include="Assets\Scripts\control\HeightChangingEditor.cs" />
     <Compile Include="Assets\Scripts\control\Main.cs" />

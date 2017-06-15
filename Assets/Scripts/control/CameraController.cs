@@ -36,6 +36,9 @@ public class CameraController : MonoBehaviour {
 
 	private BuildingsTools buildingsTools;
 
+	private bool[] positionLock;
+	private bool[] rotationLock;
+
 	/// <summary>
 	/// 	Position initiale de la caméra avant déplacement et immobilisation à une situation donnée.
 	/// </summary>
@@ -55,6 +58,14 @@ public class CameraController : MonoBehaviour {
 		this.controlMode = ControlModes.SEMI_LOCAL;
 
 		this.buildingsTools = BuildingsTools.GetInstance();
+
+		this.positionLock = new bool[3];
+		for (int i = 0; i < positionLock.Length; i++)
+			positionLock[i] = true;
+
+		this.rotationLock = new bool[3];
+		for (int i = 0; i < positionLock.Length; i++)
+			rotationLock[i] = true;
 
 		this.initPosition = Vector3.zero;
 		this.initRotation.eulerAngles = Vector3.zero;
@@ -81,27 +92,25 @@ public class CameraController : MonoBehaviour {
 		float sinHorizontalOffset = rawSinHorizontalOffset * (sinVecticalFactor > 0 ? (1 - sinVecticalFactor) : (sinVecticalFactor + 1));
 		float sinVecticalOffset = 0.1F * sinVecticalFactor;
 
-		float temps1 = Time.time;
-
 		// Contrôle de la caméra avec le touches du clavier
 		if (cameraState == CameraStates.FREE) {
 
 			// Rotation de la caméra
 			if (Input.GetKey(KeyCode.LeftControl)) {
-				if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
+				if ((Input.GetKey("up") || Input.GetKey(KeyCode.Z)) && positionLock[0])
 					transform.Rotate(new Vector3(-1, 0, 0));
-				if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
+				if ((Input.GetKey("down") || Input.GetKey(KeyCode.S)) && positionLock[0])
 					transform.Rotate(new Vector3(1, 0, 0));
-				if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
+				if ((Input.GetKey("left") || Input.GetKey(KeyCode.Q)) && positionLock[2])
 					transform.RotateAround(localPosition, Vector3.up, -1);
-				if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
+				if ((Input.GetKey("right") || Input.GetKey(KeyCode.D)) && positionLock[2])
 					transform.RotateAround(localPosition, Vector3.up, 1);
 
 			} else if (Input.GetKey(KeyCode.LeftShift)) {
 				if (controlMode == ControlModes.GLOBAL || controlMode == ControlModes.SEMI_LOCAL) {
-					if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
+					if ((Input.GetKey("up") || Input.GetKey(KeyCode.Z)) && positionLock[2])
 						transform.localPosition = new Vector3(localPosition.x, localPosition.y + 0.1F, localPosition.z);
-					if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
+					if ((Input.GetKey("down") || Input.GetKey(KeyCode.S)) && positionLock[2])
 						transform.localPosition = new Vector3(localPosition.x, localPosition.y - 0.1F, localPosition.z);
 				}/* else if (controlMode == ControlModes.FULL_LOCAL) {
 					if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
@@ -110,36 +119,35 @@ public class CameraController : MonoBehaviour {
 						transform.localPosition = new Vector3(localPosition.x - sinVecticalOffset, localPosition.y - cosHorizontalOffset, localPosition.z + sinHorizontalOffset);
 				}*/
 			} else {
-
 				switch (controlMode) {
 				case ControlModes.GLOBAL:
-					if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
+					if ((Input.GetKey("up") || Input.GetKey(KeyCode.Z)) && positionLock[1])
 						transform.localPosition = new Vector3(localPosition.x, localPosition.y, localPosition.z + 0.1F);
-					if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
+					if ((Input.GetKey("down") || Input.GetKey(KeyCode.S)) && positionLock[1])
 						transform.localPosition = new Vector3(localPosition.x, localPosition.y, localPosition.z - 0.1F);
-					if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
+					if ((Input.GetKey("left") || Input.GetKey(KeyCode.Q)) && positionLock[0])
 						transform.localPosition = new Vector3(localPosition.x + 0.1F, localPosition.y, localPosition.z);
-					if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
+					if ((Input.GetKey("right") || Input.GetKey(KeyCode.D)) && positionLock[0])
 						transform.localPosition = new Vector3(localPosition.x - 0.1F, localPosition.y, localPosition.z);
 					break;
 				case ControlModes.SEMI_LOCAL:
-					if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
+					if ((Input.GetKey("up") || Input.GetKey(KeyCode.Z)) && positionLock[1])
 						transform.position = new Vector3(position.x + rawSinHorizontalOffset, position.y, position.z + rawCosHorizontalOffset);
-					if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
+					if ((Input.GetKey("down") || Input.GetKey(KeyCode.S)) && positionLock[1])
 						transform.position = new Vector3(position.x - rawSinHorizontalOffset, position.y, position.z - rawCosHorizontalOffset);
-					if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
+					if ((Input.GetKey("left") || Input.GetKey(KeyCode.Q)) && positionLock[0])
 						transform.position = new Vector3(localPosition.x - rawCosHorizontalOffset, localPosition.y, localPosition.z + rawSinHorizontalOffset);
-					if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
+					if ((Input.GetKey("right") || Input.GetKey(KeyCode.D)) && positionLock[0])
 						transform.position = new Vector3(position.x + rawCosHorizontalOffset, position.y, position.z - rawSinHorizontalOffset);
 					break;
 				case ControlModes.FULL_LOCAL:
-					if (Input.GetKey("up") || Input.GetKey(KeyCode.Z))
+					if ((Input.GetKey("up") || Input.GetKey(KeyCode.Z)) && positionLock[1])
 						transform.position = new Vector3(position.x + sinHorizontalOffset, position.y - sinVecticalOffset, position.z + cosHorizontalOffset);
-					if (Input.GetKey("down") || Input.GetKey(KeyCode.S))
+					if ((Input.GetKey("down") || Input.GetKey(KeyCode.S)) && positionLock[1])
 						transform.position = new Vector3(position.x - sinHorizontalOffset, position.y + sinVecticalOffset, position.z - cosHorizontalOffset);
-					if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
+					if ((Input.GetKey("left") || Input.GetKey(KeyCode.Q)) && positionLock[0])
 						transform.position = new Vector3(localPosition.x - rawCosHorizontalOffset, localPosition.y, localPosition.z + rawSinHorizontalOffset);
-					if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
+					if ((Input.GetKey("right") || Input.GetKey(KeyCode.D)) && positionLock[0])
 						transform.position = new Vector3(position.x + rawCosHorizontalOffset, position.y, position.z - rawSinHorizontalOffset);
 					break;
 				}
@@ -161,11 +169,6 @@ public class CameraController : MonoBehaviour {
 				transform.localRotation = Quaternion.Euler(localRoation.eulerAngles.x, localRoation.y - horizontalOrientation * Mathf.Rad2Deg + 90, localRoation.eulerAngles.z);
 			}
 		}
-
-		float temps2 = Time.time;
-
-		if (temps1 - temps2 > 0)
-			Debug.Log(temps1 - temps2);
 	}
 	
 
@@ -348,5 +351,15 @@ public class CameraController : MonoBehaviour {
 	public Quaternion InitRotation {
 		get { return initRotation; }
 		set { initRotation = value; }
+	}
+
+	public bool[] TranslationLock {
+		get { return positionLock; }
+		set { positionLock = value; }
+	}
+
+	public bool[] RotationLock {
+		get { return rotationLock; }
+		set { rotationLock = value; }
 	}
 }

@@ -46,16 +46,16 @@ public class MovingEditor : ObjectEditor {
 	/// 	déplacement courant.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void InitializeMovingMode(EditionController.SelectionRanges selectionRange) {
+	public void InitializeMovingMode(EditController.SelectionRanges selectionRange) {
 		Vector3 objectPosition = Vector3.zero;
 		Vector3 objectScale = Vector3.zero;
 
 		// Affectation de la position courante de l'objet à la position initiale
-		if (selectionRange == EditionController.SelectionRanges.WALL) {
+		if (selectionRange == EditController.SelectionRanges.WALL) {
 			objectPosition = selectedWall.transform.position;
 			objectScale = selectedWall.transform.localScale;
 			selectedWallStartPos = objectPosition;
-		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
+		} else if (selectionRange == EditController.SelectionRanges.BUILDING) {
 			objectPosition = selectedBuilding.transform.position;
 			objectScale = selectedBuilding.transform.localScale;
 			selectedBuildingStartPos = objectPosition;
@@ -72,7 +72,7 @@ public class MovingEditor : ObjectEditor {
 	/// 	sélectionné.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void StartObjectMoving(EditionController.SelectionRanges selectionRange) {
+	public void StartObjectMoving(EditController.SelectionRanges selectionRange) {
 		Vector2 moveHandlerStartPosition = moveHandler.transform.position;
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 
@@ -80,9 +80,9 @@ public class MovingEditor : ObjectEditor {
 		moveHandlerStartOffset = mousePosition - moveHandlerStartPosition;
 
 		// Mise à jour des témoins de sélection
-		if (selectionRange == EditionController.SelectionRanges.WALL)
+		if (selectionRange == EditController.SelectionRanges.WALL)
 			wallTransformed = true;
-		else if (selectionRange == EditionController.SelectionRanges.BUILDING)
+		else if (selectionRange == EditController.SelectionRanges.BUILDING)
 			buildingTransformed = true;
 
 		// Déplacement de l'objet à sa position initiale
@@ -96,7 +96,7 @@ public class MovingEditor : ObjectEditor {
 	/// 	Met à jour la position de l'objet sélectionné en fonction de l'emplacement de la souris.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void UpdateObjectMoving(EditionController.SelectionRanges selectionRange) {
+	public void UpdateObjectMoving(EditController.SelectionRanges selectionRange) {
 		// Calcul de la nouvelle position de la poignée
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandler.transform.position = mousePosition - moveHandlerStartOffset;
@@ -110,17 +110,17 @@ public class MovingEditor : ObjectEditor {
 	/// 	Déplace l'objet sélectionné à la position correspondante de la poignée dans le repère 3D.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	private void MoveObject(EditionController.SelectionRanges selectionRange) {
+	private void MoveObject(EditController.SelectionRanges selectionRange) {
 		Camera mainCamera = Camera.main;
 		Vector3 moveHandlerPosition = moveHandler.transform.position;
 
 		// Déplace l'objet ainsi que les nodes noeuds 3D correspondant si l'objet est un bâtiment. Les murs ne sont en
 		// effet pas pris en charge.
 		Vector3 selectedObjectCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(moveHandlerPosition.x, moveHandlerPosition.y, mainCamera.transform.position.y));
-		if (selectionRange == EditionController.SelectionRanges.WALL) {
+		if (selectionRange == EditController.SelectionRanges.WALL) {
 			selectedWall.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedWall.transform.position.y, selectedObjectCurrentPos.z);
 
-		} else if (selectionRange == EditionController.SelectionRanges.BUILDING) {
+		} else if (selectionRange == EditController.SelectionRanges.BUILDING) {
 			selectedBuilding.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuilding.transform.position.y, selectedObjectCurrentPos.z);
 			selectedBuildingNodes.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuildingNodes.transform.position.y, selectedObjectCurrentPos.z);
 		}

@@ -270,4 +270,7 @@
   <building>
     <info id="10360190" name="Parc des Expositions de Toulouse" nbfloor="17" roofangle="15" rooftype="pitched" custmat="ConcreteColored" color="1;0.75;0" />
   </building>
+  <building>
+    <info id="35008082" name="Marché Victor Hugo" nbfloor="6" roofangle="15" rooftype="pitched" custmat="BricksBasic" />
+  </building>
 </earth>

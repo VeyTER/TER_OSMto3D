@@ -694,9 +694,6 @@ public class BuildingsTools {
 			XmlNode resumeInfoNode = mapResumeDocument.SelectSingleNode(xPath);
 			XmlNode customInfoNode = mapCustomDocument.SelectSingleNode(xPath);
 
-			mapResumeDocument.Save(resumeFilePath);
-			mapCustomDocument.Save(customFilePath);
-
 			return resumeInfoNode != null || customInfoNode != null;
 		} else {
 			return false;

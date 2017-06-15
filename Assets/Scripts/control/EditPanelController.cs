@@ -5,19 +5,19 @@ using System;
 
 public class EditPanelController : CommonPanelController {
 	/// <summary>Bouton permettant de valider la transformation d'un bâtiment (déplacement par ex).</summary>
-	protected GameObject validateEditionButton;
+	protected GameObject validateEditButton;
 
 	/// <summary>Bouton permettant d'annuler la transformation d'un bâtiment (déplacement par ex).</summary>
-	protected GameObject cancelEditionButton;
+	protected GameObject cancelEditButton;
 
 	public void Awake() {
 		this.panelState = PanelStates.CLOSED;
 
-		this.validateEditionButton = GameObject.Find(UiNames.VALIDATE_EDITION_BUTTON);
-		this.cancelEditionButton = GameObject.Find(UiNames.CANCEL_EDITION_BUTTON);
+		this.validateEditButton = GameObject.Find(UiNames.VALIDATE_EDIT_BUTTON);
+		this.cancelEditButton = GameObject.Find(UiNames.CANCEL_EDIT_BUTTON);
 
-		this.validateEditionButton.transform.localScale = Vector3.zero;
-		this.cancelEditionButton.transform.localScale = Vector3.zero;
+		this.validateEditButton.transform.localScale = Vector3.zero;
+		this.cancelEditButton.transform.localScale = Vector3.zero;
 	}
 
 	public void OpenSlideButton() {
@@ -79,8 +79,8 @@ public class EditPanelController : CommonPanelController {
 	/// <returns>The floatting buttons.</returns>
 	private IEnumerator ScaleFloattingButtons(int direction) {
 		// Echelle courante des boutons de valdiation et d'annulation
-		Vector3 validateButtonInitScale = validateEditionButton.transform.localScale;
-		Vector3 cancelButtonInitScale = cancelEditionButton.transform.localScale;
+		Vector3 validateButtonInitScale = validateEditButton.transform.localScale;
+		Vector3 cancelButtonInitScale = cancelEditButton.transform.localScale;
 
 		// Echelle courante des boutons d'étendue de mur et de bâtiment
 		//		Vector3 wallRangeInitScale = wallRangeButton.transform.localScale;
@@ -89,8 +89,8 @@ public class EditPanelController : CommonPanelController {
 		// Calcul de l'échelle à atteindre à partir de l'échelle courante
 		Vector3 targetScale = direction >= 0 ? Vector3.one : Vector3.zero;
 
-		Transform validateButtonTransform = validateEditionButton.transform;
-		Transform cancelButtonTransform = cancelEditionButton.transform;
+		Transform validateButtonTransform = validateEditButton.transform;
+		Transform cancelButtonTransform = cancelEditButton.transform;
 
 //		Transform wallRangeButtonTransform = wallRangeButton.transform;
 //		Transform buildingRangeButtonTransform = buildingRangeButton.transform;

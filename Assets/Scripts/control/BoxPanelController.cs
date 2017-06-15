@@ -95,8 +95,9 @@ public class BoxPanelController : PanelController {
 			transform.localScale = new Vector3(currentPanelScale, currentPanelScale, currentPanelScale);
 
 			createBuildingIcon.transform.localPosition = Vector3.Lerp(initPosition, targetPosition, cursor);
-			validateBuildingCreationButton.transform.localPosition = Vector3.Lerp(initPosition + new Vector3(0, currentCloseButtonDeltaFactor, 0), targetPosition + new Vector3(0, currentCloseButtonDeltaFactor, 0), cursor);
-			cancelBuildingCreationButton.transform.localPosition = Vector3.Lerp(initPosition - new Vector3(0, currentCloseButtonDeltaFactor, 0), targetPosition - new Vector3(0, currentCloseButtonDeltaFactor, 0), cursor);
+			Vector3 positionOffset = new Vector3(0, currentCloseButtonDeltaFactor, 0);
+			validateBuildingCreationButton.transform.localPosition = Vector3.Lerp(initPosition + positionOffset, targetPosition + positionOffset, cursor);
+			cancelBuildingCreationButton.transform.localPosition = Vector3.Lerp(initPosition - positionOffset, targetPosition - positionOffset, cursor);
 
 			buildingCreationIconColor.a = 1 - currentAlpha;
 			buildingCreationIconImage.color = buildingCreationIconColor;
