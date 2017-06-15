@@ -105,22 +105,47 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 		case UiNames.BUILDING_CREATION_X_COORD_INPUT:
 			Vector3 buildingPositionInXEdit = buildingCreationEditor.SelectedBuilding.transform.position;
-			Quaternion buildingRotationInXEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
 
 			float newPosX = this.ProcessInputValue(originInputFiled);
 			if (!float.IsNaN(newPosX))
-				buildingCreationEditor.UpdateSituation(new Vector3(newPosX, buildingPositionInXEdit.y, buildingPositionInXEdit.z), buildingRotationInXEdit.z);
+				buildingCreationEditor.UpdateSituation(new Vector3(newPosX, buildingPositionInXEdit.y, buildingPositionInXEdit.z));
 
 			break;
 		case UiNames.BUILDING_CREATION_Z_COORD_INPUT:
 			Vector3 buildingPositionInZEdit = buildingCreationEditor.SelectedBuilding.transform.position;
-			Quaternion buildingRotationInZEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
 
 			float newPosZ = this.ProcessInputValue(originInputFiled);
 			if(!float.IsNaN(newPosZ))
-				buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ), buildingRotationInZEdit.z);
+				buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ));
 
 			break;
+		case UiNames.BUILDING_CREATION_ORIENTATION_INPUT:
+			Vector3 buildingPositionInOrientationEdit = buildingCreationEditor.SelectedBuilding.transform.position;
+			Quaternion buildingRotationInOrientationEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
+
+			float newOrientation = this.ProcessInputValue(originInputFiled);
+			if (!float.IsNaN(newOrientation))
+				buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInOrientationEdit.x, buildingPositionInOrientationEdit.y, buildingPositionInOrientationEdit.z), newOrientation);
+
+			break;
+		//case UiNames.BUILDING_CREATION_LENGTH_INPUT:
+		//	Vector3 buildingPositionInZEdit = buildingCreationEditor.SelectedBuilding.transform.position;
+		//	Quaternion buildingRotationInZEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
+
+		//	float newPosZ = this.ProcessInputValue(originInputFiled);
+		//	if (!float.IsNaN(newPosZ))
+		//		buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ), buildingRotationInZEdit.z);
+
+		//	break;
+		//case UiNames.BUILDING_CREATION_WIDTH_INPUT:
+		//	Vector3 buildingPositionInZEdit = buildingCreationEditor.SelectedBuilding.transform.position;
+		//	Quaternion buildingRotationInZEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
+
+		//	float newPosZ = this.ProcessInputValue(originInputFiled);
+		//	if (!float.IsNaN(newPosZ))
+		//		buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ), buildingRotationInZEdit.z);
+
+		//	break;
 		}
 	}
 

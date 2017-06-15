@@ -700,6 +700,49 @@ public class BuildingsTools {
 		}
 	}
 
+	public NodeGroup NewBasicNodeGroup(Vector3 centerPosition, Vector2 scale) {
+		string newBuildingId = this.NewIdOrReference(10);
+		//while (buildingTools.IsInfoAttributeValueUsed(XmlAttributes.ID, newBuildingId))
+		//	newBuildingId = this.NewIdOrReference(10);
+
+		NodeGroup buildingNodeGroup = new NodeGroup(newBuildingId) {
+			Name = "Nouveau bâtiment",
+			NbFloor = 3
+		};
+
+		float halfScaleX = scale.x / 2F;
+		float halfScaleZ = scale.y / 2F;
+
+		Node topLeftWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfScaleX, -halfScaleZ));
+		Node topRightWallNode = this.NewWallNode(1, centerPosition, new Vector2(halfScaleX, -halfScaleZ));
+		Node bottomRightWallNode = this.NewWallNode(2, centerPosition, new Vector2(halfScaleX, halfScaleZ));
+		Node bottomLeftWallNode = this.NewWallNode(3, centerPosition, new Vector2(-halfScaleX, halfScaleZ));
+		Node topLeftDupliWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfScaleX, -halfScaleZ));
+
+		buildingNodeGroup.AddNode(topLeftWallNode);
+		buildingNodeGroup.AddNode(topRightWallNode);
+		buildingNodeGroup.AddNode(bottomRightWallNode);
+		buildingNodeGroup.AddNode(bottomLeftWallNode);
+		buildingNodeGroup.AddNode(topLeftDupliWallNode);
+
+		return buildingNodeGroup;
+	}
+
+	private Node NewWallNode(int index, Vector3 buildingCenter, Vector2 localPosition) {
+		string newNodeReference = this.NewIdOrReference(10);
+		//while (buildingTools.IsInfoAttributeValueUsed(XmlAttributes.REFERENCE, newNodeReference))
+		//	newNodeReference = this.NewIdOrReference(10);
+		return new Node(newNodeReference, index, buildingCenter.z + localPosition.x, buildingCenter.x + localPosition.y);
+	}
+
+	private string NewIdOrReference(int nbDigits) {
+		string res = "+";
+		System.Random randomGenerator = new System.Random();
+		for (int i = 0; i < nbDigits; i++)
+			res += System.Math.Floor((double) randomGenerator.Next(0, 10));
+		return res;
+	}
+
 	public static class BuildingsToolsInstanceHolder {
 		internal static BuildingsTools instance = new BuildingsTools();
 	}
