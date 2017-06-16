@@ -49,7 +49,7 @@ public class CameraController : MonoBehaviour {
 	/// </summary>
 	private Quaternion initRotation;
 
-	private GameObject targetBuilding;
+	private GameObject targetObject;
 
 	public void Start() {
 		this.cameraState = CameraStates.FREE;
@@ -70,7 +70,7 @@ public class CameraController : MonoBehaviour {
 		this.initPosition = Vector3.zero;
 		this.initRotation.eulerAngles = Vector3.zero;
 
-		this.targetBuilding = null;
+		this.targetObject = null;
 	}
 
 
@@ -153,10 +153,10 @@ public class CameraController : MonoBehaviour {
 				}
 			}
 		} else if (cameraState == CameraStates.CIRCULARY_CONSTRAINED) {
-			if (targetBuilding != null) {
-				Vector3 buildingPosition = targetBuilding.transform.position;
+			if (targetObject != null) {
+				Vector3 buildingPosition = targetObject.transform.position;
 
-				float horizontalOrientation = this.RelativeOrientation(targetBuilding);
+				float horizontalOrientation = this.RelativeOrientation(targetObject);
 				float distance = Vector2.Distance(new Vector2(buildingPosition.x, buildingPosition.z), new Vector2(localPosition.x, localPosition.z));
 
 				if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
@@ -165,7 +165,7 @@ public class CameraController : MonoBehaviour {
 				if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
 					horizontalOrientation -= 5F * Mathf.Deg2Rad;
 
-				transform.localPosition = this.RelativePosition(targetBuilding, horizontalOrientation, localRoation.eulerAngles.x);
+				transform.localPosition = this.RelativePosition(targetObject, horizontalOrientation, localRoation.eulerAngles.x);
 				transform.localRotation = Quaternion.Euler(localRoation.eulerAngles.x, localRoation.y - horizontalOrientation * Mathf.Rad2Deg + 90, localRoation.eulerAngles.z);
 			}
 		}
@@ -205,7 +205,7 @@ public class CameraController : MonoBehaviour {
 		transform.position = targetPosition;
 		transform.rotation = targetRotation;
 
-		targetBuilding = null;
+		targetObject = null;
 
 		cameraState = CameraStates.FREE;
 
@@ -248,7 +248,7 @@ public class CameraController : MonoBehaviour {
 		transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
 		transform.rotation = targetRotation;
 
-		targetBuilding = building;
+		targetObject = building;
 
 		if (champTo)
 			cameraState = CameraStates.CIRCULARY_CONSTRAINED;

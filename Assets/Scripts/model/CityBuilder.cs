@@ -184,27 +184,11 @@ public class CityBuilder {
 		highwayNodes.transform.parent = cityComponents.transform;
 
 		foreach (NodeGroup ngp in nodeGroups) {
-			if(ngp.IsBuilding()) {
+			if(ngp.IsBuilding())
 				this.BuildSingleBuildingNodeGroup(ngp);
-			}
 
-			if (ngp.IsHighway ()) {
-				if((ngp.IsPrimary() || ngp.IsSecondary() || ngp.IsTertiary() || ngp.IsUnclassified() || ngp.IsResidential ()
-			    || ngp.IsService()) || ngp.IsCycleWay() || ngp.IsFootway() || ngp.IsWaterway()) {
-					// Construction des angles de noeuds de routes
-					foreach (Node n in ngp.Nodes) {
-						// Création et paramétrage de l'objet 3D destiné à former un noeud de route
-						GameObject highwayNode = GameObject.CreatePrimitive (PrimitiveType.Cube);
-						highwayNode.name = n.Reference;
-						highwayNode.tag = NodeTags.HIGHWAY_NODE_TAG;
-						highwayNode.transform.position = new Vector3 ((float)n.Longitude, 0, (float)n.Latitude);
-						highwayNode.transform.localScale = new Vector3 (0.02F, 0.02F, 0.02F);
-
-						// Ajout du noeud dans le groupe de noeuds 
-						highwayNode.transform.parent = highwayNodes.transform;
-					}
-				}
-			}
+			if (ngp.IsHighway ())
+				this.BuildSingleHighwayNodeGroup(ngp);
 		}
 	}
 
@@ -243,6 +227,24 @@ public class CityBuilder {
 			wallTransform.transform.position -= buildingNodeGroup.transform.position;
 
 		return buildingNodeGroup;
+	}
+
+	public void BuildSingleHighwayNodeGroup(NodeGroup ngp) {
+		if ((ngp.IsPrimary() || ngp.IsSecondary() || ngp.IsTertiary() || ngp.IsUnclassified() || ngp.IsResidential()
+				|| ngp.IsService()) || ngp.IsCycleWay() || ngp.IsFootway() || ngp.IsWaterway()) {
+			// Construction des angles de noeuds de routes
+			foreach (Node n in ngp.Nodes) {
+				// Création et paramétrage de l'objet 3D destiné à former un noeud de route
+				GameObject highwayNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				highwayNode.name = n.Reference;
+				highwayNode.tag = NodeTags.HIGHWAY_NODE_TAG;
+				highwayNode.transform.position = new Vector3((float) n.Longitude, 0, (float) n.Latitude);
+				highwayNode.transform.localScale = new Vector3(0.02F, 0.02F, 0.02F);
+
+				// Ajout du noeud dans le groupe de noeuds 
+				highwayNode.transform.parent = highwayNodes.transform;
+			}
+		}
 	}
 
 	/// <summary>
@@ -292,9 +294,6 @@ public class CityBuilder {
 			// Création et paramétrage de l'objet 3D destiné à former un mur
 			GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			wall.tag = NodeTags.WALL_TAG;
-
-			//Image wallImage = wall.AddComponent<Image>();
-			//wallImage.color = new Color(1, 0, 0, 0.5F);
 
 			// Paramétrage du mur 3D
 			int nbFloor = ngp.NbFloor;

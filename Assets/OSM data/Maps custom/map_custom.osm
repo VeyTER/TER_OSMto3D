@@ -273,4 +273,109 @@
   <building>
     <info id="35008082" name="Marché Victor Hugo" nbfloor="6" roofangle="15" rooftype="pitched" custmat="BricksBasic" />
   </building>
+  <building>
+    <info id="+1455971462" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+6474808852" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+5201514992" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+6027988463" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+6501898965" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+6295043565" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+1738299525" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+8700249275" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+5838412292" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+5919287481" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+2743660923" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+1842864434" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+4874889996" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="36698290" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" custmat="BricksBasic" />
+    <nd ref="426597937" index="0" lat="43.603859375" lon="1.44360302734375" />
+    <nd ref="1754051975" index="1" lat="43.6038671875" lon="1.44372705078125" />
+    <nd ref="426597925" index="2" lat="43.603875" lon="1.44385668945313" />
+    <nd ref="426597923" index="3" lat="43.60359375" lon="1.443904296875" />
+    <nd ref="426597921" index="4" lat="43.60359375" lon="1.44388696289063" />
+    <nd ref="426597942" index="5" lat="43.60359375" lon="1.44378955078125" />
+    <nd ref="426597945" index="6" lat="43.60375" lon="1.44376245117188" />
+    <nd ref="426597947" index="7" lat="43.60375" lon="1.44368359375" />
+    <nd ref="426597949" index="8" lat="43.603671875" lon="1.44369897460937" />
+    <nd ref="426597952" index="9" lat="43.6036796875" lon="1.4437275390625" />
+    <nd ref="426597954" index="10" lat="43.6035859375" lon="1.443740234375" />
+    <nd ref="426597956" index="11" lat="43.603578125" lon="1.44364697265625" />
+    <nd ref="426597960" index="12" lat="43.603640625" lon="1.44363696289062" />
+    <nd ref="426597939" index="13" lat="43.6037421875" lon="1.44362182617188" />
+    <nd ref="426597937" index="14" lat="43.603859375" lon="1.44360302734375" />
+  </building>
+  <building>
+    <info id="+1012706439" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+8306675207" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+7529460260" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+3620441169" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+4218199345" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+6658568126" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+1366516634" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+8583306409" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+4901252152" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+9271256175" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+6862089565" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+7681687423" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+5230802439" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+6342999872" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+8988878402" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
+  <building>
+    <info id="+0102634951" name="Nouveau bâtiment" nbfloor="3" roofangle="0" rooftype="unknown" />
+  </building>
 </earth>

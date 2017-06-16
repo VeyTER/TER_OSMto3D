@@ -241,9 +241,9 @@ public class EditController : MonoBehaviour {
 
 		// Enregistrement de la situation initiale de la caméra
 		if (editState == EditStates.NONE_SELECTION) {
-			GameObject mainCameraGo = Camera.main.gameObject;
-			cameraController.InitPosition = mainCameraGo.transform.position;
-			cameraController.InitRotation = mainCameraGo.transform.rotation;
+			GameObject mainCamera = Camera.main.gameObject;
+			cameraController.InitPosition = mainCamera.transform.position;
+			cameraController.InitRotation = mainCamera.transform.rotation;
 		}
 
 		//this.StartCoroutine( this.LoadData() );

@@ -28,7 +28,7 @@ public abstract class ObjectEditor {
 	protected bool buildingTransformed;
 
 
-	protected BuildingsTools buildingTools;
+	protected BuildingsTools buildingsTools;
 
 
 	public ObjectEditor () {
@@ -43,7 +43,7 @@ public abstract class ObjectEditor {
 		this.wallTransformed = false;
 		this.buildingTransformed = false;
 
-		this.buildingTools = BuildingsTools.GetInstance();
+		this.buildingsTools = BuildingsTools.GetInstance();
 	}
 
 

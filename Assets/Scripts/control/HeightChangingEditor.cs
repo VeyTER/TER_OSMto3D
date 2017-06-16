@@ -23,7 +23,7 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public void InitializeHeightChangingMode() {
-		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 
 		Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 		Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
@@ -70,7 +70,7 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public void IncrementObjectHeight() {
-		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 		cityBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor + 1);
 		nodeGroup.NbFloor++;
 
@@ -79,7 +79,7 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public void DecrementObjectHeight() {
-		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 		cityBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor - 1);
 		nodeGroup.NbFloor--;
 
@@ -115,7 +115,7 @@ public class HeightChangingEditor : ObjectEditor {
 	public override void CancelTransform() {
 		cityBuilder.RebuildBuilding(selectedBuilding, selectedBuildingStartHeight);
 
-		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 		nodeGroup.NbFloor = selectedBuildingStartHeight;
 	}
 

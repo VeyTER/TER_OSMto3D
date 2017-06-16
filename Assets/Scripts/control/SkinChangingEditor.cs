@@ -304,7 +304,7 @@ public class SkinChangingEditor : ObjectEditor {
 		selectedBuildingStartMaterial = meshRenderer.materials[0];
 		selectedBuildingStartColor = selectedBuildingStartMaterial.color;
 
-		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 		nodeGroup.CustomMaterial = meshRenderer.materials[0];
 		nodeGroup.OverlayColor = selectedBuildingStartMaterial.color;
 
@@ -409,18 +409,18 @@ public class SkinChangingEditor : ObjectEditor {
 
 	public void ChangeBuildingMaterial(GameObject sourceButton) {
 		Material newMaterial = buttonIdToMaterialTable[sourceButton.GetInstanceID()];
-		buildingTools.ReplaceMaterial(selectedBuilding, newMaterial);
+		buildingsTools.ReplaceMaterial(selectedBuilding, newMaterial);
 
-		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
-		buildingTools.ReplaceColor(selectedBuilding, nodeGroup.OverlayColor);
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		buildingsTools.ReplaceColor(selectedBuilding, nodeGroup.OverlayColor);
 		nodeGroup.CustomMaterial = newMaterial;
 	}
 
 	public void ChangeBuildingColor(GameObject sourceButton) {
 		Color newColor = buttonIdToColorTable[sourceButton.GetInstanceID()];
-		buildingTools.ReplaceColor(selectedBuilding, newColor);
+		buildingsTools.ReplaceColor(selectedBuilding, newColor);
 
-		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 		nodeGroup.OverlayColor = newColor;
 	}
 
@@ -431,10 +431,10 @@ public class SkinChangingEditor : ObjectEditor {
 
 	public override void CancelTransform() {
 		GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
-		buildingTools.ReplaceMaterial(selectedBuilding, selectedBuildingStartMaterial);
-		buildingTools.ReplaceColor(selectedBuilding, selectedBuildingStartColor);
+		buildingsTools.ReplaceMaterial(selectedBuilding, selectedBuildingStartMaterial);
+		buildingsTools.ReplaceColor(selectedBuilding, selectedBuildingStartColor);
 
-		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 		nodeGroup.CustomMaterial = selectedBuildingStartMaterial;
 		nodeGroup.OverlayColor = selectedBuildingStartColor;
 	}

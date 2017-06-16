@@ -171,7 +171,7 @@ public class MovingEditor : ObjectEditor {
 			if (!transformedObjects.Contains(selectedBuilding))
 				transformedObjects.Add(selectedBuilding);
 
-			buildingTools.UpdateNodesPosition(selectedBuilding);
+			buildingsTools.UpdateNodesPosition(selectedBuilding);
 		}
 	}
 
@@ -186,7 +186,7 @@ public class MovingEditor : ObjectEditor {
 
 			selectedBuildingNodes.transform.position = new Vector3(buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
 
-			buildingTools.UpdateNodesPosition(selectedBuilding);
+			buildingsTools.UpdateNodesPosition(selectedBuilding);
 		}
 	}
 

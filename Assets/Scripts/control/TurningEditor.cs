@@ -145,7 +145,7 @@ public class TurningEditor : ObjectEditor {
 			if (!transformedObjects.Contains(selectedBuilding))
 				transformedObjects.Add(selectedBuilding);
 
-			buildingTools.UpdateNodesPosition(selectedBuilding);
+			buildingsTools.UpdateNodesPosition(selectedBuilding);
 		}
 	}
 
@@ -162,7 +162,7 @@ public class TurningEditor : ObjectEditor {
 
 			selectedBuildingNodes.transform.rotation = Quaternion.Euler(buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
 
-			buildingTools.UpdateNodesPosition(selectedBuilding);
+			buildingsTools.UpdateNodesPosition(selectedBuilding);
 		}
 	}
 
