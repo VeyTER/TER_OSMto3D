@@ -604,7 +604,7 @@ public class BuildingsTools {
 	/// </summary>
 	/// <param name="nodeGroup">Groupe de noeuds en temps que clé.</param>
 	/// <param name="buildingNodeGroup">Groupe de noeuds 3D en temps que valeur.</param>
-	public void AddNodeGroupToBuildingNodeGroup(NodeGroup nodeGroup, GameObject buildingNodeGroup) {
+	public void AddNodeGroupToBuildingNodeGroupEntry(NodeGroup nodeGroup, GameObject buildingNodeGroup) {
 		nodeGroupToBuildingNodeGroupTable [nodeGroup] = buildingNodeGroup;
 	}
 
@@ -705,7 +705,7 @@ public class BuildingsTools {
 		//while (buildingTools.IsInfoAttributeValueUsed(XmlAttributes.ID, newBuildingId))
 		//	newBuildingId = this.NewIdOrReference(10);
 
-		NodeGroup buildingNodeGroup = new NodeGroup(newBuildingId) {
+		NodeGroup nodeGroup = new NodeGroup(newBuildingId) {
 			Name = "Nouveau bâtiment",
 			NbFloor = 3
 		};
@@ -719,13 +719,13 @@ public class BuildingsTools {
 		Node bottomLeftWallNode = this.NewWallNode(3, centerPosition, new Vector2(-halfLength, halfWidth));
 		Node topLeftDupliWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfLength, -halfWidth));
 
-		buildingNodeGroup.AddNode(topLeftWallNode);
-		buildingNodeGroup.AddNode(topRightWallNode);
-		buildingNodeGroup.AddNode(bottomRightWallNode);
-		buildingNodeGroup.AddNode(bottomLeftWallNode);
-		buildingNodeGroup.AddNode(topLeftDupliWallNode);
+		nodeGroup.AddNode(topLeftWallNode);
+		nodeGroup.AddNode(topRightWallNode);
+		nodeGroup.AddNode(bottomRightWallNode);
+		nodeGroup.AddNode(bottomLeftWallNode);
+		nodeGroup.AddNode(topLeftDupliWallNode);
 
-		return buildingNodeGroup;
+		return nodeGroup;
 	}
 
 	private Node NewWallNode(int index, Vector3 buildingCenter, Vector2 localPosition) {

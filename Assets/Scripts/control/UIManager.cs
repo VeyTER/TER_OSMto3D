@@ -126,8 +126,8 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 		case UiNames.BUILDING_CREATION_LENGTH_INPUT:
 			Vector3 buildingScaleInLengthEdit = buildingCreationEditor.SelectedBuilding.transform.localScale;
-			NodeGroup buildingNodeGroupInLengthEdit = BuildingsTools.GetInstance().BuildingToNodeGroup(buildingCreationEditor.SelectedBuilding);
-			float buildingWidth = (float) Math.Abs(buildingNodeGroupInLengthEdit.GetNode(0).Longitude - buildingNodeGroupInLengthEdit.GetNode(2).Longitude);
+			NodeGroup nodeGroupInLengthEdit = BuildingsTools.GetInstance().BuildingToNodeGroup(buildingCreationEditor.SelectedBuilding);
+			float buildingWidth = (float) Math.Abs(nodeGroupInLengthEdit.GetNode(0).Longitude - nodeGroupInLengthEdit.GetNode(2).Longitude);
 
 			float newLength = this.ProcessInputValue(originInputFiled, 1);
 			if (!float.IsNaN(newLength))
@@ -135,8 +135,8 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 		case UiNames.BUILDING_CREATION_WIDTH_INPUT:
 			Vector3 buildingScaleInWidthEdit = buildingCreationEditor.SelectedBuilding.transform.localScale;
-			NodeGroup buildingNodeGroupInWidthEdit = BuildingsTools.GetInstance().BuildingToNodeGroup(buildingCreationEditor.SelectedBuilding);
-			float buildingLength = (float)Math.Abs(buildingNodeGroupInWidthEdit.GetNode(0).Latitude - buildingNodeGroupInWidthEdit.GetNode(2).Latitude);
+			NodeGroup nodeGroupInWidthEdit = BuildingsTools.GetInstance().BuildingToNodeGroup(buildingCreationEditor.SelectedBuilding);
+			float buildingLength = (float)Math.Abs(nodeGroupInWidthEdit.GetNode(0).Latitude - nodeGroupInWidthEdit.GetNode(2).Latitude);
 
 			float newWidth = this.ProcessInputValue(originInputFiled, 1);
 			if (!float.IsNaN(newWidth))

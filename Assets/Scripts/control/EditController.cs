@@ -336,8 +336,8 @@ public class EditController : MonoBehaviour {
 			renamedBuildings.Add(building, building.name);
 
 		// Changement du nom du GameObject et du NodeGroupe correspondant au bâtiment
-		NodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup (building);
-		buildingNodeGroup.Name = newName;
+		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup (building);
+		nodeGroup.Name = newName;
 		building.name = newName;
 
 		// Changement du nom des murs apparentés au bâtiment

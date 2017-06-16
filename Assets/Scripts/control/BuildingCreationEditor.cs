@@ -24,17 +24,20 @@ public class BuildingCreationEditor : ObjectEditor {
 	}
 
 	private void InitializeBuilding(Vector3 position, float orientation, Vector2 Dimensions) {
-		NodeGroup buildingNodeGroup = buildingTools.NewBasicNodeGroup(position, Dimensions);
+		NodeGroup nodeGroup = buildingTools.NewBasicNodeGroup(position, Dimensions);
 
-		GameObject building = cityBuilder.BuildSingleWallGroup(buildingNodeGroup);
-		cityBuilder.SetupSingleWallGroup(building, buildingNodeGroup);
+		GameObject building = cityBuilder.BuildSingleWallGroup(nodeGroup);
+		buildingTools.ReplaceColor(building, new Color(1, 1, 1, 0.5F));
+
+		cityBuilder.SetupSingleWallGroup(building, nodeGroup);
+
 		building.transform.rotation = Quaternion.Euler(0, orientation, 0);
 
 		building.transform.parent = Camera.main.transform;
 		GameObject.Destroy(building.GetComponent<UiManager>());
 
-		buildingTools.AddBuildingToNodeGroupEntry(building, buildingNodeGroup);
-		buildingTools.AddNodeGroupToBuildingEntry(buildingNodeGroup, building);
+		buildingTools.AddBuildingToNodeGroupEntry(building, nodeGroup);
+		buildingTools.AddNodeGroupToBuildingEntry(nodeGroup, building);
 
 		selectedBuilding = building;
 	}
@@ -66,8 +69,9 @@ public class BuildingCreationEditor : ObjectEditor {
 	}
 
 	public void UpdateDimensions(Vector2 newDimensions) {
-		GameObject.Destroy(selectedBuilding);
-		this.InitializeBuilding(selectedBuilding.transform.position, selectedBuilding.transform.rotation.eulerAngles.y, newDimensions);
+		Transform selectedBuilingTransform = selectedBuilding.transform;
+		this.RemoveBuilding();
+		this.InitializeBuilding(selectedBuilingTransform.position, selectedBuilingTransform.rotation.eulerAngles.y, newDimensions);
 	}
 
 	public void UpdateDisplayedSituation() {
@@ -75,32 +79,48 @@ public class BuildingCreationEditor : ObjectEditor {
 		GameObject buildingCreationZCoordInput = GameObject.Find(UiNames.BUILDING_CREATION_Z_COORD_INPUT);
 		GameObject buildingCreationOrientationInput = GameObject.Find(UiNames.BUILDING_CREATION_ORIENTATION_INPUT);
 		GameObject buildingCreationLengthInput = GameObject.Find(UiNames.BUILDING_CREATION_LENGTH_INPUT);
-		GameObject buildingCreationWidthdInput = GameObject.Find(UiNames.BUILDING_CREATION_WIDTH_INPUT);
+		GameObject buildingCreationWidthInput = GameObject.Find(UiNames.BUILDING_CREATION_WIDTH_INPUT);
 
 		InputField xCoordInputTextInput = buildingCreationXCoordInput.GetComponent<InputField>();
 		InputField zCoordInputTextInput = buildingCreationZCoordInput.GetComponent<InputField>();
 		InputField orientationInputTextInput = buildingCreationOrientationInput.GetComponent<InputField>();
 		InputField lengthdInputTextInput = buildingCreationLengthInput.GetComponent<InputField>();
-		InputField widthInputTextInput = buildingCreationWidthdInput.GetComponent<InputField>();
+		InputField widthInputTextInput = buildingCreationWidthInput.GetComponent<InputField>();
 
 		xCoordInputTextInput.text = selectedBuilding.transform.position.x.ToString();
 		zCoordInputTextInput.text = selectedBuilding.transform.position.z.ToString();
 		orientationInputTextInput.text = Math.Round(selectedBuilding.transform.rotation.eulerAngles.y, 2).ToString();
 
-		NodeGroup buildingNodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
-		lengthdInputTextInput.text = (buildingNodeGroup.Nodes[1].Latitude - buildingNodeGroup.Nodes[0].Latitude).ToString();
-		widthInputTextInput.text = (buildingNodeGroup.Nodes[3].Longitude - buildingNodeGroup.Nodes[0].Longitude).ToString();
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		lengthdInputTextInput.text = (nodeGroup.Nodes[1].Latitude - nodeGroup.Nodes[0].Latitude).ToString();
+		widthInputTextInput.text = (nodeGroup.Nodes[3].Longitude - nodeGroup.Nodes[0].Longitude).ToString();
 	}
 
 	public override void CancelTransform() {
-		GameObject.Destroy(selectedBuilding);
-		selectedBuilding = null;
+		this.RemoveBuilding();
 		cameraController.SwitchToSemiLocalMode();
 	}
 
 	public override void ValidateTransform() {
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+		GameObject buildingNodeGroup = cityBuilder.BuildSingleBuildingNodeGroup(nodeGroup);
+
 		selectedBuilding.AddComponent<UiManager>();
 		selectedBuilding.transform.parent = cityBuilder.WallGroups.transform;
+		buildingNodeGroup.transform.parent = cityBuilder.BuildingNodes.transform;
+
+		Material defaultBuildingMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
+		buildingTools.ReplaceMaterial(selectedBuilding, defaultBuildingMaterial);
+
 		cameraController.SwitchToSemiLocalMode();
+	}
+
+	private void RemoveBuilding() {
+		NodeGroup nodeGroup = buildingTools.BuildingToNodeGroup(selectedBuilding);
+
+		GameObject.Destroy(selectedBuilding);
+
+		nodeGroup = null;
+		selectedBuilding = null;
 	}
 }

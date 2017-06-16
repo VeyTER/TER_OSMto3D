@@ -183,40 +183,9 @@ public class CityBuilder {
 		highwayNodes = new GameObject(ObjectNames.HIGHWAY_NODES);
 		highwayNodes.transform.parent = cityComponents.transform;
 
-		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
-
 		foreach (NodeGroup ngp in nodeGroups) {
 			if(ngp.IsBuilding()) {
-				// Création et paramétrage de l'objet 3D destiné à former un groupe de noeuds de bâtiment
-				GameObject buildingNodeGroup = new GameObject() {
-					name = ngp.Id
-				};
-
-				// Ajout du groupe de noeuds à l'objet contenant les groupes de noeuds de bâtiments
-				// et ajout d'une entrée dans la table de correspondances
-				buildingNodeGroup.transform.parent = buildingNodes.transform;
-				buildingsTools.AddBuildingNodeGroupToNodeGroupEntry (buildingNodeGroup, ngp);
-				buildingsTools.AddNodeGroupToBuildingNodeGroup (ngp, buildingNodeGroup);
-
-				// Construction des angles de noeuds de bâtiments
-				foreach(Node n in ngp.Nodes) {
-					// Création et paramétrage de l'objet 3D destiné à former un noeud de bâtiment
-					GameObject buildingNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
-					buildingNode.name = n.Reference;
-					buildingNode.tag = NodeTags.BUILDING_NODE_TAG;
-					buildingNode.transform.position = new Vector3((float)n.Longitude, 0, (float)n.Latitude);
-					buildingNode.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-
-					// Ajout du noeud au groupe de noeuds et ajout d'une entrée dans la table de correspondances
-					buildingNode.transform.parent = buildingNodeGroup.transform;
-					buildingsTools.AddBuildingNodeToNodeEntry (buildingNode, n);
-				}
-
-				// Déplacement des noeuds 3D au sein du groupe pour qu'ils aient une position relative au centre
-				Vector3 nodeGroupCenter = buildingsTools.BuildingNodesCenter (buildingNodeGroup, ngp);
-				buildingNodeGroup.transform.position = nodeGroupCenter;
-				foreach (Transform wallTransform in buildingNodeGroup.transform)
-					wallTransform.transform.position -= buildingNodeGroup.transform.position;
+				this.BuildSingleBuildingNodeGroup(ngp);
 			}
 
 			if (ngp.IsHighway ()) {
@@ -239,6 +208,42 @@ public class CityBuilder {
 		}
 	}
 
+	public GameObject BuildSingleBuildingNodeGroup(NodeGroup ngp) {
+		BuildingsTools buildingsTools = BuildingsTools.GetInstance();
+
+		// Création et paramétrage de l'objet 3D destiné à former un groupe de noeuds de bâtiment
+		GameObject buildingNodeGroup = new GameObject() {
+			name = ngp.Id
+		};
+
+		// Ajout du groupe de noeuds à l'objet contenant les groupes de noeuds de bâtiments
+		// et ajout d'une entrée dans la table de correspondances
+		buildingNodeGroup.transform.parent = buildingNodes.transform;
+		buildingsTools.AddBuildingNodeGroupToNodeGroupEntry(buildingNodeGroup, ngp);
+		buildingsTools.AddNodeGroupToBuildingNodeGroupEntry(ngp, buildingNodeGroup);
+
+		// Construction des angles de noeuds de bâtiments
+		foreach (Node n in ngp.Nodes) {
+			// Création et paramétrage de l'objet 3D destiné à former un noeud de bâtiment
+			GameObject buildingNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			buildingNode.name = n.Reference;
+			buildingNode.tag = NodeTags.BUILDING_NODE_TAG;
+			buildingNode.transform.position = new Vector3((float) n.Longitude, 0, (float) n.Latitude);
+			buildingNode.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+
+			// Ajout du noeud au groupe de noeuds et ajout d'une entrée dans la table de correspondances
+			buildingNode.transform.parent = buildingNodeGroup.transform;
+			buildingsTools.AddBuildingNodeToNodeEntry(buildingNode, n);
+		}
+
+		// Déplacement des noeuds 3D au sein du groupe pour qu'ils aient une position relative au centre
+		Vector3 nodeGroupCenter = buildingsTools.BuildingNodesCenter(buildingNodeGroup, ngp);
+		buildingNodeGroup.transform.position = nodeGroupCenter;
+		foreach (Transform wallTransform in buildingNodeGroup.transform)
+			wallTransform.transform.position -= buildingNodeGroup.transform.position;
+
+		return buildingNodeGroup;
+	}
 
 	/// <summary>
 	/// 	Place les murs dans la scène.
@@ -268,7 +273,7 @@ public class CityBuilder {
 			}
 		}
 	}
-
+	
 	public GameObject BuildSingleWallGroup(NodeGroup ngp) {
 		GameObject wallGroup = new GameObject();
 		for (int i = 0; i < ngp.NodeCount() - 1; i++) {
@@ -331,7 +336,6 @@ public class CityBuilder {
 
 	public void SetupSingleWallGroup(GameObject wallGroup, NodeGroup ngp) {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance();
-
 
 		// Ajout d'une entrée dans la table de correspondances
 		buildingsTools.AddBuildingToNodeGroupEntry(wallGroup, ngp);

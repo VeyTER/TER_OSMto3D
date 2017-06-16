@@ -26,13 +26,13 @@ public class DelauneyTriangulation {
 	private List<Node> nodesTemp = new List<Node>();
 
 
-	public DelauneyTriangulation (NodeGroup buildingNodeGroup) {
+	public DelauneyTriangulation (NodeGroup nodeGroup) {
 		this.triangles = new List<Triangle>();
 
 		this.oldTriangles = new List<Triangle>();
 		this.newTriangles = new List<Triangle>();
 
-		foreach (Node node in buildingNodeGroup.Nodes)
+		foreach (Node node in nodeGroup.Nodes)
 			nodes.Add(node);
 		
 		nodes.RemoveAt(nodes.Count - 1);
