@@ -251,7 +251,7 @@ public class SkinChangingEditor : ObjectEditor {
 
 		Image supportImage = colorSupport.AddComponent<Image>();
 		if (color.r == 1 && color.g == 1 && color.b == 1) {
-			Sprite noneColorIcon = Resources.Load<Sprite>(Icons.NONE_COLOR);
+			Sprite noneColorIcon = Resources.Load<Sprite>(Sprites.NONE_COLOR);
 			supportImage.sprite = noneColorIcon;
 		} else {
 			supportImage.color = color;

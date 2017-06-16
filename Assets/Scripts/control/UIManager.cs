@@ -76,7 +76,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (controlPanelManager.ControlState != ControlPanelManager.ControlStates.NONE) {
 				if (this.IsPlayerMoving()) {
 					buildingCreationEditor.CompensateCameraMoves();
-					buildingCreationEditor.UpdateDisplayedPosition();
+					buildingCreationEditor.UpdateDisplayedSituation();
 				}
 			}
 			break;
@@ -106,62 +106,62 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.BUILDING_CREATION_X_COORD_INPUT:
 			Vector3 buildingPositionInXEdit = buildingCreationEditor.SelectedBuilding.transform.position;
 
-			float newPosX = this.ProcessInputValue(originInputFiled);
+			float newPosX = this.ProcessInputValue(originInputFiled, 0);
 			if (!float.IsNaN(newPosX))
-				buildingCreationEditor.UpdateSituation(new Vector3(newPosX, buildingPositionInXEdit.y, buildingPositionInXEdit.z));
-
+				buildingCreationEditor.UpdatePosition(new Vector3(newPosX, buildingPositionInXEdit.y, buildingPositionInXEdit.z));
 			break;
 		case UiNames.BUILDING_CREATION_Z_COORD_INPUT:
 			Vector3 buildingPositionInZEdit = buildingCreationEditor.SelectedBuilding.transform.position;
 
-			float newPosZ = this.ProcessInputValue(originInputFiled);
+			float newPosZ = this.ProcessInputValue(originInputFiled, 0);
 			if(!float.IsNaN(newPosZ))
-				buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ));
-
+				buildingCreationEditor.UpdatePosition(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ));
 			break;
 		case UiNames.BUILDING_CREATION_ORIENTATION_INPUT:
-			Vector3 buildingPositionInOrientationEdit = buildingCreationEditor.SelectedBuilding.transform.position;
 			Quaternion buildingRotationInOrientationEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
 
-			float newOrientation = this.ProcessInputValue(originInputFiled);
+			float newOrientation = this.ProcessInputValue(originInputFiled, 0);
 			if (!float.IsNaN(newOrientation))
-				buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInOrientationEdit.x, buildingPositionInOrientationEdit.y, buildingPositionInOrientationEdit.z), newOrientation);
-
+				buildingCreationEditor.UpdateOrientation(newOrientation);
 			break;
-		//case UiNames.BUILDING_CREATION_LENGTH_INPUT:
-		//	Vector3 buildingPositionInZEdit = buildingCreationEditor.SelectedBuilding.transform.position;
-		//	Quaternion buildingRotationInZEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
+		case UiNames.BUILDING_CREATION_LENGTH_INPUT:
+			Vector3 buildingScaleInLengthEdit = buildingCreationEditor.SelectedBuilding.transform.localScale;
+			NodeGroup buildingNodeGroupInLengthEdit = BuildingsTools.GetInstance().BuildingToNodeGroup(buildingCreationEditor.SelectedBuilding);
+			float buildingWidth = (float) Math.Abs(buildingNodeGroupInLengthEdit.GetNode(0).Longitude - buildingNodeGroupInLengthEdit.GetNode(2).Longitude);
 
-		//	float newPosZ = this.ProcessInputValue(originInputFiled);
-		//	if (!float.IsNaN(newPosZ))
-		//		buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ), buildingRotationInZEdit.z);
+			float newLength = this.ProcessInputValue(originInputFiled, 1);
+			if (!float.IsNaN(newLength))
+				buildingCreationEditor.UpdateDimensions(new Vector2(newLength, buildingWidth));
+			break;
+		case UiNames.BUILDING_CREATION_WIDTH_INPUT:
+			Vector3 buildingScaleInWidthEdit = buildingCreationEditor.SelectedBuilding.transform.localScale;
+			NodeGroup buildingNodeGroupInWidthEdit = BuildingsTools.GetInstance().BuildingToNodeGroup(buildingCreationEditor.SelectedBuilding);
+			float buildingLength = (float)Math.Abs(buildingNodeGroupInWidthEdit.GetNode(0).Latitude - buildingNodeGroupInWidthEdit.GetNode(2).Latitude);
 
-		//	break;
-		//case UiNames.BUILDING_CREATION_WIDTH_INPUT:
-		//	Vector3 buildingPositionInZEdit = buildingCreationEditor.SelectedBuilding.transform.position;
-		//	Quaternion buildingRotationInZEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
-
-		//	float newPosZ = this.ProcessInputValue(originInputFiled);
-		//	if (!float.IsNaN(newPosZ))
-		//		buildingCreationEditor.UpdateSituation(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ), buildingRotationInZEdit.z);
-
-		//	break;
+			float newWidth = this.ProcessInputValue(originInputFiled, 1);
+			if (!float.IsNaN(newWidth))
+				buildingCreationEditor.UpdateDimensions(new Vector2(buildingLength, newWidth));
+			break;
 		}
 	}
 
-	private float ProcessInputValue(InputField originInputFiled) {
+	private float ProcessInputValue(InputField originInputFiled, float defaultValue) {
 		float parsedValue = 0;
 		string inputValue = originInputFiled.text;
 
-		if (inputValue.Length == 0)
-			return 0;
+		Image inputImage = originInputFiled.gameObject.GetComponent<Image>();
 
-		bool parsingSuccessinZEdit = float.TryParse(inputValue, out parsedValue);
-		if (parsingSuccessinZEdit) {
+		if (inputValue.Length == 0) {
+			inputImage.color = new Color(ThemeColors.BLUE.r, ThemeColors.BLUE.g, ThemeColors.BLUE.b, 0.6F);
+			return defaultValue;
+		}
 
+		bool parsingOutcome = float.TryParse(inputValue, out parsedValue);
+		if (parsingOutcome) {
+			inputImage.color = new Color(ThemeColors.BLUE.r, ThemeColors.BLUE.g, ThemeColors.BLUE.b, 0.6F);
 			return parsedValue;
 		} else {
-			originInputFiled.selectionColor = ThemeColors.DARK_RED;
+			inputImage.color = new Color(ThemeColors.RED.r * 1.5F, ThemeColors.RED.g * 1.5F, ThemeColors.RED.b * 1.5F, 0.65F);
 			return float.NaN;
 		}
 	}
@@ -333,7 +333,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				buildingCreationPanelController.transform.gameObject.SetActive(true);
 				buildingCreationPanelController.OpenPanel(null);
 				buildingCreationEditor.InitializeBuildingCreation();
-				buildingCreationEditor.UpdateDisplayedPosition();
+				buildingCreationEditor.UpdateDisplayedSituation();
 				controlPanelManager.ControlState = ControlPanelManager.ControlStates.BUILDING_CREATION;
 			}
 			break;

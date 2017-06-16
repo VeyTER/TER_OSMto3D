@@ -133,6 +133,12 @@ public class BoxPanelController : PanelController {
 			if (elementImage != null) {
 				Color elementImageColor = elementImage.color;
 				elementImageColor.a = alpha;
+
+				if (childElementTransform.name.Contains("Input"))
+					elementImageColor.a = alpha * 0.6F;
+				else
+					elementImageColor.a = alpha;
+
 				elementImage.color = elementImageColor;
 			}
 
@@ -140,7 +146,7 @@ public class BoxPanelController : PanelController {
 				Color elementTextColor = elementText.color;
 
 				if(childElementTransform.name.Contains("Placeholder"))
-					elementTextColor.a = alpha/2F;
+					elementTextColor.a = alpha / 2F;
 				else
 					elementTextColor.a = alpha;
 

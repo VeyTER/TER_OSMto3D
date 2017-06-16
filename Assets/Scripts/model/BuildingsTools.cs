@@ -700,7 +700,7 @@ public class BuildingsTools {
 		}
 	}
 
-	public NodeGroup NewBasicNodeGroup(Vector3 centerPosition, Vector2 scale) {
+	public NodeGroup NewBasicNodeGroup(Vector3 centerPosition, Vector2 dimensions) {
 		string newBuildingId = this.NewIdOrReference(10);
 		//while (buildingTools.IsInfoAttributeValueUsed(XmlAttributes.ID, newBuildingId))
 		//	newBuildingId = this.NewIdOrReference(10);
@@ -710,14 +710,14 @@ public class BuildingsTools {
 			NbFloor = 3
 		};
 
-		float halfScaleX = scale.x / 2F;
-		float halfScaleZ = scale.y / 2F;
+		float halfLength = dimensions.x / 2F;
+		float halfWidth = dimensions.y / 2F;
 
-		Node topLeftWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfScaleX, -halfScaleZ));
-		Node topRightWallNode = this.NewWallNode(1, centerPosition, new Vector2(halfScaleX, -halfScaleZ));
-		Node bottomRightWallNode = this.NewWallNode(2, centerPosition, new Vector2(halfScaleX, halfScaleZ));
-		Node bottomLeftWallNode = this.NewWallNode(3, centerPosition, new Vector2(-halfScaleX, halfScaleZ));
-		Node topLeftDupliWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfScaleX, -halfScaleZ));
+		Node topLeftWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfLength, -halfWidth));
+		Node topRightWallNode = this.NewWallNode(1, centerPosition, new Vector2(halfLength, -halfWidth));
+		Node bottomRightWallNode = this.NewWallNode(2, centerPosition, new Vector2(halfLength, halfWidth));
+		Node bottomLeftWallNode = this.NewWallNode(3, centerPosition, new Vector2(-halfLength, halfWidth));
+		Node topLeftDupliWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfLength, -halfWidth));
 
 		buildingNodeGroup.AddNode(topLeftWallNode);
 		buildingNodeGroup.AddNode(topRightWallNode);

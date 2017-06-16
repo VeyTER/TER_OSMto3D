@@ -14,7 +14,7 @@ public class UiNames {
 
 	public const string BUILDING_CREATION_ORIENTATION_INPUT = "BuildingCreationOrientationInput";
 
-	public const string BUILDING_CREATION_LENGTH_INPUT = "BuildingCreationWidthInput";
+	public const string BUILDING_CREATION_LENGTH_INPUT = "BuildingCreationLengthInput";
 
 	public const string BUILDING_CREATION_WIDTH_INPUT = "BuildingCreationWidthInput";
 
