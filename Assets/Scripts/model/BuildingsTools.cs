@@ -192,6 +192,7 @@ public class BuildingsTools {
 			
 			// Récupération des noeuds correspondant au bâtiment dans les fichiers MapResumed et MapCustom
 			string xPath = "/" + XmlTags.EARTH + "//" + XmlTags.BUILDING + "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
+
 			XmlNode resumeBuildingNode = mapResumeDocument.SelectSingleNode (xPath).ParentNode;
 			XmlNode customBuildingNode = mapCustomDocument.SelectSingleNode (xPath).ParentNode;
 
@@ -337,6 +338,38 @@ public class BuildingsTools {
 		}
 	}
 
+	public void AppendResumeBuilding(NodeGroup nodeGroup) {
+		if (File.Exists(resumeFilePath)) {
+			mapResumeDocument.Load(resumeFilePath);
+
+			string zoningXPath = nodeGroup.ToZoningXPath();
+
+			XmlNode containerNode = mapResumeDocument.SelectSingleNode(zoningXPath);
+			XmlNode buildingNode = mapResumeDocument.CreateElement(XmlTags.BUILDING);
+			XmlNode buildingInfoNode = mapResumeDocument.CreateElement(XmlTags.INFO);
+
+			containerNode.AppendChild(buildingNode);
+			buildingNode.AppendChild(buildingInfoNode);
+
+			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ID, nodeGroup.Id);
+			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.NAME, nodeGroup.Name);
+			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, nodeGroup.NbFloor.ToString());
+			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, nodeGroup.RoofAngle.ToString());
+			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ROOF_TYPE, nodeGroup.RoofType);
+
+			foreach (Node node in nodeGroup.Nodes) {
+				XmlNode newNd = mapResumeDocument.CreateElement(XmlTags.ND);
+				this.AppendNodeGroupAttribute(mapResumeDocument, newNd, XmlAttributes.REFERENCE, node.Reference);
+				this.AppendNodeGroupAttribute(mapResumeDocument, newNd, XmlAttributes.INDEX, node.Index.ToString());
+				this.AppendNodeGroupAttribute(mapResumeDocument, newNd, XmlAttributes.LATITUDE, node.Latitude.ToString());
+				this.AppendNodeGroupAttribute(mapResumeDocument, newNd, XmlAttributes.LONGIUDE, node.Longitude.ToString());
+				buildingNode.AppendChild(newNd);
+			}
+
+			mapResumeDocument.Save(resumeFilePath);
+		}
+	}
+
 	/// <summary>
 	/// 	Ajoute une entrée représentant un bâtiment dans le fichier map_custom.
 	/// </summary>
@@ -345,7 +378,7 @@ public class BuildingsTools {
 		if (File.Exists(customFilePath)) {
 			mapCustomDocument.Load(customFilePath);
 
-			// Récupération du noeud XML englobant tous les objets terrestres et ajout de celui-ci au fichier MapCutom
+			// Récupération du noeud XML englobant tous les objets terrestres et ajout de celui-ci au fichier map_custom
 			// s'il n'est pas présent
 			XmlNodeList earthNodes = mapCustomDocument.GetElementsByTagName(XmlTags.EARTH);
 			if (earthNodes.Count == 0)
@@ -403,15 +436,7 @@ public class BuildingsTools {
 	}
 
 	private XmlNode GetResumeInfoNode(NodeGroup nodeGroup) {
-		string zoningXPath = "";
-		zoningXPath += "/" + XmlTags.EARTH;
-		zoningXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
-		zoningXPath += "/" + XmlTags.REGION + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
-		zoningXPath += "/" + XmlTags.TOWN + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
-		zoningXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
-		zoningXPath += "/" + XmlTags.BUILDING;
-		zoningXPath += "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
-
+		string zoningXPath = nodeGroup.ToFullBuildingXPath();
 		return mapResumeDocument.SelectSingleNode(zoningXPath);
 	}
 
@@ -431,15 +456,7 @@ public class BuildingsTools {
 	private XmlAttribute ResumeNodeGroupAttribute(NodeGroup nodeGroup, string attributeName) {
 		XmlAttribute res = null;
 
-		// Construction de d'adresse du noeud XML d'information du bâtiment à partir de son zonage
-		string zoningXPath = "";
-		zoningXPath += "/" + XmlTags.EARTH;
-		zoningXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Country + "\"]";
-		zoningXPath += "/" + XmlTags.REGION + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Region + "\"]";
-		zoningXPath += "/" + XmlTags.TOWN + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.Town + "\"]";
-		zoningXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + nodeGroup.District + "\"]";
-		zoningXPath += "/" + XmlTags.BUILDING;
-		zoningXPath += "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + nodeGroup.Id + "\"]";
+		string zoningXPath = nodeGroup.ToFullBuildingXPath();
 
 		// Récupération du noeud XML d'information et récupération de l'attribut ciblé
 		XmlNode infoNode = mapResumeDocument.SelectSingleNode (zoningXPath);
@@ -702,14 +719,15 @@ public class BuildingsTools {
 		}
 	}
 
-	public NodeGroup NewBasicNodeGroup(Vector3 centerPosition, Vector2 dimensions) {
+	public NodeGroup NewBasicNodeGroup(Vector3 centerPosition, Vector2 dimensions, Material material) {
 		string newBuildingId = this.NewIdOrReference(10);
 		//while (buildingsTools.IsInfoAttributeValueUsed(XmlAttributes.ID, newBuildingId))
 		//	newBuildingId = this.NewIdOrReference(10);
 
 		NodeGroup nodeGroup = new NodeGroup(newBuildingId) {
-			Name = "Nouveau bâtiment",
-			NbFloor = 3
+			Name = "Bâtiment n°" + newBuildingId,
+			NbFloor = 3,
+			CustomMaterial = material
 		};
 
 		float halfLength = dimensions.x / 2F;

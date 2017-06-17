@@ -445,6 +445,29 @@ public class NodeGroup {
 		}
 	}
 
+	public string ToZoningXPath() {
+		string zoningXPath = "/" + XmlTags.EARTH;
+
+		if (country != "unknown")
+			zoningXPath += "/" + XmlTags.COUNTRY + "[@" + XmlAttributes.DESIGNATION + "=\"" + country + "\"]";
+		if (region != "unknown")
+			zoningXPath += "/" + XmlTags.REGION + "[@" + XmlAttributes.DESIGNATION + "=\"" + region + "\"]";
+		if (town != "unknown")
+			zoningXPath += "/" + XmlTags.TOWN + "[@" + XmlAttributes.DESIGNATION + "=\"" + town + "\"]";
+		if (district != "unknown")
+			zoningXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + district + "\"]";
+
+		return zoningXPath;
+	}
+
+	public string ToFullBuildingXPath() {
+		string zoningXPath = this.ToZoningXPath();
+
+		zoningXPath += "/" + XmlTags.BUILDING;
+		zoningXPath += "/" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + id + "\"]";
+		return zoningXPath;
+	}
+
 	public string Id {
 		get { return id; }
 		set { id = value; }

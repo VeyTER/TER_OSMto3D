@@ -24,7 +24,8 @@ public class BuildingCreationEditor : ObjectEditor {
 	}
 
 	private void InitializeBuilding(Vector3 position, float orientation, Vector2 Dimensions) {
-		NodeGroup nodeGroup = buildingsTools.NewBasicNodeGroup(position, Dimensions);
+		Material defaultWallMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
+		NodeGroup nodeGroup = buildingsTools.NewBasicNodeGroup(position, Dimensions, defaultWallMaterial);
 
 		GameObject building = cityBuilder.BuildSingleWallGroup(nodeGroup);
 		buildingsTools.ReplaceColor(building, new Color(1, 1, 1, 0.5F));
@@ -117,7 +118,10 @@ public class BuildingCreationEditor : ObjectEditor {
 		Material defaultBuildingMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
 		buildingsTools.ReplaceMaterial(selectedBuilding, defaultBuildingMaterial);
 
+		buildingsTools.AppendResumeBuilding(nodeGroup);
 		buildingsTools.AppendCustomBuilding(nodeGroup);
+
+		buildingsTools.UpdateLocation(selectedBuilding);
 
 		cameraController.SwitchToSemiLocalMode();
 	}

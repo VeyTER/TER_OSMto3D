@@ -527,7 +527,7 @@
             <nd ref="426691054" index="10" lat="43.6051525" lon="1.4438895" />
           </building>
           <building>
-            <info id="36707002" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" color="1;1;0.75" />
+            <info id="36707002" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" color="1;1;0.75" custmat="BricksOrange" />
             <nd index="0" ref="426691290" lat="43.6050625" lon="1.44325634765625" />
             <nd index="1" ref="426691305" lat="43.6050390625" lon="1.44337329101562" />
             <nd index="2" ref="426691307" lat="43.6049765625" lon="1.44335766601563" />
@@ -2948,25 +2948,25 @@
             <nd ref="755802530" index="7" lat="43.6060331" lon="1.4412605" />
           </building>
           <building>
-            <info id="36705325" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
-            <nd ref="426673261" index="0" lat="43.6052329" lon="1.4468135" />
-            <nd ref="426673262" index="1" lat="43.6053393" lon="1.4467932" />
-            <nd ref="426673263" index="2" lat="43.6054143" lon="1.4469" />
-            <nd ref="426673264" index="3" lat="43.6055425" lon="1.4467342" />
-            <nd ref="426673265" index="4" lat="43.6056076" lon="1.4468971" />
-            <nd ref="426673266" index="5" lat="43.605783" lon="1.4467982" />
-            <nd ref="426673267" index="6" lat="43.6059064" lon="1.4467747" />
-            <nd ref="426673268" index="7" lat="43.6058827" lon="1.4465508" />
-            <nd ref="1417648978" index="8" lat="43.605565" lon="1.4465" />
-            <nd ref="426673251" index="9" lat="43.6052415" lon="1.4464482" />
-            <nd ref="426673233" index="10" lat="43.6051395" lon="1.4466251" />
-            <nd ref="1776156496" index="11" lat="43.6051841" lon="1.446673" />
-            <nd ref="1776156498" index="12" lat="43.605256" lon="1.446552" />
-            <nd ref="1776156503" index="13" lat="43.6054202" lon="1.4465772" />
-            <nd ref="1776156502" index="14" lat="43.6054095" lon="1.446683" />
-            <nd ref="1776156501" index="15" lat="43.6053293" lon="1.4467628" />
-            <nd ref="1776156499" index="16" lat="43.6052624" lon="1.446757" />
-            <nd ref="426673261" index="17" lat="43.6052329" lon="1.4468135" />
+            <info id="36705325" name="unknown" nbfloor="7" roofangle="15" rooftype="pitched" custmat="BricksOrange" />
+            <nd ref="426673261" index="0" lat="43.60524609375" lon="1.4468583984375" />
+            <nd ref="426673262" index="1" lat="43.60533203125" lon="1.44693225097656" />
+            <nd ref="426673263" index="2" lat="43.60529296875" lon="1.4470595703125" />
+            <nd ref="426673264" index="3" lat="43.6055" lon="1.44705639648438" />
+            <nd ref="426673265" index="4" lat="43.60541015625" lon="1.44720581054688" />
+            <nd ref="426673266" index="5" lat="43.60559375" lon="1.44728063964844" />
+            <nd ref="426673267" index="6" lat="43.60569140625" lon="1.44736499023438" />
+            <nd ref="426673268" index="7" lat="43.60585546875" lon="1.44721520996094" />
+            <nd ref="1417648978" index="8" lat="43.60569921875" lon="1.44693115234375" />
+            <nd ref="426673251" index="9" lat="43.60554296875" lon="1.446646484375" />
+            <nd ref="426673233" index="10" lat="43.60533984375" lon="1.44666882324219" />
+            <nd ref="1776156496" index="11" lat="43.605328125" lon="1.44673522949219" />
+            <nd ref="1776156498" index="12" lat="43.60547265625" lon="1.44672253417969" />
+            <nd ref="1776156503" index="13" lat="43.605546875" lon="1.446861328125" />
+            <nd ref="1776156502" index="14" lat="43.6054609375" lon="1.44692004394531" />
+            <nd ref="1776156501" index="15" lat="43.60534375" lon="1.4469013671875" />
+            <nd ref="1776156499" index="16" lat="43.6053125" lon="1.44684838867188" />
+            <nd ref="426673261" index="17" lat="43.60524609375" lon="1.4468583984375" />
           </building>
           <building>
             <info id="60535177" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
@@ -8041,6 +8041,14 @@
             <nd ref="448503871" index="33" lat="43.6030563" lon="1.4412072" />
             <nd ref="1305286787" index="34" lat="43.6029769" lon="1.4413087" />
             <nd ref="1305286854" index="35" lat="43.6028975" lon="1.4412457" />
+          </building>
+          <building>
+            <info id="+3492609407" name="Bâtiment n°+3492609407" nbfloor="11" roofangle="0" rooftype="unknown" custmat="ConcreteColored" color="0.25;0.25;0.75" />
+            <nd ref="+3492609407" index="0" lat="43.60541796875" lon="1.44815002441406" />
+            <nd ref="+3492609407" index="1" lat="43.60479296875" lon="1.44892102050781" />
+            <nd ref="+3492609407" index="2" lat="43.60401171875" lon="1.44828845214844" />
+            <nd ref="+3492609407" index="3" lat="43.60464453125" lon="1.44751745605469" />
+            <nd ref="+3492609407" index="0" lat="43.60541796875" lon="1.44815002441406" />
           </building>
         </district>
       </town>

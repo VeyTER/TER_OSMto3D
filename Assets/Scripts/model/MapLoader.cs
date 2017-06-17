@@ -26,6 +26,9 @@ public class MapLoader {
 	/// <summary>Longitude maximale de la ville.</summary>
 	private double maxLon;
 
+	private string[] areasMinimalList;
+	private string[] areasBuildingList;
+
 	private MapLoader() {
 		this.cityBuilder = CityBuilder.GetInstance ();
 
@@ -33,6 +36,21 @@ public class MapLoader {
 		this.minLon = 0;
 		this.maxLat = 0;
 		this.maxLon = 0;
+
+		this.areasMinimalList = new string[] {
+			XmlTags.COUNTRY,
+			XmlTags.REGION,
+			XmlTags.TOWN,
+			XmlTags.DISTRICT,
+		};
+
+		this.areasBuildingList = new string[] {
+			XmlTags.COUNTRY,
+			XmlTags.REGION,
+			XmlTags.TOWN,
+			XmlTags.DISTRICT,
+			XmlTags.BUILDING
+		};
 	}
 
 
@@ -226,22 +244,15 @@ public class MapLoader {
 				if (earthInfoNode != null && earthInfoNode.Name.Equals (XmlTags.INFO)) {
 					// Récupération des valeurs par défaut pour les bâtiments se trouvant sur Terre et changement de la
 					// valeur des attributs correspondant dans les groupes de noeuds concernés
-					string[] earthBuildingInfo = this.BuildingInfo (earthInfoNode);
-					this.SetupAreaNodeGroups (null, new double[] {0, 0, 0}, earthBuildingInfo, XmlTags.EARTH);
+					string[] earthBuildingInfo = this.BuildingInfo(earthInfoNode);
 
-					// Construction d'un tableau contenant les différentes zones. Le niveau d'imbrication des zones est
-					// directement lié à leur ordre dans le tableau (les régions étant comprises dans les pays par ex.)
-					string[] areas = new string[] {
-						XmlTags.COUNTRY,
-						XmlTags.REGION,
-						XmlTags.TOWN,
-						XmlTags.DISTRICT,
-						XmlTags.BUILDING
-					};
+					foreach (NodeGroup nodeGroup in cityBuilder.NodeGroups) {
+						this.SetupAreaNodeGroups (nodeGroup, null, new double[] {0, 0, 0}, earthBuildingInfo, XmlTags.EARTH);
 
-					// Appel de la fonction récursive mettant à jour les attributs des groupes de noeuds pour le zones
-					// indiquées dans le tableau de zones
-					this.UpdateNodeGroupsProperties (earthNode, areas, 0);
+						// Appel de la fonction récursive mettant à jour les attributs des groupes de noeuds pour le zones
+						// indiquées dans le tableau de zones
+						this.UpdateNodeGroupsProperties(nodeGroup, earthNode, areasBuildingList, 0);
+					}
 				}
 			}
 		}
@@ -253,13 +264,13 @@ public class MapLoader {
 	/// 	lequel se trouve le bâtiment correspondant. La méthode se sert du tableau contenant les différentes zones et
 	/// 	et son indice associé pour connaitre la "profondeur" à laquelle il se trouve dans le document.
 	/// </summary>
+	/// <param name="nodeGroup">Groupe de noeuds à mettre à jour.</param>
 	/// <param name="boundingAreaNode">Noeud XML de la zone courante.</param>
 	/// <param name="areaTypes">Types de zones pouvant être rencontrée et classées par ordre de profondeur.</param>
 	/// <param name="areaTypeIndex">Index utilisé par la méthode pour connaître sa profondeur dans le fichier.</param>
-	private void UpdateNodeGroupsProperties(XmlNode boundingAreaNode, string[] areaTypes, int areaTypeIndex) {
+	private void UpdateNodeGroupsProperties(NodeGroup nodeGroup, XmlNode boundingAreaNode, string[] areaTypes, int areaTypeIndex) {
 		// Traitement pour tous les noeud XML fils
 		for (int i = 1; i < boundingAreaNode.ChildNodes.Count; i++) {
-
 			// Mise à jour des attributs des groupes de noeuds correspondant si le noeud XML fils est au niveau
 			// inférieur à celui du noeud XML courant
 			if (boundingAreaNode.ChildNodes[i].Name.Equals (areaTypes[areaTypeIndex])) {
@@ -279,11 +290,11 @@ public class MapLoader {
 
 				// Affectation des caractéristiques par défaut aux groupes de noeuds correspondant aux bâtiments
 				// se trouvant dans la zone inférieure
-				this.SetupAreaNodeGroups (areaDesignation, areaLocationInfo, areaBuildingInfo, areaTypes[areaTypeIndex]);
+				this.SetupAreaNodeGroups (nodeGroup, areaDesignation, areaLocationInfo, areaBuildingInfo, areaTypes[areaTypeIndex]);
 
 				// Appel récursif si l'on ne se trouve pas à la profondeur maximale
 				if (areaTypeIndex < areaTypes.Length)
-					this.UpdateNodeGroupsProperties (areaNode, areaTypes, areaTypeIndex + 1);
+					this.UpdateNodeGroupsProperties (nodeGroup, areaNode, areaTypes, areaTypeIndex + 1);
 			}
 		}
 	}
@@ -293,39 +304,38 @@ public class MapLoader {
 	/// 	Change les caractéristiques des groupes de noeud se trouvant dans une certaine zone avec les valeurs par
 	/// 	défaut de cette zone.
 	/// </summary>
+	/// <param name="nodeGroup">Groupe de noeuds à mettre à jour.</param>
 	/// <param name="designation">Nom de la zone (ex : France, Toulouse etc...).</param>
 	/// <param name="locationData">Données sur la localisation de la zone.</param>
 	/// <param name="buildingData">Caractéristiques par défaut sur les bâtiments se trouvant dans la zone.</param>
 	/// <param name="tagName">Type de zone.</param>
-	private void SetupAreaNodeGroups(string designation, double[] locationData, string[] buildingData, string tagName) {
-		foreach (NodeGroup nodeGroup in cityBuilder.NodeGroups) {
-			// Calcul de la distance du bâtiment avec le centre de la zone
-			double nodeGroupDistance = Math.Sqrt (Math.Pow (locationData [0] - (nodeGroup.GetNode (0).Latitude), 2) + Math.Pow (locationData [1] - (nodeGroup.GetNode (0).Longitude), 2));
+	private void SetupAreaNodeGroups(NodeGroup nodeGroup, string designation, double[] locationData, string[] buildingData, string tagName) {
+		// Calcul de la distance du bâtiment avec le centre de la zone
+		double nodeGroupDistance = Math.Sqrt (Math.Pow (locationData [0] - (nodeGroup.GetNode (0).Latitude), 2) + Math.Pow (locationData [1] - (nodeGroup.GetNode (0).Longitude), 2));
 
-			// Changement des caractésitiques si l'objet correspondant au groupe de noeuds courant est dans la zone
-			if (tagName.Equals(XmlTags.EARTH) || nodeGroupDistance < locationData[2]) {
-				switch (tagName) {
-				case XmlTags.COUNTRY:
-					nodeGroup.Country = designation;
-					break;
-				case XmlTags.REGION:
-					nodeGroup.Region = designation;
-					break;
-				case XmlTags.TOWN:
-					nodeGroup.Town = designation;
-					break;
-				case XmlTags.DISTRICT:
-					nodeGroup.District = designation;
-					break;
-				}
+		// Changement des caractésitiques si l'objet correspondant au groupe de noeuds courant est dans la zone
+		if (tagName.Equals(XmlTags.EARTH) || nodeGroupDistance < locationData[2]) {
+			switch (tagName) {
+			case XmlTags.COUNTRY:
+				nodeGroup.Country = designation;
+				break;
+			case XmlTags.REGION:
+				nodeGroup.Region = designation;
+				break;
+			case XmlTags.TOWN:
+				nodeGroup.Town = designation;
+				break;
+			case XmlTags.DISTRICT:
+				nodeGroup.District = designation;
+				break;
+			}
 
-				// Change les caractéristiques des données relatives aux bâtiments si le groupe de noeuds courant
-				// représente un tel objet
-				if (nodeGroup.IsBuilding ()) {
-					nodeGroup.NbFloor = int.Parse (buildingData [0]);
-					nodeGroup.RoofAngle = int.Parse (buildingData [1]);
-					nodeGroup.RoofType = buildingData [2];
-				}
+			// Change les caractéristiques des données relatives aux bâtiments si le groupe de noeuds courant
+			// représente un tel objet
+			if (nodeGroup.IsBuilding ()) {
+				nodeGroup.NbFloor = int.Parse (buildingData [0]);
+				nodeGroup.RoofAngle = int.Parse (buildingData [1]);
+				nodeGroup.RoofType = buildingData [2];
 			}
 		}
 	}
@@ -359,9 +369,9 @@ public class MapLoader {
 	/// <param name="infoNode">Noeud XML contenant les informations à extraire dans ses attributs.</param>
 	private string[] HighwayInfo(XmlNode infoNode) {
 		string[] res = new string[3];
-		res [0] = this.AttributeValue (infoNode, XmlAttributes.ROAD_TYPE);
-		res [1] = this.AttributeValue(infoNode, XmlAttributes.NB_WAY);
-		res [2] = this.AttributeValue (infoNode, XmlAttributes.MAX_SPEED);
+		res[0] = this.AttributeValue(infoNode, XmlAttributes.ROAD_TYPE);
+		res[1] = this.AttributeValue(infoNode, XmlAttributes.NB_WAY);
+		res[2] = this.AttributeValue(infoNode, XmlAttributes.MAX_SPEED);
 		return res;
 	}
 
@@ -373,9 +383,13 @@ public class MapLoader {
 	/// <param name="infoNode">Noeud XML contenant les informations à extraire dans ses attributs.</param>
 	private double[] AttributeLocationInfo(XmlNode infoNode) {
 		double[] res = new double[3];
-		res[0] = double.Parse (this.AttributeValue(infoNode, XmlAttributes.LATITUDE));
-		res[1] = double.Parse (this.AttributeValue(infoNode, XmlAttributes.LONGIUDE));
-		res[2] = double.Parse (this.AttributeValue(infoNode, XmlAttributes.DISTANCE));
+
+		res[0] = double.Parse(this.AttributeValue(infoNode, XmlAttributes.LATITUDE));
+		res[1] = double.Parse(this.AttributeValue(infoNode, XmlAttributes.LONGIUDE));
+
+		string distance = this.AttributeValue(infoNode, XmlAttributes.DISTANCE);
+		res[2] = (distance == null) ? double.NaN : double.Parse(distance);
+
 		return res;
 	}
 
@@ -431,19 +445,9 @@ public class MapLoader {
 
 				// Ajout d'un nouveau noeud XML pour chaque groupe de noeuds contenu dans l'application
 				foreach (NodeGroup nodeGroup in cityBuilder.NodeGroups) {
-
-					// Construction d'un tableau contenant les différentes zones. Le niveau d'imbrication des zones est
-					// directement lié à leur ordre dans le tableau (les régions étant comprises dans les pays par ex.)
-					string[] areas = new string[] {
-						XmlTags.COUNTRY,
-						XmlTags.REGION,
-						XmlTags.TOWN,
-						XmlTags.DISTRICT,
-					};
-
 					// Appel de la fonction récursive mettant à jour les attributs des groupes de noeuds pour le zones
 					// indiquées dans le tableau de zones
-					string zoningXPath = "/" + XmlTags.EARTH + this.MatchingZoningPath(mapResumedDocument, earthNode, nodeGroup, areas, 0, "/" + XmlTags.EARTH);
+					string zoningXPath = "/" + XmlTags.EARTH + this.MatchingZoningPath(mapResumedDocument, earthNode, nodeGroup, areasMinimalList, 0, "/" + XmlTags.EARTH);
 					XmlNode locationNode = mapResumedDocument.SelectSingleNode(zoningXPath);
 
 					if (locationNode != null) {
@@ -691,49 +695,26 @@ public class MapLoader {
 			mapCustomDocument.Load(mapCustomFilePath);
 
 			// Récupération du noeud XML englobant tous les objets terrestres
-			XmlNode earthNode = mapCustomDocument.ChildNodes[1];
+			XmlNode customEarthNode = mapCustomDocument.ChildNodes[1];
 
-			if (earthNode != null) {
+			if (customEarthNode != null) {
 				// Récupération de chaque noeud représentant un fichier personnalisé puis mise à jour du noeud
 				// correspondant dans le fihcier MapResumed
-				XmlNodeList customNodes = earthNode.ChildNodes;
+				XmlNodeList customNodes = customEarthNode.ChildNodes;
 				foreach (XmlNode customNode in customNodes) {
 					// Extraction du noeud XML d'information de l'objet personnalisé et récupération de son ID
 					XmlNode customInfoNode = customNode.FirstChild;
-					string objectId = this.AttributeValue(customInfoNode, XmlAttributes.ID);
+					string buildingId = this.AttributeValue(customInfoNode, XmlAttributes.ID);
 
 					// Récupération du noeud XML d'information de l'objet du fichier map_resumed correspondant à l'objet
 					// courant dans le fichier map_custom
-					XmlNode matchingResumedInfoNode = mapResumedDocument.SelectSingleNode("//" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + objectId + "\"]");
+					XmlNode matchingResumedInfoNode = mapResumedDocument.SelectSingleNode("//" + XmlTags.INFO + "[@" + XmlAttributes.ID + "=\"" + buildingId + "\"]");
 
-					if (matchingResumedInfoNode != null) {
-						// Récupération du noeud XML correspondant à l'objet du fichier map_resumed
-						XmlNode matchingResumedNode = matchingResumedInfoNode.ParentNode;
+					if (matchingResumedInfoNode != null)
+						this.AddOsmBuilding(mapResumedDocument, customInfoNode, matchingResumedInfoNode);
 
-						// Remplacement du noeud XML d'information seul dans le fichier résumé si la personnalisation ne
-						// concerne que les caractéristiques, sinon, si la personnalisation concerne les sous-noeuds XML
-						// de l'objet, ceux-ci sont aussi remplacés
-						if (customNode.ChildNodes.Count == 1) {
-							// Suppression du noeud XML d'information au niveau de l'objet du fichier map_resumed
-							matchingResumedNode.RemoveChild(matchingResumedNode.FirstChild);
-
-							// Ajout du noeud XML d'information du fichier map_custom avant les sous-noeuds XML de
-							// l'objet du fichier mmap_resumed
-							XmlNode newResumedInfoNode = mapResumedDocument.ImportNode(customInfoNode, true);
-							matchingResumedNode.InsertBefore(newResumedInfoNode, matchingResumedNode.FirstChild);
-						} else {
-							// Suppression de tous les noeuds XML contenus (y compris le noeuds d'information) compris
-							// dans le noeud XML de l'objet du fichier map_resumed
-							matchingResumedNode.RemoveAll();
-
-							// Ajout de tous les noeuds XML contenus dans l'objet du fichier map_custom dans l'objet
-							// correspondant dans le fichier map_resumed
-							foreach (XmlNode customChildNode in customNode.ChildNodes) {
-								XmlNode newResumedChildNode = mapResumedDocument.ImportNode(customChildNode, true);
-								matchingResumedNode.AppendChild(newResumedChildNode);
-							}
-						}
-					}
+					if (buildingId.StartsWith("+"))
+						this.AddUserBuilding(mapResumedDocument, customInfoNode, buildingId);
 				}
 			}
 
@@ -741,6 +722,60 @@ public class MapLoader {
 		}
 	}
 
+
+	private void AddOsmBuilding(XmlDocument mapResumedDocument, XmlNode customInfoNode, XmlNode matchingResumedInfoNode) {
+		// Récupération du noeud XML correspondant à l'objet du fichier map_resumed
+		XmlNode matchingResumedNode = matchingResumedInfoNode.ParentNode;
+
+		// Remplacement du noeud XML d'information seul dans le fichier résumé si la personnalisation ne
+		// concerne que les caractéristiques, sinon, si la personnalisation concerne les sous-noeuds XML
+		// de l'objet, ceux-ci sont aussi remplacés
+		if (customInfoNode.ParentNode.ChildNodes.Count == 1) {
+			// Suppression du noeud XML d'information au niveau de l'objet du fichier map_resumed
+			matchingResumedNode.RemoveChild(matchingResumedNode.FirstChild);
+
+			// Ajout du noeud XML d'information du fichier map_custom avant les sous-noeuds XML de
+			// l'objet du fichier mmap_resumed
+			XmlNode newResumedInfoNode = mapResumedDocument.ImportNode(customInfoNode, true);
+			matchingResumedNode.InsertBefore(newResumedInfoNode, matchingResumedNode.FirstChild);
+		} else {
+			// Suppression de tous les noeuds XML contenus (y compris le noeuds d'information) compris
+			// dans le noeud XML de l'objet du fichier map_resumed
+			matchingResumedNode.RemoveAll();
+
+			// Ajout de tous les noeuds XML contenus dans l'objet du fichier map_custom dans l'objet
+			// correspondant dans le fichier map_resumed
+			foreach (XmlNode customChildNode in customInfoNode.ParentNode.ChildNodes) {
+				XmlNode newResumedChildNode = mapResumedDocument.ImportNode(customChildNode, true);
+				matchingResumedNode.AppendChild(newResumedChildNode);
+			}
+		}
+	}
+
+	private void AddUserBuilding(XmlDocument mapResumedDocument, XmlNode customInfoNode, string buildingId) {
+		NodeGroup nodeGroup = new NodeGroup(buildingId);
+		for (int i = 1; i < customInfoNode.ParentNode.ChildNodes.Count; i++) {
+			XmlNode ndNode = customInfoNode.ParentNode.ChildNodes[i];
+			string id = this.AttributeValue(ndNode, XmlAttributes.ID);
+			double[] locationData = this.AttributeLocationInfo(ndNode);
+			nodeGroup.AddNode(new Node(id, locationData[0], locationData[1]));
+		}
+
+		string mapSettingsFilePath = FilePaths.MAPS_SETTINGS_FOLDER + "map_settings.osm";
+		XmlDocument mapsSettingsDocument = new XmlDocument();
+		if (File.Exists(mapSettingsFilePath)) {
+			mapsSettingsDocument.Load(mapSettingsFilePath);
+			XmlNode settingsEarthNode = mapsSettingsDocument.ChildNodes[1];
+
+			this.UpdateNodeGroupsProperties(nodeGroup, settingsEarthNode, areasBuildingList, 0);
+
+			string zoningXPath = nodeGroup.ToZoningXPath();
+			XmlNode resumeParentNode = mapResumedDocument.SelectSingleNode(zoningXPath);
+
+			XmlNode resumeBuildingNode = mapResumedDocument.ImportNode(customInfoNode.ParentNode, true);
+			resumeParentNode.AppendChild(resumeBuildingNode);
+		}
+	}
 
 	/// <summary>
 	/// 	Extrait les informations necessaires à la construction de la ville depuis le fichier map_resumed en appelant
