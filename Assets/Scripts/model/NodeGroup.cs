@@ -126,7 +126,6 @@ public class NodeGroup {
 		return this.tags.ContainsKey ("building")
 			|| this.tags.ContainsKey("leisure")
 			|| this.tags.ContainsKey("landuse");
-
 	}
 
 	// retourne vrai si le nodeGroup correspond à une voie d'eau

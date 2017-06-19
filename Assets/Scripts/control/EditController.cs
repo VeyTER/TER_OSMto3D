@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 using System.Net;
+using System.IO;
+using System.Text;
 
 /// <summary>
 /// 	<para>
@@ -246,7 +248,7 @@ public class EditController : MonoBehaviour {
 			cameraController.InitRotation = mainCamera.transform.rotation;
 		}
 
-		//this.StartCoroutine( this.LoadData() );
+		this.LoadData();
 
 		if (controlPanel.activeInHierarchy)
 			controlPanel.SetActive(false);
@@ -262,35 +264,50 @@ public class EditController : MonoBehaviour {
 	}
 
 
-	//private IEnumerator LoadData() {
-	//	string url = "http://neocampus.univ-tlse3.fr:8004/api/u4/*/humidity?xml&pp";
+	private void LoadData() {
+		string url = "http://neocampus.univ-tlse3.fr:8004/api/u4/*/humidity?xml&pp";
+
+		WebRequest webRequest = WebRequest.Create(url);
+		webRequest.Credentials = new NetworkCredential("reader", "readerpassword");
+
+		RequestState myRequestState = new RequestState() {
+			request = webRequest
+		};
+		IAsyncResult result = (IAsyncResult) webRequest.BeginGetResponse(new AsyncCallback(Test), myRequestState);
+	}
 
 
-	//	WebClient client = new WebClient();
-	//	client.BaseAddress = url;
+	public void Test(IAsyncResult asynchronousResult) {
+		while (!asynchronousResult.IsCompleted);
 
-	//	client.Headers.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-	//	client.Headers.Add("X-Requested-With", "XMLHttpRequest");
+		Debug.Log(asynchronousResult.AsyncState != null);
+		Debug.Log(asynchronousResult.AsyncState);
 
-	//	string login = string.Format("grant_type=password&username={0}&password={1}", "reader", "readerpassword");
+		RequestState myRequestState = (RequestState) asynchronousResult.AsyncState;
 
-	//	string response = client.UploadString(new Uri(url + "Token"), login);
+		Debug.Log(myRequestState.RequestResult());
+	}
 
-	//	yield return new WaitForSeconds(0.1f);
+	private class RequestState {
+		// This class stores the State of the request.
+		const int BUFFER_SIZE = 1024;
+		public StringBuilder requestData;
+		public byte[] BufferRead;
+		public WebRequest request;
+		public WebResponse response;
+		public Stream streamResponse;
 
-	//	if (!string.IsNullOrEmpty(response)) {
-	//		print(response);
-	//	}
+		public RequestState() {
+			BufferRead = new byte[BUFFER_SIZE];
+			requestData = new StringBuilder("");
+		}
 
-		//WWW www = new WWW(url);
-		//print("Chargement..." + www.isDone);
-		//yield return www;
-		//while (!www.isDone) {
-		//	print(www.progress);
-		//}
-		//print("Données chargées");
-		//print(www.error);
-	//}
+		public string RequestResult() {
+			response = request.GetResponse();
+			streamResponse = response.GetResponseStream();
+			return new StreamReader(streamResponse).ReadToEnd();
+		}
+	}
 
 	/// <summary>
 	/// 	Quitte le bâtiment jusqu'alors en cours de modification en refermant le panneau latéral et en déplaçant la
