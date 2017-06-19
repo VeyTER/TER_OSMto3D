@@ -73,7 +73,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			}
 			break;
 		case UiNames.CANCEL_BUILDING_CREATION_BUTTON:
-			if (controlPanelManager.ControlState != ControlPanelManager.ControlStates.NONE) {
+			if (!controlPanelManager.AllPanelClosed()) {
 				if (this.IsPlayerMoving()) {
 					buildingCreationEditor.CompensateCameraMoves();
 					buildingCreationEditor.UpdateDisplayedSituation();
@@ -273,9 +273,9 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	public void OnMouseUp() {
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
 		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
-			if (editController.EditState == EditController.EditStates.NONE_SELECTION || editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+			if ((editController.EditState == EditController.EditStates.NONE_SELECTION || editController.EditState == EditController.EditStates.READY_TO_EDIT) && controlPanelManager.AllPanelClosed()) {
 				editController.SwitchBuilding(gameObject);
-			} else if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE) {
+			} else if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE && controlPanelManager.AllPanelClosed()) {
 				int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
 				if (expansionDirection > 0) {
 					heightChangingEditor.IncrementObjectHeight();
@@ -329,7 +329,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		switch (name.Split('_')[0]) {
 		case UiNames.CREATE_BUILDING_BUTTON:
-			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.NONE) {
+			if (controlPanelManager.AllPanelClosed()) {
 				buildingCreationPanelController.transform.gameObject.SetActive(true);
 				buildingCreationPanelController.OpenPanel(null);
 				buildingCreationEditor.InitializeBuildingCreation();
@@ -360,7 +360,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		// ==== Gestion des boutons controllant la visibilité des objets ====
 		case UiNames.TOGGLE_VISIBILITY_BUTTON:
-			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.NONE) {
+			if (controlPanelManager.AllPanelClosed()) {
 				visibilityPanelController.transform.gameObject.SetActive(true);
 				visibilityPanelController.OpenPanel(null);
 				controlPanelManager.ControlState = ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING;

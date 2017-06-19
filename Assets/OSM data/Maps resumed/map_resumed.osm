@@ -1332,18 +1332,18 @@
             <nd ref="596723606" index="10" lat="43.6040612" lon="1.4423681" />
           </building>
           <building>
-            <info id="46684689" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
-            <nd ref="596621571" index="0" lat="43.6041113" lon="1.4425949" />
-            <nd ref="3856830514" index="1" lat="43.6041355" lon="1.4427966" />
-            <nd ref="2457772113" index="2" lat="43.604138" lon="1.4428177" />
-            <nd ref="596621585" index="3" lat="43.6041413" lon="1.4428452" />
-            <nd ref="1754052551" index="4" lat="43.6039927" lon="1.4428781" />
-            <nd ref="426597790" index="5" lat="43.6038469" lon="1.4429104" />
-            <nd ref="2457772111" index="6" lat="43.6038447" lon="1.4428824" />
-            <nd ref="426597793" index="7" lat="43.6038321" lon="1.4427218" />
-            <nd ref="596723597" index="8" lat="43.6038943" lon="1.4426963" />
-            <nd ref="596723607" index="9" lat="43.6040974" lon="1.4426015" />
-            <nd ref="596621571" index="10" lat="43.6041113" lon="1.4425949" />
+            <info id="46684689" name="unknown" nbfloor="14" roofangle="15" rooftype="pitched" custmat="ConcreteColored" color="1;0.75;0.5" />
+            <nd ref="596621571" index="0" lat="43.604703125" lon="1.44296728515625" />
+            <nd ref="3856830514" index="1" lat="43.60456640625" lon="1.443119140625" />
+            <nd ref="2457772113" index="2" lat="43.60455078125" lon="1.44313317871094" />
+            <nd ref="596621585" index="3" lat="43.60453515625" lon="1.4431572265625" />
+            <nd ref="1754052551" index="4" lat="43.6044140625" lon="1.443068359375" />
+            <nd ref="426597790" index="5" lat="43.60429296875" lon="1.44298498535156" />
+            <nd ref="2457772111" index="6" lat="43.60430859375" lon="1.44296044921875" />
+            <nd ref="426597793" index="7" lat="43.60442578125" lon="1.44284777832031" />
+            <nd ref="596723597" index="8" lat="43.604484375" lon="1.44287731933594" />
+            <nd ref="596723607" index="9" lat="43.60469140625" lon="1.44296594238281" />
+            <nd ref="596621571" index="10" lat="43.604703125" lon="1.44296728515625" />
           </building>
           <building>
             <info id="46691178" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" />
@@ -4004,7 +4004,7 @@
             <nd ref="65161480" index="1" lat="43.6034802" lon="1.4457148" />
           </highway>
           <building>
-            <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="24" roofangle="15" rooftype="pitched" color="1;0.5;0.75" custmat="ConcreteColored" />
+            <info id="10157283" name="Capitole - Mairie de Toulouse" nbfloor="6" roofangle="15" rooftype="pitched" color="1;0.5;0.75" custmat="ConcreteColored" />
             <nd index="0" ref="83815655" lat="43.6049375" lon="1.44384655761719" />
             <nd index="1" ref="426597782" lat="43.6049140625" lon="1.44383349609375" />
             <nd index="2" ref="426597780" lat="43.6048046875" lon="1.4438427734375" />
@@ -8049,6 +8049,14 @@
             <nd ref="+3492609407" index="2" lat="43.60401171875" lon="1.44828845214844" />
             <nd ref="+3492609407" index="3" lat="43.60464453125" lon="1.44751745605469" />
             <nd ref="+3492609407" index="0" lat="43.60541796875" lon="1.44815002441406" />
+          </building>
+          <building>
+            <info id="+2104867669" name="Bâtiment n°+2104867669" nbfloor="3" roofangle="0" rooftype="unknown" />
+            <nd ref="+2104867669" index="0" lat="43.60237890625" lon="1.44818103027344" />
+            <nd ref="+2104867669" index="1" lat="43.60337890625" lon="1.44818103027344" />
+            <nd ref="+2104867669" index="2" lat="43.60337890625" lon="1.44918103027344" />
+            <nd ref="+2104867669" index="3" lat="43.60237890625" lon="1.44918103027344" />
+            <nd ref="+2104867669" index="0" lat="43.60237890625" lon="1.44818103027344" />
           </building>
         </district>
       </town>
