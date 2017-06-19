@@ -679,6 +679,10 @@ public class EditController : MonoBehaviour {
 		skinChangingEditor.ClearHistory();
 	}
 
+	public bool IsInactive() {
+		return editState == EditStates.NONE_SELECTION;
+	}
+
 	public EditStates EditState {
 		get { return editState; }
 		set { editState = value; }

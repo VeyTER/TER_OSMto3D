@@ -8058,8 +8058,24 @@
             <nd ref="+2104867669" index="3" lat="43.60237890625" lon="1.44918103027344" />
             <nd ref="+2104867669" index="0" lat="43.60237890625" lon="1.44818103027344" />
           </building>
+          <building>
+            <info id="+4066207202" name="Bâtiment n°+4066207202" nbfloor="3" roofangle="0" rooftype="unknown" />
+            <nd ref="+4066207202" index="0" lat="43.60005078125" lon="1.44553295898438" />
+            <nd ref="+4066207202" index="1" lat="43.60105078125" lon="1.44553295898438" />
+            <nd ref="+4066207202" index="2" lat="43.60105078125" lon="1.44653295898438" />
+            <nd ref="+4066207202" index="3" lat="43.60005078125" lon="1.44653295898438" />
+            <nd ref="+4066207202" index="0" lat="43.60005078125" lon="1.44553295898438" />
+          </building>
         </district>
       </town>
     </region>
   </country>
+  <building>
+    <info id="+3556420065" name="Bâtiment n°+3556420065" nbfloor="3" roofangle="0" rooftype="unknown" />
+    <nd ref="+3556420065" index="0" lat="43.59691015625" lon="1.44873400878906" />
+    <nd ref="+3556420065" index="1" lat="43.59791015625" lon="1.44873400878906" />
+    <nd ref="+3556420065" index="2" lat="43.59791015625" lon="1.44973400878906" />
+    <nd ref="+3556420065" index="3" lat="43.59691015625" lon="1.44973400878906" />
+    <nd ref="+3556420065" index="0" lat="43596.91015625" lon="1448.73400878906" />
+  </building>
 </earth>

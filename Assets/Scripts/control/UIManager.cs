@@ -316,11 +316,26 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// </summary>
 	/// <param name="eventData">Données sur l'évènement.</param>
 	public void OnPointerUp (PointerEventData eventData) {
+		if (controlPanelManager.AllPanelClosed() && editController.IsInactive()) {
+			this.OnPointerUpControlPanel();
+			this.OnPointerUpEditControler();
+		} else {
+			if (!controlPanelManager.AllPanelClosed()) {
+				this.OnPointerUpControlPanel();
+			}
+
+			if (!editController.IsInactive()) {
+				this.OnPointerUpEditControler();
+			}
+		}
+	}
+
+	private void OnPointerUpControlPanel() {
 		PanelController panelController1 = controlPanelManager.GetPanelController(UiNames.VISIBILITY_WHEEL_PANEL);
 		PanelController panelController2 = controlPanelManager.GetPanelController(UiNames.BUILDING_CREATION_BOX_PANEL);
 
 		WheelPanelController visibilityPanelController = null;
-		if(panelController1.GetType() == typeof(WheelPanelController))
+		if (panelController1.GetType() == typeof(WheelPanelController))
 			visibilityPanelController = (WheelPanelController) panelController1;
 
 		BoxPanelController buildingCreationPanelController = null;
@@ -402,7 +417,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
 				cityBuilder.Highways.SetActive(true);
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
-			}
+			}	
 			break;
 		case UiNames.DISABLED_FOOTWAYS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
@@ -471,18 +486,21 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
+		}
+	}
 
-		// ==== Gestion des élément d'interface en rapport avec la modification d'objets ====
+	private void OnPointerUpEditControler() {
+		switch (name.Split('_')[0]) {
 		case UiNames.MOVE_BUTTON:
 			// Préparation du déplacement d'un objet si le controlleur est prêt
 			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
-				editController.EnterMovingMode ();
+				editController.EnterMovingMode();
 			}
 			break;
 		case UiNames.TURN_BUTTON:
 			// Préparation de la rotation d'un objet si le controlleur est prêt
 			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
-				editController.EnterTurningMode ();
+				editController.EnterTurningMode();
 			}
 			break;
 		case UiNames.CHANGE_HEIGHT_BUTTON:
@@ -513,27 +531,27 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.VALIDATE_BUTTON:
 			// Validation de la modification d'une série de bâtiments si le controlleur est prêt
 			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
-				editController.ValidateEdit ();
-				editController.ExitBuilding ();
+				editController.ValidateEdit();
+				editController.ExitBuilding();
 			}
 			break;
 		case UiNames.CANCEL_BUTTON:
 			// Annulation de la modification d'une série de bâtiments si le controlleur est prêt
 			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
-				editController.CancelEdit ();
-				editController.ExitBuilding ();
+				editController.CancelEdit();
+				editController.ExitBuilding();
 			}
 			break;
 		case UiNames.WALL_RANGE_BUTTON:
 			// Inversion de l'étendue de sélection et du statuts des boutons de d'étende de sélection si le controlleur
 			// de modification n'est pas en attente d'une sélection de bâtiment et si le bouton est bien actif
 			if (editController.EditState != EditController.EditStates.NONE_SELECTION) {
-				editController.SelectionRange = EditController.SelectionRanges.WALL;
-				if(editController.EditState == EditController.EditStates.MOVING_MODE)
-					movingEditor.InitializeMovingMode (editController.SelectionRange);
-				else if(editController.EditState == EditController.EditStates.TURNING_MODE)
-					turningEditor.InitializeTurningMode (editController.SelectionRange);
-				this.ActivateWallRangeButton ();
+					editController.SelectionRange = EditController.SelectionRanges.WALL;
+				if (editController.EditState == EditController.EditStates.MOVING_MODE)
+					movingEditor.InitializeMovingMode(editController.SelectionRange);
+				else if (editController.EditState == EditController.EditStates.TURNING_MODE)
+					turningEditor.InitializeTurningMode(editController.SelectionRange);
+				this.ActivateWallRangeButton();
 			}
 			break;
 		case UiNames.BUILDING_RANGE_BUTTON:
@@ -541,11 +559,11 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			// de modification n'est pas en attente d'une sélection de bâtiment et si le bouton est bien actif
 			if (editController.EditState != EditController.EditStates.NONE_SELECTION) {
 				editController.SelectionRange = EditController.SelectionRanges.BUILDING;
-				if(editController.EditState == EditController.EditStates.MOVING_MODE)
-					movingEditor.InitializeMovingMode (editController.SelectionRange);
-				else if(editController.EditState == EditController.EditStates.TURNING_MODE)
-					turningEditor.InitializeTurningMode (editController.SelectionRange);
-				this.ActivateBuildingRangeButton ();
+				if (editController.EditState == EditController.EditStates.MOVING_MODE)
+					movingEditor.InitializeMovingMode(editController.SelectionRange);
+				else if (editController.EditState == EditController.EditStates.TURNING_MODE)
+					turningEditor.InitializeTurningMode(editController.SelectionRange);
+				this.ActivateBuildingRangeButton();
 			}
 			break;
 		case UiNames.MATERIALS_BUTTON:
@@ -574,17 +592,16 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 		case UiNames.VALIDATE_EDIT_BUTTON:
 			// Validation d'une transformation si le controlleur de modification est bien en cours de modification
-			if (editController.Transforming ()) {
-				editController.ValidateTransform ();
-				editController.ExitTransformMode ();
+			if (editController.Transforming()) {
+				editController.ValidateTransform();
+				editController.ExitTransformMode();
 			}
 			break;
 		case UiNames.CANCEL_EDIT_BUTTON:
 			// Annulation d'une transformation si le controlleur de modification est bien en cours de modification
-			if (editController.Transforming ()) {
-
-				editController.CancelTransform ();
-				editController.ExitTransformMode ();
+			if (editController.Transforming()) {
+				editController.CancelTransform();
+				editController.ExitTransformMode();
 			}
 			break;
 		}
