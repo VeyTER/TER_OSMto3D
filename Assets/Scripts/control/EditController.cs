@@ -6,6 +6,7 @@ using System.Collections;
 using System.Net;
 using System.IO;
 using System.Text;
+using System.Xml;
 
 /// <summary>
 /// 	<para>
@@ -205,6 +206,16 @@ public class EditController : MonoBehaviour {
 			editPanelController.OpenSlideButton();
 		}
 
+		GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
+		Text temperatureInputField = temperatureLabel.GetComponent<Text>();
+		temperatureInputField.text = "N.R";
+
+		GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
+		Text humidityInputField = humidityLabel.GetComponent<Text>();
+		humidityInputField.text = "N.R";
+
+		humidityInputField.text = "En attente";
+
 		// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
 		GameObject buildingNameField = GameObject.Find(UiNames.BUILDING_NAME_INPUT);
 		InputField buildingNameTextInput = buildingNameField.GetComponent<InputField> ();
@@ -248,7 +259,17 @@ public class EditController : MonoBehaviour {
 			cameraController.InitRotation = mainCamera.transform.rotation;
 		}
 
-		this.LoadData();
+		this.StopAllCoroutines();
+
+		SensorDataLoader temperatureLoader = SensorDataLoader.GetInstance(SensorDataLoader.Sensors.TEMPERATURE);
+		temperatureLoader.Initialize();
+		temperatureLoader.LoadData();
+		this.StartCoroutine( this.WaitSensorData("temperature", temperatureLoader) );
+
+		SensorDataLoader humidityLoader = SensorDataLoader.GetInstance(SensorDataLoader.Sensors.HUMIDITY);
+		humidityLoader.Initialize();
+		humidityLoader.LoadData();
+		this.StartCoroutine( this.WaitSensorData("humidity", humidityLoader) );
 
 		if (controlPanel.activeInHierarchy)
 			controlPanel.SetActive(false);
@@ -264,48 +285,48 @@ public class EditController : MonoBehaviour {
 	}
 
 
-	private void LoadData() {
-		string url = "http://neocampus.univ-tlse3.fr:8004/api/u4/*/humidity?xml&pp";
+	public IEnumerator WaitSensorData(string sensorType, SensorDataLoader dataLoader) {
+		while (!dataLoader.ReceptionCompleted)
+			 yield return new WaitForSeconds(0.1F);
 
-		WebRequest webRequest = WebRequest.Create(url);
-		webRequest.Credentials = new NetworkCredential("reader", "readerpassword");
+		Debug.Log("ok");
 
-		RequestState myRequestState = new RequestState() {
-			request = webRequest
-		};
-		IAsyncResult result = (IAsyncResult) webRequest.BeginGetResponse(new AsyncCallback(Test), myRequestState);
-	}
+		string[] resultsLines = dataLoader.LastLoadedData.Split('\n');
 
+		int i = 0;
+		for (; i < resultsLines.Length && !resultsLines[i].Contains("ouest"); i++);
 
-	public void Test(IAsyncResult asynchronousResult) {
-		while (!asynchronousResult.IsCompleted);
+		if (i < resultsLines.Length) {
+			string[] lineTerms = resultsLines[i].Split(',');
 
-		Debug.Log(asynchronousResult.AsyncState != null);
-		Debug.Log(asynchronousResult.AsyncState);
+			switch (sensorType) {
+			case "temperature":
+				int celsiusIndex = Array.IndexOf(lineTerms, "inside");
 
-		RequestState myRequestState = (RequestState) asynchronousResult.AsyncState;
+				if(celsiusIndex == -1)
+					celsiusIndex = Array.IndexOf(lineTerms, "outside");
 
-		Debug.Log(myRequestState.RequestResult());
-	}
+				if (celsiusIndex < lineTerms.Length - 1) {
+					string temperatureValue = lineTerms[celsiusIndex + 1];
+					GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
+					Text temperatureInputField = temperatureLabel.GetComponent<Text>();
+					temperatureInputField.text = temperatureValue + "°";
+				}
+				break;
+			case "humidity":
+				int humidityIndex = Array.IndexOf(lineTerms, "inside");
 
-	private class RequestState {
-		// This class stores the State of the request.
-		const int BUFFER_SIZE = 1024;
-		public StringBuilder requestData;
-		public byte[] BufferRead;
-		public WebRequest request;
-		public WebResponse response;
-		public Stream streamResponse;
+				if (humidityIndex == -1)
+					humidityIndex = Array.IndexOf(lineTerms, "outside");
 
-		public RequestState() {
-			BufferRead = new byte[BUFFER_SIZE];
-			requestData = new StringBuilder("");
-		}
-
-		public string RequestResult() {
-			response = request.GetResponse();
-			streamResponse = response.GetResponseStream();
-			return new StreamReader(streamResponse).ReadToEnd();
+				if (humidityIndex < lineTerms.Length - 1) {
+					string humidityValue = lineTerms[humidityIndex + 1];
+					GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
+					Text humidityInputField = humidityLabel.GetComponent<Text>();
+					humidityInputField.text = humidityValue + "%";
+				}
+				break;
+			}
 		}
 	}
 

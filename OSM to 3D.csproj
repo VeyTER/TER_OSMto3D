@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.6.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -94,23 +92,23 @@
     <Compile Include="Assets\Scripts\constants\XmlKeys.cs" />
     <Compile Include="Assets\Scripts\constants\XmlTags.cs" />
     <Compile Include="Assets\Scripts\constants\XmlValues.cs" />
-    <Compile Include="Assets\Scripts\control\ControlPanelManager.cs" />
+    <Compile Include="Assets\Scripts\control\BoxPanelController.cs" />
     <Compile Include="Assets\Scripts\control\BuildingCreationEditor.cs" />
     <Compile Include="Assets\Scripts\control\CameraController.cs" />
-    <Compile Include="Assets\Scripts\control\EditPanelController.cs" />
+    <Compile Include="Assets\Scripts\control\CommonPanelController.cs" />
+    <Compile Include="Assets\Scripts\control\ControlPanelManager.cs" />
     <Compile Include="Assets\Scripts\control\EditController.cs" />
-    <Compile Include="Assets\Scripts\control\StageColorController.cs" />
+    <Compile Include="Assets\Scripts\control\EditPanelController.cs" />
     <Compile Include="Assets\Scripts\control\HeightChangingEditor.cs" />
     <Compile Include="Assets\Scripts\control\Main.cs" />
     <Compile Include="Assets\Scripts\control\MovingEditor.cs" />
     <Compile Include="Assets\Scripts\control\ObjectEditor.cs" />
-    <Compile Include="Assets\Scripts\control\CommonPanelController.cs" />
     <Compile Include="Assets\Scripts\control\PanelController.cs" />
     <Compile Include="Assets\Scripts\control\SkinChangingEditor.cs" />
     <Compile Include="Assets\Scripts\control\SkinPanelController.cs" />
+    <Compile Include="Assets\Scripts\control\StageColorController.cs" />
     <Compile Include="Assets\Scripts\control\TurningEditor.cs" />
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
-    <Compile Include="Assets\Scripts\control\BoxPanelController.cs" />
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
     <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
@@ -125,15 +123,16 @@
     <Compile Include="Assets\Scripts\model\NodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\PointEditor.cs" />
     <Compile Include="Assets\Scripts\model\RoofBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\SensorDataLoader.cs" />
     <Compile Include="Assets\Scripts\model\Triangle.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\OSM data\Maps resumed\testXML.xml" />
     <None Include="Assets\Resources\External objects\objects_properties.txt" />
     <None Include="Assets\Resources\Materials\materials_details.txt" />
     <None Include="Assets\Resources\Textures\maps_background_details.txt" />
     <None Include="Assets\Shaders\Standard.shader" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
 </Project>
