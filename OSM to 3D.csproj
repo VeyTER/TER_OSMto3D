@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.6.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -85,13 +87,14 @@
     <Compile Include="Assets\Scripts\constants\Materials.cs" />
     <Compile Include="Assets\Scripts\constants\NodeTags.cs" />
     <Compile Include="Assets\Scripts\constants\ObjectNames.cs" />
-    <Compile Include="Assets\Scripts\constants\Sprites.cs" />
+    <Compile Include="Assets\Scripts\constants\IconsAndTextures.cs" />
     <Compile Include="Assets\Scripts\constants\ThemeColors.cs" />
     <Compile Include="Assets\Scripts\constants\UiNames.cs" />
     <Compile Include="Assets\Scripts\constants\XmlAttributes.cs" />
     <Compile Include="Assets\Scripts\constants\XmlKeys.cs" />
     <Compile Include="Assets\Scripts\constants\XmlTags.cs" />
     <Compile Include="Assets\Scripts\constants\XmlValues.cs" />
+    <Compile Include="Assets\Scripts\control\BuildingDataDisplayController.cs" />
     <Compile Include="Assets\Scripts\control\BoxPanelController.cs" />
     <Compile Include="Assets\Scripts\control\BuildingCreationEditor.cs" />
     <Compile Include="Assets\Scripts\control\CameraController.cs" />
@@ -111,6 +114,7 @@
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
     <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
+    <Compile Include="Assets\Scripts\model\UiBuilder.cs" />
     <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
     <Compile Include="Assets\Scripts\model\DelauneyTriangulation.cs" />
     <Compile Include="Assets\Scripts\model\ExternalObject.cs" />

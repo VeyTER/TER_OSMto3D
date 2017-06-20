@@ -137,8 +137,6 @@ public class EditController : MonoBehaviour {
 
 	private EditPanelController editPanelController;
 
-	private Dictionary<string, string> sensoredBuildings;
-
 	public void Start() {
 		this.editState = EditStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.BUILDING;
@@ -184,9 +182,6 @@ public class EditController : MonoBehaviour {
 		RectTransform editPanelTransform = (RectTransform) this.editPanelController.transform;
 		this.editPanelController.StartPosition = new Vector3(editPanelTransform.localPosition.x, 0, 0);
 		this.editPanelController.EndPosition = new Vector3(editPanelTransform.localPosition.x - editPanelTransform.rect.width, 0, 0);
-
-		this.sensoredBuildings = new Dictionary<string, string>();
-		this.sensoredBuildings["U4"] = "u4";
 	}
 
 
@@ -200,9 +195,13 @@ public class EditController : MonoBehaviour {
 			buildingsTools.DiscolorAsSelected(selectedBuilding);
 
 		this.selectedWall = selectedWall;
+		GameObject newBuilding = selectedWall.transform.parent.gameObject;
 
-		if (selectedWall.transform.parent.gameObject != selectedBuilding) {
-			selectedBuilding = selectedWall.transform.parent.gameObject;
+		// Changement de la couleur du bâtiment sélectionné
+		buildingsTools.ColorAsSelected(newBuilding);
+
+		if (newBuilding != selectedBuilding) {
+			selectedBuilding = newBuilding;
 
 			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 
@@ -221,9 +220,6 @@ public class EditController : MonoBehaviour {
 			GameObject IdValueLabel = GameObject.Find(UiNames.ID_INDICATOR_LABEL);
 			Text idText = IdValueLabel.GetComponent<Text>();
 			idText.text = nodeGroup.Id;
-
-			// Changement de la couleur du bâtiment sélectionné
-			buildingsTools.ColorAsSelected(selectedBuilding);
 
 			// Enregistrement de la situation initiale du mur courant
 			if (!wallsInitPos.ContainsKey(this.selectedWall) && !wallsInitAngle.ContainsKey(this.selectedWall)) {
@@ -277,8 +273,9 @@ public class EditController : MonoBehaviour {
 		GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
 		GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
 
-		if (sensoredBuildings.ContainsKey(selectedBuilding.name)) {
-			string buildingIdentifier = sensoredBuildings[selectedBuilding.name];
+		
+		if (cityBuilder.SensoredBuildings.ContainsKey(selectedBuilding.name)) {
+			string buildingIdentifier = cityBuilder.SensoredBuildings[selectedBuilding.name];
 
 			temperatureLabel.GetComponent<Text>().text = "En attente";
 			humidityLabel.GetComponent<Text>().text = "En attente";

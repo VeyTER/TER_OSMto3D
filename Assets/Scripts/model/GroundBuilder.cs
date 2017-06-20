@@ -30,7 +30,7 @@ public class GroundBuilder {
 			triangles = this.GroundTriangles(),
 
 			// Reglage de l'étirement de l'image qui sert de texture sur l'objet 3D
-			uv = this.GroundUV(length, width, textureExpansion),
+			uv = this.GroundUV(textureExpansion),
 
 			// Correction du rendu de la texture
 			normals = this.GroundNormals()
@@ -83,9 +83,9 @@ public class GroundBuilder {
 	/// <returns>Coordonnées pour le mapping.</returns>
 	/// <param name="length">Longueur du sol.</param>
 	/// <param name="width">Largeur du sol.</param>
-	private Vector2 [] GroundUV(float length, float width, Vector2 textureExpansion) {
+	private Vector2 [] GroundUV(Vector2 textureExpansion) {
 		Vector2[] res = new Vector2[] {
-			new Vector2 (0, 0), //(x,y)
+			new Vector2 (0, 0),
 			new Vector2 (textureExpansion.x, 0),
 			new Vector2 (textureExpansion.x, textureExpansion.y),
 			new Vector2 (0, textureExpansion.y)

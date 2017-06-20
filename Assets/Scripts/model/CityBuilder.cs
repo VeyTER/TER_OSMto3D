@@ -88,6 +88,8 @@ public class CityBuilder {
 
 	private Dictionary<string, MapBackground> mapBackgrounds;
 
+	private Dictionary<string, string> sensoredBuildings;
+
 	private CityBuilder() {
 		this.nodeGroups = new List<NodeGroup> ();
 
@@ -97,6 +99,10 @@ public class CityBuilder {
 
 		this.externalObjects = this.LoadExternalObject();
 		this.mapBackgrounds = this.LoadMapBackgrounds();
+
+		this.sensoredBuildings = new Dictionary<string, string>();
+		this.sensoredBuildings["U3"] = "u3";
+		this.sensoredBuildings["U4"] = "u4";
 	}
 
 	private List<ExternalObject> LoadExternalObject() {
@@ -370,6 +376,9 @@ public class CityBuilder {
 
 			wallGroup.SetActive(false);
 		}
+
+		if (sensoredBuildings.ContainsKey(wallGroup.name))
+			wallGroup.AddComponent<BuildingDataDisplayController>();
 	}
 
 	private ExternalObject ExternalBuildingAtPosition(Vector3 position, double radius) {
@@ -762,6 +771,11 @@ public class CityBuilder {
 
 	public GameObject BuildingNodes {
 		get { return buildingNodes; }
+	}
+
+	public Dictionary<string, string> SensoredBuildings {
+		get { return sensoredBuildings; }
+		set { sensoredBuildings = value; }
 	}
 
 	private class CityBuilderHolder {
