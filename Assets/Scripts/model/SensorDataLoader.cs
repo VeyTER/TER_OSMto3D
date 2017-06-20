@@ -9,16 +9,13 @@ public class SensorDataLoader {
 
 	private string lastLoadedData;
 	private bool receptionCompleted;
-	private string url;
 
-	private SensorDataLoader(string url) {
-		this.Initialize();
-		this.url = url;
-	}
+	private string buildingIdentifier;
+	private string sensorIdentifier;
 
-	public void Initialize() {
-		this.lastLoadedData = null;
-		this.receptionCompleted = false;
+	private SensorDataLoader(string sensorIdentifier) {
+		this.buildingIdentifier = null;
+		this.sensorIdentifier = sensorIdentifier;
 	}
 
 	public static SensorDataLoader GetInstance(Sensors sensor) {
@@ -33,8 +30,13 @@ public class SensorDataLoader {
 	}
 
 	public void LoadData() {
+		this.lastLoadedData = null;
+		this.receptionCompleted = false;
+
+		string url = "http://neocampus.univ-tlse3.fr:8004/api/" + buildingIdentifier + "/*/" + sensorIdentifier + "?csv&pp";
+
 		WebRequest webRequest = WebRequest.Create(url);
-		webRequest.Credentials = new NetworkCredential("reader", "readerpassword");
+		webRequest.Credentials = new NetworkCredential("reader", "readerpassword"); // <-- Dans un fichier
 
 		RequestState myRequestState = new RequestState() {
 			Request = webRequest
@@ -43,17 +45,11 @@ public class SensorDataLoader {
 	}
 
 	private void ProcessReceivedData(IAsyncResult asynchronousResult) {
-		while (!asynchronousResult.IsCompleted) ;
-		RequestState myRequestState = (RequestState) asynchronousResult.AsyncState;
-		string requestResult = myRequestState.RequestResult();
+		while (!asynchronousResult.IsCompleted);
+		RequestState requestState = (RequestState) asynchronousResult.AsyncState;
+		string requestResult = requestState.RequestResult();
 
 		lastLoadedData = requestResult;
-
-		lastLoadedData = lastLoadedData.Replace("<pre>", "");
-		lastLoadedData = lastLoadedData.Replace("</pre>", "");
-
-		lastLoadedData = lastLoadedData.Replace("&lt;", "<");
-		lastLoadedData = lastLoadedData.Replace("&gt;", ">");
 
 		receptionCompleted = true;
 	}
@@ -65,6 +61,11 @@ public class SensorDataLoader {
 	public string LastLoadedData {
 		get { return lastLoadedData; }
 		set { lastLoadedData = value; }
+	}
+
+	public string BuildingIdentifier {
+		get { return buildingIdentifier; }
+		set { buildingIdentifier = value; }
 	}
 
 	private class RequestState {
@@ -83,7 +84,8 @@ public class SensorDataLoader {
 	}
 
 	private class SensorDataLoaderHolder {
-		internal static SensorDataLoader temperatureLoader = new SensorDataLoader("http://neocampus.univ-tlse3.fr:8004/api/u4/*/temperature?csv&pp");
-		internal static SensorDataLoader humidityLoader = new SensorDataLoader("http://neocampus.univ-tlse3.fr:8004/api/u4/*/humidity?csv&pp");
+		internal static SensorDataLoader temperatureLoader = new SensorDataLoader("temperature");
+		internal static SensorDataLoader humidityLoader = new SensorDataLoader("humidity");
+		internal static SensorDataLoader co2Loader = new SensorDataLoader("co2");
 	}
 }

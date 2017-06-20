@@ -137,6 +137,8 @@ public class EditController : MonoBehaviour {
 
 	private EditPanelController editPanelController;
 
+	private Dictionary<string, string> sensoredBuildings;
+
 	public void Start() {
 		this.editState = EditStates.NONE_SELECTION;
 		this.selectionRange = SelectionRanges.BUILDING;
@@ -182,6 +184,9 @@ public class EditController : MonoBehaviour {
 		RectTransform editPanelTransform = (RectTransform) this.editPanelController.transform;
 		this.editPanelController.StartPosition = new Vector3(editPanelTransform.localPosition.x, 0, 0);
 		this.editPanelController.EndPosition = new Vector3(editPanelTransform.localPosition.x - editPanelTransform.rect.width, 0, 0);
+
+		this.sensoredBuildings = new Dictionary<string, string>();
+		this.sensoredBuildings["U4"] = "u4";
 	}
 
 
@@ -195,138 +200,146 @@ public class EditController : MonoBehaviour {
 			buildingsTools.DiscolorAsSelected(selectedBuilding);
 
 		this.selectedWall = selectedWall;
-		selectedBuilding = selectedWall.transform.parent.gameObject;
 
-		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		if (selectedWall.transform.parent.gameObject != selectedBuilding) {
+			selectedBuilding = selectedWall.transform.parent.gameObject;
 
-		// Activation et ourverture du panneau latéral s'il est inactif
-		if (!editPanel.activeInHierarchy) {
-			editPanel.SetActive (true);
-			editPanelController.OpenPanel (null);
-			editPanelController.OpenSlideButton();
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+
+			// Activation et ourverture du panneau latéral s'il est inactif
+			if (!editPanel.activeInHierarchy) {
+				editPanel.SetActive(true);
+				editPanelController.OpenPanel(null);
+				editPanelController.OpenSlideButton();
+			}
+
+			// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
+			GameObject buildingNameField = GameObject.Find(UiNames.BUILDING_NAME_INPUT);
+			InputField buildingNameTextInput = buildingNameField.GetComponent<InputField>();
+			buildingNameTextInput.text = selectedBuilding.name;
+
+			GameObject IdValueLabel = GameObject.Find(UiNames.ID_INDICATOR_LABEL);
+			Text idText = IdValueLabel.GetComponent<Text>();
+			idText.text = nodeGroup.Id;
+
+			// Changement de la couleur du bâtiment sélectionné
+			buildingsTools.ColorAsSelected(selectedBuilding);
+
+			// Enregistrement de la situation initiale du mur courant
+			if (!wallsInitPos.ContainsKey(this.selectedWall) && !wallsInitAngle.ContainsKey(this.selectedWall)) {
+				wallsInitPos.Add(this.selectedWall, this.selectedWall.transform.position);
+				wallsInitAngle.Add(this.selectedWall, this.selectedWall.transform.rotation.eulerAngles.y);
+			}
+
+			// Enregistrement de la situation initiale du bâtiment courant
+			if (!buildingsInitPos.ContainsKey(selectedBuilding) && !buildingsInitAngle.ContainsKey(selectedBuilding)) {
+				buildingsInitPos.Add(selectedBuilding, selectedBuilding.transform.position);
+				buildingsInitAngle.Add(selectedBuilding, selectedBuilding.transform.rotation.eulerAngles.y);
+			}
+
+			if (!buildingsInitHeight.ContainsKey(SelectedBuilding))
+				buildingsInitHeight.Add(selectedBuilding, nodeGroup.NbFloor);
+
+			GameObject firstWall = SelectedBuilding.transform.GetChild(0).gameObject;
+			MeshRenderer meshRenderer = firstWall.GetComponent<MeshRenderer>();
+
+			if (!buildingsInitMaterial.ContainsKey(SelectedBuilding))
+				buildingsInitMaterial.Add(SelectedBuilding, meshRenderer.materials[0]);
+
+			if (!buildingsInitColor.ContainsKey(SelectedBuilding))
+				buildingsInitColor.Add(SelectedBuilding, meshRenderer.materials[0].color);
+
+			// Enregistrement de la situation initiale de la caméra
+			if (editState == EditStates.NONE_SELECTION) {
+				GameObject mainCamera = Camera.main.gameObject;
+				cameraController.InitPosition = mainCamera.transform.position;
+				cameraController.InitRotation = mainCamera.transform.rotation;
+			}
+
+			this.StopAllCoroutines();
+			this.LoadSensorData();
+
+			if (controlPanel.activeInHierarchy)
+				controlPanel.SetActive(false);
+
+			// Déplacement de la caméra jusqu'au bâtiment sélectionné avec mise à jour de l'état de modification à la fin
+			// du déplacement
+			editState = EditStates.MOVING_TO_OBJECT;
+			cameraController.StartCoroutine(
+				cameraController.MoveToBuilding(selectedBuilding, false, () => {
+					editState = EditStates.READY_TO_EDIT;
+				}, 90)
+			);
 		}
-
-		GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
-		Text temperatureInputField = temperatureLabel.GetComponent<Text>();
-		temperatureInputField.text = "N.R";
-
-		GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
-		Text humidityInputField = humidityLabel.GetComponent<Text>();
-		humidityInputField.text = "N.R";
-
-		humidityInputField.text = "En attente";
-
-		// Renommage de l'étiquette indiquant le nom ou le numéro du bâtiment
-		GameObject buildingNameField = GameObject.Find(UiNames.BUILDING_NAME_INPUT);
-		InputField buildingNameTextInput = buildingNameField.GetComponent<InputField> ();
-		buildingNameTextInput.text = selectedBuilding.name;
-
-		GameObject IdValueLabel = GameObject.Find(UiNames.ID_INDICATOR_LABEL);
-		Text idText = IdValueLabel.GetComponent<Text>();
-		idText.text = nodeGroup.Id;
-
-		// Changement de la couleur du bâtiment sélectionné
-		buildingsTools.ColorAsSelected (selectedBuilding);
-
-		// Enregistrement de la situation initiale du mur courant
-		if (!wallsInitPos.ContainsKey(this.selectedWall) && !wallsInitAngle.ContainsKey(this.selectedWall)) {
-			wallsInitPos.Add (this.selectedWall, this.selectedWall.transform.position);
-			wallsInitAngle.Add (this.selectedWall, this.selectedWall.transform.rotation.eulerAngles.y);
-		}
-
-		// Enregistrement de la situation initiale du bâtiment courant
-		if (!buildingsInitPos.ContainsKey(selectedBuilding) && !buildingsInitAngle.ContainsKey(selectedBuilding)) {
-			buildingsInitPos.Add (selectedBuilding, selectedBuilding.transform.position);
-			buildingsInitAngle.Add (selectedBuilding, selectedBuilding.transform.rotation.eulerAngles.y);
-		}
-
-		if (!buildingsInitHeight.ContainsKey(SelectedBuilding))
-			buildingsInitHeight.Add (selectedBuilding, nodeGroup.NbFloor);
-
-		GameObject firstWall = SelectedBuilding.transform.GetChild(0).gameObject;
-		MeshRenderer meshRenderer = firstWall.GetComponent<MeshRenderer>();
-
-		if (!buildingsInitMaterial.ContainsKey(SelectedBuilding))
-			buildingsInitMaterial.Add(SelectedBuilding, meshRenderer.materials[0]);
-
-		if (!buildingsInitColor.ContainsKey(SelectedBuilding))
-			buildingsInitColor.Add(SelectedBuilding, meshRenderer.materials[0].color);
-
-		// Enregistrement de la situation initiale de la caméra
-		if (editState == EditStates.NONE_SELECTION) {
-			GameObject mainCamera = Camera.main.gameObject;
-			cameraController.InitPosition = mainCamera.transform.position;
-			cameraController.InitRotation = mainCamera.transform.rotation;
-		}
-
-		this.StopAllCoroutines();
-
-		SensorDataLoader temperatureLoader = SensorDataLoader.GetInstance(SensorDataLoader.Sensors.TEMPERATURE);
-		temperatureLoader.Initialize();
-		temperatureLoader.LoadData();
-		this.StartCoroutine( this.WaitSensorData("temperature", temperatureLoader) );
-
-		SensorDataLoader humidityLoader = SensorDataLoader.GetInstance(SensorDataLoader.Sensors.HUMIDITY);
-		humidityLoader.Initialize();
-		humidityLoader.LoadData();
-		this.StartCoroutine( this.WaitSensorData("humidity", humidityLoader) );
-
-		if (controlPanel.activeInHierarchy)
-			controlPanel.SetActive(false);
-
-		// Déplacement de la caméra jusqu'au bâtiment sélectionné avec mise à jour de l'état de modification à la fin
-		// du déplacement
-		editState = EditStates.MOVING_TO_OBJECT;
-		cameraController.StartCoroutine (
-			cameraController.MoveToBuilding(selectedBuilding, false, () => {
-				editState = EditStates.READY_TO_EDIT;
-			}, 90)
-		);
 	}
 
+	private void LoadSensorData() {
+		GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
+		GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
 
-	public IEnumerator WaitSensorData(string sensorType, SensorDataLoader dataLoader) {
+		if (sensoredBuildings.ContainsKey(selectedBuilding.name)) {
+			string buildingIdentifier = sensoredBuildings[selectedBuilding.name];
+
+			temperatureLabel.GetComponent<Text>().text = "En attente";
+			humidityLabel.GetComponent<Text>().text = "En attente";
+
+			this.LaunchSensorDataLoading(SensorDataLoader.Sensors.TEMPERATURE, buildingIdentifier);
+			this.LaunchSensorDataLoading(SensorDataLoader.Sensors.HUMIDITY, buildingIdentifier);
+		} else {
+			temperatureLabel.GetComponent<Text>().text = "N.R";
+			humidityLabel.GetComponent<Text>().text = "N.R";
+		}
+	}
+
+	private void LaunchSensorDataLoading(SensorDataLoader.Sensors sensor, string buildingIdentifier) {
+		SensorDataLoader temperatureLoader = SensorDataLoader.GetInstance(sensor);
+		temperatureLoader.BuildingIdentifier = buildingIdentifier;
+		temperatureLoader.LoadData();
+		this.StartCoroutine( this.WaitSensorData(sensor, temperatureLoader) );
+	}
+
+	private IEnumerator WaitSensorData(SensorDataLoader.Sensors sensor, SensorDataLoader dataLoader) {
 		while (!dataLoader.ReceptionCompleted)
 			 yield return new WaitForSeconds(0.1F);
-
-		Debug.Log("ok");
 
 		string[] resultsLines = dataLoader.LastLoadedData.Split('\n');
 
 		int i = 0;
 		for (; i < resultsLines.Length && !resultsLines[i].Contains("ouest"); i++);
 
-		if (i < resultsLines.Length) {
-			string[] lineTerms = resultsLines[i].Split(',');
+		GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
+		GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
 
-			switch (sensorType) {
-			case "temperature":
-				int celsiusIndex = Array.IndexOf(lineTerms, "inside");
+		switch (sensor) {
+		case SensorDataLoader.Sensors.TEMPERATURE:
+			this.SetIndicatorValue(i, resultsLines, temperatureLabel, "°");
+			break;
+		case SensorDataLoader.Sensors.HUMIDITY:
+			this.SetIndicatorValue(i, resultsLines, humidityLabel, "%");
+			break;
+		}
+	}
 
-				if(celsiusIndex == -1)
-					celsiusIndex = Array.IndexOf(lineTerms, "outside");
+	private void SetIndicatorValue(int valueIndex, string[] resultsLines, GameObject indicator, string unit) {
+		foreach (string line in resultsLines) {
+			Debug.Log(line);
+		}
 
-				if (celsiusIndex < lineTerms.Length - 1) {
-					string temperatureValue = lineTerms[celsiusIndex + 1];
-					GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
-					Text temperatureInputField = temperatureLabel.GetComponent<Text>();
-					temperatureInputField.text = temperatureValue + "°";
-				}
-				break;
-			case "humidity":
-				int humidityIndex = Array.IndexOf(lineTerms, "inside");
+		if (valueIndex < resultsLines.Length) {
+			string[] lineTerms = resultsLines[valueIndex].Split(',');
 
-				if (humidityIndex == -1)
-					humidityIndex = Array.IndexOf(lineTerms, "outside");
+			int flagIndex = Array.IndexOf(lineTerms, "inside");
 
-				if (humidityIndex < lineTerms.Length - 1) {
-					string humidityValue = lineTerms[humidityIndex + 1];
-					GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
-					Text humidityInputField = humidityLabel.GetComponent<Text>();
-					humidityInputField.text = humidityValue + "%";
-				}
-				break;
+			if (flagIndex == -1)
+				flagIndex = Array.IndexOf(lineTerms, "outside");
+
+			if (flagIndex < lineTerms.Length - 1) {
+				string sensorValue = lineTerms[flagIndex + 1];
+				Text sensorInputField = indicator.GetComponent<Text>();
+				sensorInputField.text = sensorValue + unit;
 			}
+		} else {
+			indicator.GetComponent<Text>().text = "Non disp.";
 		}
 	}
 

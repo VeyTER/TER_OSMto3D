@@ -675,11 +675,6 @@ public class CityBuilder {
 		// Création de l'objet 3D représenant la caméra
 		GameObject mainCameraGo = Camera.main.gameObject;
 
-		// Création de l'objet représentant une lumière et servant à éclairer le champ de vision de la caméra
-		Light mainLight = mainCameraGo.AddComponent<Light> ();
-		mainLight.range = 30;
-		mainLight.intensity = 0.5f;
-
 		// Ajout d'un controlleur de caméra à la caméra
 		mainCameraGo.AddComponent <CameraController> ();
 	}
@@ -690,7 +685,6 @@ public class CityBuilder {
 	/// </summary>
 	public void BuildGround(string backgroundName = null) {
 		Material groundMaterial = null;
-
 
 		if (backgroundName != null) {
 			Texture backgroundTexture = Resources.Load<Texture>(FilePaths.TEXTURES_FOLDER_LOCAL + backgroundName);

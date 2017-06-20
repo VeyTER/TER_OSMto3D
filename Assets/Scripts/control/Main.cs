@@ -18,7 +18,7 @@ public class Main : MonoBehaviour {
 	public static double SCALE_FACTOR = 1000;
 
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
-	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAPITOLE + ".osm";
+	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAMPUS + ".osm";
 
 	private GameObject editPanel;
 
@@ -113,8 +113,11 @@ public class Main : MonoBehaviour {
 	/// 	Mise en place de l'interface
 	/// </summary>
 	public void SetUpUi() {
-		GameObject uiManager = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/UiManagerScript"));
-		GameObject canvas = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/MainCanvas"));
-		GameObject eventSystem = (GameObject) GameObject.Instantiate (Resources.Load("Game objects/EventSystem"));
+		GameObject mainCamera = (GameObject) GameObject.Instantiate(Resources.Load("Game objects/Camera Campus"));
+		mainCamera.name = "Camera";
+
+		GameObject.Instantiate (Resources.Load("Game objects/UiManagerScript"));
+		GameObject.Instantiate (Resources.Load("Game objects/MainCanvas"));
+		GameObject.Instantiate (Resources.Load("Game objects/EventSystem"));
 	}
 }
