@@ -117,6 +117,10 @@ public class UiBuilder {
 		return iconBackground;
 	}
 
+	private GameObject BuildBuidingSubsetDataBox(GameObject link, string subsetName) {
+		return null;
+	}
+
 	private class UiBuilderHolder {
 		internal static UiBuilder instance = new UiBuilder();
 	}

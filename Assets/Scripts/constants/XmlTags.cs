@@ -108,4 +108,24 @@ public class XmlTags {
 
 	/// <summary>Nom de la balise donnant des informations sur une objet (id, nom, coordonnées...)</summary>
 	public const string INFO = "info";
+
+
+	public const string RESULTS = "results";
+
+	public const string SENSOR_DATA = "brd";
+
+	public const string SENSOR_DATA_RECORD = "record";
+
+	public const string UNIT_ID = "record";
+
+	public const string VALUE = "value";
+
+	public const string SUB_ID = "subID";
+
+	public const string DATE_TIME = "datetime";
+
+	public const string INPUT = "input";
+
+	public const string VALUE_UNITS = "value_units";
+
 }

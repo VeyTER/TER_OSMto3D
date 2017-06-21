@@ -5,37 +5,20 @@ using System.IO;
 using System;
 
 public class SensorDataLoader {
-	public enum Sensors { TEMPERATURE, HUMIDITY }
-
 	private string lastLoadedData;
 	private bool receptionCompleted;
 
 	private string buildingIdentifier;
-	private string sensorIdentifier;
 
-	private SensorDataLoader(string sensorIdentifier) {
-		this.buildingIdentifier = null;
-		this.sensorIdentifier = sensorIdentifier;
+	public SensorDataLoader(string buildingIdentifier) {
+		this.buildingIdentifier = buildingIdentifier;
 	}
 
-	public static SensorDataLoader GetInstance(Sensors sensor) {
-		switch (sensor) {
-		case Sensors.TEMPERATURE:
-			return SensorDataLoaderHolder.temperatureLoader;
-		case Sensors.HUMIDITY:
-			return SensorDataLoaderHolder.humidityLoader;
-		default:
-			return null;
-		}
-	}
-
-	public void LoadData() {
+	public void LaunchDataLoading() {
 		this.lastLoadedData = null;
 		this.receptionCompleted = false;
 
-		string url = "http://neocampus.univ-tlse3.fr:8004/api/" + buildingIdentifier + "/*/" + sensorIdentifier + "?csv&pp";
-
-		url = "http://neocampus.univ-tlse3.fr:8004/api/" + buildingIdentifier + "/*/*?csv&pp";
+		string url = "http://neocampus.univ-tlse3.fr:8004/api/" + buildingIdentifier + "/*/*?xml&pp";
 
 		WebRequest webRequest = WebRequest.Create(url);
 
@@ -51,6 +34,9 @@ public class SensorDataLoader {
 		while (!asynchronousResult.IsCompleted);
 		RequestState requestState = (RequestState) asynchronousResult.AsyncState;
 		string requestResult = requestState.RequestResult();
+
+		requestResult = requestResult.Replace("<pre>", "");
+		requestResult = requestResult.Replace("</pre>", "");
 
 		lastLoadedData = requestResult;
 
@@ -84,11 +70,5 @@ public class SensorDataLoader {
 			get { return request; }
 			set { request = value; }
 		}
-	}
-
-	private class SensorDataLoaderHolder {
-		internal static SensorDataLoader temperatureLoader = new SensorDataLoader("temperature");
-		internal static SensorDataLoader humidityLoader = new SensorDataLoader("humidity");
-		internal static SensorDataLoader co2Loader = new SensorDataLoader("co2");
 	}
 }

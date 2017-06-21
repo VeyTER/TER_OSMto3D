@@ -126,4 +126,6 @@ public class XmlAttributes {
 	public const string CUSTOM_MATERIAL = "custmat";
 
 	public const string OVERLAY_COLOR = "color";
+
+	public const string TOPIC = "topic";
 }

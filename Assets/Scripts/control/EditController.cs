@@ -253,7 +253,6 @@ public class EditController : MonoBehaviour {
 			}
 
 			this.StopAllCoroutines();
-			this.LoadSensorData();
 
 			if (controlPanel.activeInHierarchy)
 				controlPanel.SetActive(false);
@@ -266,77 +265,6 @@ public class EditController : MonoBehaviour {
 					editState = EditStates.READY_TO_EDIT;
 				}, 90)
 			);
-		}
-	}
-
-	private void LoadSensorData() {
-		GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
-		GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
-
-		
-		if (cityBuilder.SensoredBuildings.ContainsKey(selectedBuilding.name)) {
-			string buildingIdentifier = cityBuilder.SensoredBuildings[selectedBuilding.name];
-
-			temperatureLabel.GetComponent<Text>().text = "En attente";
-			humidityLabel.GetComponent<Text>().text = "En attente";
-
-			this.LaunchSensorDataLoading(SensorDataLoader.Sensors.TEMPERATURE, buildingIdentifier);
-			this.LaunchSensorDataLoading(SensorDataLoader.Sensors.HUMIDITY, buildingIdentifier);
-		} else {
-			temperatureLabel.GetComponent<Text>().text = "N.R";
-			humidityLabel.GetComponent<Text>().text = "N.R";
-		}
-	}
-
-	private void LaunchSensorDataLoading(SensorDataLoader.Sensors sensor, string buildingIdentifier) {
-		SensorDataLoader temperatureLoader = SensorDataLoader.GetInstance(sensor);
-		temperatureLoader.BuildingIdentifier = buildingIdentifier;
-		temperatureLoader.LoadData();
-		this.StartCoroutine( this.WaitSensorData(sensor, temperatureLoader) );
-	}
-
-	private IEnumerator WaitSensorData(SensorDataLoader.Sensors sensor, SensorDataLoader dataLoader) {
-		while (!dataLoader.ReceptionCompleted)
-			 yield return new WaitForSeconds(0.1F);
-
-		string[] resultsLines = dataLoader.LastLoadedData.Split('\n');
-
-		int i = 0;
-		for (; i < resultsLines.Length && !resultsLines[i].Contains("ouest"); i++);
-
-		GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
-		GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
-
-		switch (sensor) {
-		case SensorDataLoader.Sensors.TEMPERATURE:
-			this.SetIndicatorValue(i, resultsLines, temperatureLabel, "°");
-			break;
-		case SensorDataLoader.Sensors.HUMIDITY:
-			this.SetIndicatorValue(i, resultsLines, humidityLabel, "%");
-			break;
-		}
-	}
-
-	private void SetIndicatorValue(int valueIndex, string[] resultsLines, GameObject indicator, string unit) {
-		foreach (string line in resultsLines) {
-			Debug.Log(line);
-		}
-
-		if (valueIndex < resultsLines.Length) {
-			string[] lineTerms = resultsLines[valueIndex].Split(',');
-
-			int flagIndex = Array.IndexOf(lineTerms, "inside");
-
-			if (flagIndex == -1)
-				flagIndex = Array.IndexOf(lineTerms, "outside");
-
-			if (flagIndex < lineTerms.Length - 1) {
-				string sensorValue = lineTerms[flagIndex + 1];
-				Text sensorInputField = indicator.GetComponent<Text>();
-				sensorInputField.text = sensorValue + unit;
-			}
-		} else {
-			indicator.GetComponent<Text>().text = "Non disp.";
 		}
 	}
 
