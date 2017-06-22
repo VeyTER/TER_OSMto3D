@@ -2,7 +2,7 @@
 using UnityEditor;
 
 public class BuildingSubsetData {
-	private string subsetName;
+	private string name;
 
 	private float temperature;
 	private float humidity;
@@ -10,8 +10,8 @@ public class BuildingSubsetData {
 	private float co2;
 	private bool presence;
 
-	public BuildingSubsetData(string subsetName) {
-		this.subsetName = subsetName;
+	public BuildingSubsetData(string name) {
+		this.name = name;
 
 		this.temperature = 0;
 		this.humidity = 0;
@@ -20,8 +20,8 @@ public class BuildingSubsetData {
 		this.presence = false;
 	}
 
-	public BuildingSubsetData(string subsetName, float temperatuere, float humidity, float luminosity, float co2, bool presence) {
-		this.subsetName = subsetName;
+	public BuildingSubsetData(string name, float temperatuere, float humidity, float luminosity, float co2, bool presence) {
+		this.name = name;
 
 		this.temperature = temperatuere;
 		this.humidity = humidity;
@@ -30,9 +30,9 @@ public class BuildingSubsetData {
 		this.presence = presence;
 	}
 
-	public string SubsetName {
-		get { return subsetName; }
-		set { subsetName = value; }
+	public string Name {
+		get { return name; }
+		set { name = value; }
 	}
 
 	public float Temperature {
@@ -61,6 +61,6 @@ public class BuildingSubsetData {
 	}
 
 	public override string ToString() {
-		return subsetName + " : [" + temperature + "° | " + humidity + "% | " + luminosity + "lux | " + co2 + "ppm | " + (presence ? "Somebody present" : "Nobody present") + "]";
+		return name + " : [" + temperature + "° | " + humidity + "% | " + luminosity + "lux | " + co2 + "ppm | " + (presence ? "Somebody present" : "Nobody present") + "]";
 	}
 }

@@ -5,28 +5,28 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Xml;
 
-// Attaché au bâtiment
-public class BuildingDataDisplayController : MonoBehaviour {
+public class BuildingSensorsController : MonoBehaviour {
 	private SensorDataLoader sensorsDataLoader;
 	private Dictionary<string, BuildingSubsetData> subsetsData;
 
 	private CityBuilder cityBuilder;
+	private UiBuilder uiBuilder;
+
 
 	private void Start() {
+		this.cityBuilder = CityBuilder.GetInstance();
+		this.uiBuilder = UiBuilder.GetInstance();
+
 		this.sensorsDataLoader = new SensorDataLoader(cityBuilder.SensoredBuildings[gameObject.name]);
 		this.subsetsData = new Dictionary<string, BuildingSubsetData>();
 
-		this.cityBuilder = CityBuilder.GetInstance();
-
-		UiBuilder uiBuilder = UiBuilder.GetInstance();
-		uiBuilder.BuildBuildingDataDisplay(gameObject);
+		GameObject displayPanel = uiBuilder.BuildBuildingDataDisplay(gameObject);
 
 		sensorsDataLoader.LaunchDataLoading();
-		this.StartCoroutine( this.WaitSensorData(sensorsDataLoader) );
-
+		this.StartCoroutine(this.WaitAndProcessSensorData(sensorsDataLoader, displayPanel));
 	}
 
-	private IEnumerator WaitSensorData(SensorDataLoader dataLoader) {
+	private IEnumerator WaitAndProcessSensorData(SensorDataLoader dataLoader, GameObject displayPanel) {
 		while (!dataLoader.ReceptionCompleted)
 			yield return new WaitForSeconds(0.1F);
 
@@ -36,6 +36,12 @@ public class BuildingDataDisplayController : MonoBehaviour {
 		sensorsDataDocument.InnerXml = rootNode.InnerText;
 
 		this.ExtractSensorsData(sensorsDataDocument);
+
+		int dataBoxIndex = 0;
+		foreach (KeyValuePair<string, BuildingSubsetData> subsetDataPair in this.subsetsData) {
+			uiBuilder.BuildBuidingDataBox(displayPanel, subsetDataPair.Value, dataBoxIndex);
+			dataBoxIndex++;
+		}
 	}
 
 	private void ExtractSensorsData(XmlDocument sensorsDataDocument) {
@@ -85,46 +91,4 @@ public class BuildingDataDisplayController : MonoBehaviour {
 			break;
 		}
 	}
-}
-
-	private void SetIndicatorValue(int valueIndex, string[] resultsLines, GameObject indicator, string unit) {
-		foreach (string line in resultsLines) {
-			Debug.Log(line);
-		}
-
-		if (valueIndex < resultsLines.Length) {
-			string[] lineTerms = resultsLines[valueIndex].Split(',');
-
-			int flagIndex = Array.IndexOf(lineTerms, "inside");
-
-			if (flagIndex == -1)
-				flagIndex = Array.IndexOf(lineTerms, "outside");
-
-			if (flagIndex < lineTerms.Length - 1) {
-				string sensorValue = lineTerms[flagIndex + 1];
-				Text sensorInputField = indicator.GetComponent<Text>();
-				sensorInputField.text = sensorValue + unit;
-			}
-		} else {
-			indicator.GetComponent<Text>().text = "Non disp.";
-		}
-	}
-
-	//private void LoadSensorsData() {
-	//	GameObject temperatureLabel = GameObject.Find(UiNames.TEMPERATURE_INDICATOR_INPUT_TEXT);
-	//	GameObject humidityLabel = GameObject.Find(UiNames.HUMIDITY_INDICATOR_INPUT_TEXT);
-
-	//	if (cityBuilder.SensoredBuildings.ContainsKey(name)) {
-	//		string buildingIdentifier = cityBuilder.SensoredBuildings[name];
-
-	//		temperatureLabel.GetComponent<Text>().text = "En attente";
-	//		humidityLabel.GetComponent<Text>().text = "En attente";
-
-	//		this.LaunchSensorDataLoading(SensorDataLoader.Sensors.TEMPERATURE, buildingIdentifier);
-	//		this.LaunchSensorDataLoading(SensorDataLoader.Sensors.HUMIDITY, buildingIdentifier);
-	//	} else {
-	//		temperatureLabel.GetComponent<Text>().text = "N.R";
-	//		humidityLabel.GetComponent<Text>().text = "N.R";
-	//	}
-	//}
 }
