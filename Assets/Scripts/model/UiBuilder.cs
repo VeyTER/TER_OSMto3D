@@ -12,7 +12,7 @@ public class UiBuilder {
 	private static float BUILDING_DATA_DATA_AREA_EXT_PADDING = 0.03F;
 
 	private static float BUILDING_DATA_HEADER_HEIGHT = 0.1F;
-	private static float BUILDING_DATA_HEADER_LENGTH = 0.3F;
+	private static float BUILDING_DATA_HEADER_LENGTH = 0.8F;
 
 	private static float BUILDING_DATA_ICON_SIZE = BUILDING_DATA_HEADER_HEIGHT * 3;
 
@@ -25,7 +25,7 @@ public class UiBuilder {
 	private static float BUILDING_DATA_DATABOX_HEIGHT = BUILDING_DATA_HEADER_HEIGHT + 5 * BUILDING_DATA_INDICATOR_HEIGHT + 4 * BUILDING_DATA_INDICATOR_INT_PADDING + BUILDING_DATA_INDICATOR_EXT_PADDING;
 	private static float BUILDING_DATA_DATABOX_EXT_PADDING = 0.03F;
 
-	private UiBuilder() {}
+	private UiBuilder() { }
 
 	public static UiBuilder GetInstance() {
 		return UiBuilderHolder.instance;
@@ -45,22 +45,9 @@ public class UiBuilder {
 		Vector3 buildingPosition = building.transform.position;
 		float buildingHeight = buildingFirstWallTransform.localScale.y;
 
-		GameObject link = new GameObject("Link_" + building.name, typeof(MeshFilter), typeof(MeshRenderer));
-		link.transform.SetParent(building.transform, false);
-
-		link.transform.position = new Vector3(buildingPosition.x, buildingHeight, buildingPosition.z);
-
-		MeshFilter linkMeshRenderer = link.GetComponent<MeshFilter>();
-		linkMeshRenderer.mesh.vertices = new Vector3[] {
-			new Vector3(-BUILDING_DATA_LINK_WIDTH / 2F, 0, 0),
-			new Vector3(-BUILDING_DATA_LINK_WIDTH / 2F, BUILDING_DATA_LINK_HEIGHT, 0),
-			new Vector3(BUILDING_DATA_LINK_WIDTH, BUILDING_DATA_LINK_HEIGHT, 0),
-			new Vector3(BUILDING_DATA_LINK_WIDTH, 0, 0),
-		};
-		linkMeshRenderer.mesh.triangles = this.NewRectTriangulation();
-
-		MeshRenderer linkRenderer = link.GetComponent<MeshRenderer>();
-		linkRenderer.material = this.NewColorFill(ThemeColors.BLUE);
+		Vector2 linkVerticesStartPosition = new Vector2(-BUILDING_DATA_LINK_WIDTH / 2F, 0);
+		Vector2 linkDimensions = new Vector2(BUILDING_DATA_LINK_WIDTH, BUILDING_DATA_LINK_HEIGHT);
+		GameObject link = this.BuildNew3DRectangle(building, "Link_" + building.name, Vector3.zero, linkDimensions, ThemeColors.BLUE);
 
 		link.transform.parent = building.transform.parent.parent;
 
@@ -70,50 +57,17 @@ public class UiBuilder {
 	private GameObject BuildBuildingDataIcon(GameObject link, string buildingName) {
 		Vector3 linkPanelPosition = link.transform.position;
 
-		GameObject icon = new GameObject("Icon_" + buildingName, typeof(MeshFilter), typeof(MeshRenderer));
-		icon.transform.SetParent(link.transform, false);
-		icon.transform.rotation = Quaternion.Euler(180, 0, -90);
+		string iconName = "Icon_" + buildingName;
+		Vector3 iconPosition = new Vector3(0, BUILDING_DATA_LINK_HEIGHT + BUILDING_DATA_ICON_SIZE / 2F, 0);
+		Vector2 iconVerticesStartPosition = new Vector2(-BUILDING_DATA_ICON_SIZE / 2F, -BUILDING_DATA_ICON_SIZE / 2F);
+		Vector2 iconDimensions = new Vector2(BUILDING_DATA_ICON_SIZE / 2F, BUILDING_DATA_ICON_SIZE / 2F);
+		GameObject icon = this.BuildNew3DRectangle(link, iconName, iconPosition, iconVerticesStartPosition, iconDimensions, IconsAndTextures.BUILDING_DATA_ICON);
 
-		GameObject iconBackground = new GameObject("IconBackground_" + buildingName, typeof(MeshFilter), typeof(MeshRenderer));
-		iconBackground.transform.SetParent(icon.transform, false);
-		icon.transform.position = new Vector3(linkPanelPosition.x, linkPanelPosition.y + BUILDING_DATA_LINK_HEIGHT + BUILDING_DATA_ICON_SIZE / 2F, linkPanelPosition.z);
-
-
-		MeshFilter iconBackgroundShape = iconBackground.GetComponent<MeshFilter>();
-		iconBackgroundShape.mesh.vertices = new Vector3[] {
-			new Vector3(-BUILDING_DATA_ICON_SIZE / 2F, -BUILDING_DATA_ICON_SIZE / 2F, 0),
-			new Vector3(-BUILDING_DATA_ICON_SIZE / 2F, BUILDING_DATA_ICON_SIZE / 2F, 0),
-			new Vector3(BUILDING_DATA_ICON_SIZE / 2F, BUILDING_DATA_ICON_SIZE / 2F, 0),
-			new Vector3(BUILDING_DATA_ICON_SIZE / 2F, -BUILDING_DATA_ICON_SIZE / 2F, 0),
-		};
-		iconBackgroundShape.mesh.triangles = this.NewRectTriangulation();
-		iconBackgroundShape.mesh.uv = new Vector2[] {
-			new Vector2 (0, 0),
-			new Vector2 (1, 0),
-			new Vector2 (1, 1),
-			new Vector2 (0, 1)
-		};
-
-		MeshRenderer iconBackgroundRenderer = iconBackground.GetComponent<MeshRenderer>();
-		iconBackgroundRenderer.material = this.NewTextureFill(IconsAndTextures.BUILDING_DATA_ICON_BACKGROUND);
-
-		MeshFilter iconShape = icon.GetComponent<MeshFilter>();
-		iconShape.mesh.vertices = new Vector3[] {
-			new Vector3(-BUILDING_DATA_ICON_SIZE / 2F, -BUILDING_DATA_ICON_SIZE / 2F, 0),
-			new Vector3(-BUILDING_DATA_ICON_SIZE / 2F, BUILDING_DATA_ICON_SIZE / 2F, 0),
-			new Vector3(BUILDING_DATA_ICON_SIZE / 2F, BUILDING_DATA_ICON_SIZE / 2F, 0),
-			new Vector3(BUILDING_DATA_ICON_SIZE / 2F, -BUILDING_DATA_ICON_SIZE / 2F, 0),
-		};
-		iconShape.mesh.triangles = this.NewRectTriangulation();
-		iconShape.mesh.uv = new Vector2[] {
-			new Vector2 (0, 0),
-			new Vector2 (1, 0),
-			new Vector2 (1, 1),
-			new Vector2 (0, 1)
-		};
-
-		MeshRenderer iconRenderer = icon.GetComponent<MeshRenderer>();
-		iconRenderer.material = this.NewTextureFill(IconsAndTextures.BUILDING_DATA_ICON);
+		string backgroundName = "IconBackground_" + buildingName;
+		Vector3 backgroundPosition = new Vector3(0, 0, 0);
+		Vector2 backgroundVerticesStartPosition = new Vector2(-BUILDING_DATA_ICON_SIZE / 2F, -BUILDING_DATA_ICON_SIZE / 2F);
+		Vector2 backgroundDimensions = new Vector2(BUILDING_DATA_ICON_SIZE / 2F, BUILDING_DATA_ICON_SIZE / 2F);
+		GameObject iconBackground = this.BuildNew3DRectangle(icon, backgroundName, backgroundPosition, backgroundVerticesStartPosition, backgroundDimensions, IconsAndTextures.BUILDING_DATA_ICON_BACKGROUND);
 
 		return iconBackground;
 	}
@@ -140,37 +94,13 @@ public class UiBuilder {
 	}
 
 	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingSubsetData buildingSubsetData) {
-		GameObject dataBoxHeader = new GameObject("DataBoxHeader_" + buildingSubsetData.Name, typeof(MeshFilter), typeof(MeshRenderer));
-		dataBoxHeader.transform.SetParent(dataBox.transform, false);
-
-		GameObject dataBoxHeaderText = new GameObject("DataBoxHeaderText_" + buildingSubsetData.Name, typeof(MeshRenderer), typeof(TextMesh));
-		dataBoxHeaderText.transform.SetParent(dataBoxHeader.transform, false);
-		dataBoxHeaderText.transform.transform.localPosition = new Vector3(BUILDING_DATA_HEADER_HEIGHT * 0.8F, -BUILDING_DATA_HEADER_HEIGHT / 2F, -0.01F);
-
-		MeshFilter headerShape = dataBoxHeader.GetComponent<MeshFilter>();
-		headerShape.mesh.vertices = new Vector3[] {
-			new Vector3(0, 0, 0),
-			new Vector3(BUILDING_DATA_HEADER_LENGTH, 0, 0),
-			new Vector3(BUILDING_DATA_HEADER_LENGTH, -BUILDING_DATA_HEADER_HEIGHT, 0),
-			new Vector3(0, -BUILDING_DATA_HEADER_HEIGHT, 0),
-		};
-		headerShape.mesh.triangles = this.NewRectTriangulation();
-
-		MeshRenderer headerRenderer = dataBoxHeader.GetComponent<MeshRenderer>();
-		headerRenderer.material = this.NewColorFill(ThemeColors.BRIGHT_BLUE);
-
-		TextMesh textShape = dataBoxHeaderText.GetComponent<TextMesh>();
 		Font arialFont = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-		textShape.font = arialFont;
-		textShape.color = new Color(50 / 255F, 50 / 255F, 50 / 255F);
-		textShape.anchor = TextAnchor.MiddleLeft;
-		textShape.characterSize = BUILDING_DATA_HEADER_HEIGHT / 2F;
-		textShape.text = buildingSubsetData.Name;
+		Vector2 boxHeaderDimensions = new Vector2(BUILDING_DATA_HEADER_LENGTH, -BUILDING_DATA_HEADER_HEIGHT);
+		GameObject dataBoxHeader = this.BuildNew3DRectangle(dataBox, "DataBoxHeader_" + buildingSubsetData.Name, Vector3.zero, boxHeaderDimensions, ThemeColors.BRIGHT_BLUE);
 
-		//MeshRenderer labelRenderer = dataBoxHeaderLabel.GetComponent<MeshRenderer>();
-		//labelRenderer.material = new Material(Shader.Find("Sprites/Default")) {
-		//	color = ThemeColors.BRIGHT_BLUE
-		//};
+		Vector3 boxHeaderTextname = new Vector3(BUILDING_DATA_HEADER_HEIGHT * 0.8F, -BUILDING_DATA_HEADER_HEIGHT / 2F, -0.01F);
+		float characterSize = BUILDING_DATA_HEADER_HEIGHT / 2F;
+		GameObject dataBoxHeaderText = this.BuildNew3DText(dataBoxHeader, "DataBoxHeaderText_" + buildingSubsetData.Name, boxHeaderTextname, buildingSubsetData.Name, arialFont, characterSize);
 
 		return dataBoxHeader;
 	}
@@ -180,7 +110,7 @@ public class UiBuilder {
 		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.HUMIDITY_ICON, "Humidité", buildingSubsetData.Humidity.ToString(), "%", 1);
 		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.LUMINOSITY_ICON, "Luminosté", buildingSubsetData.Luminosity.ToString(), "lux", 2);
 		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.CO2_ICON, "CO2", buildingSubsetData.Co2.ToString(), "ppm", 3);
-		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.PRESENCE_ICON, "Présence", buildingSubsetData.Presence ? "Oui" : "Non", "°", 4);
+		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.PRESENCE_ICON, "Présence", buildingSubsetData.Presence ? "Oui" : "Non", "", 4);
 
 		return dataBox;
 	}
@@ -188,6 +118,9 @@ public class UiBuilder {
 	private GameObject BuildBuildingSensorIndicator(GameObject dataBox, string iconPath, string sensorName, string sensorValue, string sensorUnit, int index) {
 		Font arialFont = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
 		string subsetName = dataBox.name.Split('_')[1];
+
+		float titleLabelWidth = this.TextWidth(sensorName, arialFont) + BUILDING_DATA_INDICATOR_ICON_SIZE;
+		float valueLabelWidth = this.TextWidth(sensorValue + sensorUnit, arialFont) - 0.002F;
 
 		float sensorIndicatorPaddingY = BUILDING_DATA_INDICATOR_EXT_PADDING + BUILDING_DATA_HEADER_HEIGHT;
 		float sensorIndicatorPosY = -(index * (BUILDING_DATA_INDICATOR_HEIGHT + (index == 0 ? 0 : BUILDING_DATA_INDICATOR_INT_PADDING)) + sensorIndicatorPaddingY);
@@ -198,131 +131,140 @@ public class UiBuilder {
 		sensorIndicator.transform.SetParent(dataBox.transform, false);
 		sensorIndicator.transform.localPosition = new Vector3(BUILDING_DATA_INDICATOR_EXT_PADDING, sensorIndicatorPosY, 0);
 
-		GameObject sensorTitleLabel = new GameObject(sensorName + "TitleLabel_" + subsetName, typeof(MeshFilter), typeof(MeshRenderer));
-		sensorTitleLabel.transform.SetParent(sensorIndicator.transform, false);
+		Vector2 titleLabelDimensions = new Vector2(titleLabelWidth, -BUILDING_DATA_INDICATOR_HEIGHT);
+		GameObject sensorTitleLabel = this.BuildNew3DRectangle(sensorIndicator, sensorName + "TitleLabel_" + subsetName, Vector3.zero, titleLabelDimensions, ThemeColors.BRIGHT_BLUE);
 
-		GameObject sensorIcon = new GameObject(sensorName + "Icon_" + subsetName, typeof(MeshFilter), typeof(MeshRenderer));
-		sensorIcon.transform.SetParent(sensorIndicator.transform, false);
-		sensorIcon.transform.localPosition = new Vector3(iconCenter, -iconCenter, -0.01F);
-		sensorIcon.transform.rotation = Quaternion.Euler(180, 0, -90);
+		Vector3 titleLabelTextPosition = new Vector3(BUILDING_DATA_INDICATOR_HEIGHT * 0.2F + BUILDING_DATA_INDICATOR_ICON_SIZE, -BUILDING_DATA_INDICATOR_HEIGHT / 2F, -0.01F);
+		GameObject sensorTitleLabelText = this.BuildNew3DText(sensorTitleLabel, sensorName + "TitleLabelText_" + subsetName, titleLabelTextPosition, sensorName, arialFont, BUILDING_DATA_INDICATOR_HEIGHT / 2F);
 
-		GameObject sensorTitleLabelText = new GameObject(sensorName + "TitleLabelText_" + subsetName, typeof(TextMesh));
-		sensorTitleLabelText.transform.SetParent(sensorTitleLabel.transform, false);
-		sensorTitleLabelText.transform.localPosition = new Vector3(BUILDING_DATA_INDICATOR_HEIGHT * 0.2F + BUILDING_DATA_INDICATOR_ICON_SIZE, -BUILDING_DATA_INDICATOR_HEIGHT / 2F, -0.01F);
+		Vector2 valueLabelDimensions = new Vector2(valueLabelWidth, -BUILDING_DATA_INDICATOR_HEIGHT);
+		GameObject sensorValueLabel = this.BuildNew3DRectangle(sensorIndicator, sensorName + "ValueLabe_" + subsetName, new Vector3(titleLabelWidth, 0, 0), valueLabelDimensions, Color.white);
 
-		TextMesh titleLabelTextShape = sensorTitleLabelText.GetComponent<TextMesh>();
-		titleLabelTextShape.font = arialFont;
-		titleLabelTextShape.color = new Color(50 / 255F, 50 / 255F, 50 / 255F);
-		titleLabelTextShape.anchor = TextAnchor.MiddleLeft;
-		titleLabelTextShape.characterSize = BUILDING_DATA_INDICATOR_HEIGHT / 2F;
-		titleLabelTextShape.text = sensorName;
+		Vector3 valueLabelTextPosition = new Vector3(BUILDING_DATA_INDICATOR_HEIGHT * 0.2F, -BUILDING_DATA_INDICATOR_HEIGHT / 2F, -0.01F);
+		string valueLabelTextName = sensorName + "ValueLabelText_" + subsetName;
+		GameObject sensorValueLabelText = this.BuildNew3DText(sensorValueLabel, valueLabelTextName, valueLabelTextPosition, sensorValue + sensorUnit, arialFont, BUILDING_DATA_INDICATOR_HEIGHT / 2F);
 
-		float titleLabelWidth = this.TextWidth(sensorName, arialFont, titleLabelTextShape.fontStyle) + BUILDING_DATA_INDICATOR_ICON_SIZE;
+		string sensorIconName = sensorName + "Icon_" + subsetName;
+		Vector3 sensorIconPosition = new Vector3(iconCenter, -iconCenter, -0.01F);
+		Vector2 sensorIconVerticesStartPosition = new Vector2(-BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, -BUILDING_DATA_INDICATOR_ICON_SIZE / 2F);
+		Vector2 sensorIconDimensions = new Vector2(BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, BUILDING_DATA_INDICATOR_ICON_SIZE / 2F);
+		GameObject sensorIcon = this.BuildNew3DRectangle(sensorIndicator, sensorIconName, sensorIconPosition, sensorIconVerticesStartPosition, sensorIconDimensions, iconPath);
 
 		MeshFilter iconShape = sensorIcon.GetComponent<MeshFilter>();
-		iconShape.mesh.vertices = new Vector3[] {
-			new Vector3(-BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, -BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, 0),
-			new Vector3(-BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, 0),
-			new Vector3(BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, 0),
-			new Vector3(BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, -BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, 0),
-		};
-		iconShape.mesh.triangles = this.NewRectTriangulation();
-
-
-
-
-
 		Texture newTexture = Resources.Load<Texture>(iconPath);
+
 		float ratio = newTexture.width / (newTexture.height * 1F);
-		if (ratio > 1) {
-			iconShape.mesh.uv = new Vector2[] {
-				new Vector2 (0, 0.5F - ratio / 2F),
-				new Vector2 (1, 0.5F - ratio / 2F),
-				new Vector2 (1, 0.5F + ratio / 2F),
-				new Vector2 (0, 0.5F + ratio / 2F)
-			};
-		} else {
-			iconShape.mesh.uv = new Vector2[] {
-				new Vector2 (0.5F - ratio / 2F, 0),
-				new Vector2 (0.5F + ratio / 2F, 0),
-				new Vector2 (0.5F + ratio / 2F, 1),
-				new Vector2 (0.5F - ratio / 2F, 1)
-			};
-		}
-
-
-
+		if (ratio > 1)
+			iconShape.mesh.uv = this.NewRectangleUv(new Vector2(0, 0.5F - ratio / 2F), new Vector2(1, 0.5F + ratio / 2F));
+		else
+			iconShape.mesh.uv = this.NewRectangleUv(new Vector2(0.5F - ratio / 2F, 0), new Vector2(0.5F + ratio / 2F, 1));
 
 		MeshRenderer iconRenderer = sensorIcon.GetComponent<MeshRenderer>();
 		iconRenderer.material = this.NewTextureFill(iconPath);
-
 		iconRenderer.material.mainTexture.wrapMode = TextureWrapMode.Clamp;
-
-		GameObject sensorValueLabel = new GameObject(sensorName + "ValueLabe_" + subsetName, typeof(MeshFilter), typeof(MeshRenderer));
-		sensorValueLabel.transform.SetParent(sensorIndicator.transform, false);
-		sensorValueLabel.transform.localPosition = new Vector3(titleLabelWidth, 0, 0);
-
-		GameObject sensorValueLabelText = new GameObject(sensorName + "ValueLabelText_" + subsetName, typeof(TextMesh));
-		sensorValueLabelText.transform.SetParent(sensorValueLabel.transform, false);
-		sensorValueLabelText.transform.localPosition = new Vector3(BUILDING_DATA_INDICATOR_HEIGHT * 0.2F, -BUILDING_DATA_INDICATOR_HEIGHT / 2F, -0.01F);
-
-		TextMesh valueLabelTextShape = sensorValueLabelText.GetComponent<TextMesh>();
-		valueLabelTextShape.font = arialFont;
-		valueLabelTextShape.color = new Color(50 / 255F, 50 / 255F, 50 / 255F);
-		valueLabelTextShape.anchor = TextAnchor.MiddleLeft;
-		valueLabelTextShape.characterSize = BUILDING_DATA_INDICATOR_HEIGHT / 2F;
-		valueLabelTextShape.text = sensorValue + sensorUnit;
-
-		float valueLabelWidth = this.TextWidth(sensorValue + sensorUnit, arialFont, valueLabelTextShape.fontStyle) - 0.002F;
-
-
-		MeshFilter titleLabelShape = sensorTitleLabel.GetComponent<MeshFilter>();
-		titleLabelShape.mesh.vertices = new Vector3[] {
-			new Vector3(0, 0, 0),
-			new Vector3(titleLabelWidth, 0, 0),
-			new Vector3(titleLabelWidth, -BUILDING_DATA_INDICATOR_HEIGHT, 0),
-			new Vector3(0, -BUILDING_DATA_INDICATOR_HEIGHT, 0),
-		};
-		titleLabelShape.mesh.triangles = this.NewRectTriangulation();
-
-		MeshRenderer titleLabelRenderer = sensorTitleLabel.GetComponent<MeshRenderer>();
-		titleLabelRenderer.material = this.NewColorFill(ThemeColors.BRIGHT_BLUE);
-
-
-		MeshFilter valueLabelShape = sensorValueLabel.GetComponent<MeshFilter>();
-		valueLabelShape.mesh.vertices = new Vector3[] {
-			new Vector3(0, 0, 0),
-			new Vector3(valueLabelWidth, 0, 0),
-			new Vector3(valueLabelWidth, -BUILDING_DATA_INDICATOR_HEIGHT, 0),
-			new Vector3(0, -BUILDING_DATA_INDICATOR_HEIGHT, 0),
-		};
-		valueLabelShape.mesh.triangles = this.NewRectTriangulation();
-
-		MeshRenderer valueLabelRenderer = sensorValueLabel.GetComponent<MeshRenderer>();
-		valueLabelRenderer.material = this.NewColorFill(Color.white);
 
 		return sensorIndicator;
 	}
 
-	private float TextWidth(string text, Font arialFont, FontStyle fontStyle) {
+	private GameObject BuildNew3DRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 dimensions, string spritePath) {
+		return this.BuildNew3DRectangle(parent, name, localPosition, Vector2.zero, dimensions, spritePath);
+	}
+
+	private GameObject BuildNew3DRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 dimensions, Color color) {
+		return this.BuildNew3DRectangle(parent, name, localPosition, Vector2.zero, dimensions, color);
+	}
+
+	private GameObject BuildNew3DRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 startPosition, Vector2 dimensions, Color color) {
+		GameObject newRectangle = this.NewBasic3DRectangle(parent, name, localPosition, startPosition, dimensions);
+
+		MeshRenderer rectangleRenderer = newRectangle.GetComponent<MeshRenderer>();
+		rectangleRenderer.material = this.NewColorFill(color);
+
+		return newRectangle;
+	}
+
+	private GameObject BuildNew3DRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 startPosition, Vector2 dimensions, string spritePath) {
+		GameObject newRectangle = this.NewBasic3DRectangle(parent, name, localPosition, startPosition, dimensions);
+
+		MeshFilter newRectangleShape = newRectangle.GetComponent<MeshFilter>();
+		newRectangleShape.mesh.uv = this.NewRectangleUv(Vector2.zero, Vector2.one);
+
+		MeshRenderer rectangleRenderer = newRectangle.GetComponent<MeshRenderer>();
+		rectangleRenderer.material = this.NewTextureFill(spritePath);
+
+		return newRectangle;
+	}
+
+	private GameObject NewBasic3DRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 startPosition, Vector2 dimensions) {
+		GameObject newRectangle = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
+		newRectangle.transform.SetParent(parent.transform, false);
+		newRectangle.transform.localPosition = localPosition;
+
+		MeshFilter rectangleShape = newRectangle.GetComponent<MeshFilter>();
+		rectangleShape.mesh.vertices = this.New3DRectangleAngles(startPosition, dimensions);
+		rectangleShape.mesh.triangles = this.New3DRectangleTriangulation();
+
+		return newRectangle;
+	}
+
+	private GameObject BuildNew3DText(GameObject parent, string name, Vector3 localPosition, string text, Font textFont, float characterSize) {
+		GameObject sensorTitleLabelText = new GameObject(name, typeof(TextMesh));
+		sensorTitleLabelText.transform.SetParent(parent.transform, false);
+		sensorTitleLabelText.transform.localPosition = localPosition;
+
+		TextMesh titleLabelTextShape = sensorTitleLabelText.GetComponent<TextMesh>();
+		titleLabelTextShape.font = textFont;
+		titleLabelTextShape.color = new Color(50 / 255F, 50 / 255F, 50 / 255F);
+		titleLabelTextShape.anchor = TextAnchor.MiddleLeft;
+		titleLabelTextShape.characterSize = characterSize;
+		titleLabelTextShape.text = text;
+
+		return sensorTitleLabelText;
+	}
+
+	private float TextWidth(string text, Font arialFont) {
 		float res = 0;
+
+		GameObject tempObject = new GameObject("temp", typeof(TextMesh));
+		tempObject.GetComponent<TextMesh>().characterSize = BUILDING_DATA_INDICATOR_HEIGHT / 2F;
+		tempObject.GetComponent<TextMesh>().text = text;
+
 		foreach (char textChar in text) {
 			CharacterInfo charaterInfo = new CharacterInfo();
 			arialFont.GetCharacterInfo(textChar, out charaterInfo);
 			res += charaterInfo.advance;
 		}
 
-
 		res /= (((400F + (res * 2.5F)) * (0.03F / BUILDING_DATA_INDICATOR_HEIGHT)));
 		res += BUILDING_DATA_INDICATOR_HEIGHT * 0.2F;
+
+		GameObject.Destroy(tempObject);
 
 		return res;
 	}
 
-	private int[] NewRectTriangulation() {
+	private Vector3[] New3DRectangleAngles(Vector2 startPosition, Vector2 dimensions) {
+		return new Vector3[] {
+			new Vector3(startPosition.x, startPosition.y, 0),
+			new Vector3(dimensions.x, startPosition.y, 0),
+			new Vector3(dimensions.x, dimensions.y, 0),
+			new Vector3(startPosition.x, dimensions.y, 0),
+		};
+	}
+
+	private int[] New3DRectangleTriangulation() {
 		return new int[] {
 			1, 0, 2,
 			2, 0, 3
+		};
+	}
+
+	private Vector2[] NewRectangleUv(Vector2 startPosition, Vector2 dimensions) {
+		return new Vector2[] {
+			new Vector2(startPosition.x, startPosition.y),
+			new Vector2(dimensions.x, startPosition.y),
+			new Vector2(dimensions.x, dimensions.y),
+			new Vector2(startPosition.x, dimensions.y)
 		};
 	}
 
