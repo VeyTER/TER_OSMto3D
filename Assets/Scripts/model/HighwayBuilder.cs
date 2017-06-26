@@ -17,7 +17,7 @@ public class HighwayBuilder {
 	public GameObject BuildClassicHighway(float posX, float posZ, float length, float width, float angle) {
 		// Création et paramétrage de l'objet 3D destiné à former une route classique
 		GameObject highway = new GameObject("Highway", typeof(MeshFilter), typeof(MeshRenderer)) {
-			tag = NodeTags.HIGHWAY_TAG
+			tag = GoTags.HIGHWAY_TAG
 		};
 		highway.transform.position = new Vector3 (posX, 0.002F, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
@@ -54,7 +54,7 @@ public class HighwayBuilder {
 	public GameObject BuildBusLane(float posX, float posZ, float length, float width, float angle) {
 		// Création et paramétrage de l'objet 3D destiné à former une voie de bus
 		GameObject highway = new GameObject("BusLane", typeof(MeshFilter), typeof(MeshRenderer)) {
-			tag = NodeTags.BUS_LANE_TAG
+			tag = GoTags.BUS_LANE_TAG
 		};
 
 		highway.transform.position = new Vector3 (posX, 0, posZ);
@@ -92,7 +92,7 @@ public class HighwayBuilder {
 	public GameObject BuildCycleway(float posX, float posZ, float length, float width, float angle) {
 		// Création et paramétrage de l'objet 3D destiné à former une piste cyclable
 		GameObject highway = new GameObject("Cycleway", typeof(MeshFilter), typeof(MeshRenderer)) {
-			tag = NodeTags.CYCLEWAY_TAG
+			tag = GoTags.CYCLEWAY_TAG
 		};
 
 		highway.transform.position = new Vector3 (posX, 0, posZ);
@@ -130,7 +130,7 @@ public class HighwayBuilder {
 	public GameObject BuildFootway(float posX, float posZ, float length, float width, float angle) {
 		// Création et paramétrage de l'objet 3D destiné à former un chemin piéton
 		GameObject highway = new GameObject("Footway", typeof(MeshFilter), typeof(MeshRenderer)) {
-			tag = NodeTags.FOOTWAY_TAG
+			tag = GoTags.FOOTWAY_TAG
 		};
 
 		highway.transform.position = new Vector3 (posX, 0, posZ);

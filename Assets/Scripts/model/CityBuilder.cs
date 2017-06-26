@@ -217,7 +217,7 @@ public class CityBuilder {
 			// Création et paramétrage de l'objet 3D destiné à former un noeud de bâtiment
 			GameObject buildingNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			buildingNode.name = n.Reference;
-			buildingNode.tag = NodeTags.BUILDING_NODE_TAG;
+			buildingNode.tag = GoTags.BUILDING_NODE_TAG;
 			buildingNode.transform.position = new Vector3((float) n.Longitude, 0, (float) n.Latitude);
 			buildingNode.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
 
@@ -243,7 +243,7 @@ public class CityBuilder {
 				// Création et paramétrage de l'objet 3D destiné à former un noeud de route
 				GameObject highwayNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
 				highwayNode.name = n.Reference;
-				highwayNode.tag = NodeTags.HIGHWAY_NODE_TAG;
+				highwayNode.tag = GoTags.HIGHWAY_NODE_TAG;
 				highwayNode.transform.position = new Vector3((float) n.Longitude, 0, (float) n.Latitude);
 				highwayNode.transform.localScale = new Vector3(0.02F, 0.02F, 0.02F);
 
@@ -299,7 +299,7 @@ public class CityBuilder {
 
 			// Création et paramétrage de l'objet 3D destiné à former un mur
 			GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			wall.tag = NodeTags.WALL_TAG;
+			wall.tag = GoTags.WALL_TAG;
 
 			// Paramétrage du mur 3D
 			int nbFloor = ngp.NbFloor;
@@ -414,7 +414,7 @@ public class CityBuilder {
 		List<GameObject> virtualWalls = new List<GameObject>();
 		foreach (Transform childTransform in building.transform) {
 			GameObject virtualWall = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			virtualWall.tag = NodeTags.WALL_TAG;
+			virtualWall.tag = GoTags.WALL_TAG;
 
 			virtualWall.transform.position = new Vector3(childTransform.position.x, (Dimensions.FLOOR_HEIGHT) * floorIndex - Dimensions.FLOOR_HEIGHT / 2F, childTransform.position.z);
 			virtualWall.transform.rotation = childTransform.rotation;
@@ -595,14 +595,14 @@ public class CityBuilder {
 				// Création et paramétrage de l'objet 3D (cylindre) destiné à former un tronc d'arbre 
 				GameObject trunk = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
 				trunk.name = "Trunk";
-				trunk.tag = NodeTags.TREE_TAG;
+				trunk.tag = GoTags.TREE_TAG;
 				trunk.transform.position = new Vector3 ((float)posX, height / 2F, (float)posZ);
 				trunk.transform.localScale = new Vector3 (height / 6F, height / 2F, height / 6F);
 
 				// Création et paramétrage de l'objet 3D (sphere) destiné à former un feuillage 
 				GameObject foliage = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 				foliage.name = "Foliage";
-				foliage.tag = NodeTags.TREE_TAG;
+				foliage.tag = GoTags.TREE_TAG;
 				foliage.transform.position = new Vector3 ((float)posX, height, (float)posZ);
 				foliage.transform.localScale = new Vector3 (diameter, diameter, diameter);
 

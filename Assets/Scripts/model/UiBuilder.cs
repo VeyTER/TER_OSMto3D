@@ -91,7 +91,7 @@ public class UiBuilder {
 	public GameObject BuildBuidingDataBox(GameObject dataPanel, BuildingSubsetData subsetData, int index) {
 		Vector3 dataBoxLocPosition = new Vector3(0, -(BUILDING_DATA_DATABOX_RECT_PADDING + (BUILDING_DATA_DATABOX_HEIGHT) * index), 0);
 		Vector2 dataBoxSize = new Vector2(BUILDING_DATA_HEADER_LENGTH - BUILDING_DATA_LINK_WIDTH, BUILDING_DATA_DATABOX_HEIGHT);
-		GameObject dataBox = this.NewUiRectangle(dataPanel, dataPanel.name + "Databox_" + subsetData.Name, dataBoxLocPosition, dataBoxSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1));
+		GameObject dataBox = this.NewUiRectangle(dataPanel, "DataBox_" + subsetData.Name, dataBoxLocPosition, dataBoxSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1));
 		dataBox.transform.SetParent(dataPanel.transform, false);
 
 		this.BuildBuildingDataBoxHeader(dataBox, subsetData, dataPanel.name);
@@ -101,7 +101,7 @@ public class UiBuilder {
 	}
 
 	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingSubsetData buildingSubsetData, string dataPanelName) {
-		string headerName = dataPanelName + "Header_" + buildingSubsetData.Name;
+		string headerName = "DataBoxHeader_" + buildingSubsetData.Name;
 		Vector2 headerSize = new Vector2(0, BUILDING_DATA_HEADER_HEIGHT);
 		GameObject header = this.NewUiRectangle(dataBox, headerName, Vector3.zero, headerSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 1), ThemeColors.BRIGHT_BLUE);
 		header.transform.SetParent(dataBox.transform, false);
@@ -114,19 +114,19 @@ public class UiBuilder {
 	}
 
 	private GameObject BuildBuildingDataBoxContent(GameObject dataBox, BuildingSubsetData buildingSubsetData) {
-		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.TEMPERATURE_ICON, "Température", buildingSubsetData.Temperature.ToString(), "°", 0);
-		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.HUMIDITY_ICON, "Humidité", buildingSubsetData.Humidity.ToString(), "%", 1);
-		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.LUMINOSITY_ICON, "Luminosté", buildingSubsetData.Luminosity.ToString(), "lux", 2);
-		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.CO2_ICON, "CO2", buildingSubsetData.Co2.ToString(), "ppm", 3);
-		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.PRESENCE_ICON, "Présence", buildingSubsetData.Presence ? "Oui" : "Non", "", 4);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.TEMPERATURE_ICON, "Température", GoTags.TEMPERATURE, buildingSubsetData.Temperature.ToString(), "°", 0);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.HUMIDITY_ICON, "Humidité", GoTags.HUMIDITY, buildingSubsetData.Humidity.ToString(), "%", 1);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.LUMINOSITY_ICON, "Luminosté", GoTags.LUMINOSITY, buildingSubsetData.Luminosity.ToString(), "lux", 2);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.CO2_ICON, "CO2", GoTags.CO2, buildingSubsetData.Co2.ToString(), "ppm", 3);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.PRESENCE_ICON, "Présence", GoTags.PRESENCE, buildingSubsetData.Presence ? "Oui" : "Non", "", 4);
 
 		return dataBox;
 	}
 
-	private GameObject BuildBuildingSensorIndicator(GameObject dataBox, string iconPath, string sensorName, string sensorValue, string sensorUnit, int index) {
+	private GameObject BuildBuildingSensorIndicator(GameObject dataBox, string iconPath, string sensorName, string indicatorTag, string sensorValue, string sensorUnit, int index) {
 		string subsetName = dataBox.name.Split('_')[1];
 
-		GameObject sensorIndicator = this.BuildBuildingDataIndicatorContainer(dataBox, index, subsetName);
+		GameObject sensorIndicator = this.BuildBuildingDataIndicatorContainer(dataBox, index, subsetName, indicatorTag);
 
 		GameObject indicatorTitle = this.BuildBuildingDataIndicatorTitle(sensorIndicator, iconPath, subsetName, sensorName);
 		this.BuildBuildingDataIndicatorValue(sensorIndicator, subsetName, sensorValue, sensorUnit);
@@ -134,7 +134,7 @@ public class UiBuilder {
 		return sensorIndicator;
 	}
 
-	private GameObject BuildBuildingDataIndicatorContainer(GameObject dataBox, int index, string subsetName) {
+	private GameObject BuildBuildingDataIndicatorContainer(GameObject dataBox, int index, string subsetName, string indicatorTag) {
 		float sensorIndicatorPaddingY = BUILDING_DATA_HEADER_HEIGHT + BUILDING_DATA_INDICATOR_RECT_PADDING;
 		float sensorIndicatorPosY = -(sensorIndicatorPaddingY + index * (BUILDING_DATA_INDICATOR_HEIGHT + (index == 0 ? 0 : BUILDING_DATA_INDICATOR_RECT_PADDING)));
 
@@ -143,6 +143,7 @@ public class UiBuilder {
 		Vector2 indicatorSize = new Vector2(BUILDING_DATA_HEADER_LENGTH * 3, BUILDING_DATA_INDICATOR_HEIGHT);
 		GameObject sensorIndicator = this.NewUiRectangle(dataBox, indicatorName, indicatorPosition, indicatorSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1));
 		sensorIndicator.transform.SetParent(dataBox.transform, false);
+		sensorIndicator.tag = indicatorTag;
 
 		HorizontalLayoutGroup indicatorHorizLayoutGroup = sensorIndicator.AddComponent<HorizontalLayoutGroup>();
 		indicatorHorizLayoutGroup.childControlWidth = true;
@@ -170,7 +171,7 @@ public class UiBuilder {
 		iconlayout.preferredWidth = 0;
 		iconlayout.preferredHeight = 0;
 
-		string titleTextName = subsetName + "IndicatorTitleText_" + subsetName;
+		string titleTextName = "IndicatorTitleText_" + subsetName;
 		Vector2 titleTextSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_INDICATOR_HEIGHT);
 		GameObject indicatorTitleText = this.NewUiRectangle(indicatorTitle, titleTextName, Vector3.zero, titleTextSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), sensorName, 6);
 		indicatorTitleText.transform.SetParent(indicatorTitle.transform, false);
@@ -185,11 +186,11 @@ public class UiBuilder {
 	}
 
 	private GameObject BuildBuildingDataIndicatorValue(GameObject sensorIndicator, string subsetName, string sensorValue, string sensorUnit) {
-		string valueName = subsetName + "IndicatorValue_" + subsetName;
+		string valueName = "IndicatorValue_" + subsetName;
 		Vector2 valueSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_INDICATOR_HEIGHT);
 		GameObject indicatorValue = this.NewUiRectangle(sensorIndicator, valueName, Vector3.zero, valueSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), Color.white);
 
-		string valueTextName = subsetName + "IndicatorValueText_" + subsetName;
+		string valueTextName = "IndicatorValueText_" + subsetName;
 		Vector2 valueTextSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_INDICATOR_HEIGHT);
 		GameObject indicatorValueText = this.NewUiRectangle(indicatorValue, valueTextName, Vector3.zero, valueTextSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), sensorValue + sensorUnit, 6);
 		indicatorValueText.transform.SetParent(indicatorValue.transform, false);

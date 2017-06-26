@@ -36,7 +36,6 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.timeFlag = Time.time;
 	}
 
-
 	public void Update() {
 		if (receptionStatus == ReceptionStatus.TERMINATED) {
 			this.receptionStatus = ReceptionStatus.INACTIVE;
@@ -44,7 +43,7 @@ public class BuildingSensorsController : MonoBehaviour {
 			if (dataPanel.transform.childCount == 0)
 				this.BuildIndicators();
 
-			//this.UpdateIndicators();
+			this.UpdateIndicators();
 		}
 
 		if (Time.time - timeFlag >= 10) {
@@ -132,18 +131,33 @@ public class BuildingSensorsController : MonoBehaviour {
 
 	private void UpdateIndicators() {
 		foreach(Transform dataBox in dataPanel.transform) {
+			string subsetName = dataBox.name.Split('_')[1];
+			BuildingSubsetData subsetData = subsetsData[subsetName];
+
 			for (int i = 1; i < dataBox.childCount; i++) {
-				GameObject dataPanelItem = dataBox.GetChild(i).gameObject;
+				GameObject indicator = dataBox.GetChild(i).gameObject;
 
-				GameObject indicatorTitle = dataPanelItem.transform.GetChild(0).gameObject;
-				GameObject indicatorTitleText = indicatorTitle.transform.GetChild(0).gameObject;
+				string indiatorValue = null;
+				switch (indicator.tag) {
+				case GoTags.TEMPERATURE:
+					indiatorValue = subsetData.Temperature.ToString() + "°";
+					break;
+				case GoTags.HUMIDITY:
+					indiatorValue = subsetData.Humidity.ToString() + "%";
+					break;
+				case GoTags.LUMINOSITY:
+					indiatorValue = subsetData.Luminosity.ToString() + "lux";
+					break;
+				case GoTags.CO2:
+					indiatorValue = subsetData.Co2.ToString() + "ppm";
+					break;
+				case GoTags.PRESENCE:
+					indiatorValue = subsetData.Presence ? "oui" : "Non";
+					break;
+				}
 
-				RectTransform titleRect = (RectTransform) indicatorTitle.transform;
-				RectTransform titleTextRect = (RectTransform) indicatorTitleText.transform;
-
-				Debug.Log(titleTextRect.sizeDelta);
-
-				titleRect.sizeDelta = new Vector2(titleTextRect.sizeDelta.x, titleRect.sizeDelta.y);
+				Text indicatorValueText = indicator.transform.GetChild(1).GetComponentInChildren<Text>();
+				indicatorValueText.text = indiatorValue;
 			}
 		}
 	}

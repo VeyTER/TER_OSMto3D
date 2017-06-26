@@ -17,7 +17,7 @@ public class RoofBuilder {
 	public GameObject BuildRoof(float posX, float posZ, DelauneyTriangulation triangulation, int nbFloor, float floorSize) {
 		// Création et paramétrage de l'objet 3D destiné à former un toit
 		GameObject roof = new GameObject("Roof", typeof(MeshFilter), typeof(MeshRenderer));
-		roof.tag = NodeTags.ROOF_TAG;
+		roof.tag = GoTags.ROOF_TAG;
 		roof.transform.position = new Vector3(posX, (nbFloor * floorSize), posZ);
 
 		// Création, construction et texturing du maillage formant un toit

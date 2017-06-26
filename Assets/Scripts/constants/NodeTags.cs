@@ -8,7 +8,7 @@
 /// 		ATTENTION : ces chaines n'ont techniquement aucun lien avec les tags contenus dans les fichiers XML.
 /// 	</para>
 ///</summary>
-public class NodeTags {
+public class GoTags {
 	/// <summary>Tag des noeuds représentant un noeud de bâtiment.</summary>
 	public const string BUILDING_NODE_TAG = "BuildingNode";
 
@@ -35,4 +35,15 @@ public class NodeTags {
 
 	/// <summary>Tag des noeuds représentant un arbre.</summary>
 	public const string TREE_TAG = "Tree";
+
+
+	public const string TEMPERATURE = "TemperatureIndicator";
+
+	public const string HUMIDITY = "HumidityIndicator";
+
+	public const string LUMINOSITY = "LuminosityIndicator";
+
+	public const string CO2 = "Co2Indicator";
+
+	public const string PRESENCE = "PresenceIndicator";
 }

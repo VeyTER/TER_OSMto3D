@@ -272,7 +272,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// </summary>
 	public void OnMouseUp() {
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
-		if (tag.Equals (NodeTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
+		if (tag.Equals (GoTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
 			if ((editController.EditState == EditController.EditStates.NONE_SELECTION || editController.EditState == EditController.EditStates.READY_TO_EDIT) && controlPanelManager.AllPanelClosed()) {
 				editController.SwitchBuilding(gameObject);
 			} else if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE && controlPanelManager.AllPanelClosed()) {
