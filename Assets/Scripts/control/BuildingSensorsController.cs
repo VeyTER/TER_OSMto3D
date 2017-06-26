@@ -29,6 +29,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.subsetsData = new Dictionary<string, BuildingSubsetData>();
 
 		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject, name);
+		this.dataPanel.transform.parent.SetParent(cityBuilder.SensorsDisplays.transform);
 
 		this.receptionStatus = ReceptionStatus.LOADING;
 		sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
@@ -49,9 +50,17 @@ public class BuildingSensorsController : MonoBehaviour {
 		if (Time.time - timeFlag >= 10) {
 			this.receptionStatus = ReceptionStatus.LOADING;
 			sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
-
 			timeFlag = Time.time;
 		}
+
+		GameObject dataCanvas = dataPanel.transform.parent.gameObject;
+
+		float deltaX = dataCanvas.transform.position.x - Camera.main.transform.position.x;
+		float deltaZ = dataCanvas.transform.position.z - Camera.main.transform.position.z;
+		float orientation = (float)Math.Atan2(deltaZ, deltaX) * Mathf.Rad2Deg;
+
+		Quaternion rotation = transform.rotation;
+		dataCanvas.transform.rotation = Quaternion.Euler(rotation.eulerAngles.x, -orientation + 90, rotation.eulerAngles.z);
 	}
 
 	public void ProcessReceivedData(IAsyncResult asynchronousResult) {

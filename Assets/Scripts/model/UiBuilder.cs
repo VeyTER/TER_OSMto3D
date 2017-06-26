@@ -23,7 +23,7 @@ public class UiBuilder {
 	private static float BUILDING_DATA_CANVAS_SCALE = 0.01F;
 
 	private static float BUILDING_DATA_LINK_WIDTH = 1F;
-	private static float BUILDING_DATA_LINK_HEIGHT = 170F;
+	private static float BUILDING_DATA_LINK_HEIGHT = 200F;
 
 	private UiBuilder() { }
 

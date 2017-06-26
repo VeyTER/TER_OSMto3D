@@ -44,6 +44,17 @@ public class CityBuilder {
 	private GameObject cityComponents;
 
 	/// <summary>
+	/// 	Object 3D contenant tous les groupes de noeuds de murs, vus par l'application comme des noeuds 3D
+	/// 	des bâtiments.
+	/// summary>
+	private GameObject buildingNodes;
+
+	/// <summary>
+	/// 	Object 3D contenant tous les noeuds de routes.
+	/// summary>
+	private GameObject highwayNodes;
+
+	/// <summary>
 	/// 	Object 3D contenant tous les groupes de murs, vus par l'application comme des bâtiments.
 	/// </summary>
 	private GameObject wallGroups;
@@ -73,22 +84,12 @@ public class CityBuilder {
 	/// summary>
 	private GameObject trees;
 
-	/// <summary>
-	/// 	Object 3D contenant tous les groupes de noeuds de murs, vus par l'application comme des noeuds 3D
-	/// 	des bâtiments.
-	/// summary>
-	private GameObject buildingNodes;
-
-	/// <summary>
-	/// 	Object 3D contenant tous les noeuds de routes.
-	/// summary>
-	private GameObject highwayNodes;
-
 	private List<ExternalObject> externalObjects;
 
 	private Dictionary<string, MapBackground> mapBackgrounds;
 
 	private Dictionary<string, string> sensoredBuildings;
+	private GameObject sensorsDisplays;
 
 	private CityBuilder() {
 		this.nodeGroups = new List<NodeGroup> ();
@@ -103,6 +104,8 @@ public class CityBuilder {
 		this.sensoredBuildings = new Dictionary<string, string>();
 		this.sensoredBuildings["U3"] = "u3";
 		this.sensoredBuildings["U4"] = "u4";
+
+		this.sensorsDisplays = new GameObject("SensorsData");
 	}
 
 	private List<ExternalObject> LoadExternalObject() {
@@ -771,6 +774,11 @@ public class CityBuilder {
 
 	public GameObject BuildingNodes {
 		get { return buildingNodes; }
+	}
+
+	public GameObject SensorsDisplays {
+		get { return sensorsDisplays; }
+		set { sensorsDisplays = value; }
 	}
 
 	public Dictionary<string, string> SensoredBuildings {

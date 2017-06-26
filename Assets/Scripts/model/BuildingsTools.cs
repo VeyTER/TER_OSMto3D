@@ -1,10 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Xml;
-using System.Xml.Serialization;
 using System.IO;
-using UnityEngine.UI;
-using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
@@ -721,8 +718,6 @@ public class BuildingsTools {
 
 	public NodeGroup NewBasicNodeGroup(Vector3 centerPosition, Vector2 dimensions, Material material) {
 		string newBuildingId = this.NewIdOrReference(10);
-		//while (buildingsTools.IsInfoAttributeValueUsed(XmlAttributes.ID, newBuildingId))
-		//	newBuildingId = this.NewIdOrReference(10);
 
 		NodeGroup nodeGroup = new NodeGroup(newBuildingId) {
 			Name = "Bâtiment n°" + newBuildingId,
@@ -750,8 +745,6 @@ public class BuildingsTools {
 
 	private Node NewWallNode(int index, Vector3 buildingCenter, Vector2 localPosition) {
 		string newNodeReference = this.NewIdOrReference(10);
-		//while (buildingsTools.IsInfoAttributeValueUsed(XmlAttributes.REFERENCE, newNodeReference))
-		//	newNodeReference = this.NewIdOrReference(10);
 		return new Node(newNodeReference, index, buildingCenter.z + localPosition.x, buildingCenter.x + localPosition.y);
 	}
 
