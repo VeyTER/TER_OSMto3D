@@ -89,7 +89,6 @@ public class CityBuilder {
 	private Dictionary<string, MapBackground> mapBackgrounds;
 
 	private Dictionary<string, string> sensoredBuildings;
-	private GameObject sensorsDisplays;
 
 	private CityBuilder() {
 		this.nodeGroups = new List<NodeGroup> ();
@@ -104,8 +103,6 @@ public class CityBuilder {
 		this.sensoredBuildings = new Dictionary<string, string>();
 		this.sensoredBuildings["U3"] = "u3";
 		this.sensoredBuildings["U4"] = "u4";
-
-		this.sensorsDisplays = new GameObject("SensorsData");
 	}
 
 	private List<ExternalObject> LoadExternalObject() {
@@ -686,9 +683,6 @@ public class CityBuilder {
 
 		// Création de l'objet 3D représenant la caméra
 		GameObject mainCameraGo = Camera.main.gameObject;
-
-		// Ajout d'un controlleur de caméra à la caméra
-		mainCameraGo.AddComponent <CameraController> ();
 	}
 
 
@@ -774,11 +768,6 @@ public class CityBuilder {
 
 	public GameObject BuildingNodes {
 		get { return buildingNodes; }
-	}
-
-	public GameObject SensorsDisplays {
-		get { return sensorsDisplays; }
-		set { sensorsDisplays = value; }
 	}
 
 	public Dictionary<string, string> SensoredBuildings {

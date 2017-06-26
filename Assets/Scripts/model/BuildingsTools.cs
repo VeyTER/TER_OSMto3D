@@ -48,6 +48,8 @@ public class BuildingsTools {
 	/// </summary>
 	private Dictionary<GameObject, Node> buildingNodeToNodeTable;
 
+	private Dictionary<GameObject, GameObject> buildingToDataDisplayTable;
+	private Dictionary<GameObject, GameObject> DataDisplayToBuildingTable;
 
 	private BuildingsTools () {
 		this.resumeFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
@@ -61,8 +63,10 @@ public class BuildingsTools {
 
 		this.buildingNodeGroupToNodeGroupTable = new Dictionary<GameObject, NodeGroup> ();
 		this.nodeGroupToBuildingNodeGroupTable = new Dictionary<NodeGroup, GameObject> ();
-
+		
 		this.buildingNodeToNodeTable = new Dictionary<GameObject, Node> ();
+
+		this.buildingToDataDisplayTable = new Dictionary<GameObject, GameObject>();
 	}
 
 	public static BuildingsTools GetInstance() {
@@ -633,6 +637,13 @@ public class BuildingsTools {
 		buildingNodeToNodeTable [buildingNode] = node;
 	}
 
+	public GameObject AddBuildingToDataDisplayEntry(GameObject building, GameObject dataDisplay) {
+		return buildingToDataDisplayTable[building] = dataDisplay;
+	}
+
+	public GameObject AddDataDisplayEntryToBuilding(GameObject dataDisplay, GameObject building) {
+		return buildingToDataDisplayTable[dataDisplay] = building;
+	}
 
 	/// <summary>
 	/// 	Renvoie le groupe de noeuds correspondant à un bâtiment 3D grâce à une table de correspondance.
@@ -687,6 +698,14 @@ public class BuildingsTools {
 	/// </param>
 	public Node BuildingNodeToNode(GameObject buildingNode) {
 		return buildingNodeToNodeTable [buildingNode];
+	}
+
+	public GameObject BuildingToDataDisplay(GameObject building) {
+		return buildingToDataDisplayTable[building];
+	}
+
+	public GameObject DataDisplayToBuilding(GameObject dataDisplay) {
+		return buildingToDataDisplayTable[dataDisplay];
 	}
 
 	/// <summary>

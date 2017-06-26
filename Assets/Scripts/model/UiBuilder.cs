@@ -25,7 +25,11 @@ public class UiBuilder {
 	private static float BUILDING_DATA_LINK_WIDTH = 1F;
 	private static float BUILDING_DATA_LINK_HEIGHT = 200F;
 
-	private UiBuilder() { }
+	private GameObject sensorsDisplays;
+
+	private UiBuilder() {
+		this.sensorsDisplays = new GameObject("SensorsData");
+	}
 
 	public static UiBuilder GetInstance() {
 		return UiBuilderHolder.instance;
@@ -33,6 +37,10 @@ public class UiBuilder {
 
 	public GameObject BuildBuildingDataPanel(GameObject building, string buildingName) {
 		GameObject BuildBuildingDataCanvas = this.BuildBuildingDataCanvas(building);
+
+		BuildingsTools buildingTools = BuildingsTools.GetInstance();
+		buildingTools.AddBuildingToDataDisplayEntry(building, BuildBuildingDataCanvas);
+		buildingTools.AddDataDisplayEntryToBuilding(BuildBuildingDataCanvas, building);
 
 		GameObject decorationPanel = this.BuildBuildingDataDecoration(BuildBuildingDataCanvas);
 
@@ -402,6 +410,11 @@ public class UiBuilder {
 		return new Material(Shader.Find("Sprites/Default")) {
 			mainTexture = newTexture
 		};
+	}
+
+	public GameObject buildingDataDisplays {
+		get { return sensorsDisplays; }
+		set { sensorsDisplays = value; }
 	}
 
 	private class UiBuilderHolder {

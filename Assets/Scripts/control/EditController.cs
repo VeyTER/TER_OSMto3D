@@ -77,6 +77,7 @@ public class EditController : MonoBehaviour {
 
 	private CityBuilder cityBuilder;
 
+	private UiBuilder uiBuilder;
 
 	/// <summary>Bâtiments renommés durant la période de modification.</summary>
 	private Dictionary<GameObject, string> renamedBuildings;
@@ -148,6 +149,7 @@ public class EditController : MonoBehaviour {
 
 		this.buildingsTools = BuildingsTools.GetInstance ();
 		this.cityBuilder = CityBuilder.GetInstance();
+		this.uiBuilder = UiBuilder.GetInstance();
 
 		this.renamedBuildings = new Dictionary<GameObject, string> ();
 
@@ -255,6 +257,9 @@ public class EditController : MonoBehaviour {
 			if (controlPanel.activeInHierarchy)
 				controlPanel.SetActive(false);
 
+			if (uiBuilder.buildingDataDisplays.activeInHierarchy)
+				uiBuilder.buildingDataDisplays.SetActive(false);
+
 			// Déplacement de la caméra jusqu'au bâtiment sélectionné avec mise à jour de l'état de modification à la fin
 			// du déplacement
 			editState = EditStates.MOVING_TO_OBJECT;
@@ -280,6 +285,7 @@ public class EditController : MonoBehaviour {
 		// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
 		editPanelController.ClosePanel (() => {
 			editPanel.SetActive (false);
+			uiBuilder.buildingDataDisplays.SetActive(true);
 		});
 
 		editPanelController.CloseSlideButton();
@@ -501,8 +507,8 @@ public class EditController : MonoBehaviour {
 		}
 
 		// [NON MAINTENU] Mise à jour des groupes de noeuds correspondant aux murs déplacés et tournés
-		foreach (KeyValuePair<GameObject, Vector3> wallPositionEntry in wallsInitPos) {}
-		foreach (KeyValuePair<GameObject, float> wallAngleEntry in wallsInitAngle) {}
+		foreach (KeyValuePair<GameObject, Vector3> wallPositionEntry in wallsInitPos);
+		foreach (KeyValuePair<GameObject, float> wallAngleEntry in wallsInitAngle);
 
 		// Mise à jour, dans les fichiers, des données conernant les bâtiments modifiés
 		foreach (GameObject building in movedOrTurnedObjects) {
@@ -511,6 +517,9 @@ public class EditController : MonoBehaviour {
 
 			if (!building.transform.position.Equals (buildingInitPos) || building.transform.rotation.eulerAngles.y != buildingInitAngle)
 				buildingsTools.UpdateLocation (building);
+
+			if (cityBuilder.SensoredBuildings.ContainsKey(building.name))
+				this.UpdateAttachedDisplayPosition(building);
 		}
 
 		foreach (KeyValuePair<GameObject, int> buildingHeightEntry in buildingsInitHeight) {
@@ -520,6 +529,9 @@ public class EditController : MonoBehaviour {
 			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
 			if (buildingInitHeight != nodeGroup.NbFloor)
 				buildingsTools.UpdateHeight(building, nodeGroup.NbFloor);
+
+			if (cityBuilder.SensoredBuildings.ContainsKey(building.name))
+				this.UpdateAttachedDisplayPosition(building);
 		}
 
 		foreach (KeyValuePair<GameObject, Material> buildingMaterialEntry in buildingsInitMaterial) {
@@ -572,6 +584,9 @@ public class EditController : MonoBehaviour {
 
 			buildingNodes.transform.position = new Vector3 (buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
 			buildingsTools.UpdateNodesPosition (building);
+
+			if (cityBuilder.SensoredBuildings.ContainsKey(building.name))
+				this.UpdateAttachedDisplayPosition(building);
 		}
 
 		// Affectation à chaque batiment de l'angle qu'il avait lorsqu'il a été sélectionné par l'utilisateur
@@ -611,6 +626,9 @@ public class EditController : MonoBehaviour {
 			nodeGroup.NbFloor = buildingHeight;
 
 			cityBuilder.RebuildBuilding(building, buildingHeight);
+
+			if (cityBuilder.SensoredBuildings.ContainsKey(building.name))
+				this.UpdateAttachedDisplayPosition(building);
 		}
 
 		foreach (KeyValuePair<GameObject, Material> buildingMaterialEntry in buildingsInitMaterial) {
@@ -629,6 +647,13 @@ public class EditController : MonoBehaviour {
 		this.ClearHistory ();
 	}
 
+	private void UpdateAttachedDisplayPosition(GameObject building) {
+		GameObject firstWall = building.transform.GetChild(0).gameObject;
+		GameObject dataDisplay = buildingsTools.BuildingToDataDisplay(building);
+
+		Vector3 buildingPosition = building.transform.position;
+		dataDisplay.transform.position = new Vector3(buildingPosition.x, firstWall.transform.localScale.y, buildingPosition.z);
+	}
 
 	/// <summary>
 	///		Supprime la situation initiale de chaque bâtiment et de chaque mur.
