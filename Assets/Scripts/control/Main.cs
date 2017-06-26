@@ -98,8 +98,8 @@ public class Main : MonoBehaviour {
 
 			// Paramétrage du panneau latéral
 			Vector3 panelPosition = editPanel.transform.localPosition;
-			RectTransform panelRectTransform = (RectTransform) editPanel.transform;
-			this.editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRectTransform.rect.width, panelPosition.y, panelPosition.z);
+			RectTransform panelRect = (RectTransform) editPanel.transform;
+			this.editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRect.rect.width, panelPosition.y, panelPosition.z);
 
 			Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 			Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;

@@ -6,42 +6,72 @@ using UnityEngine.UI;
 using System.Xml;
 
 public class BuildingSensorsController : MonoBehaviour {
+	private enum ReceptionStatus { INACTIVE, LOADING, TERMINATED }
+	private ReceptionStatus receptionStatus;
+
 	private SensorDataLoader sensorsDataLoader;
 	private Dictionary<string, BuildingSubsetData> subsetsData;
 
 	private CityBuilder cityBuilder;
 	private UiBuilder uiBuilder;
 
+	private GameObject dataPanel;
 
-	private void Start() {
+	private float timeFlag;
+
+	public void Start() {
+		this.receptionStatus = ReceptionStatus.INACTIVE;
+
 		this.cityBuilder = CityBuilder.GetInstance();
 		this.uiBuilder = UiBuilder.GetInstance();
 
 		this.sensorsDataLoader = new SensorDataLoader(cityBuilder.SensoredBuildings[gameObject.name]);
 		this.subsetsData = new Dictionary<string, BuildingSubsetData>();
 
-		GameObject displayPanel = uiBuilder.BuildBuildingDataDisplay(gameObject);
+		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject, name);
 
-		sensorsDataLoader.LaunchDataLoading();
-		this.StartCoroutine(this.WaitAndProcessSensorData(sensorsDataLoader, displayPanel));
+		this.receptionStatus = ReceptionStatus.LOADING;
+		sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
+
+		this.timeFlag = Time.time;
 	}
 
-	private IEnumerator WaitAndProcessSensorData(SensorDataLoader dataLoader, GameObject displayPanel) {
-		while (!dataLoader.ReceptionCompleted)
-			yield return new WaitForSeconds(0.1F);
+
+	public void Update() {
+		if (receptionStatus == ReceptionStatus.TERMINATED) {
+			this.receptionStatus = ReceptionStatus.INACTIVE;
+
+			if (dataPanel.transform.childCount == 0)
+				this.BuildIndicators();
+
+			//this.UpdateIndicators();
+		}
+
+		if (Time.time - timeFlag >= 10) {
+			this.receptionStatus = ReceptionStatus.LOADING;
+			sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
+
+			timeFlag = Time.time;
+		}
+	}
+
+	public void ProcessReceivedData(IAsyncResult asynchronousResult) {
+		while (!asynchronousResult.IsCompleted) ;
+		this.receptionStatus = ReceptionStatus.TERMINATED;
+
+		SensorDataLoader.RequestState requestState = (SensorDataLoader.RequestState) asynchronousResult.AsyncState;
+		string requestResult = requestState.RequestResult();
+
+		requestResult = requestResult.Replace("<pre>", "");
+		requestResult = requestResult.Replace("</pre>", "");
 
 		XmlDocument sensorsDataDocument = new XmlDocument();
 		XmlNode rootNode = sensorsDataDocument.CreateElement("root");
-		rootNode.InnerXml = dataLoader.LastLoadedData;
+		rootNode.InnerXml = requestResult;
+
 		sensorsDataDocument.InnerXml = rootNode.InnerText;
 
 		this.ExtractSensorsData(sensorsDataDocument);
-
-		int dataBoxIndex = 0;
-		foreach (KeyValuePair<string, BuildingSubsetData> subsetDataPair in this.subsetsData) {
-			uiBuilder.BuildBuidingDataBox(displayPanel, subsetDataPair.Value, dataBoxIndex);
-			dataBoxIndex++;
-		}
 	}
 
 	private void ExtractSensorsData(XmlDocument sensorsDataDocument) {
@@ -89,6 +119,32 @@ public class BuildingSensorsController : MonoBehaviour {
 		case Sensors.PRESENCE:
 			subsetData.Presence = !sensorValue.Equals("0");
 			break;
+		}
+	}
+
+	private void BuildIndicators () {
+		int dataBoxIndex = 0;
+		foreach (KeyValuePair<string, BuildingSubsetData> subsetDataPair in this.subsetsData) {
+			uiBuilder.BuildBuidingDataBox(dataPanel, subsetDataPair.Value, dataBoxIndex);
+			dataBoxIndex++;
+		}
+	}
+
+	private void UpdateIndicators() {
+		foreach(Transform dataBox in dataPanel.transform) {
+			for (int i = 1; i < dataBox.childCount; i++) {
+				GameObject dataPanelItem = dataBox.GetChild(i).gameObject;
+
+				GameObject indicatorTitle = dataPanelItem.transform.GetChild(0).gameObject;
+				GameObject indicatorTitleText = indicatorTitle.transform.GetChild(0).gameObject;
+
+				RectTransform titleRect = (RectTransform) indicatorTitle.transform;
+				RectTransform titleTextRect = (RectTransform) indicatorTitleText.transform;
+
+				Debug.Log(titleTextRect.sizeDelta);
+
+				titleRect.sizeDelta = new Vector2(titleTextRect.sizeDelta.x, titleRect.sizeDelta.y);
+			}
 		}
 	}
 }

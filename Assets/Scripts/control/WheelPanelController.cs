@@ -12,10 +12,10 @@ public class WheelPanelController : PanelController {
 	}
 
 	private void BuildWheel() {
-		RectTransform wheelTransform = this.GetComponent<RectTransform>();
-		RectTransform closeWheelButtonTransform = transform.GetChild(transform.childCount - 1).GetComponent<RectTransform>();
+		RectTransform wheelRect = this.GetComponent<RectTransform>();
+		RectTransform closeWheelButtonRect = transform.GetChild(transform.childCount - 1).GetComponent<RectTransform>();
 
-		float remoteness = wheelTransform.sizeDelta.x / 2F - closeWheelButtonTransform.sizeDelta.x / 2F - 3;
+		float remoteness = wheelRect.sizeDelta.x / 2F - closeWheelButtonRect.sizeDelta.x / 2F - 3;
 		float angleStep = 360 / ((transform.childCount - 1) * 1F);
 
 		float currentAngle = 0;
@@ -24,7 +24,7 @@ public class WheelPanelController : PanelController {
 			float localPosY = (float) (Math.Sin(currentAngle * Mathf.Deg2Rad) * remoteness);
 
 			Transform wheelSwitchTransform = transform.GetChild(i);
-			wheelSwitchTransform.localPosition = new Vector3(localPosX + wheelTransform.sizeDelta.x / 2F, localPosY, 0);
+			wheelSwitchTransform.localPosition = new Vector3(localPosX + wheelRect.sizeDelta.x / 2F, localPosY, 0);
 
 			currentAngle += angleStep;
 		}

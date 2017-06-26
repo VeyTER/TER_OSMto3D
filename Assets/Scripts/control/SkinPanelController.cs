@@ -30,14 +30,14 @@ public class SkinPanelController : CommonPanelController {
 	private IEnumerator SlideSlider(int direction) {
 		// Configuration courante du panneau
 		Vector3 sliderPosition = skinSlider.transform.localPosition;
-		RectTransform panelRectTransform = (RectTransform) transform;
+		RectTransform skinPanelRect = (RectTransform) transform;
 
 		// Position en X initiale puis ciblée du panneau
 		float sliderInitPosX = sliderPosition.x;
 
 		float sliderTargetPosX = sliderInitPosX;
 		if (direction < 0)
-			sliderTargetPosX = -panelRectTransform.rect.width;
+			sliderTargetPosX = -skinPanelRect.rect.width;
 		else if (direction > 0)
 			sliderTargetPosX = 0;
 

@@ -6,24 +6,24 @@ using UnityEngine.UI;
 using System.IO;
 
 public class UiBuilder {
-	private static float BUILDING_DATA_LINK_WIDTH = 0.01F;
-	private static float BUILDING_DATA_LINK_HEIGHT = 1.7F;
-
-	private static float BUILDING_DATA_DATA_AREA_EXT_PADDING = 0.03F;
-
-	private static float BUILDING_DATA_HEADER_HEIGHT = 0.1F;
-	private static float BUILDING_DATA_HEADER_LENGTH = 0.8F;
+	private static float BUILDING_DATA_HEADER_HEIGHT = 10F;
+	private static float BUILDING_DATA_HEADER_LENGTH = 50F;
 
 	private static float BUILDING_DATA_ICON_SIZE = BUILDING_DATA_HEADER_HEIGHT * 3;
 
-	private static float BUILDING_DATA_INDICATOR_HEIGHT = 0.08F;
-	private static float BUILDING_DATA_INDICATOR_EXT_PADDING = BUILDING_DATA_INDICATOR_HEIGHT * 0.2F;
-	private static float BUILDING_DATA_INDICATOR_INT_PADDING = BUILDING_DATA_INDICATOR_HEIGHT * 0.1F;
+	private static float BUILDING_DATA_INDICATOR_HEIGHT = BUILDING_DATA_HEADER_HEIGHT * 0.85F;
+	private static float BUILDING_DATA_INDICATOR_RECT_PADDING = BUILDING_DATA_INDICATOR_HEIGHT * 0.2F;
+	private static float BUILDING_DATA_INDICATOR_TEXT_PADDING = BUILDING_DATA_INDICATOR_HEIGHT * 0.45F;
 
-	private static float BUILDING_DATA_INDICATOR_ICON_SIZE = BUILDING_DATA_INDICATOR_HEIGHT * 0.8F;
+	private static float BUILDING_DATA_INDICATOR_ICON_SIZE = BUILDING_DATA_INDICATOR_HEIGHT * 0.5F;
 
-	private static float BUILDING_DATA_DATABOX_HEIGHT = BUILDING_DATA_HEADER_HEIGHT + 5 * BUILDING_DATA_INDICATOR_HEIGHT + 4 * BUILDING_DATA_INDICATOR_INT_PADDING + BUILDING_DATA_INDICATOR_EXT_PADDING;
-	private static float BUILDING_DATA_DATABOX_EXT_PADDING = 0.03F;
+	private static float BUILDING_DATA_DATABOX_RECT_PADDING = BUILDING_DATA_INDICATOR_HEIGHT * 0.8F;
+	private static float BUILDING_DATA_DATABOX_HEIGHT = BUILDING_DATA_HEADER_HEIGHT + 5 * BUILDING_DATA_INDICATOR_HEIGHT + 5 * BUILDING_DATA_INDICATOR_RECT_PADDING + BUILDING_DATA_DATABOX_RECT_PADDING;
+
+	private static float BUILDING_DATA_CANVAS_SCALE = 0.01F;
+
+	private static float BUILDING_DATA_LINK_WIDTH = 1F;
+	private static float BUILDING_DATA_LINK_HEIGHT = 170F;
 
 	private UiBuilder() { }
 
@@ -31,139 +31,261 @@ public class UiBuilder {
 		return UiBuilderHolder.instance;
 	}
 
-	public GameObject BuildBuildingDataDisplay(GameObject building) {
-		GameObject linkPanel = this.BuildBuildingDataLink(building);
+	public GameObject BuildBuildingDataPanel(GameObject building, string buildingName) {
+		GameObject BuildBuildingDataCanvas = this.BuildBuildingDataCanvas(building);
 
-		this.BuildBuildingDataIcon(linkPanel, building.name);
-		GameObject dataPanel = this.BuildDataDisplayPanel(linkPanel, building.name);
+		GameObject decorationPanel = this.BuildBuildingDataDecoration(BuildBuildingDataCanvas);
+
+		Vector2 dataPanelSize = new Vector2(-BUILDING_DATA_LINK_WIDTH, -BUILDING_DATA_ICON_SIZE);
+		Vector2 dataPanelLocPosition = new Vector3(BUILDING_DATA_LINK_WIDTH, -BUILDING_DATA_ICON_SIZE, 0);
+		GameObject dataPanel = this.NewUiRectangle(BuildBuildingDataCanvas, buildingName + "Data", dataPanelLocPosition, dataPanelSize, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 1));
 
 		return dataPanel;
 	}
 
-	private GameObject BuildBuildingDataLink(GameObject building) {
+	private GameObject BuildBuildingDataCanvas(GameObject building) {
 		Transform buildingFirstWallTransform = building.transform.GetChild(0);
-		Vector3 buildingPosition = building.transform.position;
 		float buildingHeight = buildingFirstWallTransform.localScale.y;
 
-		Vector2 linkVerticesStartPosition = new Vector2(-BUILDING_DATA_LINK_WIDTH / 2F, 0);
-		Vector2 linkDimensions = new Vector2(BUILDING_DATA_LINK_WIDTH, BUILDING_DATA_LINK_HEIGHT);
-		GameObject link = this.BuildNew3DRectangle(building, "Link_" + building.name, Vector3.zero, linkDimensions, ThemeColors.BLUE);
+		GameObject newCanvas = new GameObject(building.name + "Canvas");
+		newCanvas.transform.SetParent(building.transform, false);
+		newCanvas.transform.localPosition = new Vector3(0, buildingHeight, 0);
+		newCanvas.transform.localScale = Vector3.one * BUILDING_DATA_CANVAS_SCALE;
 
-		link.transform.parent = building.transform.parent.parent;
+		Canvas canvasSettings = newCanvas.AddComponent<Canvas>();
+		canvasSettings.renderMode = RenderMode.WorldSpace;
 
-		return link;
+		CanvasScaler canvasScaler = newCanvas.AddComponent<CanvasScaler>();
+		canvasScaler.dynamicPixelsPerUnit = 6;
+
+		newCanvas.AddComponent<GraphicRaycaster>();
+
+		RectTransform newCanvasRect = (RectTransform) newCanvas.transform;
+		newCanvasRect.sizeDelta = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_LINK_HEIGHT);
+		newCanvasRect.pivot = new Vector2(0, 0);
+
+		return newCanvas;
 	}
 
-	private GameObject BuildBuildingDataIcon(GameObject link, string buildingName) {
-		Vector3 linkPanelPosition = link.transform.position;
+	private GameObject BuildBuildingDataDecoration(GameObject dataCanvas) {
+		RectTransform parentRect = (RectTransform) dataCanvas.transform;
 
-		string iconName = "Icon_" + buildingName;
-		Vector3 iconPosition = new Vector3(0, BUILDING_DATA_LINK_HEIGHT + BUILDING_DATA_ICON_SIZE / 2F, 0);
-		Vector2 iconVerticesStartPosition = new Vector2(-BUILDING_DATA_ICON_SIZE / 2F, -BUILDING_DATA_ICON_SIZE / 2F);
-		Vector2 iconDimensions = new Vector2(BUILDING_DATA_ICON_SIZE / 2F, BUILDING_DATA_ICON_SIZE / 2F);
-		GameObject icon = this.BuildNew3DRectangle(link, iconName, iconPosition, iconVerticesStartPosition, iconDimensions, IconsAndTextures.BUILDING_DATA_ICON);
+		Vector2 decorationsSize = new Vector2(BUILDING_DATA_ICON_SIZE, parentRect.sizeDelta.y);
+		GameObject decorationsPanel = this.NewUiRectangle(dataCanvas, dataCanvas.name + "Decorations", Vector3.zero, decorationsSize, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0));
 
-		string backgroundName = "IconBackground_" + buildingName;
-		Vector3 backgroundPosition = new Vector3(0, 0, 0);
-		Vector2 backgroundVerticesStartPosition = new Vector2(-BUILDING_DATA_ICON_SIZE / 2F, -BUILDING_DATA_ICON_SIZE / 2F);
-		Vector2 backgroundDimensions = new Vector2(BUILDING_DATA_ICON_SIZE / 2F, BUILDING_DATA_ICON_SIZE / 2F);
-		GameObject iconBackground = this.BuildNew3DRectangle(icon, backgroundName, backgroundPosition, backgroundVerticesStartPosition, backgroundDimensions, IconsAndTextures.BUILDING_DATA_ICON_BACKGROUND);
+		Vector2 linkSize = new Vector2(BUILDING_DATA_LINK_WIDTH, -BUILDING_DATA_ICON_SIZE);
+		GameObject link = this.NewUiRectangle(decorationsPanel, dataCanvas.name + "Link", Vector3.zero, linkSize, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 1), ThemeColors.BRIGHT_BLUE);
 
-		return iconBackground;
+		string iconBackgroundName = dataCanvas.name + "Icon";
+		Vector3 iconBackgroundLocPosition = new Vector3(-BUILDING_DATA_ICON_SIZE / 2F + BUILDING_DATA_LINK_WIDTH / 2F, -BUILDING_DATA_ICON_SIZE, 0);
+		Vector2 iconBackgroundSize = new Vector2(BUILDING_DATA_ICON_SIZE, BUILDING_DATA_ICON_SIZE);
+		GameObject dataBuildingIconBackground = this.NewUiRectangle(decorationsPanel, iconBackgroundName, iconBackgroundLocPosition, iconBackgroundSize, new Vector2(0, 0), new Vector2(0, 1), new Vector2(0, 1), IconsTexturesSprites.BUILDING_DATA_ICON_BACKGROUND);
+
+		Vector2 iconSize = new Vector2(-BUILDING_DATA_ICON_SIZE * 0.2F, -BUILDING_DATA_ICON_SIZE * 0.2F);
+		string iconName = dataCanvas.name + "IconBackground";
+		GameObject dataBuildingIcon = this.NewUiRectangle(dataBuildingIconBackground, iconName, Vector3.zero, iconSize, new Vector2(0.5F, 0.5F), new Vector2(0, 0), new Vector2(1, 1), IconsTexturesSprites.BUILDING_DATA_ICON);
+
+		return decorationsPanel;
 	}
 
-	private GameObject BuildDataDisplayPanel(GameObject link, string buildingName) {
-		Vector3 linkPosition = link.transform.position;
+	public GameObject BuildBuidingDataBox(GameObject dataPanel, BuildingSubsetData subsetData, int index) {
+		Vector3 dataBoxLocPosition = new Vector3(0, -(BUILDING_DATA_DATABOX_RECT_PADDING + (BUILDING_DATA_DATABOX_HEIGHT) * index), 0);
+		Vector2 dataBoxSize = new Vector2(BUILDING_DATA_HEADER_LENGTH - BUILDING_DATA_LINK_WIDTH, BUILDING_DATA_DATABOX_HEIGHT);
+		GameObject dataBox = this.NewUiRectangle(dataPanel, dataPanel.name + "Databox_" + subsetData.Name, dataBoxLocPosition, dataBoxSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1));
+		dataBox.transform.SetParent(dataPanel.transform, false);
 
-		GameObject displayPanel = new GameObject("DisplayPanel_" + buildingName);
-		displayPanel.transform.SetParent(link.transform, false);
-		displayPanel.transform.position = new Vector3(linkPosition.x, linkPosition.y + BUILDING_DATA_LINK_HEIGHT, linkPosition.z);
+		this.BuildBuildingDataBoxHeader(dataBox, subsetData, dataPanel.name);
+		this.BuildBuildingDataBoxContent(dataBox, subsetData);
 
-		return displayPanel;
+		return dataBox;
 	}
 
-	public GameObject BuildBuidingDataBox(GameObject displayPanel, BuildingSubsetData buildingSubsetData, int index) {
-		GameObject dataBox = new GameObject("DataBox_" + buildingSubsetData.Name);
-		dataBox.transform.SetParent(displayPanel.transform, false);
-		dataBox.transform.localPosition = new Vector3(0, -(index * (BUILDING_DATA_DATABOX_HEIGHT + BUILDING_DATA_DATABOX_EXT_PADDING) + BUILDING_DATA_LINK_WIDTH + BUILDING_DATA_DATA_AREA_EXT_PADDING), 0);
+	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingSubsetData buildingSubsetData, string dataPanelName) {
+		string headerName = dataPanelName + "Header_" + buildingSubsetData.Name;
+		Vector2 headerSize = new Vector2(0, BUILDING_DATA_HEADER_HEIGHT);
+		GameObject header = this.NewUiRectangle(dataBox, headerName, Vector3.zero, headerSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 1), ThemeColors.BRIGHT_BLUE);
+		header.transform.SetParent(dataBox.transform, false);
 
-		this.BuildBuildingDataBoxHeader(dataBox, buildingSubsetData);
-		this.BuildBuildingDataBoxContent(dataBox, buildingSubsetData);
+		string headerTitleName = dataPanelName + "HeaderText_" + buildingSubsetData.Name;
+		GameObject headerTitle = this.NewUiRectangle(dataBox, headerTitleName, Vector3.zero, Vector2.zero, new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 1), buildingSubsetData.Name, 7);
+		headerTitle.transform.SetParent(header.transform, false);
 
-		return null;
-	}
-
-	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingSubsetData buildingSubsetData) {
-		Font arialFont = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-		Vector2 boxHeaderDimensions = new Vector2(BUILDING_DATA_HEADER_LENGTH, -BUILDING_DATA_HEADER_HEIGHT);
-		GameObject dataBoxHeader = this.BuildNew3DRectangle(dataBox, "DataBoxHeader_" + buildingSubsetData.Name, Vector3.zero, boxHeaderDimensions, ThemeColors.BRIGHT_BLUE);
-
-		Vector3 boxHeaderTextname = new Vector3(BUILDING_DATA_HEADER_HEIGHT * 0.8F, -BUILDING_DATA_HEADER_HEIGHT / 2F, -0.01F);
-		float characterSize = BUILDING_DATA_HEADER_HEIGHT / 2F;
-		GameObject dataBoxHeaderText = this.BuildNew3DText(dataBoxHeader, "DataBoxHeaderText_" + buildingSubsetData.Name, boxHeaderTextname, buildingSubsetData.Name, arialFont, characterSize);
-
-		return dataBoxHeader;
+		return header;
 	}
 
 	private GameObject BuildBuildingDataBoxContent(GameObject dataBox, BuildingSubsetData buildingSubsetData) {
-		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.TEMPERATURE_ICON, "Température", buildingSubsetData.Temperature.ToString(), "°", 0);
-		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.HUMIDITY_ICON, "Humidité", buildingSubsetData.Humidity.ToString(), "%", 1);
-		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.LUMINOSITY_ICON, "Luminosté", buildingSubsetData.Luminosity.ToString(), "lux", 2);
-		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.CO2_ICON, "CO2", buildingSubsetData.Co2.ToString(), "ppm", 3);
-		this.BuildBuildingSensorIndicator(dataBox, IconsAndTextures.PRESENCE_ICON, "Présence", buildingSubsetData.Presence ? "Oui" : "Non", "", 4);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.TEMPERATURE_ICON, "Température", buildingSubsetData.Temperature.ToString(), "°", 0);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.HUMIDITY_ICON, "Humidité", buildingSubsetData.Humidity.ToString(), "%", 1);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.LUMINOSITY_ICON, "Luminosté", buildingSubsetData.Luminosity.ToString(), "lux", 2);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.CO2_ICON, "CO2", buildingSubsetData.Co2.ToString(), "ppm", 3);
+		this.BuildBuildingSensorIndicator(dataBox, IconsTexturesSprites.PRESENCE_ICON, "Présence", buildingSubsetData.Presence ? "Oui" : "Non", "", 4);
 
 		return dataBox;
 	}
 
 	private GameObject BuildBuildingSensorIndicator(GameObject dataBox, string iconPath, string sensorName, string sensorValue, string sensorUnit, int index) {
-		Font arialFont = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
 		string subsetName = dataBox.name.Split('_')[1];
 
-		float titleLabelWidth = this.TextWidth(sensorName, arialFont) + BUILDING_DATA_INDICATOR_ICON_SIZE;
-		float valueLabelWidth = this.TextWidth(sensorValue + sensorUnit, arialFont) - 0.002F;
+		GameObject sensorIndicator = this.BuildBuildingDataIndicatorContainer(dataBox, index, subsetName);
 
-		float sensorIndicatorPaddingY = BUILDING_DATA_INDICATOR_EXT_PADDING + BUILDING_DATA_HEADER_HEIGHT;
-		float sensorIndicatorPosY = -(index * (BUILDING_DATA_INDICATOR_HEIGHT + (index == 0 ? 0 : BUILDING_DATA_INDICATOR_INT_PADDING)) + sensorIndicatorPaddingY);
-
-		float iconCenter = BUILDING_DATA_INDICATOR_HEIGHT * 0.1F + BUILDING_DATA_INDICATOR_ICON_SIZE / 2F;
-
-		GameObject sensorIndicator = new GameObject(sensorName + " Indicator_" + subsetName);
-		sensorIndicator.transform.SetParent(dataBox.transform, false);
-		sensorIndicator.transform.localPosition = new Vector3(BUILDING_DATA_INDICATOR_EXT_PADDING, sensorIndicatorPosY, 0);
-
-		Vector2 titleLabelDimensions = new Vector2(titleLabelWidth, -BUILDING_DATA_INDICATOR_HEIGHT);
-		GameObject sensorTitleLabel = this.BuildNew3DRectangle(sensorIndicator, sensorName + "TitleLabel_" + subsetName, Vector3.zero, titleLabelDimensions, ThemeColors.BRIGHT_BLUE);
-
-		Vector3 titleLabelTextPosition = new Vector3(BUILDING_DATA_INDICATOR_HEIGHT * 0.2F + BUILDING_DATA_INDICATOR_ICON_SIZE, -BUILDING_DATA_INDICATOR_HEIGHT / 2F, -0.01F);
-		GameObject sensorTitleLabelText = this.BuildNew3DText(sensorTitleLabel, sensorName + "TitleLabelText_" + subsetName, titleLabelTextPosition, sensorName, arialFont, BUILDING_DATA_INDICATOR_HEIGHT / 2F);
-
-		Vector2 valueLabelDimensions = new Vector2(valueLabelWidth, -BUILDING_DATA_INDICATOR_HEIGHT);
-		GameObject sensorValueLabel = this.BuildNew3DRectangle(sensorIndicator, sensorName + "ValueLabe_" + subsetName, new Vector3(titleLabelWidth, 0, 0), valueLabelDimensions, Color.white);
-
-		Vector3 valueLabelTextPosition = new Vector3(BUILDING_DATA_INDICATOR_HEIGHT * 0.2F, -BUILDING_DATA_INDICATOR_HEIGHT / 2F, -0.01F);
-		string valueLabelTextName = sensorName + "ValueLabelText_" + subsetName;
-		GameObject sensorValueLabelText = this.BuildNew3DText(sensorValueLabel, valueLabelTextName, valueLabelTextPosition, sensorValue + sensorUnit, arialFont, BUILDING_DATA_INDICATOR_HEIGHT / 2F);
-
-		string sensorIconName = sensorName + "Icon_" + subsetName;
-		Vector3 sensorIconPosition = new Vector3(iconCenter, -iconCenter, -0.01F);
-		Vector2 sensorIconVerticesStartPosition = new Vector2(-BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, -BUILDING_DATA_INDICATOR_ICON_SIZE / 2F);
-		Vector2 sensorIconDimensions = new Vector2(BUILDING_DATA_INDICATOR_ICON_SIZE / 2F, BUILDING_DATA_INDICATOR_ICON_SIZE / 2F);
-		GameObject sensorIcon = this.BuildNew3DRectangle(sensorIndicator, sensorIconName, sensorIconPosition, sensorIconVerticesStartPosition, sensorIconDimensions, iconPath);
-
-		MeshFilter iconShape = sensorIcon.GetComponent<MeshFilter>();
-		Texture newTexture = Resources.Load<Texture>(iconPath);
-
-		float ratio = newTexture.width / (newTexture.height * 1F);
-		if (ratio > 1)
-			iconShape.mesh.uv = this.NewRectangleUv(new Vector2(0, 0.5F - ratio / 2F), new Vector2(1, 0.5F + ratio / 2F));
-		else
-			iconShape.mesh.uv = this.NewRectangleUv(new Vector2(0.5F - ratio / 2F, 0), new Vector2(0.5F + ratio / 2F, 1));
-
-		MeshRenderer iconRenderer = sensorIcon.GetComponent<MeshRenderer>();
-		iconRenderer.material = this.NewTextureFill(iconPath);
-		iconRenderer.material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+		GameObject indicatorTitle = this.BuildBuildingDataIndicatorTitle(sensorIndicator, iconPath, subsetName, sensorName);
+		this.BuildBuildingDataIndicatorValue(sensorIndicator, subsetName, sensorValue, sensorUnit);
 
 		return sensorIndicator;
+	}
+
+	private GameObject BuildBuildingDataIndicatorContainer(GameObject dataBox, int index, string subsetName) {
+		float sensorIndicatorPaddingY = BUILDING_DATA_HEADER_HEIGHT + BUILDING_DATA_INDICATOR_RECT_PADDING;
+		float sensorIndicatorPosY = -(sensorIndicatorPaddingY + index * (BUILDING_DATA_INDICATOR_HEIGHT + (index == 0 ? 0 : BUILDING_DATA_INDICATOR_RECT_PADDING)));
+
+		string indicatorName = "Indicator_" + subsetName;
+		Vector3 indicatorPosition = new Vector3(BUILDING_DATA_INDICATOR_RECT_PADDING, sensorIndicatorPosY, 0);
+		Vector2 indicatorSize = new Vector2(BUILDING_DATA_HEADER_LENGTH * 3, BUILDING_DATA_INDICATOR_HEIGHT);
+		GameObject sensorIndicator = this.NewUiRectangle(dataBox, indicatorName, indicatorPosition, indicatorSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1));
+		sensorIndicator.transform.SetParent(dataBox.transform, false);
+
+		HorizontalLayoutGroup indicatorHorizLayoutGroup = sensorIndicator.AddComponent<HorizontalLayoutGroup>();
+		indicatorHorizLayoutGroup.childControlWidth = true;
+		indicatorHorizLayoutGroup.childControlHeight = false;
+		indicatorHorizLayoutGroup.childForceExpandWidth = true;
+		indicatorHorizLayoutGroup.childForceExpandHeight = false;
+
+		ContentSizeFitter indicatorFitter = sensorIndicator.AddComponent<ContentSizeFitter>();
+		indicatorFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+		return sensorIndicator;
+	}
+
+	private GameObject BuildBuildingDataIndicatorTitle(GameObject sensorIndicator, string iconPath, string subsetName, string sensorName) {
+		string titleName = "IndicatorTitle_" + subsetName;
+		Vector2 titleSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_INDICATOR_HEIGHT);
+		GameObject indicatorTitle = this.NewUiRectangle(sensorIndicator, titleName, Vector3.zero, titleSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), ThemeColors.BLUE);
+
+		Vector2 iconSize = new Vector2(BUILDING_DATA_INDICATOR_ICON_SIZE, BUILDING_DATA_INDICATOR_ICON_SIZE);
+		GameObject indicatorIcon = this.NewUiRectangle(indicatorTitle, "IndicatorIcon_" + subsetName, Vector3.zero, iconSize, new Vector2(0.5F, 0.5F), new Vector2(0, 1), new Vector2(0, 1), iconPath);
+
+		LayoutElement iconlayout = indicatorIcon.AddComponent<LayoutElement>();
+		iconlayout.minWidth = 10;
+		iconlayout.minHeight = 0;
+		iconlayout.preferredWidth = 0;
+		iconlayout.preferredHeight = 0;
+
+		string titleTextName = subsetName + "IndicatorTitleText_" + subsetName;
+		Vector2 titleTextSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_INDICATOR_HEIGHT);
+		GameObject indicatorTitleText = this.NewUiRectangle(indicatorTitle, titleTextName, Vector3.zero, titleTextSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), sensorName, 6);
+		indicatorTitleText.transform.SetParent(indicatorTitle.transform, false);
+
+		HorizontalLayoutGroup titleHorizLayoutGroup = indicatorTitle.AddComponent<HorizontalLayoutGroup>();
+		titleHorizLayoutGroup.padding = new RectOffset((int) BUILDING_DATA_INDICATOR_TEXT_PADDING, (int) BUILDING_DATA_INDICATOR_TEXT_PADDING, 0, 0);
+
+		ContentSizeFitter titleFitter = indicatorTitle.AddComponent<ContentSizeFitter>();
+		titleFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+		return indicatorTitle;
+	}
+
+	private GameObject BuildBuildingDataIndicatorValue(GameObject sensorIndicator, string subsetName, string sensorValue, string sensorUnit) {
+		string valueName = subsetName + "IndicatorValue_" + subsetName;
+		Vector2 valueSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_INDICATOR_HEIGHT);
+		GameObject indicatorValue = this.NewUiRectangle(sensorIndicator, valueName, Vector3.zero, valueSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), Color.white);
+
+		string valueTextName = subsetName + "IndicatorValueText_" + subsetName;
+		Vector2 valueTextSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_INDICATOR_HEIGHT);
+		GameObject indicatorValueText = this.NewUiRectangle(indicatorValue, valueTextName, Vector3.zero, valueTextSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), sensorValue + sensorUnit, 6);
+		indicatorValueText.transform.SetParent(indicatorValue.transform, false);
+
+		HorizontalLayoutGroup valueHorizLayoutGroup = indicatorValue.AddComponent<HorizontalLayoutGroup>();
+		valueHorizLayoutGroup.padding = new RectOffset((int) (BUILDING_DATA_INDICATOR_TEXT_PADDING), (int) (BUILDING_DATA_INDICATOR_TEXT_PADDING), 0, 0);
+
+		ContentSizeFitter valueFitter = indicatorValue.AddComponent<ContentSizeFitter>();
+		valueFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+		return indicatorValue;
+	}
+
+	private GameObject NewUiRectangle(GameObject parent, string name, RectTransform rectTransform, Color color) {
+		GameObject newRectangle = this.NewUiRectangle(parent, name, Vector3.zero, rectTransform.sizeDelta, rectTransform.pivot, rectTransform.anchorMin, rectTransform.anchorMax, color);
+		return newRectangle;
+	}
+
+	private GameObject NewUiRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 size, Vector2 pivot, Vector2 anchorMin, Vector2 anchorMax) {
+		GameObject newRectangle = this.NewBaseUiRectangle(parent, name, localPosition);
+		newRectangle.AddComponent<RectTransform>();
+
+		this.AddNewRectangleRectangleTransform(newRectangle, size, pivot, anchorMin, anchorMax);
+		return newRectangle;
+	}
+
+	private GameObject NewUiRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 size, Vector2 pivot, Vector2 anchorMin, Vector2 anchorMax, Color color) {
+		GameObject newRectangle = this.NewBaseUiRectangle(parent, name, localPosition);
+		newRectangle.AddComponent<RectTransform>();
+
+		this.AddNewRectangleImage(newRectangle, color);
+		this.AddNewRectangleRectangleTransform(newRectangle, size, pivot, anchorMin, anchorMax);
+		return newRectangle;
+	}
+
+	private GameObject NewUiRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 size, Vector2 pivot, Vector2 anchorMin, Vector2 anchorMax, string imagePath) {
+		GameObject newRectangle = this.NewBaseUiRectangle(parent, name, localPosition);
+		newRectangle.AddComponent<RectTransform>();
+
+		this.AddNewRectangleImage(newRectangle, imagePath);
+		this.AddNewRectangleRectangleTransform(newRectangle, size, pivot, anchorMin, anchorMax);
+		return newRectangle;
+	}
+
+	private GameObject NewUiRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 size, Vector2 pivot, Vector2 anchorMin, Vector2 anchorMax, string text, int textSize) {
+		GameObject newRectangle = this.NewBaseUiRectangle(parent, name, localPosition);
+		newRectangle.AddComponent<RectTransform>();
+
+		this.AddNewRectangleText(newRectangle, text, textSize);
+		this.AddNewRectangleRectangleTransform(newRectangle, size, pivot, anchorMin, anchorMax);
+		return newRectangle;
+	}
+
+	private GameObject NewBaseUiRectangle(GameObject parent, string name, Vector3 localPosition) {
+		GameObject newRectangle = new GameObject(name);
+		if(parent != null)
+			newRectangle.transform.SetParent(parent.transform, false);
+		newRectangle.transform.localPosition = localPosition;
+		newRectangle.AddComponent<CanvasRenderer>();
+		return newRectangle;
+	}
+
+	private Image AddNewRectangleImage(GameObject rectangle, Color color) {
+		Image rectangleImage = rectangle.AddComponent<Image>();
+		rectangleImage.color = color;
+		return rectangleImage;
+	}
+
+	private Image AddNewRectangleImage(GameObject rectangle, string imagePath) {
+		Image rectangleImage = rectangle.AddComponent<Image>();
+		Sprite imageSprite = Resources.Load<Sprite>(imagePath);
+		rectangleImage.sprite = imageSprite;
+		rectangleImage.preserveAspect = true;
+		return rectangleImage;
+	}
+
+	private Text AddNewRectangleText(GameObject rectangle, string text, int textSize) {
+		Font arialFont = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+
+		Text rectangleText = rectangle.AddComponent<Text>();
+		rectangleText.text = text;
+		rectangleText.fontSize = textSize;
+		rectangleText.font = arialFont;
+		rectangleText.alignment = TextAnchor.MiddleLeft;
+		rectangleText.color = new Color(50 / 255F, 50 / 255F, 50 / 255F);
+
+		return rectangleText;
+	}
+
+	private RectTransform AddNewRectangleRectangleTransform(GameObject rectangle, Vector2 size, Vector2 pivot, Vector2 anchorMin, Vector2 anchorMax) {
+		RectTransform rectangleRect = (RectTransform) rectangle.transform;
+		rectangleRect.sizeDelta = size;
+		rectangleRect.pivot = pivot;
+		rectangleRect.anchorMin = anchorMin;
+		rectangleRect.anchorMax = anchorMax;
+		return rectangleRect;
 	}
 
 	private GameObject BuildNew3DRectangle(GameObject parent, string name, Vector3 localPosition, Vector2 dimensions, string spritePath) {
@@ -222,7 +344,7 @@ public class UiBuilder {
 		return sensorTitleLabelText;
 	}
 
-	private float TextWidth(string text, Font arialFont) {
+	private float Text3DWidth(string text, Font arialFont) {
 		float res = 0;
 
 		GameObject tempObject = new GameObject("temp", typeof(TextMesh));
@@ -269,7 +391,7 @@ public class UiBuilder {
 	}
 
 	private Material NewColorFill(Color newColor) {
-		return new Material(Shader.Find("Sprites/Default")) {
+		return new Material(Shader.Find("Standard")) {
 			color = newColor
 		};
 	}

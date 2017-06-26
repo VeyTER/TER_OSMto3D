@@ -46,6 +46,9 @@ public class FilePaths {
 	public const string EXTERNAL_OBJECTS_FILE = EXTERNAL_OBJECTS_FOLDER + "objects_properties.txt";
 
 
+	public const string SPRITES_FOLDER_LOCAL = "Sprites/";
+
+
 	public const string TEXTURES_FOLDER_LOCAL = "Textures/";
 
 	public const string MAP_BACKGROUNDS_FILE = FilePaths.TEXTURES_FOLDER + "maps_background_details.txt";

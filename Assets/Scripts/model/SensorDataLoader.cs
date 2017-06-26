@@ -6,7 +6,6 @@ using System;
 
 public class SensorDataLoader {
 	private string lastLoadedData;
-	private bool receptionCompleted;
 
 	private string buildingIdentifier;
 
@@ -14,9 +13,8 @@ public class SensorDataLoader {
 		this.buildingIdentifier = buildingIdentifier;
 	}
 
-	public void LaunchDataLoading() {
+	public void LaunchDataLoading(AsyncCallback callBack) {
 		this.lastLoadedData = null;
-		this.receptionCompleted = false;
 
 		string url = "http://neocampus.univ-tlse3.fr:8004/api/" + buildingIdentifier + "/*/*?xml&pp";
 
@@ -26,24 +24,7 @@ public class SensorDataLoader {
 		RequestState myRequestState = new RequestState() {
 			Request = webRequest
 		};
-		webRequest.BeginGetResponse(new AsyncCallback(ProcessReceivedData), myRequestState);
-	}
-
-	private void ProcessReceivedData(IAsyncResult asynchronousResult) {
-		while (!asynchronousResult.IsCompleted);
-		RequestState requestState = (RequestState) asynchronousResult.AsyncState;
-		string requestResult = requestState.RequestResult();
-
-		requestResult = requestResult.Replace("<pre>", "");
-		requestResult = requestResult.Replace("</pre>", "");
-
-		lastLoadedData = requestResult;
-
-		receptionCompleted = true;
-	}
-
-	public bool ReceptionCompleted {
-		get { return receptionCompleted; }
+		webRequest.BeginGetResponse(callBack, myRequestState);
 	}
 
 	public string LastLoadedData {
@@ -56,7 +37,7 @@ public class SensorDataLoader {
 		set { buildingIdentifier = value; }
 	}
 
-	private class RequestState {
+	public class RequestState {
 		private WebRequest request;
 
 		public string RequestResult() {

@@ -28,9 +28,9 @@ public class SkinChangingEditor : ObjectEditor {
 
 		this.skinPanelController = this.skinPanel.GetComponent<SkinPanelController>();
 
-		RectTransform editPanelTransform = (RectTransform) this.skinPanelController.transform;
-		this.skinPanelController.StartPosition = new Vector3(editPanelTransform.localPosition.x - editPanelTransform.rect.width, 0, 0);
-		this.skinPanelController.EndPosition = new Vector3(editPanelTransform.localPosition.x, 0, 0);
+		RectTransform editPanelRect = (RectTransform) this.skinPanelController.transform;
+		this.skinPanelController.StartPosition = new Vector3(editPanelRect.localPosition.x - editPanelRect.rect.width, 0, 0);
+		this.skinPanelController.EndPosition = new Vector3(editPanelRect.localPosition.x, 0, 0);
 
 		Vector3 panelPosition = this.skinPanel.transform.localPosition;
 		this.skinPanel.transform.localPosition = new Vector3(this.skinPanelController.StartPosition.x, panelPosition.y, panelPosition.z);
@@ -68,8 +68,8 @@ public class SkinChangingEditor : ObjectEditor {
 		GameObject materialItem = new GameObject(UiNames.MATERIAL_ITEM_BUTTON + "_" + materialData.ReadableName);
 		materialItem.transform.SetParent(materialsGridPanel.transform, false);
 
-		RectTransform itemTransform = materialItem.AddComponent<RectTransform>();
-		itemTransform.sizeDelta = new Vector2(60, 60);
+		RectTransform itemRect = materialItem.AddComponent<RectTransform>();
+		itemRect.sizeDelta = new Vector2(60, 60);
 
 		materialItem.AddComponent<Button>();
 
@@ -86,14 +86,14 @@ public class SkinChangingEditor : ObjectEditor {
 		decorations.transform.SetParent(materialItem.transform, false);
 		decorations.transform.localPosition = new Vector3(0, 0, -1);
 
-		RectTransform decorationsTransform = decorations.AddComponent<RectTransform>();
-		decorationsTransform.sizeDelta = new Vector2(0, 0);
-		decorationsTransform.anchorMin = new Vector2(0, 0);
-		decorationsTransform.anchorMax = new Vector2(1, 1);
-		decorationsTransform.pivot = new Vector2(0.5F, 0.5F);
+		RectTransform decorationsRect = decorations.AddComponent<RectTransform>();
+		decorationsRect.sizeDelta = new Vector2(0, 0);
+		decorationsRect.anchorMin = new Vector2(0, 0);
+		decorationsRect.anchorMax = new Vector2(1, 1);
+		decorationsRect.pivot = new Vector2(0.5F, 0.5F);
 
 		this.AddLeftRect(decorations);
-		this.AddRightRect(decorations);
+		this.AddRightRectangle(decorations);
 		this.AddSelectionBackground(decorations);
 
 		return decorations;
@@ -106,12 +106,12 @@ public class SkinChangingEditor : ObjectEditor {
 		leftRect.transform.rotation = Quaternion.Euler(0, -130, -30);
 		leftRect.transform.localScale = new Vector3(0.549217F, 1, 1);
 
-		RectTransform leftRectTransform = leftRect.AddComponent<RectTransform>();
-		leftRectTransform.sizeDelta = new Vector2(75.2F, 14.5F);
-		leftRectTransform.anchorMin = new Vector2(0, 1);
-		leftRectTransform.anchorMax = new Vector2(0, 1);
-		leftRectTransform.anchoredPosition = new Vector2(6.2F, -38.6F);
-		leftRectTransform.pivot = new Vector2(0.5F, 0.5F);
+		RectTransform leftRectRect = leftRect.AddComponent<RectTransform>();
+		leftRectRect.sizeDelta = new Vector2(75.2F, 14.5F);
+		leftRectRect.anchorMin = new Vector2(0, 1);
+		leftRectRect.anchorMax = new Vector2(0, 1);
+		leftRectRect.anchoredPosition = new Vector2(6.2F, -38.6F);
+		leftRectRect.pivot = new Vector2(0.5F, 0.5F);
 
 		Image leftRectImage = leftRect.AddComponent<Image>();
 		leftRectImage.color = ThemeColors.DARK_BLUE;
@@ -119,24 +119,24 @@ public class SkinChangingEditor : ObjectEditor {
 		return leftRect;
 	}
 
-	private GameObject AddRightRect(GameObject decoration) {
-		GameObject rightRect = new GameObject("RightDecoration");
-		rightRect.transform.SetParent(decoration.transform, false);
-		rightRect.transform.localPosition = new Vector3(23.7F, -8.6F, 13.6F);
-		rightRect.transform.rotation = Quaternion.Euler(0, -130, 30);
-		rightRect.transform.localScale = new Vector3(0.549217F, 1, 1);
+	private GameObject AddRightRectangle(GameObject decoration) {
+		GameObject rightRectangle = new GameObject("RightDecoration");
+		rightRectangle.transform.SetParent(decoration.transform, false);
+		rightRectangle.transform.localPosition = new Vector3(23.7F, -8.6F, 13.6F);
+		rightRectangle.transform.rotation = Quaternion.Euler(0, -130, 30);
+		rightRectangle.transform.localScale = new Vector3(0.549217F, 1, 1);
 
-		RectTransform rightRectTransform = rightRect.AddComponent<RectTransform>();
-		rightRectTransform.sizeDelta = new Vector2(75.2F, 14.5F);
-		rightRectTransform.anchorMin = new Vector2(0, 1);
-		rightRectTransform.anchorMax = new Vector2(0, 1);
-		rightRectTransform.anchoredPosition = new Vector2(53.7F, -38.6F);
-		rightRectTransform.pivot = new Vector2(0.5F, 0.5F);
+		RectTransform rightRectRect = rightRectangle.AddComponent<RectTransform>();
+		rightRectRect.sizeDelta = new Vector2(75.2F, 14.5F);
+		rightRectRect.anchorMin = new Vector2(0, 1);
+		rightRectRect.anchorMax = new Vector2(0, 1);
+		rightRectRect.anchoredPosition = new Vector2(53.7F, -38.6F);
+		rightRectRect.pivot = new Vector2(0.5F, 0.5F);
 
-		Image rightRectImage = rightRect.AddComponent<Image>();
+		Image rightRectImage = rightRectangle.AddComponent<Image>();
 		rightRectImage.color = ThemeColors.DARK_BLUE;
 
-		return rightRect;
+		return rightRectangle;
 	}
 
 	private GameObject AddBody(MaterialData materialData, GameObject materialItem) {
@@ -144,11 +144,11 @@ public class SkinChangingEditor : ObjectEditor {
 		body.transform.SetParent(materialItem.transform, false);
 		body.transform.localPosition = new Vector3(0, 0, -1);
 
-		RectTransform bodyTransform = body.AddComponent<RectTransform>();
-		bodyTransform.sizeDelta = new Vector2(0, 0);
-		bodyTransform.anchorMin = new Vector2(0, 0);
-		bodyTransform.anchorMax = new Vector2(1, 1);
-		bodyTransform.pivot = new Vector2(0.5F, 0.5F);
+		RectTransform bodyRect = body.AddComponent<RectTransform>();
+		bodyRect.sizeDelta = new Vector2(0, 0);
+		bodyRect.anchorMin = new Vector2(0, 0);
+		bodyRect.anchorMax = new Vector2(1, 1);
+		bodyRect.pivot = new Vector2(0.5F, 0.5F);
 
 		Image bodyImage = body.AddComponent<Image>();
 		Sprite textureSprite = Resources.Load<Sprite>(materialData.SourceTexturePath);
@@ -165,12 +165,12 @@ public class SkinChangingEditor : ObjectEditor {
 		label.transform.SetParent(body.transform, false);
 		label.transform.localPosition = new Vector3(0, -19.7F, -1);
 
-		RectTransform labelTransform = label.AddComponent<RectTransform>();
-		labelTransform.sizeDelta = new Vector2(75.2F, 14.5F);
-		labelTransform.anchorMin = new Vector2(0, 1);
-		labelTransform.anchorMax = new Vector2(0, 1);
-		labelTransform.anchoredPosition = new Vector2(30, -49.7F);
-		labelTransform.pivot = new Vector2(0.5F, 0.5F);
+		RectTransform labelRect = label.AddComponent<RectTransform>();
+		labelRect.sizeDelta = new Vector2(75.2F, 14.5F);
+		labelRect.anchorMin = new Vector2(0, 1);
+		labelRect.anchorMax = new Vector2(0, 1);
+		labelRect.anchoredPosition = new Vector2(30, -49.7F);
+		labelRect.pivot = new Vector2(0.5F, 0.5F);
 
 		Image labelImage = label.AddComponent<Image>();
 		labelImage.color = ThemeColors.BRIGHT_BLUE;
@@ -190,12 +190,12 @@ public class SkinChangingEditor : ObjectEditor {
 		GameObject title = new GameObject("Title");
 		title.transform.SetParent(label.transform, false);
 
-		RectTransform titleTransform = title.AddComponent<RectTransform>();
-		titleTransform.sizeDelta = new Vector2(0, 0);
-		titleTransform.anchorMin = new Vector2(0, 0);
-		titleTransform.anchorMax = new Vector2(1, 1);
-		titleTransform.anchoredPosition = new Vector3(0, 0);
-		titleTransform.pivot = new Vector2(0.5F, 0.5F);
+		RectTransform titleRect = title.AddComponent<RectTransform>();
+		titleRect.sizeDelta = new Vector2(0, 0);
+		titleRect.anchorMin = new Vector2(0, 0);
+		titleRect.anchorMax = new Vector2(1, 1);
+		titleRect.anchoredPosition = new Vector3(0, 0);
+		titleRect.pivot = new Vector2(0.5F, 0.5F);
 
 		Font arialFont = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
 
@@ -242,16 +242,16 @@ public class SkinChangingEditor : ObjectEditor {
 		GameObject colorSupport = new GameObject("ColorSupport");
 		colorSupport.transform.SetParent(colorItem.transform, false);
 
-		RectTransform colorSupportTransform = colorSupport.AddComponent<RectTransform>();
-		colorSupportTransform.sizeDelta = new Vector2(0, 0);
-		colorSupportTransform.anchorMin = new Vector2(0, 0);
-		colorSupportTransform.anchorMax = new Vector2(1, 1);
-		colorSupportTransform.anchoredPosition = new Vector2(0, 0);
-		colorSupportTransform.pivot = new Vector2(0.5F, 0.5F);
+		RectTransform colorSupportRect = colorSupport.AddComponent<RectTransform>();
+		colorSupportRect.sizeDelta = new Vector2(0, 0);
+		colorSupportRect.anchorMin = new Vector2(0, 0);
+		colorSupportRect.anchorMax = new Vector2(1, 1);
+		colorSupportRect.anchoredPosition = new Vector2(0, 0);
+		colorSupportRect.pivot = new Vector2(0.5F, 0.5F);
 
 		Image supportImage = colorSupport.AddComponent<Image>();
 		if (color.r == 1 && color.g == 1 && color.b == 1) {
-			Sprite noneColorIcon = Resources.Load<Sprite>(IconsAndTextures.NONE_COLOR);
+			Sprite noneColorIcon = Resources.Load<Sprite>(IconsTexturesSprites.NONE_COLOR);
 			supportImage.sprite = noneColorIcon;
 		} else {
 			supportImage.color = color;
@@ -261,21 +261,21 @@ public class SkinChangingEditor : ObjectEditor {
 	}
 
 	private GameObject AddSelectionBackground(GameObject colorItem) {
-		GameObject backgroundRect = new GameObject("SelectionBackground");
-		backgroundRect.transform.SetParent(colorItem.transform, false);
+		GameObject backgroundRectangle = new GameObject("SelectionBackground");
+		backgroundRectangle.transform.SetParent(colorItem.transform, false);
 
-		RectTransform backgroundRectTransform = backgroundRect.AddComponent<RectTransform>();
-		backgroundRectTransform.sizeDelta = new Vector2(4.5F, 4.5F);
-		backgroundRectTransform.anchorMin = new Vector2(0, 0);
-		backgroundRectTransform.anchorMax = new Vector2(1, 1);
-		backgroundRectTransform.anchoredPosition = new Vector2(0, 0);
-		backgroundRectTransform.pivot = new Vector2(0.5F, 0.5F);
+		RectTransform backgroundRectangleRect = backgroundRectangle.AddComponent<RectTransform>();
+		backgroundRectangleRect.sizeDelta = new Vector2(4.5F, 4.5F);
+		backgroundRectangleRect.anchorMin = new Vector2(0, 0);
+		backgroundRectangleRect.anchorMax = new Vector2(1, 1);
+		backgroundRectangleRect.anchoredPosition = new Vector2(0, 0);
+		backgroundRectangleRect.pivot = new Vector2(0.5F, 0.5F);
 
-		Image backgroundRectImage = backgroundRect.AddComponent<Image>();
+		Image backgroundRectImage = backgroundRectangle.AddComponent<Image>();
 		backgroundRectImage.color = ThemeColors.BRIGHT_BLUE;
 		backgroundRectImage.enabled = false;
 
-		return backgroundRect;
+		return backgroundRectangle;
 	}
 
 	private List<MaterialData> MaterialsDetails() {

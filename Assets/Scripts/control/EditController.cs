@@ -179,9 +179,9 @@ public class EditController : MonoBehaviour {
 		this.cameraController = Camera.main.GetComponent<CameraController> ();
 		this.editPanelController = editPanel.GetComponent<EditPanelController>();
 
-		RectTransform editPanelTransform = (RectTransform) this.editPanelController.transform;
-		this.editPanelController.StartPosition = new Vector3(editPanelTransform.localPosition.x, 0, 0);
-		this.editPanelController.EndPosition = new Vector3(editPanelTransform.localPosition.x - editPanelTransform.rect.width, 0, 0);
+		RectTransform editPanelRect = (RectTransform) this.editPanelController.transform;
+		this.editPanelController.StartPosition = new Vector3(editPanelRect.localPosition.x, 0, 0);
+		this.editPanelController.EndPosition = new Vector3(editPanelRect.localPosition.x - editPanelRect.rect.width, 0, 0);
 	}
 
 
@@ -251,8 +251,6 @@ public class EditController : MonoBehaviour {
 				cameraController.InitPosition = mainCamera.transform.position;
 				cameraController.InitRotation = mainCamera.transform.rotation;
 			}
-
-			this.StopAllCoroutines();
 
 			if (controlPanel.activeInHierarchy)
 				controlPanel.SetActive(false);
