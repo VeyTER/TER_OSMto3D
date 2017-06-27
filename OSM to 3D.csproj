@@ -116,6 +116,7 @@
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
     <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\BuildingSubsetData.cs" />
+    <Compile Include="Assets\Scripts\model\SensorData.cs" />
     <Compile Include="Assets\Scripts\model\UiBuilder.cs" />
     <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
     <Compile Include="Assets\Scripts\model\DelauneyTriangulation.cs" />

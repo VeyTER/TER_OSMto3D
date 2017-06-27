@@ -21,9 +21,9 @@ public class ControlPanelManager {
 
 	public PanelController GetPanelController(string panelName) {
 		GameObject matchingPanel = null;
-		foreach (KeyValuePair<GameObject, PanelController> currentBehaviour in panelsBehaviours) {
-			if (currentBehaviour.Key.name.Equals(panelName)) {
-				matchingPanel = currentBehaviour.Key;
+		foreach (KeyValuePair<GameObject, PanelController> currentBehaviourEntry in panelsBehaviours) {
+			if (currentBehaviourEntry.Key.name.Equals(panelName)) {
+				matchingPanel = currentBehaviourEntry.Key;
 			}
 		}
 		return panelsBehaviours[matchingPanel];

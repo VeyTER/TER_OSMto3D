@@ -29,7 +29,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.subsetsData = new Dictionary<string, BuildingSubsetData>();
 
 		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject, name);
-		this.dataPanel.transform.parent.SetParent(uiBuilder.buildingDataDisplays.transform);
+		this.dataPanel.transform.parent.SetParent(uiBuilder.BuildingDataDisplays.transform);
 
 		this.receptionStatus = ReceptionStatus.LOADING;
 		sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
@@ -40,11 +40,7 @@ public class BuildingSensorsController : MonoBehaviour {
 	public void Update() {
 		if (receptionStatus == ReceptionStatus.TERMINATED) {
 			this.receptionStatus = ReceptionStatus.INACTIVE;
-
-			if (dataPanel.transform.childCount == 0)
-				this.BuildIndicators();
-
-			this.UpdateIndicators();
+			this.RebuildIndicators();
 		}
 
 		if (Time.time - timeFlag >= 10) {
@@ -85,6 +81,7 @@ public class BuildingSensorsController : MonoBehaviour {
 	private void ExtractSensorsData(XmlDocument sensorsDataDocument) {
 		XmlNodeList sensorsData = sensorsDataDocument.GetElementsByTagName(XmlTags.SENSOR_DATA);
 
+		subsetsData.Clear();
 		foreach (XmlNode sensorData in sensorsData) {
 			if (sensorData.ChildNodes.Count > 0) {
 				XmlNode dataRecord = sensorData.FirstChild;
@@ -113,60 +110,56 @@ public class BuildingSensorsController : MonoBehaviour {
 
 		switch (sensorIdentifier) {
 		case Sensors.TEMPERATURE:
-			subsetData.Temperature = float.Parse(sensorValue);
+			subsetData.AddSensorData(sensorIdentifier, "Températue", sensorValue, "°", IconsTexturesSprites.TEMPERATURE_ICON, GoTags.TEMPERATURE_INDICATOR);
 			break;
 		case Sensors.HUMIDITY:
-			subsetData.Humidity = float.Parse(sensorValue);
+			subsetData.AddSensorData(sensorIdentifier, "Humidité", sensorValue, "%", IconsTexturesSprites.HUMIDITY_ICON, GoTags.HUMIDITY_INDICATOR);
 			break;
 		case Sensors.LUMINOSITY:
-			subsetData.Luminosity = float.Parse(sensorValue);
+			subsetData.AddSensorData(sensorIdentifier, "Luminosité", sensorValue, "lux", IconsTexturesSprites.LUMINOSITY_ICON, GoTags.LUMINOSITY_INDICATOR);
 			break;
 		case Sensors.CO2:
-			subsetData.Co2 = float.Parse(sensorValue);
+			subsetData.AddSensorData(sensorIdentifier, "CO2", sensorValue, "ppm", IconsTexturesSprites.CO2_ICON, GoTags.CO2_INDICATOR);
 			break;
 		case Sensors.PRESENCE:
-			subsetData.Presence = !sensorValue.Equals("0");
+			subsetData.AddSensorData(sensorIdentifier, "Présence", sensorValue, "", IconsTexturesSprites.PRESENCE_ICON, GoTags.PRESENCE_INDICATOR);
+			break;
+		default:
+			subsetData.AddSensorData(sensorIdentifier, sensorIdentifier, sensorValue, "unit", IconsTexturesSprites.PRESENCE_ICON, GoTags.UNKNOWN_INDICATOR);
 			break;
 		}
 	}
 
-	private void BuildIndicators () {
-		int dataBoxIndex = 0;
-		foreach (KeyValuePair<string, BuildingSubsetData> subsetDataPair in this.subsetsData) {
-			uiBuilder.BuildBuidingDataBox(dataPanel, subsetDataPair.Value, dataBoxIndex);
-			dataBoxIndex++;
+	private void RebuildIndicators () {
+		foreach (Transform dataBoxtransform in dataPanel.transform) {
+			HorizontalLayoutGroup[] horizontalLayoutsInChildren = dataBoxtransform.GetComponentsInChildren<HorizontalLayoutGroup>();
+			foreach (HorizontalLayoutGroup horizontalLayout in horizontalLayoutsInChildren)
+				GameObject.Destroy(horizontalLayout);
+
+			VerticalLayoutGroup[] verticalLayoutsInChildren = dataBoxtransform.GetComponentsInChildren<VerticalLayoutGroup>();
+			foreach (VerticalLayoutGroup verticalLayout in verticalLayoutsInChildren)
+				GameObject.Destroy(verticalLayout);
+
+			GameObject.Destroy(dataBoxtransform.gameObject);
 		}
+
+		foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in this.subsetsData)
+			uiBuilder.BuildBuidingDataBox(dataPanel, subsetDataEntry.Value);
 	}
 
 	private void UpdateIndicators() {
-		foreach(Transform dataBox in dataPanel.transform) {
+		foreach (Transform dataBox in dataPanel.transform) {
 			string subsetName = dataBox.name.Split('_')[1];
 			BuildingSubsetData subsetData = subsetsData[subsetName];
 
-			for (int i = 1; i < dataBox.childCount; i++) {
-				GameObject indicator = dataBox.GetChild(i).gameObject;
+			for (int i = 0; i < subsetData.SensorsData.Count; i++) {
+				GameObject indicator = dataBox.GetChild(i + i).gameObject;
 
-				string indiatorValue = null;
-				switch (indicator.tag) {
-				case GoTags.TEMPERATURE:
-					indiatorValue = subsetData.Temperature.ToString() + "°";
-					break;
-				case GoTags.HUMIDITY:
-					indiatorValue = subsetData.Humidity.ToString() + "%";
-					break;
-				case GoTags.LUMINOSITY:
-					indiatorValue = subsetData.Luminosity.ToString() + "lux";
-					break;
-				case GoTags.CO2:
-					indiatorValue = subsetData.Co2.ToString() + "ppm";
-					break;
-				case GoTags.PRESENCE:
-					indiatorValue = subsetData.Presence ? "oui" : "Non";
-					break;
-				}
+				SensorData sensorData = subsetData.SensorsData[i];
+				string indicatorText = sensorData.Value + sensorData.Unit;
 
 				Text indicatorValueText = indicator.transform.GetChild(1).GetComponentInChildren<Text>();
-				indicatorValueText.text = indiatorValue;
+				indicatorValueText.text = indicatorText;
 			}
 		}
 	}

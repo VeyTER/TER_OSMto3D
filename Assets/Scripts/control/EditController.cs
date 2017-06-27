@@ -257,8 +257,8 @@ public class EditController : MonoBehaviour {
 			if (controlPanel.activeInHierarchy)
 				controlPanel.SetActive(false);
 
-			if (uiBuilder.buildingDataDisplays.activeInHierarchy)
-				uiBuilder.buildingDataDisplays.SetActive(false);
+			if (uiBuilder.BuildingDataDisplays.activeInHierarchy)
+				uiBuilder.BuildingDataDisplays.SetActive(false);
 
 			// Déplacement de la caméra jusqu'au bâtiment sélectionné avec mise à jour de l'état de modification à la fin
 			// du déplacement
@@ -285,7 +285,7 @@ public class EditController : MonoBehaviour {
 		// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
 		editPanelController.ClosePanel (() => {
 			editPanel.SetActive (false);
-			uiBuilder.buildingDataDisplays.SetActive(true);
+			uiBuilder.BuildingDataDisplays.SetActive(true);
 		});
 
 		editPanelController.CloseSlideButton();

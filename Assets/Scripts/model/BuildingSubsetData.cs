@@ -1,33 +1,31 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 public class BuildingSubsetData {
 	private string name;
-
-	private float temperature;
-	private float humidity;
-	private float luminosity;
-	private float co2;
-	private bool presence;
+	private List<SensorData> sensorsData;
 
 	public BuildingSubsetData(string name) {
-		this.name = name;
-
-		this.temperature = 0;
-		this.humidity = 0;
-		this.luminosity = 0;
-		this.co2 = 0;
-		this.presence = false;
+		this.Name = name;
+		this.SensorsData = new List<SensorData>();
 	}
 
-	public BuildingSubsetData(string name, float temperatuere, float humidity, float luminosity, float co2, bool presence) {
-		this.name = name;
+	public void AddSensorData(SensorData sensorData) {
+		SensorsData.Add(sensorData);
+	}
 
-		this.temperature = temperatuere;
-		this.humidity = humidity;
-		this.luminosity = luminosity;
-		this.co2 = co2;
-		this.presence = presence;
+	public void AddSensorData(string sensorIdentifier, string sensorName, string value, string unit, string iconPath, string gameObjectTag) {
+		SensorsData.Add(new SensorData(sensorIdentifier, sensorName, value, unit, iconPath, gameObjectTag));
+	}
+
+	public void RemoveSensorData(SensorData sensorData) {
+		SensorsData.Remove(sensorData);
+	}
+
+	public List<SensorData> SensorsData {
+		get { return sensorsData; }
+		set { sensorsData = value; }
 	}
 
 	public string Name {
@@ -35,32 +33,10 @@ public class BuildingSubsetData {
 		set { name = value; }
 	}
 
-	public float Temperature {
-		get { return temperature; }
-		set { temperature = value; }
-	}
-
-	public float Humidity {
-		get { return humidity; }
-		set { humidity = value; }
-	}
-
-	public float Luminosity {
-		get { return luminosity; }
-		set { luminosity = value; }
-	}
-
-	public float Co2 {
-		get { return co2; }
-		set { co2 = value; }
-	}
-
-	public bool Presence {
-		get { return presence; }
-		set { presence = value; }
-	}
-
 	public override string ToString() {
-		return name + " : [" + temperature + "° | " + humidity + "% | " + luminosity + "lux | " + co2 + "ppm | " + (presence ? "Somebody present" : "Nobody present") + "]";
+		string res = "";
+		foreach (SensorData sensorData in SensorsData)
+			res += sensorData.ToString();
+		return res;
 	}
 }

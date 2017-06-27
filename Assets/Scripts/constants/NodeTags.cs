@@ -37,13 +37,15 @@ public class GoTags {
 	public const string TREE_TAG = "Tree";
 
 
-	public const string TEMPERATURE = "TemperatureIndicator";
+	public const string TEMPERATURE_INDICATOR = "TemperatureIndicator";
 
-	public const string HUMIDITY = "HumidityIndicator";
+	public const string HUMIDITY_INDICATOR = "HumidityIndicator";
 
-	public const string LUMINOSITY = "LuminosityIndicator";
+	public const string LUMINOSITY_INDICATOR = "LuminosityIndicator";
 
-	public const string CO2 = "Co2Indicator";
+	public const string CO2_INDICATOR = "Co2Indicator";
 
-	public const string PRESENCE = "PresenceIndicator";
+	public const string PRESENCE_INDICATOR = "PresenceIndicator";
+
+	public const string UNKNOWN_INDICATOR = "UknownIndicator";
 }
