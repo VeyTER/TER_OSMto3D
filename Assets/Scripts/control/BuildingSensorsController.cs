@@ -19,6 +19,8 @@ public class BuildingSensorsController : MonoBehaviour {
 
 	private float timeFlag;
 
+	private readonly object synchronisationLock = new object();
+
 	public void Start() {
 		this.receptionStatus = ReceptionStatus.INACTIVE;
 
@@ -40,12 +42,17 @@ public class BuildingSensorsController : MonoBehaviour {
 	public void Update() {
 		if (receptionStatus == ReceptionStatus.TERMINATED) {
 			this.receptionStatus = ReceptionStatus.INACTIVE;
+
+			this.StopDataBuildingIconAnimation();
 			this.RebuildIndicators();
+			this.StartCoroutine(this.FlipDataBoxItems(null));
 		}
 
 		if (Time.time - timeFlag >= 10) {
 			this.receptionStatus = ReceptionStatus.LOADING;
+			sensorsDataLoader.StopDataLoading();
 			sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
+			this.StartDataBuildingIconAnimation();
 			timeFlag = Time.time;
 		}
 
@@ -57,6 +64,20 @@ public class BuildingSensorsController : MonoBehaviour {
 
 		Quaternion rotation = transform.rotation;
 		dataCanvas.transform.rotation = Quaternion.Euler(rotation.eulerAngles.x, -orientation + 90, rotation.eulerAngles.z);
+	}
+
+	private void StartDataBuildingIconAnimation() {
+		Transform dataBuildingDecorations = dataPanel.transform.parent.GetChild(0);
+		GameObject iconBackgroundPanel = dataBuildingDecorations.GetChild(1).gameObject;
+		iconBackgroundPanel.transform.GetChild(0).gameObject.SetActive(false);
+		iconBackgroundPanel.transform.GetChild(1).gameObject.SetActive(true);
+	}
+
+	private void StopDataBuildingIconAnimation() {
+		Transform dataBuildingDecorations = dataPanel.transform.parent.GetChild(0);
+		GameObject iconBackgroundPanel = dataBuildingDecorations.GetChild(1).gameObject;
+		iconBackgroundPanel.transform.GetChild(0).gameObject.SetActive(true);
+		iconBackgroundPanel.transform.GetChild(1).gameObject.SetActive(false);
 	}
 
 	public void ProcessReceivedData(IAsyncResult asynchronousResult) {
@@ -81,24 +102,26 @@ public class BuildingSensorsController : MonoBehaviour {
 	private void ExtractSensorsData(XmlDocument sensorsDataDocument) {
 		XmlNodeList sensorsData = sensorsDataDocument.GetElementsByTagName(XmlTags.SENSOR_DATA);
 
-		subsetsData.Clear();
-		foreach (XmlNode sensorData in sensorsData) {
-			if (sensorData.ChildNodes.Count > 0) {
-				XmlNode dataRecord = sensorData.FirstChild;
-				string sensorPath = sensorData.Attributes[XmlAttributes.TOPIC].Value;
+		lock (synchronisationLock) {
+			subsetsData.Clear();
+			foreach (XmlNode sensorData in sensorsData) {
+				if (sensorData.ChildNodes.Count > 0) {
+					XmlNode dataRecord = sensorData.FirstChild;
+					string sensorPath = sensorData.Attributes[XmlAttributes.TOPIC].Value;
 
-				string subSetIdentifier = sensorPath.Split('/')[1];
-				string sensorIdentifier = sensorPath.Split('/')[2];
+					string subSetIdentifier = sensorPath.Split('/')[1];
+					string sensorIdentifier = sensorPath.Split('/')[2];
 
-				BuildingSubsetData subsetData = null;
-				if (subsetsData.ContainsKey(subSetIdentifier)) {
-					subsetData = subsetsData[subSetIdentifier];
-				} else {
-					subsetData = new BuildingSubsetData(subSetIdentifier);
-					subsetsData[subSetIdentifier] = subsetData;
+					BuildingSubsetData subsetData = null;
+					if (subsetsData.ContainsKey(subSetIdentifier)) {
+						subsetData = subsetsData[subSetIdentifier];
+					} else {
+						subsetData = new BuildingSubsetData(subSetIdentifier);
+						subsetsData[subSetIdentifier] = subsetData;
+					}
+
+					this.UpdateSubsetDataContainer(subsetData, sensorsDataDocument, sensorPath, sensorIdentifier);
 				}
-
-				this.UpdateSubsetDataContainer(subsetData, sensorsDataDocument, sensorPath, sensorIdentifier);
 			}
 		}
 	}
@@ -143,8 +166,10 @@ public class BuildingSensorsController : MonoBehaviour {
 			GameObject.Destroy(dataBoxtransform.gameObject);
 		}
 
-		foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in this.subsetsData)
-			uiBuilder.BuildBuidingDataBox(dataPanel, subsetDataEntry.Value);
+		lock (synchronisationLock) {
+			foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in subsetsData)
+				uiBuilder.BuildBuidingDataBox(dataPanel, subsetDataEntry.Value);
+		}
 	}
 
 	private void UpdateIndicators() {
@@ -160,6 +185,78 @@ public class BuildingSensorsController : MonoBehaviour {
 
 				Text indicatorValueText = indicator.transform.GetChild(1).GetComponentInChildren<Text>();
 				indicatorValueText.text = indicatorText;
+			}
+		}
+	}
+
+	// Rotation de la grosse icône lorsque de nouvelles données sont reçues
+	//private IEnumarator FlipBuildingDataIcon() {
+
+	//}
+
+	private IEnumerator FlipDataBoxItems(Action middleTimeAction) {
+		Quaternion dataPanelRotation = dataPanel.transform.localRotation;
+
+		float initOrientation = dataPanelRotation.eulerAngles.x;
+		float initOpacity = 1;
+
+		float midOpacity = 0;
+
+		float targetOrientation = dataPanelRotation.eulerAngles.x;
+		float targetOpacity = 1;
+
+		for (double i = 0; i <= 1; i += 0.05) {
+			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
+
+			float currentOrientation = initOrientation + (targetOrientation - initOrientation) * cursor;
+
+			float currentOpacity = -1;
+			if (cursor < 0.5F)
+				currentOpacity = initOpacity + (midOpacity - initOpacity) * (cursor * 2);
+			else
+				currentOpacity = midOpacity + (targetOpacity - midOpacity) * ((cursor - 0.5F) * 2);
+
+			foreach (Transform dataBoxTransform in dataPanel.transform) {
+				foreach (Transform dataItemTransform in dataBoxTransform) {
+					Quaternion elementRotation = dataItemTransform.transform.localRotation;
+					dataItemTransform.transform.localRotation = Quaternion.Euler(currentOrientation, elementRotation.eulerAngles.y, elementRotation.eulerAngles.z);
+				}
+			}
+
+			this.SetOpacityInHierarchy(currentOpacity, dataPanel, 0, int.MaxValue);
+
+			yield return new WaitForSeconds(0.01F);
+		}
+	}
+
+	private void SetOrientationInHierarchy(float orientation, GameObject parentElement, int currentDeth, int maxDeth) {
+		Quaternion elementRotation = parentElement.transform.localRotation;
+		parentElement.transform.localRotation = Quaternion.Euler(orientation, elementRotation.eulerAngles.y, elementRotation.eulerAngles.z);
+
+		if (parentElement.transform.childCount > 0 && currentDeth < maxDeth) {
+			foreach (Transform dataElementTransform in parentElement.transform) {
+				this.SetOrientationInHierarchy(orientation, dataElementTransform.gameObject, currentDeth + 1, maxDeth);
+			}
+		}
+	}
+
+	private void SetOpacityInHierarchy(float opacity, GameObject parentElement, int currentDeth, int maxDeth) {
+		Image elementImage = parentElement.GetComponent<Image>();
+		Text elementText = parentElement.GetComponent<Text>();
+
+		if (elementImage != null) {
+			Color imageColor = elementImage.color;
+			elementImage.color = new Color(imageColor.r, imageColor.g, imageColor.b, opacity);
+		}
+
+		if (elementText != null) {
+			Color textColor = elementText.color;
+			elementText.color = new Color(textColor.r, textColor.g, textColor.b, opacity);
+		}
+
+		if (parentElement.transform.childCount > 0 && currentDeth < maxDeth) {
+			foreach (Transform dataElementTransform in parentElement.transform) {
+				this.SetOpacityInHierarchy(opacity, dataElementTransform.gameObject, currentDeth + 1, maxDeth);
 			}
 		}
 	}

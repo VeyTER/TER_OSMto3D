@@ -5,11 +5,15 @@ using System.IO;
 using System;
 
 public class SensorDataLoader {
+	private WebRequest webRequest;
 	private string lastLoadedData;
 
 	private string buildingIdentifier;
 
 	public SensorDataLoader(string buildingIdentifier) {
+		this.webRequest = null;
+		this.lastLoadedData = null;
+
 		this.buildingIdentifier = buildingIdentifier;
 	}
 
@@ -25,6 +29,11 @@ public class SensorDataLoader {
 			Request = webRequest
 		};
 		webRequest.BeginGetResponse(callBack, myRequestState);
+	}
+
+	public void StopDataLoading() {
+		if(webRequest != null)
+			webRequest.Abort();
 	}
 
 	public string LastLoadedData {

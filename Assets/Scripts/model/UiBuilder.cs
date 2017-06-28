@@ -83,14 +83,28 @@ public class UiBuilder {
 		Vector2 linkSize = new Vector2(BUILDING_DATA_LINK_WIDTH, -BUILDING_DATA_ICON_SIZE);
 		GameObject link = this.NewUiRectangle(decorationsPanel, dataCanvas.name + "Link", Vector3.zero, linkSize, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 1), ThemeColors.BRIGHT_BLUE);
 
-		string iconBackgroundName = dataCanvas.name + "Icon";
+		string iconBackgroundName = dataCanvas.name + "IconBackground";
 		Vector3 iconBackgroundLocPosition = new Vector3(-BUILDING_DATA_ICON_SIZE / 2F + BUILDING_DATA_LINK_WIDTH / 2F, -BUILDING_DATA_ICON_SIZE, 0);
 		Vector2 iconBackgroundSize = new Vector2(BUILDING_DATA_ICON_SIZE, BUILDING_DATA_ICON_SIZE);
 		GameObject dataBuildingIconBackground = this.NewUiRectangle(decorationsPanel, iconBackgroundName, iconBackgroundLocPosition, iconBackgroundSize, new Vector2(0, 0), new Vector2(0, 1), new Vector2(0, 1), IconsTexturesSprites.BUILDING_DATA_ICON_BACKGROUND);
 
-		Vector2 iconSize = new Vector2(-BUILDING_DATA_ICON_SIZE * 0.2F, -BUILDING_DATA_ICON_SIZE * 0.2F);
-		string iconName = dataCanvas.name + "IconBackground";
-		GameObject dataBuildingIcon = this.NewUiRectangle(dataBuildingIconBackground, iconName, Vector3.zero, iconSize, new Vector2(0.5F, 0.5F), new Vector2(0, 0), new Vector2(1, 1), IconsTexturesSprites.BUILDING_DATA_ICON);
+		Vector2 staticIconSize = new Vector2(-BUILDING_DATA_ICON_SIZE * 0.2F, -BUILDING_DATA_ICON_SIZE * 0.2F);
+		string staticIconName = dataCanvas.name + "StaticIcon";
+		string staticIconPath = IconsTexturesSprites.BUILDING_DATA_ICON;
+		GameObject dataBuildingIcon = this.NewUiRectangle(dataBuildingIconBackground, staticIconName, Vector3.zero, staticIconSize, new Vector2(0.5F, 0.5F), new Vector2(0, 0), new Vector2(1, 1), staticIconPath);
+
+		Vector2 animatedIconSize = new Vector2(-BUILDING_DATA_ICON_SIZE * 0.2F, -BUILDING_DATA_ICON_SIZE * 0.2F);;
+		string animatedIconName = dataCanvas.name + "AnimatedIcon";
+		GameObject dataBuildingAnimatedIcon = this.NewUiRectangle(dataBuildingIconBackground, animatedIconName, Vector3.zero, animatedIconSize, new Vector2(0.5F, 0.5F), new Vector2(0, 0), new Vector2(1, 1));
+		dataBuildingAnimatedIcon.transform.localScale = new Vector3(5, 5, 5);
+
+		SpriteRenderer animatedIconSpriteRenderer = dataBuildingAnimatedIcon.AddComponent<SpriteRenderer>();
+
+		Animator animatedIconAnimator = dataBuildingAnimatedIcon.AddComponent<Animator>();
+		animatedIconAnimator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Controllers/BuildingDataLoadingIconController");
+		animatedIconAnimator.Play("New Animation");
+
+		dataBuildingAnimatedIcon.SetActive(false);
 
 		return decorationsPanel;
 	}
@@ -184,7 +198,7 @@ public class UiBuilder {
 		Vector2 titleSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_INDICATOR_HEIGHT);
 		GameObject indicatorTitle = this.NewUiRectangle(sensorIndicator, titleName, Vector3.zero, titleSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), ThemeColors.BLUE);
 
-		string iconName = "IndicatorIcon_" + subsetName;
+		string iconName = "IndicatorStaticIcon_" + subsetName;
 		Vector2 iconSize = new Vector2(BUILDING_DATA_INDICATOR_ICON_SIZE, BUILDING_DATA_INDICATOR_ICON_SIZE);
 		GameObject indicatorIcon = this.NewUiRectangle(indicatorTitle, iconName, Vector3.zero, iconSize, new Vector2(0.5F, 0.5F), new Vector2(0, 1), new Vector2(0, 1), sensorData.IconPath);
 

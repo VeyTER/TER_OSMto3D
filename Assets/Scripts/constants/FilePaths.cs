@@ -46,7 +46,8 @@ public class FilePaths {
 	public const string EXTERNAL_OBJECTS_FILE = EXTERNAL_OBJECTS_FOLDER + "objects_properties.txt";
 
 
-	public const string SPRITES_FOLDER_LOCAL = "Sprites/";
+	public const string STATIC_SPRITES_FOLDER_LOCAL = "Static sprites/";
+	public const string ANIMATED_SPRITES_FOLDER_LOCAL = "Animated sprites/";
 
 
 	public const string TEXTURES_FOLDER_LOCAL = "Textures/";

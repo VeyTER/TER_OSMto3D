@@ -4,7 +4,7 @@ public class IconsTexturesSprites {
 	public const string NONE_COLOR = FilePaths.ICONS_FOLDER_LOCAL + "NoneColorIcon";
 
 	public const string BUILDING_DATA_ICON = FilePaths.ICONS_FOLDER_LOCAL + "BuildingDataIcon";
-	public const string BUILDING_DATA_ICON_BACKGROUND = FilePaths.SPRITES_FOLDER_LOCAL + "BuildingDataIconBackground";
+	public const string BUILDING_DATA_ICON_BACKGROUND = FilePaths.STATIC_SPRITES_FOLDER_LOCAL + "BuildingDataIconBackground";
 
 	public const string TEMPERATURE_ICON = FilePaths.ICONS_FOLDER_LOCAL + "TemperatureIcon";
 	public const string HUMIDITY_ICON = FilePaths.ICONS_FOLDER_LOCAL + "HumidityIcon";
