@@ -44,8 +44,8 @@ public class BuildingSensorsController : MonoBehaviour {
 			this.receptionStatus = ReceptionStatus.INACTIVE;
 
 			this.StopDataBuildingIconAnimation();
-			this.RebuildIndicators();
-			this.StartCoroutine(this.FlipDataBoxItems(null));
+
+			this.StartCoroutine(this.FlipDataBoxItems(this.RebuildIndicators));
 		}
 
 		if (Time.time - timeFlag >= 10) {
@@ -195,50 +195,62 @@ public class BuildingSensorsController : MonoBehaviour {
 	//}
 
 	private IEnumerator FlipDataBoxItems(Action middleTimeAction) {
-		Quaternion dataPanelRotation = dataPanel.transform.localRotation;
-
-		float initOrientation = dataPanelRotation.eulerAngles.x;
+		float initOrientation = 0;
 		float initOpacity = 1;
 
+		float midEndOrientation = 90;
+		float midStartOrientation = -90;
 		float midOpacity = 0;
 
-		float targetOrientation = dataPanelRotation.eulerAngles.x;
+		float targetOrientation = 0;
 		float targetOpacity = 1;
 
+		float pCursor = -1;
 		for (double i = 0; i <= 1; i += 0.05) {
 			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
 
-			float currentOrientation = initOrientation + (targetOrientation - initOrientation) * cursor;
-
+			float currentOrientation = -1;
 			float currentOpacity = -1;
-			if (cursor < 0.5F)
+
+			if (cursor < 0.5F) {
+				currentOrientation = initOrientation + (midEndOrientation - initOrientation) * (cursor * 2);
 				currentOpacity = initOpacity + (midOpacity - initOpacity) * (cursor * 2);
-			else
+			} else {
+				currentOrientation = midStartOrientation + (targetOrientation - midStartOrientation) * ((cursor - 0.5F) * 2);
 				currentOpacity = midOpacity + (targetOpacity - midOpacity) * ((cursor - 0.5F) * 2);
+			}
+
+			if (pCursor < 0.5F && cursor >= 0.5F && middleTimeAction != null) {
+				this.SetOpacityInHierarchy(0, dataPanel, 0, int.MaxValue);
+				yield return new WaitForSeconds(0.01F);
+				middleTimeAction();
+			}
 
 			foreach (Transform dataBoxTransform in dataPanel.transform) {
 				foreach (Transform dataItemTransform in dataBoxTransform) {
-					Quaternion elementRotation = dataItemTransform.transform.localRotation;
-					dataItemTransform.transform.localRotation = Quaternion.Euler(currentOrientation, elementRotation.eulerAngles.y, elementRotation.eulerAngles.z);
+					Quaternion dataItemRotation = dataItemTransform.rotation;
+					dataItemTransform.rotation = Quaternion.Euler(currentOrientation, 0, 0);
 				}
 			}
 
 			this.SetOpacityInHierarchy(currentOpacity, dataPanel, 0, int.MaxValue);
 
 			yield return new WaitForSeconds(0.01F);
+
+			pCursor = cursor;
 		}
 	}
 
-	private void SetOrientationInHierarchy(float orientation, GameObject parentElement, int currentDeth, int maxDeth) {
-		Quaternion elementRotation = parentElement.transform.localRotation;
-		parentElement.transform.localRotation = Quaternion.Euler(orientation, elementRotation.eulerAngles.y, elementRotation.eulerAngles.z);
+	//private void SetOrientationInHierarchy(float orientation, GameObject parentElement, int currentDeth, int maxDeth) {
+	//	Quaternion elementRotation = parentElement.transform.localRotation;
+	//	parentElement.transform.localRotation = Quaternion.Euler(orientation, elementRotation.eulerAngles.y, elementRotation.eulerAngles.z);
 
-		if (parentElement.transform.childCount > 0 && currentDeth < maxDeth) {
-			foreach (Transform dataElementTransform in parentElement.transform) {
-				this.SetOrientationInHierarchy(orientation, dataElementTransform.gameObject, currentDeth + 1, maxDeth);
-			}
-		}
-	}
+	//	if (parentElement.transform.childCount > 0 && currentDeth < maxDeth) {
+	//		foreach (Transform dataElementTransform in parentElement.transform) {
+	//			this.SetOrientationInHierarchy(orientation, dataElementTransform.gameObject, currentDeth + 1, maxDeth);
+	//		}
+	//	}
+	//}
 
 	private void SetOpacityInHierarchy(float opacity, GameObject parentElement, int currentDeth, int maxDeth) {
 		Image elementImage = parentElement.GetComponent<Image>();

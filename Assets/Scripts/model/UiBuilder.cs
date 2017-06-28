@@ -129,7 +129,7 @@ public class UiBuilder {
 	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingSubsetData buildingSubsetData, string dataPanelName) {
 		string headerName = "DataBoxHeader_" + buildingSubsetData.Name;
 		Vector2 headerSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_HEADER_HEIGHT);
-		GameObject header = this.NewUiRectangle(dataBox, headerName, Vector3.zero, headerSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 1), ThemeColors.BRIGHT_BLUE);
+		GameObject header = this.NewUiRectangle(dataBox, headerName, Vector3.zero, headerSize, new Vector2(0, 0.5F), new Vector2(0, 1), new Vector2(1, 1), ThemeColors.BRIGHT_BLUE);
 		header.transform.SetParent(dataBox.transform, false);
 
 		HorizontalLayoutGroup headerHorizLayoutGroup = header.AddComponent<HorizontalLayoutGroup>();
@@ -176,7 +176,7 @@ public class UiBuilder {
 		string indicatorName = "Indicator_" + subsetName;
 		Vector3 indicatorPosition = new Vector3(BUILDING_DATA_INDICATOR_RECT_PADDING, 0, 0);
 		Vector2 indicatorSize = new Vector2(BUILDING_DATA_HEADER_LENGTH * 3, BUILDING_DATA_INDICATOR_HEIGHT);
-		GameObject sensorIndicator = this.NewUiRectangle(dataBox, indicatorName, indicatorPosition, indicatorSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1));
+		GameObject sensorIndicator = this.NewUiRectangle(dataBox, indicatorName, indicatorPosition, indicatorSize, new Vector2(0, 0.5F), new Vector2(0, 1), new Vector2(0, 1));
 		sensorIndicator.transform.SetParent(dataBox.transform, false);
 		sensorIndicator.tag = indicatorTag;
 
