@@ -84,19 +84,20 @@ public class UiBuilder {
 		GameObject link = this.NewUiRectangle(decorationsPanel, dataCanvas.name + "Link", Vector3.zero, linkSize, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 1), ThemeColors.BRIGHT_BLUE);
 
 		string iconBackgroundName = dataCanvas.name + "IconBackground";
-		Vector3 iconBackgroundLocPosition = new Vector3(-BUILDING_DATA_ICON_SIZE / 2F + BUILDING_DATA_LINK_WIDTH / 2F, -BUILDING_DATA_ICON_SIZE, 0);
+		Vector3 iconBackgroundLocPosition = new Vector3(BUILDING_DATA_LINK_WIDTH / 2F, -BUILDING_DATA_ICON_SIZE, 0);
 		Vector2 iconBackgroundSize = new Vector2(BUILDING_DATA_ICON_SIZE, BUILDING_DATA_ICON_SIZE);
-		GameObject dataBuildingIconBackground = this.NewUiRectangle(decorationsPanel, iconBackgroundName, iconBackgroundLocPosition, iconBackgroundSize, new Vector2(0, 0), new Vector2(0, 1), new Vector2(0, 1), IconsTexturesSprites.BUILDING_DATA_ICON_BACKGROUND);
+		GameObject dataBuildingIconBackground = this.NewUiRectangle(decorationsPanel, iconBackgroundName, iconBackgroundLocPosition, iconBackgroundSize, new Vector2(0.5F, 0), new Vector2(0, 1), new Vector2(0, 1), IconsTexturesSprites.BUILDING_DATA_ICON_BACKGROUND);
 
 		Vector2 staticIconSize = new Vector2(-BUILDING_DATA_ICON_SIZE * 0.2F, -BUILDING_DATA_ICON_SIZE * 0.2F);
 		string staticIconName = dataCanvas.name + "StaticIcon";
 		string staticIconPath = IconsTexturesSprites.BUILDING_DATA_ICON;
 		GameObject dataBuildingIcon = this.NewUiRectangle(dataBuildingIconBackground, staticIconName, Vector3.zero, staticIconSize, new Vector2(0.5F, 0.5F), new Vector2(0, 0), new Vector2(1, 1), staticIconPath);
+		dataBuildingIcon.transform.localScale = new Vector3(0.75F, 0.75F, 0.75F);
 
 		Vector2 animatedIconSize = new Vector2(-BUILDING_DATA_ICON_SIZE * 0.2F, -BUILDING_DATA_ICON_SIZE * 0.2F);;
 		string animatedIconName = dataCanvas.name + "AnimatedIcon";
 		GameObject dataBuildingAnimatedIcon = this.NewUiRectangle(dataBuildingIconBackground, animatedIconName, Vector3.zero, animatedIconSize, new Vector2(0.5F, 0.5F), new Vector2(0, 0), new Vector2(1, 1));
-		dataBuildingAnimatedIcon.transform.localScale = new Vector3(5, 5, 5);
+		dataBuildingAnimatedIcon.transform.localScale = new Vector3(2.5F, 2.5F, 2.5F);
 
 		SpriteRenderer animatedIconSpriteRenderer = dataBuildingAnimatedIcon.AddComponent<SpriteRenderer>();
 

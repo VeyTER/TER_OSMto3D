@@ -6,6 +6,11 @@ using UnityEngine.UI;
 using System.Xml;
 
 public class BuildingSensorsController : MonoBehaviour {
+	private static int RELOAD_FREQUENCY = 30;
+
+	//private enum DisplayState { ICON_ONLY, ICON_ONLY_TO_FULL, FULL, FULL_TO_ICON_ONLY }
+	//private DisplayState displayState;
+
 	private enum ReceptionStatus { INACTIVE, LOADING, TERMINATED }
 	private ReceptionStatus receptionStatus;
 
@@ -22,6 +27,7 @@ public class BuildingSensorsController : MonoBehaviour {
 	private readonly object synchronisationLock = new object();
 
 	public void Start() {
+		//this.displayState = DisplayState.ICON_ONLY;
 		this.receptionStatus = ReceptionStatus.INACTIVE;
 
 		this.cityBuilder = CityBuilder.GetInstance();
@@ -44,15 +50,19 @@ public class BuildingSensorsController : MonoBehaviour {
 			this.receptionStatus = ReceptionStatus.INACTIVE;
 
 			this.StopDataBuildingIconAnimation();
+			this.StartCoroutine(this.ScaleDataBuildingIcon(-1));
 
-			this.StartCoroutine(this.FlipDataBoxItems(this.RebuildIndicators));
+			this.StartCoroutine(this.FlipDataBoxItems(() => this.StartCoroutine(this.RebuildIndicators())));
 		}
 
-		if (Time.time - timeFlag >= 10) {
+		if (Time.time - timeFlag >= RELOAD_FREQUENCY) {
 			this.receptionStatus = ReceptionStatus.LOADING;
 			sensorsDataLoader.StopDataLoading();
 			sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
+
 			this.StartDataBuildingIconAnimation();
+			this.StartCoroutine(this.ScaleDataBuildingIcon(1));
+
 			timeFlag = Time.time;
 		}
 
@@ -153,22 +163,28 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
-	private void RebuildIndicators () {
+	private IEnumerator RebuildIndicators () {
 		foreach (Transform dataBoxtransform in dataPanel.transform) {
 			HorizontalLayoutGroup[] horizontalLayoutsInChildren = dataBoxtransform.GetComponentsInChildren<HorizontalLayoutGroup>();
 			foreach (HorizontalLayoutGroup horizontalLayout in horizontalLayoutsInChildren)
 				GameObject.Destroy(horizontalLayout);
 
+			yield return new WaitForSeconds(0.01F);
+
 			VerticalLayoutGroup[] verticalLayoutsInChildren = dataBoxtransform.GetComponentsInChildren<VerticalLayoutGroup>();
 			foreach (VerticalLayoutGroup verticalLayout in verticalLayoutsInChildren)
 				GameObject.Destroy(verticalLayout);
+
+			yield return new WaitForSeconds(0.01F);
 
 			GameObject.Destroy(dataBoxtransform.gameObject);
 		}
 
 		lock (synchronisationLock) {
-			foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in subsetsData)
+			foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in subsetsData) {
 				uiBuilder.BuildBuidingDataBox(dataPanel, subsetDataEntry.Value);
+				yield return new WaitForSeconds(0.01F);
+			}
 		}
 	}
 
@@ -193,6 +209,29 @@ public class BuildingSensorsController : MonoBehaviour {
 	//private IEnumarator FlipBuildingDataIcon() {
 
 	//}
+
+	private IEnumerator ScaleDataBuildingIcon(int direction) {
+		float initScale = -1;
+		float targetScale = -1;
+
+		if (direction > 0) {
+			initScale = 1;
+			targetScale = 1.25F;
+		} else if (direction < 0) {
+			initScale = 1.25F;
+			targetScale = 1;
+		}
+
+		GameObject iconbackground = dataPanel.transform.parent.GetChild(0).GetChild(1).gameObject;
+		for (double i = 0; i <= 1; i += 0.1) {
+			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
+
+			float currentScale = initScale + (targetScale - initScale) * cursor;
+			iconbackground.transform.localScale = new Vector3(currentScale, currentScale, cursor);
+
+			yield return new WaitForSeconds(0.01F);
+		}
+	}
 
 	private IEnumerator FlipDataBoxItems(Action middleTimeAction) {
 		float initOrientation = 0;

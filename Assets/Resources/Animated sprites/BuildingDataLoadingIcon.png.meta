@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 1fba691ef1a83044a910552f469be89c
-timeCreated: 1498577635
+timeCreated: 1498647541
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -13,6 +13,13 @@ TextureImporter:
     21300012: BuildingDataLoadingIcon_6
     21300014: BuildingDataLoadingIcon_7
     21300016: BuildingDataLoadingIcon_8
+    21300018: BuildingDataLoadingIcon_9
+    21300020: BuildingDataLoadingIcon_10
+    21300022: BuildingDataLoadingIcon_11
+    21300024: BuildingDataLoadingIcon_12
+    21300026: BuildingDataLoadingIcon_13
+    21300028: BuildingDataLoadingIcon_14
+    21300030: BuildingDataLoadingIcon_15
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -92,8 +99,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 202
-        height: 214
+        width: 498
+        height: 533
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -103,10 +110,10 @@ TextureImporter:
       name: BuildingDataLoadingIcon_1
       rect:
         serializedVersion: 2
-        x: 202
+        x: 498
         y: 0
-        width: 202
-        height: 214
+        width: 498
+        height: 533
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -116,10 +123,10 @@ TextureImporter:
       name: BuildingDataLoadingIcon_2
       rect:
         serializedVersion: 2
-        x: 404
+        x: 996
         y: 0
-        width: 202
-        height: 214
+        width: 498
+        height: 533
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -129,10 +136,10 @@ TextureImporter:
       name: BuildingDataLoadingIcon_3
       rect:
         serializedVersion: 2
-        x: 606
+        x: 1494
         y: 0
-        width: 202
-        height: 214
+        width: 498
+        height: 533
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -142,10 +149,10 @@ TextureImporter:
       name: BuildingDataLoadingIcon_4
       rect:
         serializedVersion: 2
-        x: 808
+        x: 1992
         y: 0
-        width: 202
-        height: 214
+        width: 498
+        height: 533
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,10 +162,10 @@ TextureImporter:
       name: BuildingDataLoadingIcon_5
       rect:
         serializedVersion: 2
-        x: 1010
+        x: 2490
         y: 0
-        width: 202
-        height: 214
+        width: 498
+        height: 533
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -168,10 +175,10 @@ TextureImporter:
       name: BuildingDataLoadingIcon_6
       rect:
         serializedVersion: 2
-        x: 1212
+        x: 2988
         y: 0
-        width: 202
-        height: 214
+        width: 498
+        height: 533
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,10 +188,10 @@ TextureImporter:
       name: BuildingDataLoadingIcon_7
       rect:
         serializedVersion: 2
-        x: 1414
+        x: 3486
         y: 0
-        width: 202
-        height: 214
+        width: 498
+        height: 533
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,10 +201,101 @@ TextureImporter:
       name: BuildingDataLoadingIcon_8
       rect:
         serializedVersion: 2
-        x: 1616
+        x: 3984
         y: 0
-        width: 202
-        height: 214
+        width: 498
+        height: 533
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: BuildingDataLoadingIcon_9
+      rect:
+        serializedVersion: 2
+        x: 4482
+        y: 0
+        width: 498
+        height: 533
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: BuildingDataLoadingIcon_10
+      rect:
+        serializedVersion: 2
+        x: 4980
+        y: 0
+        width: 498
+        height: 533
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: BuildingDataLoadingIcon_11
+      rect:
+        serializedVersion: 2
+        x: 5478
+        y: 0
+        width: 498
+        height: 533
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: BuildingDataLoadingIcon_12
+      rect:
+        serializedVersion: 2
+        x: 5976
+        y: 0
+        width: 498
+        height: 533
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: BuildingDataLoadingIcon_13
+      rect:
+        serializedVersion: 2
+        x: 6474
+        y: 0
+        width: 498
+        height: 533
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: BuildingDataLoadingIcon_14
+      rect:
+        serializedVersion: 2
+        x: 6972
+        y: 0
+        width: 498
+        height: 533
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: BuildingDataLoadingIcon_15
+      rect:
+        serializedVersion: 2
+        x: 7470
+        y: 0
+        width: 498
+        height: 533
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
