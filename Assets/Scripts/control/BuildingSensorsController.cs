@@ -6,10 +6,10 @@ using UnityEngine.UI;
 using System.Xml;
 
 public class BuildingSensorsController : MonoBehaviour {
-	private static int RELOAD_FREQUENCY = 30;
+	private static int RELOADING_FREQUENCY = 30;
 
-	//private enum DisplayState { ICON_ONLY, ICON_ONLY_TO_FULL, FULL, FULL_TO_ICON_ONLY }
-	//private DisplayState displayState;
+	private enum DisplayState { ICON_ONLY, ICON_ONLY_TO_FULL_DISPLAY, FULL_DISPLAY, FULL_DISPLAY_TO_ICON_ONLY }
+	private DisplayState displayState;
 
 	private enum ReceptionStatus { INACTIVE, LOADING, TERMINATED }
 	private ReceptionStatus receptionStatus;
@@ -27,7 +27,7 @@ public class BuildingSensorsController : MonoBehaviour {
 	private readonly object synchronisationLock = new object();
 
 	public void Start() {
-		//this.displayState = DisplayState.ICON_ONLY;
+		this.displayState = DisplayState.ICON_ONLY;
 		this.receptionStatus = ReceptionStatus.INACTIVE;
 
 		this.cityBuilder = CityBuilder.GetInstance();
@@ -42,35 +42,60 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.receptionStatus = ReceptionStatus.LOADING;
 		sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
 
+		this.StartDataBuildingIconAnimation();
+		this.StartCoroutine(this.ScaleDataBuildingIcon(1));
+
 		this.timeFlag = Time.time;
 	}
 
 	public void Update() {
-		if (receptionStatus == ReceptionStatus.TERMINATED) {
-			this.receptionStatus = ReceptionStatus.INACTIVE;
+		if (Time.time - timeFlag >= RELOADING_FREQUENCY && this.displayState == DisplayState.FULL_DISPLAY)
+			this.ReloadData();
 
-			this.StopDataBuildingIconAnimation();
-			this.StartCoroutine(this.ScaleDataBuildingIcon(-1));
+		if (receptionStatus == ReceptionStatus.TERMINATED)
+			this.EndDataReloading();
 
-			this.StartCoroutine(this.FlipDataBoxItems(() => this.StartCoroutine(this.RebuildIndicators())));
-		}
+		this.SetOrientationToCamera();
+	}
 
-		if (Time.time - timeFlag >= RELOAD_FREQUENCY) {
-			this.receptionStatus = ReceptionStatus.LOADING;
-			sensorsDataLoader.StopDataLoading();
-			sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
+	private void ReloadData() {
+		sensorsDataLoader.StopDataLoading();
 
-			this.StartDataBuildingIconAnimation();
-			this.StartCoroutine(this.ScaleDataBuildingIcon(1));
+		receptionStatus = ReceptionStatus.LOADING;
+		sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
 
-			timeFlag = Time.time;
-		}
+		this.StartDataBuildingIconAnimation();
+		this.StartCoroutine(this.ScaleDataBuildingIcon(1));
 
+		timeFlag = Time.time;
+	}
+
+	private void EndDataReloading() {
+		this.receptionStatus = ReceptionStatus.INACTIVE;
+
+		this.StopDataBuildingIconAnimation();
+		this.StartCoroutine(this.ScaleDataBuildingIcon(-1));
+
+		Action flipMiddleAction = () => {
+			this.StartCoroutine(this.RebuildIndicators());
+			if (displayState == DisplayState.ICON_ONLY || displayState == DisplayState.FULL_DISPLAY_TO_ICON_ONLY)
+				dataPanel.SetActive(false);
+		};
+
+		Action flipEndAction = () => {
+			if (displayState == DisplayState.ICON_ONLY || displayState == DisplayState.FULL_DISPLAY_TO_ICON_ONLY)
+				this.SetOpacityInHierarchy(0, dataPanel, 0, int.MaxValue);
+		};
+
+		this.StartCoroutine(this.FlipDataBoxItems(flipMiddleAction, flipEndAction));
+	}
+
+	private void SetOrientationToCamera() {
 		GameObject dataCanvas = dataPanel.transform.parent.gameObject;
 
 		float deltaX = dataCanvas.transform.position.x - Camera.main.transform.position.x;
 		float deltaZ = dataCanvas.transform.position.z - Camera.main.transform.position.z;
-		float orientation = (float)Math.Atan2(deltaZ, deltaX) * Mathf.Rad2Deg;
+		float orientation = (float) Math.Atan2(deltaZ, deltaX) * Mathf.Rad2Deg;
 
 		Quaternion rotation = transform.rotation;
 		dataCanvas.transform.rotation = Quaternion.Euler(rotation.eulerAngles.x, -orientation + 90, rotation.eulerAngles.z);
@@ -91,7 +116,7 @@ public class BuildingSensorsController : MonoBehaviour {
 	}
 
 	public void ProcessReceivedData(IAsyncResult asynchronousResult) {
-		while (!asynchronousResult.IsCompleted) ;
+		while (!asynchronousResult.IsCompleted);
 		this.receptionStatus = ReceptionStatus.TERMINATED;
 
 		SensorDataLoader.RequestState requestState = (SensorDataLoader.RequestState) asynchronousResult.AsyncState;
@@ -163,27 +188,41 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
-	private IEnumerator RebuildIndicators () {
-		foreach (Transform dataBoxtransform in dataPanel.transform) {
-			HorizontalLayoutGroup[] horizontalLayoutsInChildren = dataBoxtransform.GetComponentsInChildren<HorizontalLayoutGroup>();
-			foreach (HorizontalLayoutGroup horizontalLayout in horizontalLayoutsInChildren)
-				GameObject.Destroy(horizontalLayout);
-
-			yield return new WaitForSeconds(0.01F);
-
-			VerticalLayoutGroup[] verticalLayoutsInChildren = dataBoxtransform.GetComponentsInChildren<VerticalLayoutGroup>();
-			foreach (VerticalLayoutGroup verticalLayout in verticalLayoutsInChildren)
-				GameObject.Destroy(verticalLayout);
-
-			yield return new WaitForSeconds(0.01F);
-
-			GameObject.Destroy(dataBoxtransform.gameObject);
+	public void ToggleHeightState() {
+		if (displayState == DisplayState.ICON_ONLY) {
+			dataPanel.SetActive(true);
+			this.StartCoroutine(this.ChangeDisplayHeight(1, null));
+			displayState = DisplayState.ICON_ONLY_TO_FULL_DISPLAY;
+		} else if (displayState == DisplayState.FULL_DISPLAY) {
+			this.StartCoroutine(this.ChangeDisplayHeight(-1, () => {
+				dataPanel.SetActive(false);
+			}));
+			displayState = DisplayState.FULL_DISPLAY_TO_ICON_ONLY;
 		}
+	}
+
+	private IEnumerator RebuildIndicators () {
+		if (dataPanel.transform.childCount > 0) {
+			foreach (Transform dataBoxTransform in dataPanel.transform) {
+				HorizontalLayoutGroup[] horizontalLayoutsInChildren = dataBoxTransform.GetComponentsInChildren<HorizontalLayoutGroup>();
+				foreach (HorizontalLayoutGroup horizontalLayout in horizontalLayoutsInChildren)
+					GameObject.Destroy(horizontalLayout);
+
+				VerticalLayoutGroup[] verticalLayoutsInChildren = dataBoxTransform.GetComponentsInChildren<VerticalLayoutGroup>();
+				foreach (VerticalLayoutGroup verticalLayout in verticalLayoutsInChildren)
+					GameObject.Destroy(verticalLayout);
+
+				GameObject dataBox = dataBoxTransform.gameObject;
+				GameObject.Destroy(dataBox);
+			}
+		}
+
+		yield return new WaitForSeconds(0.01F);
 
 		lock (synchronisationLock) {
 			foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in subsetsData) {
 				uiBuilder.BuildBuidingDataBox(dataPanel, subsetDataEntry.Value);
-				yield return new WaitForSeconds(0.01F);
+				//yield return new WaitForSeconds(0.01F);
 			}
 		}
 	}
@@ -205,10 +244,94 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
-	// Rotation de la grosse icône lorsque de nouvelles données sont reçues
-	//private IEnumarator FlipBuildingDataIcon() {
+	private IEnumerator ChangeDisplayHeight(int direction, Action finalAction) {
+		float initOrientation = 0;
+		float initOpacity = 1;
+		float targetHeight = -1;
 
-	//}
+		float midEndOrientation = 90;
+		float midStartOrientation = -90;
+		float midOpacity = 0;
+
+		float targetOrientation = 0;
+		float targetOpacity = 1;
+		float initHeight = -1;
+
+		if (direction > 0) {
+			initHeight = UiBuilder.BUILDING_DATA_CANVAS_LOW_HEIGHT;
+			targetHeight = UiBuilder.BUILDING_DATA_CANVAS_HIGH_HEIGHT;
+		} else if (direction < 0) {
+			initHeight = UiBuilder.BUILDING_DATA_CANVAS_HIGH_HEIGHT;
+			targetHeight = UiBuilder.BUILDING_DATA_CANVAS_LOW_HEIGHT;
+		}
+
+		GameObject dataDisplay = dataPanel.transform.parent.gameObject;
+		RectTransform displayRect = (RectTransform) dataDisplay.transform;
+
+		GameObject buildingDataIconBackground = dataPanel.transform.parent.GetChild(0).GetChild(1).gameObject;
+		GameObject buildingDataIcon = buildingDataIconBackground.transform.GetChild(0).gameObject;
+
+		Image iconBackgroundImage = buildingDataIconBackground.GetComponent<Image>();
+		Image iconImage = buildingDataIcon.GetComponent<Image>();
+
+		Color iconBackgroundColor = iconBackgroundImage.color;
+		Color iconColor = iconImage.color;
+
+		float pCursor = -1;
+		for (double i = 0; i <= 1; i += 0.05) {
+			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
+
+			float currentOrientation = -1;
+			float currentOpacity = -1;
+
+			if (cursor < 0.5F) {
+				currentOrientation = initOrientation + (midEndOrientation - initOrientation) * (cursor * 2);
+				currentOpacity = initOpacity + (midOpacity - initOpacity) * (cursor * 2);
+			} else {
+				currentOrientation = midStartOrientation + (targetOrientation - midStartOrientation) * ((cursor - 0.5F) * 2);
+				currentOpacity = midOpacity + (targetOpacity - midOpacity) * ((cursor - 0.5F) * 2);
+			}
+
+			float currentHeight = initHeight + (targetHeight - initHeight) * cursor;
+
+			Quaternion iconBackgroundRotation = buildingDataIconBackground.transform.localRotation;
+			buildingDataIconBackground.transform.localRotation = Quaternion.Euler(0, currentOrientation, 0);
+
+			this.SetDataItemsOrientation(currentOrientation);
+
+			if ((direction > 0 && cursor >= 0.5F) || (direction < 0 && cursor <= 0.5F))
+				this.SetOpacityInHierarchy(currentOpacity, dataPanel, 0, int.MaxValue);
+
+			iconBackgroundImage.color = new Color(iconBackgroundColor.r, iconBackgroundImage.color.g, iconBackgroundImage.color.b, currentOpacity);
+			iconImage.color = new Color(iconColor.r, iconColor.g, iconColor.b, currentOpacity);
+
+			if (pCursor < 0.5F && cursor >= 0.5F) {
+				if (direction > 0) {
+					iconBackgroundImage.sprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_ICON_BACKGROUND);
+					iconImage.sprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_ICON);
+				} else if (direction < 0) {
+					this.SetOpacityInHierarchy(0, dataPanel, 0, int.MaxValue);
+					iconBackgroundImage.sprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_INFO_BUTTON_ICON_BACKGROUND);
+					iconImage.sprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_INFO_BUTTON_ICON);
+				}
+
+				yield return new WaitForSeconds(0.01F);
+			}
+
+			displayRect.sizeDelta = new Vector2(displayRect.sizeDelta.x, currentHeight);
+
+			yield return new WaitForSeconds(0.01F);
+			pCursor = cursor;
+		}
+
+		if (displayState == DisplayState.ICON_ONLY_TO_FULL_DISPLAY)
+			displayState = DisplayState.FULL_DISPLAY;
+		else if (displayState == DisplayState.FULL_DISPLAY_TO_ICON_ONLY)
+			displayState = DisplayState.ICON_ONLY;
+
+		if (finalAction != null)
+			finalAction();
+	}
 
 	private IEnumerator ScaleDataBuildingIcon(int direction) {
 		float initScale = -1;
@@ -233,7 +356,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
-	private IEnumerator FlipDataBoxItems(Action middleTimeAction) {
+	private IEnumerator FlipDataBoxItems(Action middleTimeAction, Action finalAction) {
 		float initOrientation = 0;
 		float initOpacity = 1;
 
@@ -265,31 +388,25 @@ public class BuildingSensorsController : MonoBehaviour {
 				middleTimeAction();
 			}
 
-			foreach (Transform dataBoxTransform in dataPanel.transform) {
-				foreach (Transform dataItemTransform in dataBoxTransform) {
-					Quaternion dataItemRotation = dataItemTransform.rotation;
-					dataItemTransform.rotation = Quaternion.Euler(currentOrientation, 0, 0);
-				}
-			}
-
+			this.SetDataItemsOrientation(currentOrientation);
 			this.SetOpacityInHierarchy(currentOpacity, dataPanel, 0, int.MaxValue);
 
 			yield return new WaitForSeconds(0.01F);
 
 			pCursor = cursor;
 		}
+
+		finalAction();
 	}
 
-	//private void SetOrientationInHierarchy(float orientation, GameObject parentElement, int currentDeth, int maxDeth) {
-	//	Quaternion elementRotation = parentElement.transform.localRotation;
-	//	parentElement.transform.localRotation = Quaternion.Euler(orientation, elementRotation.eulerAngles.y, elementRotation.eulerAngles.z);
-
-	//	if (parentElement.transform.childCount > 0 && currentDeth < maxDeth) {
-	//		foreach (Transform dataElementTransform in parentElement.transform) {
-	//			this.SetOrientationInHierarchy(orientation, dataElementTransform.gameObject, currentDeth + 1, maxDeth);
-	//		}
-	//	}
-	//}
+	private void SetDataItemsOrientation(float orientation) {
+		foreach (Transform dataBoxTransform in dataPanel.transform) {
+			foreach (Transform dataItemTransform in dataBoxTransform) {
+				Quaternion dataItemRotation = dataItemTransform.localRotation;
+				dataItemTransform.localRotation = Quaternion.Euler(orientation, 0, 0);
+			}
+		}
+	}
 
 	private void SetOpacityInHierarchy(float opacity, GameObject parentElement, int currentDeth, int maxDeth) {
 		Image elementImage = parentElement.GetComponent<Image>();

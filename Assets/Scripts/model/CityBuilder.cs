@@ -101,7 +101,8 @@ public class CityBuilder {
 		this.mapBackgrounds = this.LoadMapBackgrounds();
 
 		this.sensoredBuildings = new Dictionary<string, string>();
-		this.sensoredBuildings["U3"] = "u3";
+		this.sensoredBuildings["IRIT"] = "u4";
+		this.sensoredBuildings["U3"] = "u4";
 		this.sensoredBuildings["U4"] = "u4";
 	}
 

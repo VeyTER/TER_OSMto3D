@@ -73,7 +73,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			}
 			break;
 		case UiNames.CANCEL_BUILDING_CREATION_BUTTON:
-			if (!controlPanelManager.AllPanelClosed()) {
+			if (!controlPanelManager.AllPanelsClosed()) {
 				if (this.IsPlayerMoving()) {
 					buildingCreationEditor.CompensateCameraMoves();
 					buildingCreationEditor.UpdateDisplayedSituation();
@@ -273,9 +273,9 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	public void OnMouseUp() {
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
 		if (tag.Equals (GoTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
-			if ((editController.EditState == EditController.EditStates.NONE_SELECTION || editController.EditState == EditController.EditStates.READY_TO_EDIT) && controlPanelManager.AllPanelClosed()) {
+			if ((editController.EditState == EditController.EditStates.NONE_SELECTION || editController.EditState == EditController.EditStates.READY_TO_EDIT) && controlPanelManager.AllPanelsClosed()) {
 				editController.SwitchBuilding(gameObject);
-			} else if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE && controlPanelManager.AllPanelClosed()) {
+			} else if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE && controlPanelManager.AllPanelsClosed()) {
 				int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
 				if (expansionDirection > 0) {
 					heightChangingEditor.IncrementObjectHeight();
@@ -315,17 +315,20 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// 	d'interface.
 	/// </summary>
 	/// <param name="eventData">Données sur l'évènement.</param>
-	public void OnPointerUp (PointerEventData eventData) {
-		if (controlPanelManager.AllPanelClosed() && editController.IsInactive()) {
+	public void OnPointerUp(PointerEventData eventData) {
+		if (controlPanelManager.AllPanelsClosed() && editController.IsInactive()) {
 			this.OnPointerUpControlPanel();
 			this.OnPointerUpEditControler();
+			this.OnPointerUpBuildingSensorsController();
 		} else {
-			if (!controlPanelManager.AllPanelClosed()) {
+			if (!controlPanelManager.AllPanelsClosed()) {
 				this.OnPointerUpControlPanel();
 			}
 
 			if (!editController.IsInactive()) {
 				this.OnPointerUpEditControler();
+			} else {
+				this.OnPointerUpBuildingSensorsController();
 			}
 		}
 	}
@@ -344,7 +347,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		switch (name.Split('_')[0]) {
 		case UiNames.CREATE_BUILDING_BUTTON:
-			if (controlPanelManager.AllPanelClosed()) {
+			if (controlPanelManager.AllPanelsClosed()) {
 				buildingCreationPanelController.transform.gameObject.SetActive(true);
 				buildingCreationPanelController.OpenPanel(null);
 				buildingCreationEditor.InitializeBuildingCreation();
@@ -375,7 +378,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 		// ==== Gestion des boutons controllant la visibilité des objets ====
 		case UiNames.TOGGLE_VISIBILITY_BUTTON:
-			if (controlPanelManager.AllPanelClosed()) {
+			if (controlPanelManager.AllPanelsClosed()) {
 				visibilityPanelController.transform.gameObject.SetActive(true);
 				visibilityPanelController.OpenPanel(null);
 				controlPanelManager.ControlState = ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING;
@@ -603,6 +606,18 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				editController.CancelTransform();
 				editController.ExitTransformMode();
 			}
+			break;
+		}
+	}
+
+	private void OnPointerUpBuildingSensorsController() {
+		switch (name.Split('_')[0]) {
+		case UiNames.BUILDING_DATA_ICON_BUTTON:
+			GameObject dataDisplay = this.transform.parent.parent.gameObject;
+			GameObject attachedBuilding = BuildingsTools.GetInstance().DataDisplayToBuilding(dataDisplay);
+
+			BuildingSensorsController sensorController = attachedBuilding.GetComponent<BuildingSensorsController>();
+			sensorController.ToggleHeightState();
 			break;
 		}
 	}

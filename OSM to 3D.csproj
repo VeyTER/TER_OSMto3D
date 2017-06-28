@@ -88,7 +88,7 @@
     <Compile Include="Assets\Scripts\constants\Sensors.cs" />
     <Compile Include="Assets\Scripts\constants\NodeTags.cs" />
     <Compile Include="Assets\Scripts\constants\ObjectNames.cs" />
-    <Compile Include="Assets\Scripts\constants\IconsAndTextures.cs" />
+    <Compile Include="Assets\Scripts\constants\IconsTexturesSprites.cs" />
     <Compile Include="Assets\Scripts\constants\ThemeColors.cs" />
     <Compile Include="Assets\Scripts\constants\UiNames.cs" />
     <Compile Include="Assets\Scripts\constants\XmlAttributes.cs" />

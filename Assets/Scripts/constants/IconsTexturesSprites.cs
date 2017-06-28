@@ -3,7 +3,10 @@
 public class IconsTexturesSprites {
 	public const string NONE_COLOR = FilePaths.ICONS_FOLDER_LOCAL + "NoneColorIcon";
 
+	public const string BUILDING_INFO_BUTTON_ICON = FilePaths.ICONS_FOLDER_LOCAL + "BuildingInfoButtonIcon";
 	public const string BUILDING_DATA_ICON = FilePaths.ICONS_FOLDER_LOCAL + "BuildingDataIcon";
+
+	public const string BUILDING_INFO_BUTTON_ICON_BACKGROUND = FilePaths.STATIC_SPRITES_FOLDER_LOCAL + "BuildingInfoButtonIconBackground";
 	public const string BUILDING_DATA_ICON_BACKGROUND = FilePaths.STATIC_SPRITES_FOLDER_LOCAL + "BuildingDataIconBackground";
 
 	public const string TEMPERATURE_ICON = FilePaths.ICONS_FOLDER_LOCAL + "TemperatureIcon";
@@ -13,4 +16,3 @@ public class IconsTexturesSprites {
 	public const string PRESENCE_ICON = FilePaths.ICONS_FOLDER_LOCAL + "PresenceIcon";
 	public const string DEFAULT_SENSOR_ICON = FilePaths.ICONS_FOLDER_LOCAL + "DefaultSensorIcon";
 }
-

@@ -37,7 +37,7 @@ public class ControlPanelManager {
 		internal static ControlPanelManager instance = new ControlPanelManager();
 	}
 
-	public bool AllPanelClosed() {
+	public bool AllPanelsClosed() {
 		return controlState == ControlStates.NONE;
 	}
 
