@@ -4,6 +4,8 @@ using UnityEditor;
 public class MapNames : ScriptableObject {
 	public static string CAMPUS = "campus";
 
+	public static string CAMPUS_ETENDU = "campus_etendu";
+
 	public static string CANA_MIDI = "canal_midi";
 
 	public static string CAPITOLE = "capitole";

@@ -118,7 +118,7 @@ public class XmlTags {
 
 	public const string UNIT_ID = "record";
 
-	public const string VALUE = "value";
+	public const string SENSOR_VALUE = "value";
 
 	public const string SUB_ID = "subID";
 
@@ -128,4 +128,12 @@ public class XmlTags {
 
 	public const string VALUE_UNITS = "value_units";
 
+
+	public const string THRESHOLDS = "thresholds";
+	public const string BUILDING_SENSOR_GROUP = "building";
+	public const string ROOM_SENSOR_GROUP = "room";
+	public const string BUILDING_SUBSET_SENSOR = "sensor";
+	public const string FIXED_VALUE_THRESHOLD = "fixed";
+	public const string MIN_THRESHOLD = "min";
+	public const string MAX_THRESHOLD = "max";
 }

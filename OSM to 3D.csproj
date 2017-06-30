@@ -83,21 +83,21 @@
     <Compile Include="Assets\OBJExport\OBJExporter.cs" />
     <Compile Include="Assets\Scripts\constants\Dimensions.cs" />
     <Compile Include="Assets\Scripts\constants\FilePaths.cs" />
+    <Compile Include="Assets\Scripts\constants\IconsTexturesSprites.cs" />
     <Compile Include="Assets\Scripts\constants\MapNames.cs" />
     <Compile Include="Assets\Scripts\constants\Materials.cs" />
-    <Compile Include="Assets\Scripts\constants\Sensors.cs" />
     <Compile Include="Assets\Scripts\constants\NodeTags.cs" />
     <Compile Include="Assets\Scripts\constants\ObjectNames.cs" />
-    <Compile Include="Assets\Scripts\constants\IconsTexturesSprites.cs" />
+    <Compile Include="Assets\Scripts\constants\Sensors.cs" />
     <Compile Include="Assets\Scripts\constants\ThemeColors.cs" />
     <Compile Include="Assets\Scripts\constants\UiNames.cs" />
     <Compile Include="Assets\Scripts\constants\XmlAttributes.cs" />
     <Compile Include="Assets\Scripts\constants\XmlKeys.cs" />
     <Compile Include="Assets\Scripts\constants\XmlTags.cs" />
     <Compile Include="Assets\Scripts\constants\XmlValues.cs" />
-    <Compile Include="Assets\Scripts\control\BuildingSensorsController.cs" />
     <Compile Include="Assets\Scripts\control\BoxPanelController.cs" />
     <Compile Include="Assets\Scripts\control\BuildingCreationEditor.cs" />
+    <Compile Include="Assets\Scripts\control\BuildingSensorsController.cs" />
     <Compile Include="Assets\Scripts\control\CameraController.cs" />
     <Compile Include="Assets\Scripts\control\CommonPanelController.cs" />
     <Compile Include="Assets\Scripts\control\ControlPanelManager.cs" />
@@ -114,10 +114,8 @@
     <Compile Include="Assets\Scripts\control\TurningEditor.cs" />
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
-    <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\BuildingSubsetData.cs" />
-    <Compile Include="Assets\Scripts\model\SensorData.cs" />
-    <Compile Include="Assets\Scripts\model\UiBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
     <Compile Include="Assets\Scripts\model\DelauneyTriangulation.cs" />
     <Compile Include="Assets\Scripts\model\ExternalObject.cs" />
@@ -126,18 +124,24 @@
     <Compile Include="Assets\Scripts\model\MapBackground.cs" />
     <Compile Include="Assets\Scripts\model\MapLoader.cs" />
     <Compile Include="Assets\Scripts\model\MaterialData.cs" />
+    <Compile Include="Assets\Scripts\model\SensorThreshold.cs" />
     <Compile Include="Assets\Scripts\model\Node.cs" />
     <Compile Include="Assets\Scripts\model\NodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\PointEditor.cs" />
     <Compile Include="Assets\Scripts\model\RoofBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\SensorData.cs" />
     <Compile Include="Assets\Scripts\model\SensorDataLoader.cs" />
+    <Compile Include="Assets\Scripts\model\ThresholdConditions.cs" />
     <Compile Include="Assets\Scripts\model\Triangle.cs" />
+    <Compile Include="Assets\Scripts\model\UiBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\OSM data\Maps resumed\testXML.xml" />
     <None Include="Assets\Resources\External objects\objects_properties.txt" />
     <None Include="Assets\Resources\Materials\materials_details.txt" />
     <None Include="Assets\Resources\Textures\maps_background_details.txt" />
+    <None Include="Assets\Scripts data\alert_thresholds.xml" />
+    <None Include="Assets\Scripts data\api_login.txt" />
     <None Include="Assets\Shaders\Standard.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

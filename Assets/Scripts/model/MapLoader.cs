@@ -114,8 +114,8 @@ public class MapLoader {
 					XmlNode tagNode = tagNodes [i];
 
 					// Récupération du nom et de la valeur de propriété
-					string key = this.AttributeValue (tagNode, XmlAttributes.KEY);
-					string value = this.AttributeValue (tagNode, XmlAttributes.VALUE);
+					string key = this.AttributeValue (tagNode, XmlAttributes.PROPERTY_KEY);
+					string value = this.AttributeValue (tagNode, XmlAttributes.PROPERTY_VALUE);
 
 					// Si l'objet est un objet naturel ou une voie de route, l'objet est complet, car ne contenant qu'un
 					// seul noeud, on peut alors directement créer un groupe de noeuds et y insérer le noeud courant.
@@ -185,8 +185,8 @@ public class MapLoader {
 					XmlNode tagNode = ndNode;
 
 					// Récupération du nom et de la valeur de la propriété
-					string key = this.AttributeValue (tagNode, XmlAttributes.KEY);
-					string value = this.AttributeValue (tagNode, XmlAttributes.VALUE);
+					string key = this.AttributeValue (tagNode, XmlAttributes.PROPERTY_KEY);
+					string value = this.AttributeValue (tagNode, XmlAttributes.PROPERTY_VALUE);
 
 					// Changement du nom du groupe de noeuds courant si la propriété représente cette valeur
 					if (key.Equals (XmlKeys.NAME))

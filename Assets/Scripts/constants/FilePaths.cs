@@ -31,6 +31,10 @@ public class FilePaths {
 	public const string MAPS_CUSTOM_FOLDER = OSM_FOLDER + "Maps custom/";
 
 
+	public const string SCRIPT_DATA_FOLDER = ASSETS_FOLDER + "Scripts data/";
+	public const string ALERT_THRESHOLDS_FILE = SCRIPT_DATA_FOLDER + "alert_thresholds.xml";
+
+
 	///<summary>Chemon vers le dossier des matériaux.</summary>
 	public const string MATERIALS_FOLDER_LOCAL = "Materials/";
 

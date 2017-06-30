@@ -15,4 +15,10 @@ public class XmlValues {
 	/// 	<para>NE PAS MODIFIER</para>
 	///</summary>
 	public const string LANES = "lanes";
+
+	public const string THRESHOLD_EQUALS_CONDITION = "equals";
+	public const string THRESHOLD_NOT_EQUALS_CONDITION = "not equals";
+
+	public const string THRESHOLD_IN_CONDITION = "in";
+	public const string THRESHOLD_OUT_CONDITION = "out";
 }

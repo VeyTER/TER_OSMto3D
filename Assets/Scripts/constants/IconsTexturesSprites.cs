@@ -3,11 +3,18 @@
 public class IconsTexturesSprites {
 	public const string NONE_COLOR = FilePaths.ICONS_FOLDER_LOCAL + "NoneColorIcon";
 
-	public const string BUILDING_INFO_BUTTON_ICON = FilePaths.ICONS_FOLDER_LOCAL + "BuildingInfoButtonIcon";
-	public const string BUILDING_DATA_ICON = FilePaths.ICONS_FOLDER_LOCAL + "BuildingDataIcon";
+	public const string BUILDING_DATA_LOW_ICON_BACKGROUND = FilePaths.STATIC_SPRITES_FOLDER_LOCAL + "BuildingDataLowIconBackground";
+	public const string BUILDING_DATA_LOW_ICON = FilePaths.ICONS_FOLDER_LOCAL + "BuildingDataLowIcon";
 
-	public const string BUILDING_INFO_BUTTON_ICON_BACKGROUND = FilePaths.STATIC_SPRITES_FOLDER_LOCAL + "BuildingInfoButtonIconBackground";
-	public const string BUILDING_DATA_ICON_BACKGROUND = FilePaths.STATIC_SPRITES_FOLDER_LOCAL + "BuildingDataIconBackground";
+	public const string BUILDING_DATA_HIGH_ICON_BACKGROUND = FilePaths.STATIC_SPRITES_FOLDER_LOCAL + "BuildingDataHighIconBackground";
+	public const string BUILDING_DATA_HIGH_ICON = FilePaths.ICONS_FOLDER_LOCAL + "BuildingDataHighIcon";
+
+	public const string BUILDING_DATA_LOW_ALERT_ICON_BACKGROUND = FilePaths.STATIC_SPRITES_FOLDER_LOCAL + "BuildingDataLowAlertIconBackground";
+	public const string BUILDING_DATA_LOW_ALERT_ICON = FilePaths.ICONS_FOLDER_LOCAL + "BuildingDataLowAlertIcon";
+
+	public const string BUILDING_DATA_HIGH_ALERT_ICON_BACKGROUND = FilePaths.STATIC_SPRITES_FOLDER_LOCAL + "BuildingDataHighAlertIconBackground";
+	public const string BUILDING_DATA_HIGH_ALERT_ICON = FilePaths.ICONS_FOLDER_LOCAL + "BuildingDataHighAlertIcon";
+
 
 	public const string TEMPERATURE_ICON = FilePaths.ICONS_FOLDER_LOCAL + "TemperatureIcon";
 	public const string HUMIDITY_ICON = FilePaths.ICONS_FOLDER_LOCAL + "HumidityIcon";

@@ -48,6 +48,7 @@ public class UiBuilder {
 		dataPanelVertLayoutGroup.childControlHeight = true;
 		dataPanelVertLayoutGroup.childForceExpandWidth = false;
 		dataPanelVertLayoutGroup.childForceExpandHeight = false;
+		dataPanelVertLayoutGroup.padding = new RectOffset(0, 0, (int)BUILDING_DATA_INDICATOR_RECT_PADDING * 2, 0);
 
 		return dataPanel;
 	}
@@ -58,7 +59,7 @@ public class UiBuilder {
 
 		GameObject newCanvas = new GameObject("Canvas_" + building.name);
 		newCanvas.transform.SetParent(building.transform, false);
-		newCanvas.transform.localPosition = new Vector3(0, buildingHeight, 0);
+		newCanvas.transform.localPosition = new Vector3(0, buildingHeight / 2F, 0);
 		newCanvas.transform.localScale = Vector3.one * BUILDING_DATA_CANVAS_SCALE;
 
 		Canvas canvasSettings = newCanvas.AddComponent<Canvas>();
@@ -88,7 +89,7 @@ public class UiBuilder {
 		string iconBackgroundName = UiNames.BUILDING_DATA_ICON_BUTTON + "_" + buildingName;
 		Vector3 iconBackgroundLocPosition = new Vector3(BUILDING_DATA_LINK_WIDTH / 2F, -BUILDING_DATA_ICON_SIZE, 0);
 		Vector2 iconBackgroundSize = new Vector2(BUILDING_DATA_ICON_SIZE, BUILDING_DATA_ICON_SIZE);
-		string backgroundPath = IconsTexturesSprites.BUILDING_INFO_BUTTON_ICON_BACKGROUND;
+		string backgroundPath = IconsTexturesSprites.BUILDING_DATA_LOW_ICON_BACKGROUND;
 		GameObject dataBuildingIconBackground = this.NewUiRectangle(decorationsPanel, iconBackgroundName, iconBackgroundLocPosition, iconBackgroundSize, new Vector2(0.5F, 0), new Vector2(0, 1), new Vector2(0, 1), backgroundPath);
 
 		dataBuildingIconBackground.AddComponent<Button>();
@@ -96,7 +97,7 @@ public class UiBuilder {
 
 		Vector2 staticIconSize = new Vector2(-BUILDING_DATA_ICON_SIZE * 0.2F, -BUILDING_DATA_ICON_SIZE * 0.2F);
 		string staticIconName = "StaticIcon_" + buildingName;
-		string staticIconPath = IconsTexturesSprites.BUILDING_INFO_BUTTON_ICON;
+		string staticIconPath = IconsTexturesSprites.BUILDING_DATA_HIGH_ICON;
 		GameObject dataBuildingIcon = this.NewUiRectangle(dataBuildingIconBackground, staticIconName, Vector3.zero, staticIconSize, new Vector2(0.5F, 0.5F), new Vector2(0, 0), new Vector2(1, 1), staticIconPath);
 		dataBuildingIcon.transform.localScale = new Vector3(0.75F, 0.75F, 0.75F);
 

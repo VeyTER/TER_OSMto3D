@@ -37,13 +37,13 @@ public class XmlAttributes {
 	/// 	<para>Nom de l'attribut donnant la clé de la propriété d'un objet.</para>
 	/// 	<para>NE PAS MODIFIER</para>
 	///</summary>
-	public const string KEY = "k";
+	public const string PROPERTY_KEY = "k";
 
 	/// <summary>
 	/// 	<para>Nom de l'attribut donnant la valeur de la propriété d'un objet.</para>
 	/// 	<para>NE PAS MODIFIER</para>
 	///</summary>
-	public const string VALUE = "v";
+	public const string PROPERTY_VALUE = "v";
 
 
 	/// <summary>
@@ -124,8 +124,10 @@ public class XmlAttributes {
 	public const string MAX_SPEED = "maxspeed";
 
 	public const string CUSTOM_MATERIAL = "custmat";
-
 	public const string OVERLAY_COLOR = "color";
-
 	public const string TOPIC = "topic";
+
+
+	public const string THRESHOLD_CONDITION = "condition";
+	public const string THRESHOLD_VALUE = "value";
 }

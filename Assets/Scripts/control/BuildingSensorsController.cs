@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Xml;
+using System.IO;
 
 public class BuildingSensorsController : MonoBehaviour {
 	private static int RELOADING_FREQUENCY = 30;
@@ -24,6 +25,8 @@ public class BuildingSensorsController : MonoBehaviour {
 
 	private float timeFlag;
 
+	private bool isUnderAlert;
+
 	private readonly object synchronisationLock = new object();
 
 	public void Start() {
@@ -39,21 +42,17 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject, name);
 		this.dataPanel.transform.parent.SetParent(uiBuilder.BuildingDataDisplays.transform);
 
-		this.receptionStatus = ReceptionStatus.LOADING;
-		sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
+		this.isUnderAlert = false;
 
-		this.StartDataBuildingIconAnimation();
-		this.StartCoroutine(this.ScaleDataBuildingIcon(1));
-
-		this.timeFlag = Time.time;
+		this.ReloadData();
 	}
 
 	public void Update() {
-		if (Time.time - timeFlag >= RELOADING_FREQUENCY && this.displayState == DisplayState.FULL_DISPLAY)
+		if (Time.time - timeFlag >= RELOADING_FREQUENCY)
 			this.ReloadData();
 
 		if (receptionStatus == ReceptionStatus.TERMINATED)
-			this.EndDataReloading();
+			this.UpdateDataDisplay();
 
 		this.SetOrientationToCamera();
 	}
@@ -65,28 +64,51 @@ public class BuildingSensorsController : MonoBehaviour {
 		sensorsDataLoader.LaunchDataLoading(new AsyncCallback(this.ProcessReceivedData));
 
 		this.StartDataBuildingIconAnimation();
+
+		if(displayState == DisplayState.ICON_ONLY || displayState == DisplayState.FULL_DISPLAY_TO_ICON_ONLY)
+			this.StartCoroutine(this.ChangeDisplayIconStatus(IconsTexturesSprites.BUILDING_DATA_LOW_ICON_BACKGROUND, IconsTexturesSprites.BUILDING_DATA_LOW_ICON, ThemeColors.BRIGHT_BLUE));
+		else if (displayState == DisplayState.FULL_DISPLAY || displayState == DisplayState.ICON_ONLY_TO_FULL_DISPLAY)
+			this.StartCoroutine(this.ChangeDisplayIconStatus(IconsTexturesSprites.BUILDING_DATA_HIGH_ICON_BACKGROUND, IconsTexturesSprites.BUILDING_DATA_HIGH_ICON, ThemeColors.BRIGHT_BLUE));
+
 		this.StartCoroutine(this.ScaleDataBuildingIcon(1));
 
 		timeFlag = Time.time;
 	}
 
-	private void EndDataReloading() {
+	private void UpdateDataDisplay() {
 		this.receptionStatus = ReceptionStatus.INACTIVE;
+
+		isUnderAlert = false;
+		lock (synchronisationLock) {
+			foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in subsetsData) {
+				BuildingSubsetData subsetData = subsetDataEntry.Value;
+				foreach (SensorData sensorData in subsetDataEntry.Value.SensorsData) {
+					this.CheckThreshold(subsetData, sensorData.SensorIdentifier, sensorData.Value);
+				}
+			}
+		}
 
 		this.StopDataBuildingIconAnimation();
 		this.StartCoroutine(this.ScaleDataBuildingIcon(-1));
+
+		if (isUnderAlert) {
+			if (displayState == DisplayState.ICON_ONLY || displayState == DisplayState.ICON_ONLY_TO_FULL_DISPLAY) {
+				dataPanel.SetActive(true);
+				this.StartCoroutine(this.ChangeDisplayHeight(1, null));
+				displayState = DisplayState.ICON_ONLY_TO_FULL_DISPLAY;
+			}
+			this.StartCoroutine(this.ChangeDisplayIconStatus(IconsTexturesSprites.BUILDING_DATA_HIGH_ALERT_ICON_BACKGROUND, IconsTexturesSprites.BUILDING_DATA_HIGH_ALERT_ICON, ThemeColors.BRIGHT_RED));
+		}
 
 		Action flipMiddleAction = () => {
 			this.StartCoroutine(this.RebuildIndicators());
 			if (displayState == DisplayState.ICON_ONLY || displayState == DisplayState.FULL_DISPLAY_TO_ICON_ONLY)
 				dataPanel.SetActive(false);
 		};
-
 		Action flipEndAction = () => {
 			if (displayState == DisplayState.ICON_ONLY || displayState == DisplayState.FULL_DISPLAY_TO_ICON_ONLY)
 				this.SetOpacityInHierarchy(0, dataPanel, 0, int.MaxValue);
 		};
-
 		this.StartCoroutine(this.FlipDataBoxItems(flipMiddleAction, flipEndAction));
 	}
 
@@ -117,7 +139,6 @@ public class BuildingSensorsController : MonoBehaviour {
 
 	public void ProcessReceivedData(IAsyncResult asynchronousResult) {
 		while (!asynchronousResult.IsCompleted);
-		this.receptionStatus = ReceptionStatus.TERMINATED;
 
 		SensorDataLoader.RequestState requestState = (SensorDataLoader.RequestState) asynchronousResult.AsyncState;
 		string requestResult = requestState.RequestResult();
@@ -128,10 +149,11 @@ public class BuildingSensorsController : MonoBehaviour {
 		XmlDocument sensorsDataDocument = new XmlDocument();
 		XmlNode rootNode = sensorsDataDocument.CreateElement("root");
 		rootNode.InnerXml = requestResult;
-
 		sensorsDataDocument.InnerXml = rootNode.InnerText;
 
 		this.ExtractSensorsData(sensorsDataDocument);
+
+		this.receptionStatus = ReceptionStatus.TERMINATED;
 	}
 
 	private void ExtractSensorsData(XmlDocument sensorsDataDocument) {
@@ -162,42 +184,109 @@ public class BuildingSensorsController : MonoBehaviour {
 	}
 
 	private void UpdateSubsetDataContainer(BuildingSubsetData subsetData, XmlDocument sensorsDataDocument, string sensorPath, string sensorIdentifier) {
-		string xPath = XmlTags.RESULTS + "/" + XmlTags.SENSOR_DATA + "[@" + XmlAttributes.TOPIC + "=\"" + sensorPath + "\"]" + "/" + XmlTags.SENSOR_DATA_RECORD + "/" + XmlTags.VALUE;
+		string xPath = XmlTags.RESULTS + "/" + XmlTags.SENSOR_DATA + "[@" + XmlAttributes.TOPIC + "=\"" + sensorPath + "\"]" + "/" + XmlTags.SENSOR_DATA_RECORD + "/" + XmlTags.SENSOR_VALUE;
 		XmlNode valueNode = sensorsDataDocument.SelectSingleNode(xPath);
-		string sensorValue = valueNode.InnerText;
 
-		switch (sensorIdentifier) {
-		case Sensors.TEMPERATURE:
-			subsetData.AddSensorData(sensorIdentifier, "Températue", sensorValue, "°", IconsTexturesSprites.TEMPERATURE_ICON, GoTags.TEMPERATURE_INDICATOR);
+		if (valueNode != null) {
+			string sensorValue = valueNode.InnerText;
+
+			switch (sensorIdentifier) {
+			case Sensors.TEMPERATURE:
+				subsetData.AddSensorData(sensorIdentifier, "Températue", sensorValue, "°", IconsTexturesSprites.TEMPERATURE_ICON, GoTags.TEMPERATURE_INDICATOR);
+				break;
+			case Sensors.HUMIDITY:
+				subsetData.AddSensorData(sensorIdentifier, "Humidité", sensorValue, "%", IconsTexturesSprites.HUMIDITY_ICON, GoTags.HUMIDITY_INDICATOR);
+				break;
+			case Sensors.LUMINOSITY:
+				subsetData.AddSensorData(sensorIdentifier, "Luminosité", sensorValue, "lux", IconsTexturesSprites.LUMINOSITY_ICON, GoTags.LUMINOSITY_INDICATOR);
+				break;
+			case Sensors.CO2:
+				subsetData.AddSensorData(sensorIdentifier, "CO2", sensorValue, "ppm", IconsTexturesSprites.CO2_ICON, GoTags.CO2_INDICATOR);
+				break;
+			case Sensors.PRESENCE:
+				subsetData.AddSensorData(sensorIdentifier, "Présence", (sensorValue == "0" ? "Non" : "Oui"), "", IconsTexturesSprites.PRESENCE_ICON, GoTags.PRESENCE_INDICATOR);
+				break;
+			default:
+				subsetData.AddSensorData(sensorIdentifier, sensorIdentifier, sensorValue, "unit", IconsTexturesSprites.DEFAULT_SENSOR_ICON, GoTags.UNKNOWN_INDICATOR);
+				break;
+			}
+		}
+	}
+
+	private void CheckThreshold(BuildingSubsetData subsetData, string sensorIdentifier, string sensorValue) {
+		XmlDocument thresholdDocument = new XmlDocument();
+
+		if (File.Exists(FilePaths.ALERT_THRESHOLDS_FILE)) {
+			thresholdDocument.Load(FilePaths.ALERT_THRESHOLDS_FILE);
+
+			string sensorXPath = XmlTags.THRESHOLDS + "/";
+			sensorXPath += XmlTags.BUILDING_SENSOR_GROUP + "[@" + XmlAttributes.NAME + "=\"" + name + "\"]" + "/";
+			sensorXPath += XmlTags.ROOM_SENSOR_GROUP + "[@" + XmlAttributes.NAME + "=\"" + subsetData.Name + "\"]" + "/";
+			sensorXPath += XmlTags.BUILDING_SUBSET_SENSOR + "[@" + XmlAttributes.NAME + "=\"" + sensorIdentifier + "\"]";
+			XmlNode sensorNode = thresholdDocument.SelectSingleNode(sensorXPath);
+
+			if (sensorNode != null) {
+				SensorThreshold threshold = new SensorThreshold();
+				this.ExtractThresholdCondition(threshold, sensorNode);
+				this.ExtractThresholdValues(threshold, sensorNode);
+
+				bool sensorValueOutOfThreshold = threshold.ValueOutOfThreshold(sensorValue);
+
+				if (sensorValueOutOfThreshold)
+					isUnderAlert = true;
+			}
+		}
+	}
+
+	private void ExtractThresholdCondition(SensorThreshold threshold, XmlNode sensorNode) {
+		XmlAttribute conditionAttribute = sensorNode.Attributes[XmlAttributes.THRESHOLD_CONDITION];
+		string condition = conditionAttribute.Value;
+
+		switch (condition) {
+		case XmlValues.THRESHOLD_EQUALS_CONDITION:
+			threshold.Condition = ThresholdConditions.EQUALS;
 			break;
-		case Sensors.HUMIDITY:
-			subsetData.AddSensorData(sensorIdentifier, "Humidité", sensorValue, "%", IconsTexturesSprites.HUMIDITY_ICON, GoTags.HUMIDITY_INDICATOR);
+		case XmlValues.THRESHOLD_NOT_EQUALS_CONDITION:
+			threshold.Condition = ThresholdConditions.NOT_EQUALS;
 			break;
-		case Sensors.LUMINOSITY:
-			subsetData.AddSensorData(sensorIdentifier, "Luminosité", sensorValue, "lux", IconsTexturesSprites.LUMINOSITY_ICON, GoTags.LUMINOSITY_INDICATOR);
+		case XmlValues.THRESHOLD_IN_CONDITION:
+			threshold.Condition = ThresholdConditions.IN;
 			break;
-		case Sensors.CO2:
-			subsetData.AddSensorData(sensorIdentifier, "CO2", sensorValue, "ppm", IconsTexturesSprites.CO2_ICON, GoTags.CO2_INDICATOR);
-			break;
-		case Sensors.PRESENCE:
-			subsetData.AddSensorData(sensorIdentifier, "Présence", sensorValue, "", IconsTexturesSprites.PRESENCE_ICON, GoTags.PRESENCE_INDICATOR);
-			break;
-		default:
-			subsetData.AddSensorData(sensorIdentifier, sensorIdentifier, sensorValue, "unit", IconsTexturesSprites.PRESENCE_ICON, GoTags.UNKNOWN_INDICATOR);
+		case XmlValues.THRESHOLD_OUT_CONDITION:
+			threshold.Condition = ThresholdConditions.OUT;
 			break;
 		}
 	}
 
-	public void ToggleHeightState() {
-		if (displayState == DisplayState.ICON_ONLY) {
-			dataPanel.SetActive(true);
-			this.StartCoroutine(this.ChangeDisplayHeight(1, null));
-			displayState = DisplayState.ICON_ONLY_TO_FULL_DISPLAY;
-		} else if (displayState == DisplayState.FULL_DISPLAY) {
-			this.StartCoroutine(this.ChangeDisplayHeight(-1, () => {
-				dataPanel.SetActive(false);
-			}));
-			displayState = DisplayState.FULL_DISPLAY_TO_ICON_ONLY;
+	private void ExtractThresholdValues(SensorThreshold threshold, XmlNode sensorNode) {
+		foreach (XmlNode thresholdValueNode in sensorNode.ChildNodes) {
+			XmlAttribute thresholdValueAttribute = thresholdValueNode.Attributes[XmlAttributes.THRESHOLD_VALUE];
+			string thresholdValue = thresholdValueAttribute.Value;
+			bool thresholdParsingOutcome = false;
+
+			switch (thresholdValueNode.Name) {
+			case XmlTags.MIN_THRESHOLD:
+				double minValue = double.MinValue;
+				thresholdParsingOutcome = double.TryParse(thresholdValue, out minValue);
+				if (thresholdParsingOutcome)
+					threshold.MinValue = minValue;
+				else
+					throw new InvalidCastException("La valeur minimale de seuil doit être un nombre.");
+				break;
+			case XmlTags.MAX_THRESHOLD:
+				double maxValue = double.MaxValue;
+				thresholdParsingOutcome = double.TryParse(thresholdValue, out maxValue);
+				if (thresholdParsingOutcome)
+					threshold.MaxValue = maxValue;
+				else
+					throw new InvalidCastException("La valeur maximale de seuil doit être un nombre.");
+				break;
+			case XmlTags.FIXED_VALUE_THRESHOLD:
+				threshold.AddFixedValue(thresholdValue);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -244,6 +333,19 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
+	public void ToggleHeightState() {
+		if (displayState == DisplayState.ICON_ONLY) {
+			dataPanel.SetActive(true);
+			this.StartCoroutine(this.ChangeDisplayHeight(1, null));
+			displayState = DisplayState.ICON_ONLY_TO_FULL_DISPLAY;
+		} else if (displayState == DisplayState.FULL_DISPLAY) {
+			this.StartCoroutine(this.ChangeDisplayHeight(-1, () => {
+				dataPanel.SetActive(false);
+			}));
+			displayState = DisplayState.FULL_DISPLAY_TO_ICON_ONLY;
+		}
+	}
+
 	private IEnumerator ChangeDisplayHeight(int direction, Action finalAction) {
 		float initOrientation = 0;
 		float initOpacity = 1;
@@ -277,14 +379,31 @@ public class BuildingSensorsController : MonoBehaviour {
 		Color iconBackgroundColor = iconBackgroundImage.color;
 		Color iconColor = iconImage.color;
 
-		float pCursor = -1;
+		Sprite lowIconBackgroundSprite = null;
+		Sprite highIconBackgroundSprite = null;
+		Sprite lowIconSprite = null;
+		Sprite highIconSprite = null;
+
+		if (!isUnderAlert || receptionStatus == ReceptionStatus.LOADING) {
+			lowIconBackgroundSprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_LOW_ICON_BACKGROUND);
+			highIconBackgroundSprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_HIGH_ICON_BACKGROUND);
+			lowIconSprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_LOW_ICON);
+			highIconSprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_HIGH_ICON);
+		} else {
+			lowIconBackgroundSprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_LOW_ALERT_ICON_BACKGROUND);
+			highIconBackgroundSprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_HIGH_ALERT_ICON_BACKGROUND);
+			lowIconSprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_LOW_ALERT_ICON);
+			highIconSprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_HIGH_ALERT_ICON);
+		}
+
+		double pCursor = -1;
 		for (double i = 0; i <= 1; i += 0.05) {
 			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
 
 			float currentOrientation = -1;
 			float currentOpacity = -1;
 
-			if (cursor < 0.5F) {
+			if (cursor < 0.5) {
 				currentOrientation = initOrientation + (midEndOrientation - initOrientation) * (cursor * 2);
 				currentOpacity = initOpacity + (midOpacity - initOpacity) * (cursor * 2);
 			} else {
@@ -299,23 +418,21 @@ public class BuildingSensorsController : MonoBehaviour {
 
 			this.SetDataItemsOrientation(currentOrientation);
 
-			if ((direction > 0 && cursor >= 0.5F) || (direction < 0 && cursor <= 0.5F))
+			if ((direction > 0 && cursor >= 0.5) || (direction < 0 && cursor <= 0.5))
 				this.SetOpacityInHierarchy(currentOpacity, dataPanel, 0, int.MaxValue);
 
 			iconBackgroundImage.color = new Color(iconBackgroundColor.r, iconBackgroundImage.color.g, iconBackgroundImage.color.b, currentOpacity);
 			iconImage.color = new Color(iconColor.r, iconColor.g, iconColor.b, currentOpacity);
 
-			if (pCursor < 0.5F && cursor >= 0.5F) {
+			if (pCursor < 0.5 && cursor >= 0.5) {
 				if (direction > 0) {
-					iconBackgroundImage.sprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_ICON_BACKGROUND);
-					iconImage.sprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_DATA_ICON);
+					iconBackgroundImage.sprite = highIconBackgroundSprite;
+					iconImage.sprite = highIconSprite;
 				} else if (direction < 0) {
 					this.SetOpacityInHierarchy(0, dataPanel, 0, int.MaxValue);
-					iconBackgroundImage.sprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_INFO_BUTTON_ICON_BACKGROUND);
-					iconImage.sprite = Resources.Load<Sprite>(IconsTexturesSprites.BUILDING_INFO_BUTTON_ICON);
+					iconBackgroundImage.sprite = lowIconBackgroundSprite;
+					iconImage.sprite = lowIconSprite;
 				}
-
-				yield return new WaitForSeconds(0.01F);
 			}
 
 			displayRect.sizeDelta = new Vector2(displayRect.sizeDelta.x, currentHeight);
@@ -367,14 +484,14 @@ public class BuildingSensorsController : MonoBehaviour {
 		float targetOrientation = 0;
 		float targetOpacity = 1;
 
-		float pCursor = -1;
+		double pCursor = -1;
 		for (double i = 0; i <= 1; i += 0.05) {
 			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
 
 			float currentOrientation = -1;
 			float currentOpacity = -1;
 
-			if (cursor < 0.5F) {
+			if (cursor < 0.5) {
 				currentOrientation = initOrientation + (midEndOrientation - initOrientation) * (cursor * 2);
 				currentOpacity = initOpacity + (midOpacity - initOpacity) * (cursor * 2);
 			} else {
@@ -382,7 +499,7 @@ public class BuildingSensorsController : MonoBehaviour {
 				currentOpacity = midOpacity + (targetOpacity - midOpacity) * ((cursor - 0.5F) * 2);
 			}
 
-			if (pCursor < 0.5F && cursor >= 0.5F && middleTimeAction != null) {
+			if (pCursor < 0.5 && cursor >= 0.5 && middleTimeAction != null) {
 				this.SetOpacityInHierarchy(0, dataPanel, 0, int.MaxValue);
 				yield return new WaitForSeconds(0.01F);
 				middleTimeAction();
@@ -426,6 +543,53 @@ public class BuildingSensorsController : MonoBehaviour {
 			foreach (Transform dataElementTransform in parentElement.transform) {
 				this.SetOpacityInHierarchy(opacity, dataElementTransform.gameObject, currentDeth + 1, maxDeth);
 			}
+		}
+	}
+
+	private IEnumerator ChangeDisplayIconStatus(string newIconBackgroundPath, string newIconPath, Color newLinkColor) {
+		GameObject link = dataPanel.transform.parent.GetChild(0).GetChild(0).gameObject;
+		GameObject iconBckground = dataPanel.transform.parent.GetChild(0).GetChild(1).gameObject;
+		GameObject icon = iconBckground.transform.GetChild(0).gameObject;
+
+		Image linkImage = link.GetComponent<Image>();
+		Image iconBckgroundImage = iconBckground.GetComponent<Image>();
+		Image iconImage = icon.GetComponent<Image>();
+
+		Color linkColor = linkImage.color;
+		Color iconBckgroundColor = iconBckgroundImage.color;
+		Color iconImageColor = iconImage.color;
+
+		Sprite newIconBackgroundSprite = Resources.Load<Sprite>(newIconBackgroundPath);
+		Sprite newIconSprite = Resources.Load<Sprite>(newIconPath);
+
+		double pCursor = -1;
+		for (double i = 0; i <= 1; i += 0.1) {
+			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
+
+			float[] currentLinkColorLevels = new float[3];
+			float currentOpacity = -1;
+
+			currentLinkColorLevels[0] = linkColor.r + (newLinkColor.r - linkColor.r) * cursor;
+			currentLinkColorLevels[1] = linkColor.g + (newLinkColor.g - linkColor.g) * cursor;
+			currentLinkColorLevels[2] = linkColor.b + (newLinkColor.b - linkColor.b) * cursor;
+
+			if (cursor < 0.5)
+				currentOpacity = (float) ((1 - cursor * 2));
+			else
+				currentOpacity = (float) ((cursor - 0.5F) * 2);
+
+			if (pCursor < 0.5 && cursor >= 0.5) {
+				iconBckgroundImage.sprite = newIconBackgroundSprite;
+				iconImage.sprite = newIconSprite;
+			}
+
+			linkImage.color = new Color(currentLinkColorLevels[0], currentLinkColorLevels[1], currentLinkColorLevels[2]);
+			iconBckgroundImage.color = new Color(iconBckgroundColor.r, iconBckgroundColor.g, iconBckgroundColor.b, currentOpacity);
+			iconImage.color = new Color(iconImageColor.r, iconImageColor.g, iconImageColor.b, currentOpacity);
+
+			yield return new WaitForSeconds(0.01F);
+
+			pCursor = cursor;
 		}
 	}
 }
