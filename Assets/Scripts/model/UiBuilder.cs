@@ -84,7 +84,7 @@ public class UiBuilder {
 		GameObject decorationsPanel = this.NewUiRectangle(dataCanvas, "Decorations_" + buildingName, Vector3.zero, decorationsSize, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 1));
 
 		Vector2 linkSize = new Vector2(BUILDING_DATA_LINK_WIDTH, -BUILDING_DATA_ICON_SIZE);
-		GameObject link = this.NewUiRectangle(decorationsPanel, "Link_" + buildingName, Vector3.zero, linkSize, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 1), ThemeColors.BRIGHT_BLUE);
+		GameObject link = this.NewUiRectangle(decorationsPanel, "Link_" + buildingName, Vector3.zero, linkSize, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 1), ThemeColors.BLUE_BRIGHT);
 
 		string iconBackgroundName = UiNames.BUILDING_DATA_ICON_BUTTON + "_" + buildingName;
 		Vector3 iconBackgroundLocPosition = new Vector3(BUILDING_DATA_LINK_WIDTH / 2F, -BUILDING_DATA_ICON_SIZE, 0);
@@ -137,7 +137,7 @@ public class UiBuilder {
 	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingSubsetData buildingSubsetData, string dataPanelName) {
 		string headerName = "DataBoxHeader_" + buildingSubsetData.Name;
 		Vector2 headerSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_HEADER_HEIGHT);
-		GameObject header = this.NewUiRectangle(dataBox, headerName, Vector3.zero, headerSize, new Vector2(0, 0.5F), new Vector2(0, 1), new Vector2(1, 1), ThemeColors.BRIGHT_BLUE);
+		GameObject header = this.NewUiRectangle(dataBox, headerName, Vector3.zero, headerSize, new Vector2(0, 0.5F), new Vector2(0, 1), new Vector2(1, 1), ThemeColors.BLUE_BRIGHT);
 		header.transform.SetParent(dataBox.transform, false);
 
 		HorizontalLayoutGroup headerHorizLayoutGroup = header.AddComponent<HorizontalLayoutGroup>();
@@ -204,7 +204,8 @@ public class UiBuilder {
 	private GameObject BuildBuildingDataIndicatorTitle(GameObject sensorIndicator, string subsetName, SensorData sensorData) {
 		string titleName = "IndicatorTitle_" + sensorData.SensorName;
 		Vector2 titleSize = new Vector2(BUILDING_DATA_HEADER_LENGTH, BUILDING_DATA_INDICATOR_HEIGHT);
-		GameObject indicatorTitle = this.NewUiRectangle(sensorIndicator, titleName, Vector3.zero, titleSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), ThemeColors.BLUE);
+		Color titleColor = sensorData.IsOutOfThreshold() ? ThemeColors.RED_BRIGHT : ThemeColors.BLUE;
+		GameObject indicatorTitle = this.NewUiRectangle(sensorIndicator, titleName, Vector3.zero, titleSize, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), titleColor);
 
 		string iconName = "IndicatorIcon_" + sensorData.SensorName;
 		GameObject indicatorIcon = this.NewUiRectangle(indicatorTitle, iconName, Vector3.zero, Vector2.zero, new Vector2(0.5F, 0.5F), new Vector2(0, 1), new Vector2(0, 1), sensorData.IconPath);
@@ -227,6 +228,9 @@ public class UiBuilder {
 		ContentSizeFitter titleFitter = indicatorTitle.AddComponent<ContentSizeFitter>();
 		titleFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
+		Text titleText = indicatorTitleText.GetComponent<Text>();
+		titleText.color = sensorData.IsOutOfThreshold() ? ThemeColors.RED_TEXT : new Color(50 / 255F, 50 / 255F, 50 / 255F);
+
 		return indicatorTitle;
 	}
 
@@ -245,6 +249,9 @@ public class UiBuilder {
 
 		ContentSizeFitter valueFitter = indicatorValue.AddComponent<ContentSizeFitter>();
 		valueFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+		Text valueText = indicatorValueText.GetComponent<Text>();
+		valueText.color = sensorData.IsOutOfThreshold() ? ThemeColors.RED_TEXT : new Color(50 / 255F, 50 / 255F, 50 / 255F);
 
 		return indicatorValue;
 	}

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class BuildingSubsetData {
 	private string name;
@@ -16,7 +14,7 @@ public class BuildingSubsetData {
 	}
 
 	public void AddSensorData(string sensorIdentifier, string sensorName, string value, string unit, string iconPath, string gameObjectTag) {
-		SensorsData.Add(new SensorData(sensorIdentifier, sensorName, value, unit, iconPath, gameObjectTag));
+		SensorsData.Add(new SensorData(sensorIdentifier, sensorName, value, unit, iconPath, gameObjectTag, new SensorThreshold()));
 	}
 
 	public void RemoveSensorData(SensorData sensorData) {

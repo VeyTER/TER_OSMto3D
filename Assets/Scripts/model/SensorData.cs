@@ -11,7 +11,9 @@ public class SensorData {
 	private string iconPath;
 	private string indicatorTag;
 
-	public SensorData(string sensorIdentifier, string sensorName, string value, string unit, string iconPath, string indicatorTag) {
+	private SensorThreshold sensorThreshold;
+
+	public SensorData(string sensorIdentifier, string sensorName, string value, string unit, string iconPath, string indicatorTag, SensorThreshold sensorThreshold) {
 		this.sensorIdentifier = sensorIdentifier;
 
 		this.sensorName = sensorName;
@@ -20,6 +22,12 @@ public class SensorData {
 
 		this.IconPath = iconPath;
 		this.indicatorTag = indicatorTag;
+
+		this.sensorThreshold = sensorThreshold;
+	}
+
+	public bool IsOutOfThreshold() {
+		return sensorThreshold.ValueOutOfThreshold(value);
 	}
 
 	public string SensorIdentifier {
@@ -50,6 +58,11 @@ public class SensorData {
 	public string IndicatorTag {
 		get { return indicatorTag; }
 		set { indicatorTag = value; }
+	}
+
+	public SensorThreshold SensorThreshold {
+		get { return sensorThreshold; }
+		set { sensorThreshold = value; }
 	}
 
 	public override string ToString() {

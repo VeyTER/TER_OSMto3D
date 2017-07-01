@@ -56,28 +56,27 @@ public class SensorThreshold {
 		case ThresholdConditions.EQUALS:
 			int i = 0;
 			for (; i < fixedValues.Count && !value.Equals(fixedValues[i]); i++) ;
-			return i == fixedValues.Count;
+			return !(i < fixedValues.Count || fixedValues.Count == 0) ;
 
 		case ThresholdConditions.NOT_EQUALS:
 			int j = 0;
 			for (; j < fixedValues.Count && !value.Equals(fixedValues[j]); j++) ;
-			return j < fixedValues.Count;
+			return !(j == fixedValues.Count || fixedValues.Count == 0);
 
 		case ThresholdConditions.IN:
 			sensorValueParsingOutcome = double.TryParse(value, out sensorNumericalValue);
-			if (sensorValueParsingOutcome) {
+			if (sensorValueParsingOutcome)
 				return !(sensorNumericalValue >= minValue && sensorNumericalValue <= maxValue);
-			} else {
+			else
 				throw new InvalidCastException("La valeur du capteur doit être un nombre pour être compris entre deux valeurs.");
-			}
 
 		case ThresholdConditions.OUT:
 			sensorValueParsingOutcome = double.TryParse(value, out sensorNumericalValue);
-			if (sensorValueParsingOutcome) {
-				return !(sensorNumericalValue < minValue && sensorNumericalValue > maxValue);
-			} else {
+			if (sensorValueParsingOutcome)
+				return !(sensorNumericalValue < minValue || sensorNumericalValue > maxValue);
+			else
 				throw new InvalidCastException("La valeur du capteur doit être un nombre pour être hors de deux valeurs.");
-			}
+
 		default:
 			return false;
 		}

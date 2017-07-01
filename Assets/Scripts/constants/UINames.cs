@@ -182,4 +182,21 @@ public class UiNames {
 	public const string COLOR_ITEM_BUTTON = "ColorButton";
 
 	public const string BUILDING_DATA_ICON_BUTTON = "BuildingDataIconBackground";
+
+	public const string HEADER_DOWNbUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
+	public const string BUILDING_DATA_ICON_BUTTON =
 }

@@ -114,7 +114,7 @@ public class SkinChangingEditor : ObjectEditor {
 		leftRectRect.pivot = new Vector2(0.5F, 0.5F);
 
 		Image leftRectImage = leftRect.AddComponent<Image>();
-		leftRectImage.color = ThemeColors.DARK_BLUE;
+		leftRectImage.color = ThemeColors.BLUE_DARK;
 
 		return leftRect;
 	}
@@ -134,7 +134,7 @@ public class SkinChangingEditor : ObjectEditor {
 		rightRectRect.pivot = new Vector2(0.5F, 0.5F);
 
 		Image rightRectImage = rightRectangle.AddComponent<Image>();
-		rightRectImage.color = ThemeColors.DARK_BLUE;
+		rightRectImage.color = ThemeColors.BLUE_DARK;
 
 		return rightRectangle;
 	}
@@ -173,7 +173,7 @@ public class SkinChangingEditor : ObjectEditor {
 		labelRect.pivot = new Vector2(0.5F, 0.5F);
 
 		Image labelImage = label.AddComponent<Image>();
-		labelImage.color = ThemeColors.BRIGHT_BLUE;
+		labelImage.color = ThemeColors.BLUE_BRIGHT;
 
 		Shadow labelTopShadow = label.AddComponent<Shadow>();
 		labelTopShadow.effectDistance = new Vector2(0.71F, 1.15F);
@@ -272,7 +272,7 @@ public class SkinChangingEditor : ObjectEditor {
 		backgroundRectangleRect.pivot = new Vector2(0.5F, 0.5F);
 
 		Image backgroundRectImage = backgroundRectangle.AddComponent<Image>();
-		backgroundRectImage.color = ThemeColors.BRIGHT_BLUE;
+		backgroundRectImage.color = ThemeColors.BLUE_BRIGHT;
 		backgroundRectImage.enabled = false;
 
 		return backgroundRectangle;
@@ -377,7 +377,7 @@ public class SkinChangingEditor : ObjectEditor {
 			if (isSelected) {
 				selectionBackgroundImage.enabled = true;
 
-				Color selectionOverlay = ThemeColors.BRIGHT_BLUE;
+				Color selectionOverlay = ThemeColors.BLUE_BRIGHT;
 				selectionOverlay.a = 0.5F;
 				bodyImage.color = selectionOverlay;
 			} else {
@@ -399,7 +399,7 @@ public class SkinChangingEditor : ObjectEditor {
 			if (isSelected) {
 				selectionBackgroundImage.enabled = true;
 
-				Color selectionOverlay = ThemeColors.BRIGHT_BLUE;
+				Color selectionOverlay = ThemeColors.BLUE_BRIGHT;
 				selectionOverlay.a = 0.5F;
 			} else {
 				selectionBackgroundImage.enabled = false;

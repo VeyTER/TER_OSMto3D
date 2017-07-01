@@ -66,9 +66,9 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.StartDataBuildingIconAnimation();
 
 		if(displayState == DisplayState.ICON_ONLY || displayState == DisplayState.FULL_DISPLAY_TO_ICON_ONLY)
-			this.StartCoroutine(this.ChangeDisplayIconStatus(IconsTexturesSprites.BUILDING_DATA_LOW_ICON_BACKGROUND, IconsTexturesSprites.BUILDING_DATA_LOW_ICON, ThemeColors.BRIGHT_BLUE));
+			this.StartCoroutine(this.ChangeDisplayIconStatus(IconsTexturesSprites.BUILDING_DATA_LOW_ICON_BACKGROUND, IconsTexturesSprites.BUILDING_DATA_LOW_ICON, ThemeColors.BLUE_BRIGHT));
 		else if (displayState == DisplayState.FULL_DISPLAY || displayState == DisplayState.ICON_ONLY_TO_FULL_DISPLAY)
-			this.StartCoroutine(this.ChangeDisplayIconStatus(IconsTexturesSprites.BUILDING_DATA_HIGH_ICON_BACKGROUND, IconsTexturesSprites.BUILDING_DATA_HIGH_ICON, ThemeColors.BRIGHT_BLUE));
+			this.StartCoroutine(this.ChangeDisplayIconStatus(IconsTexturesSprites.BUILDING_DATA_HIGH_ICON_BACKGROUND, IconsTexturesSprites.BUILDING_DATA_HIGH_ICON, ThemeColors.BLUE_BRIGHT));
 
 		this.StartCoroutine(this.ScaleDataBuildingIcon(1));
 
@@ -83,7 +83,7 @@ public class BuildingSensorsController : MonoBehaviour {
 			foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in subsetsData) {
 				BuildingSubsetData subsetData = subsetDataEntry.Value;
 				foreach (SensorData sensorData in subsetDataEntry.Value.SensorsData) {
-					this.CheckThreshold(subsetData, sensorData.SensorIdentifier, sensorData.Value);
+					this.CheckThreshold(subsetData, sensorData);
 				}
 			}
 		}
@@ -97,7 +97,7 @@ public class BuildingSensorsController : MonoBehaviour {
 				this.StartCoroutine(this.ChangeDisplayHeight(1, null));
 				displayState = DisplayState.ICON_ONLY_TO_FULL_DISPLAY;
 			}
-			this.StartCoroutine(this.ChangeDisplayIconStatus(IconsTexturesSprites.BUILDING_DATA_HIGH_ALERT_ICON_BACKGROUND, IconsTexturesSprites.BUILDING_DATA_HIGH_ALERT_ICON, ThemeColors.BRIGHT_RED));
+			this.StartCoroutine(this.ChangeDisplayIconStatus(IconsTexturesSprites.BUILDING_DATA_HIGH_ALERT_ICON_BACKGROUND, IconsTexturesSprites.BUILDING_DATA_HIGH_ALERT_ICON, ThemeColors.RED_BRIGHT));
 		}
 
 		Action flipMiddleAction = () => {
@@ -112,17 +112,6 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.StartCoroutine(this.FlipDataBoxItems(flipMiddleAction, flipEndAction));
 	}
 
-	private void SetOrientationToCamera() {
-		GameObject dataCanvas = dataPanel.transform.parent.gameObject;
-
-		float deltaX = dataCanvas.transform.position.x - Camera.main.transform.position.x;
-		float deltaZ = dataCanvas.transform.position.z - Camera.main.transform.position.z;
-		float orientation = (float) Math.Atan2(deltaZ, deltaX) * Mathf.Rad2Deg;
-
-		Quaternion rotation = transform.rotation;
-		dataCanvas.transform.rotation = Quaternion.Euler(rotation.eulerAngles.x, -orientation + 90, rotation.eulerAngles.z);
-	}
-
 	private void StartDataBuildingIconAnimation() {
 		Transform dataBuildingDecorations = dataPanel.transform.parent.GetChild(0);
 		GameObject iconBackgroundPanel = dataBuildingDecorations.GetChild(1).gameObject;
@@ -135,6 +124,17 @@ public class BuildingSensorsController : MonoBehaviour {
 		GameObject iconBackgroundPanel = dataBuildingDecorations.GetChild(1).gameObject;
 		iconBackgroundPanel.transform.GetChild(0).gameObject.SetActive(true);
 		iconBackgroundPanel.transform.GetChild(1).gameObject.SetActive(false);
+	}
+
+	private void SetOrientationToCamera() {
+		GameObject dataCanvas = dataPanel.transform.parent.gameObject;
+
+		float deltaX = dataCanvas.transform.position.x - Camera.main.transform.position.x;
+		float deltaZ = dataCanvas.transform.position.z - Camera.main.transform.position.z;
+		float orientation = (float) Math.Atan2(deltaZ, deltaX) * Mathf.Rad2Deg;
+
+		Quaternion rotation = transform.rotation;
+		dataCanvas.transform.rotation = Quaternion.Euler(rotation.eulerAngles.x, -orientation + 90, rotation.eulerAngles.z);
 	}
 
 	public void ProcessReceivedData(IAsyncResult asynchronousResult) {
@@ -192,7 +192,7 @@ public class BuildingSensorsController : MonoBehaviour {
 
 			switch (sensorIdentifier) {
 			case Sensors.TEMPERATURE:
-				subsetData.AddSensorData(sensorIdentifier, "Températue", sensorValue, "°", IconsTexturesSprites.TEMPERATURE_ICON, GoTags.TEMPERATURE_INDICATOR);
+				subsetData.AddSensorData(sensorIdentifier, "Température", sensorValue, "°", IconsTexturesSprites.TEMPERATURE_ICON, GoTags.TEMPERATURE_INDICATOR);
 				break;
 			case Sensors.HUMIDITY:
 				subsetData.AddSensorData(sensorIdentifier, "Humidité", sensorValue, "%", IconsTexturesSprites.HUMIDITY_ICON, GoTags.HUMIDITY_INDICATOR);
@@ -213,7 +213,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
-	private void CheckThreshold(BuildingSubsetData subsetData, string sensorIdentifier, string sensorValue) {
+	private void CheckThreshold(BuildingSubsetData subsetData, SensorData sensorData) {
 		XmlDocument thresholdDocument = new XmlDocument();
 
 		if (File.Exists(FilePaths.ALERT_THRESHOLDS_FILE)) {
@@ -222,7 +222,7 @@ public class BuildingSensorsController : MonoBehaviour {
 			string sensorXPath = XmlTags.THRESHOLDS + "/";
 			sensorXPath += XmlTags.BUILDING_SENSOR_GROUP + "[@" + XmlAttributes.NAME + "=\"" + name + "\"]" + "/";
 			sensorXPath += XmlTags.ROOM_SENSOR_GROUP + "[@" + XmlAttributes.NAME + "=\"" + subsetData.Name + "\"]" + "/";
-			sensorXPath += XmlTags.BUILDING_SUBSET_SENSOR + "[@" + XmlAttributes.NAME + "=\"" + sensorIdentifier + "\"]";
+			sensorXPath += XmlTags.BUILDING_SUBSET_SENSOR + "[@" + XmlAttributes.NAME + "=\"" + sensorData.SensorIdentifier + "\"]";
 			XmlNode sensorNode = thresholdDocument.SelectSingleNode(sensorXPath);
 
 			if (sensorNode != null) {
@@ -230,9 +230,8 @@ public class BuildingSensorsController : MonoBehaviour {
 				this.ExtractThresholdCondition(threshold, sensorNode);
 				this.ExtractThresholdValues(threshold, sensorNode);
 
-				bool sensorValueOutOfThreshold = threshold.ValueOutOfThreshold(sensorValue);
-
-				if (sensorValueOutOfThreshold)
+				sensorData.SensorThreshold = threshold;
+				if (sensorData.SensorThreshold.ValueOutOfThreshold(sensorData.Value))
 					isUnderAlert = true;
 			}
 		}
@@ -284,8 +283,6 @@ public class BuildingSensorsController : MonoBehaviour {
 			case XmlTags.FIXED_VALUE_THRESHOLD:
 				threshold.AddFixedValue(thresholdValue);
 				break;
-			default:
-				break;
 			}
 		}
 	}
@@ -316,23 +313,6 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
-	private void UpdateIndicators() {
-		foreach (Transform dataBox in dataPanel.transform) {
-			string subsetName = dataBox.name.Split('_')[1];
-			BuildingSubsetData subsetData = subsetsData[subsetName];
-
-			for (int i = 0; i < subsetData.SensorsData.Count; i++) {
-				GameObject indicator = dataBox.GetChild(i + i).gameObject;
-
-				SensorData sensorData = subsetData.SensorsData[i];
-				string indicatorText = sensorData.Value + sensorData.Unit;
-
-				Text indicatorValueText = indicator.transform.GetChild(1).GetComponentInChildren<Text>();
-				indicatorValueText.text = indicatorText;
-			}
-		}
-	}
-
 	public void ToggleHeightState() {
 		if (displayState == DisplayState.ICON_ONLY) {
 			dataPanel.SetActive(true);
@@ -345,6 +325,9 @@ public class BuildingSensorsController : MonoBehaviour {
 			displayState = DisplayState.FULL_DISPLAY_TO_ICON_ONLY;
 		}
 	}
+
+
+//// ANIMATIONS ////
 
 	private IEnumerator ChangeDisplayHeight(int direction, Action finalAction) {
 		float initOrientation = 0;
@@ -509,7 +492,6 @@ public class BuildingSensorsController : MonoBehaviour {
 			this.SetOpacityInHierarchy(currentOpacity, dataPanel, 0, int.MaxValue);
 
 			yield return new WaitForSeconds(0.01F);
-
 			pCursor = cursor;
 		}
 
@@ -588,7 +570,6 @@ public class BuildingSensorsController : MonoBehaviour {
 			iconImage.color = new Color(iconImageColor.r, iconImageColor.g, iconImageColor.b, currentOpacity);
 
 			yield return new WaitForSeconds(0.01F);
-
 			pCursor = cursor;
 		}
 	}
