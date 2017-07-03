@@ -2,6 +2,8 @@
 using UnityEngine;
 
 public class ThemeColors {
+	public static Color GREY_TEXT = new Color(50 / 255F, 50 / 255F, 50 / 255F);
+
 	public static Color BLUE = new Color(117 / 255F, 183 / 255F, 255 / 255F);
 	public static Color BLUE_BRIGHT = new Color(151 / 255F, 201 / 255F, 255 / 255F);
 	public static Color BLUE_DARK = new Color(64 / 255F, 124 / 255F, 190 / 255F);

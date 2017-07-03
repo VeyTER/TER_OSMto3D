@@ -42,7 +42,7 @@ public class Main : MonoBehaviour {
 		QualitySettings.antiAliasing = 8;
 		QualitySettings.shadows = ShadowQuality.All;
 
-		this.SetUpUi ();
+		this.InstantiateMainElements ();
 
 		// Si le fichier contennant la carte OSM existe bien, le traitement est effectué
 		if (File.Exists(OSM_FILE_NAME)) {
@@ -112,12 +112,14 @@ public class Main : MonoBehaviour {
 	/// <summary>
 	/// 	Mise en place de l'interface
 	/// </summary>
-	public void SetUpUi() {
+	public void InstantiateMainElements() {
 		GameObject mainCamera = (GameObject) GameObject.Instantiate(Resources.Load("Game objects/Camera Campus"));
 		mainCamera.name = "Camera";
 
-		GameObject.Instantiate (Resources.Load("Game objects/UiManagerScript"));
-		GameObject.Instantiate (Resources.Load("Game objects/MainCanvas"));
-		GameObject.Instantiate (Resources.Load("Game objects/EventSystem"));
+		GameObject.Instantiate (Resources.Load(GameObjects.MAIN_CANVAS));
+		GameObject.Instantiate (Resources.Load(GameObjects.UI_MANAGER_SCRIPT));
+		GameObject.Instantiate (Resources.Load(GameObjects.EVENT_SYSTEM));
+
+		GameObject.Instantiate(Resources.Load("Game objects/Sun"));
 	}
 }

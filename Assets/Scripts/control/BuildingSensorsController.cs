@@ -39,7 +39,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.sensorsDataLoader = new SensorDataLoader(cityBuilder.SensoredBuildings[gameObject.name]);
 		this.subsetsData = new Dictionary<string, BuildingSubsetData>();
 
-		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject, name);
+		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject);
 		this.dataPanel.transform.parent.SetParent(uiBuilder.BuildingDataDisplays.transform);
 
 		this.isUnderAlert = false;

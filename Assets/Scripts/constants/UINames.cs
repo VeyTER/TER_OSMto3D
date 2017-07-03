@@ -183,20 +183,20 @@ public class UiNames {
 
 	public const string BUILDING_DATA_ICON_BUTTON = "BuildingDataIconBackground";
 
-	public const string HEADER_DOWNbUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
-	public const string BUILDING_DATA_ICON_BUTTON =
+	//public const string LOWER_HEATER_BUTTON =
+	//public const string UP_HEATER_BUTTON =
+
+	//public const string LOWER_SHUTTERS_BUTTON =
+	//public const string UP_SHUTTERS_BUTTON =
+
+	//public const string SET_EQUALS_THRESHOLD_BUTTON = 
+	//public const string SET_NOT_EQUALS_THRESHOLD_BUTTON = 
+	//public const string SET_IN_THRESHOLD_BUTTON = 
+	//public const string SET_OUT_THRESHOLD_BUTTON = 
+
+	//public const string LOWER_THRESHOLD_BUTTON = 
+	//public const string UP_THRESHOLD_BUTTON = 
+
+	//public const string REMOVE_FIXED_THRESHOLD_BUTTON = 
+	//public const string ADD_FIXED_THRESHOLD_BUTTON = 
 }
