@@ -28,6 +28,7 @@ public class SensorDataLoader {
 		string user = apiLoginFile.ReadLine();
 		string password = apiLoginFile.ReadLine();
 		webRequest.Credentials = new NetworkCredential(user, password);
+		apiLoginFile.Close();
 
 		RequestState myRequestState = new RequestState() {
 			Request = webRequest
@@ -36,7 +37,7 @@ public class SensorDataLoader {
 	}
 
 	public void StopDataLoading() {
-		if(webRequest != null)
+		if (webRequest != null)
 			webRequest.Abort();
 	}
 

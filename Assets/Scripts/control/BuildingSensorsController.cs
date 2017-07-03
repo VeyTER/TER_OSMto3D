@@ -7,7 +7,7 @@ using System.Xml;
 using System.IO;
 
 public class BuildingSensorsController : MonoBehaviour {
-	private static int RELOADING_FREQUENCY = 20;
+	private static int RELOADING_PERIOD = 20;
 
 	private enum DisplayState { ICON_ONLY, ICON_ONLY_TO_FULL_DISPLAY, FULL_DISPLAY, FULL_DISPLAY_TO_ICON_ONLY }
 	private DisplayState displayState;
@@ -36,7 +36,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.cityBuilder = CityBuilder.GetInstance();
 		this.uiBuilder = UiBuilder.GetInstance();
 
-		this.sensorsDataLoader = new SensorDataLoader(cityBuilder.SensoredBuildings[gameObject.name]);
+		this.sensorsDataLoader = new SensorDataLoader(cityBuilder.SensorsEquippedBuildings[gameObject.name]);
 		this.subsetsData = new Dictionary<string, BuildingSubsetData>();
 
 		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject);
@@ -48,7 +48,7 @@ public class BuildingSensorsController : MonoBehaviour {
 	}
 
 	public void Update() {
-		if (Time.time - timeFlag >= RELOADING_FREQUENCY)
+		if (Time.time - timeFlag >= RELOADING_PERIOD)
 			this.ReloadData();
 
 		if (receptionStatus == ReceptionStatus.TERMINATED)

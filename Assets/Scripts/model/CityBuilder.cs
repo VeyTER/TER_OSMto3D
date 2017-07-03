@@ -88,7 +88,7 @@ public class CityBuilder {
 
 	private Dictionary<string, MapBackground> mapBackgrounds;
 
-	private Dictionary<string, string> sensoredBuildings;
+	private Dictionary<string, string> sensorsEquippedBuildings;
 
 	private CityBuilder() {
 		this.nodeGroups = new List<NodeGroup> ();
@@ -100,10 +100,28 @@ public class CityBuilder {
 		this.externalObjects = this.LoadExternalObject();
 		this.mapBackgrounds = this.LoadMapBackgrounds();
 
-		this.sensoredBuildings = new Dictionary<string, string>();
-		//this.sensoredBuildings["IRIT"] = "u4";
-		//this.sensoredBuildings["U3"] = "u3";
-		this.sensoredBuildings["U4"] = "u4";
+		this.sensorsEquippedBuildings = new Dictionary<string, string>();
+		this.GetSensorEquippedBuildingsList();
+	}
+
+	private void GetSensorEquippedBuildingsList() {
+		StreamReader sensorsEquippedBuildingsFile = new StreamReader(File.Open(FilePaths.SENSOR_EQUIPPED_BUILDINGS_FILE, FileMode.Open));
+
+		string lines = sensorsEquippedBuildingsFile.ReadToEnd();
+		string[] linesArray = lines.Split('\n');
+
+		foreach(string line in linesArray) {
+			string[] lineComponents = line.Split('\t');
+			string buildingName = lineComponents[0];
+			string buildingIdentifier = lineComponents[1].Replace("\r", "");
+			sensorsEquippedBuildings[buildingName] = buildingIdentifier;
+		}
+
+		sensorsEquippedBuildingsFile.Close();
+
+		foreach (KeyValuePair<string, string> test in sensorsEquippedBuildings) {
+			Debug.Log(test.Key + "  " + test.Value);
+		}
 	}
 
 	private List<ExternalObject> LoadExternalObject() {
@@ -378,7 +396,7 @@ public class CityBuilder {
 			wallGroup.SetActive(false);
 		}
 
-		if (sensoredBuildings.ContainsKey(wallGroup.name))
+		if (sensorsEquippedBuildings.ContainsKey(wallGroup.name))
 			wallGroup.AddComponent<BuildingSensorsController>();
 	}
 
@@ -771,9 +789,9 @@ public class CityBuilder {
 		get { return buildingNodes; }
 	}
 
-	public Dictionary<string, string> SensoredBuildings {
-		get { return sensoredBuildings; }
-		set { sensoredBuildings = value; }
+	public Dictionary<string, string> SensorsEquippedBuildings {
+		get { return sensorsEquippedBuildings; }
+		set { sensorsEquippedBuildings = value; }
 	}
 
 	private class CityBuilderHolder {

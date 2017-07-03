@@ -33,6 +33,8 @@ public class FilePaths {
 
 	public const string SCRIPT_DATA_FOLDER = ASSETS_FOLDER + "Scripts data/";
 	public const string ALERT_THRESHOLDS_FILE = SCRIPT_DATA_FOLDER + "alert_thresholds.xml";
+	public const string API_LOGIN_FILE = SCRIPT_DATA_FOLDER + "api_login.txt";
+	public const string SENSOR_EQUIPPED_BUILDINGS_FILE = SCRIPT_DATA_FOLDER + "sensors_equipped_buildings.txt";
 
 
 	///<summary>Chemon vers le dossier des matériaux.</summary>
@@ -57,6 +59,4 @@ public class FilePaths {
 	public const string TEXTURES_FOLDER_LOCAL = "Textures/";
 
 	public const string MAP_BACKGROUNDS_FILE = TEXTURES_FOLDER + "maps_background_details.txt";
-
-	public const string API_LOGIN_FILE = ASSETS_FOLDER + "Scripts data/api_login.txt";
 }
