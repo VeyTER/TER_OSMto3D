@@ -16,7 +16,7 @@ public class BuildingSensorsController : MonoBehaviour {
 	private ReceptionStatus receptionStatus;
 
 	private SensorDataLoader sensorsDataLoader;
-	private Dictionary<string, BuildingSubsetData> subsetsData;
+	private Dictionary<string, BuildingSubsetManagement> subsetsManagement;
 
 	private CityBuilder cityBuilder;
 	private UiBuilder uiBuilder;
@@ -37,7 +37,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.uiBuilder = UiBuilder.GetInstance();
 
 		this.sensorsDataLoader = new SensorDataLoader(cityBuilder.SensorsEquippedBuildings[gameObject.name]);
-		this.subsetsData = new Dictionary<string, BuildingSubsetData>();
+		this.subsetsManagement = new Dictionary<string, BuildingSubsetManagement>();
 
 		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject);
 		this.dataPanel.transform.parent.SetParent(uiBuilder.BuildingDataDisplays.transform);
@@ -80,10 +80,10 @@ public class BuildingSensorsController : MonoBehaviour {
 
 		isUnderAlert = false;
 		lock (synchronisationLock) {
-			foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in subsetsData) {
-				BuildingSubsetData subsetData = subsetDataEntry.Value;
-				foreach (SensorData sensorData in subsetDataEntry.Value.SensorsData) {
-					this.CheckThreshold(subsetData, sensorData);
+			foreach (KeyValuePair<string, BuildingSubsetManagement> subsetDataEntry in subsetsManagement) {
+				BuildingSubsetManagement subsetData = subsetDataEntry.Value;
+				foreach (SensorData singleSensorData in subsetDataEntry.Value.SensorData) {
+					this.CheckThreshold(subsetData, singleSensorData);
 				}
 			}
 		}
@@ -113,14 +113,14 @@ public class BuildingSensorsController : MonoBehaviour {
 	}
 
 	private void StartDataBuildingIconAnimation() {
-		Transform dataBuildingDecorations = dataPanel.transform.parent.GetChild(0);
+		Transform dataBuildingDecorations = dataPanel.transform.parent.GetChild(1);
 		GameObject iconBackgroundPanel = dataBuildingDecorations.GetChild(1).gameObject;
 		iconBackgroundPanel.transform.GetChild(0).gameObject.SetActive(false);
 		iconBackgroundPanel.transform.GetChild(1).gameObject.SetActive(true);
 	}
 
 	private void StopDataBuildingIconAnimation() {
-		Transform dataBuildingDecorations = dataPanel.transform.parent.GetChild(0);
+		Transform dataBuildingDecorations = dataPanel.transform.parent.GetChild(1);
 		GameObject iconBackgroundPanel = dataBuildingDecorations.GetChild(1).gameObject;
 		iconBackgroundPanel.transform.GetChild(0).gameObject.SetActive(true);
 		iconBackgroundPanel.transform.GetChild(1).gameObject.SetActive(false);
@@ -160,21 +160,21 @@ public class BuildingSensorsController : MonoBehaviour {
 		XmlNodeList sensorsData = sensorsDataDocument.GetElementsByTagName(XmlTags.SENSOR_DATA);
 
 		lock (synchronisationLock) {
-			subsetsData.Clear();
-			foreach (XmlNode sensorData in sensorsData) {
-				if (sensorData.ChildNodes.Count > 0) {
-					XmlNode dataRecord = sensorData.FirstChild;
-					string sensorPath = sensorData.Attributes[XmlAttributes.TOPIC].Value;
+			subsetsManagement.Clear();
+			foreach (XmlNode sensorDataNode in sensorsData) {
+				if (sensorDataNode.ChildNodes.Count > 0) {
+					XmlNode dataRecord = sensorDataNode.FirstChild;
+					string sensorPath = sensorDataNode.Attributes[XmlAttributes.TOPIC].Value;
 
 					string subSetIdentifier = sensorPath.Split('/')[1];
 					string sensorIdentifier = sensorPath.Split('/')[2];
 
-					BuildingSubsetData subsetData = null;
-					if (subsetsData.ContainsKey(subSetIdentifier)) {
-						subsetData = subsetsData[subSetIdentifier];
+					BuildingSubsetManagement subsetData = null;
+					if (subsetsManagement.ContainsKey(subSetIdentifier)) {
+						subsetData = subsetsManagement[subSetIdentifier];
 					} else {
-						subsetData = new BuildingSubsetData(subSetIdentifier);
-						subsetsData[subSetIdentifier] = subsetData;
+						subsetData = new BuildingSubsetManagement(subSetIdentifier);
+						subsetsManagement[subSetIdentifier] = subsetData;
 					}
 
 					this.UpdateSubsetDataContainer(subsetData, sensorsDataDocument, sensorPath, sensorIdentifier);
@@ -183,7 +183,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
-	private void UpdateSubsetDataContainer(BuildingSubsetData subsetData, XmlDocument sensorsDataDocument, string sensorPath, string sensorIdentifier) {
+	private void UpdateSubsetDataContainer(BuildingSubsetManagement subsetData, XmlDocument sensorsDataDocument, string sensorPath, string sensorIdentifier) {
 		string xPath = XmlTags.RESULTS + "/" + XmlTags.SENSOR_DATA + "[@" + XmlAttributes.TOPIC + "=\"" + sensorPath + "\"]" + "/" + XmlTags.SENSOR_DATA_RECORD + "/" + XmlTags.SENSOR_VALUE;
 		XmlNode valueNode = sensorsDataDocument.SelectSingleNode(xPath);
 
@@ -213,7 +213,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
-	private void CheckThreshold(BuildingSubsetData subsetData, SensorData sensorData) {
+	private void CheckThreshold(BuildingSubsetManagement subsetData, SensorData singleSensorData) {
 		XmlDocument thresholdDocument = new XmlDocument();
 
 		if (File.Exists(FilePaths.ALERT_THRESHOLDS_FILE)) {
@@ -222,7 +222,7 @@ public class BuildingSensorsController : MonoBehaviour {
 			string sensorXPath = XmlTags.THRESHOLDS + "/";
 			sensorXPath += XmlTags.BUILDING_SENSOR_GROUP + "[@" + XmlAttributes.NAME + "=\"" + name + "\"]" + "/";
 			sensorXPath += XmlTags.ROOM_SENSOR_GROUP + "[@" + XmlAttributes.NAME + "=\"" + subsetData.Name + "\"]" + "/";
-			sensorXPath += XmlTags.BUILDING_SUBSET_SENSOR + "[@" + XmlAttributes.NAME + "=\"" + sensorData.SensorIdentifier + "\"]";
+			sensorXPath += XmlTags.BUILDING_SUBSET_SENSOR + "[@" + XmlAttributes.NAME + "=\"" + singleSensorData.SensorIdentifier + "\"]";
 			XmlNode sensorNode = thresholdDocument.SelectSingleNode(sensorXPath);
 
 			if (sensorNode != null) {
@@ -230,8 +230,8 @@ public class BuildingSensorsController : MonoBehaviour {
 				this.ExtractThresholdCondition(threshold, sensorNode);
 				this.ExtractThresholdValues(threshold, sensorNode);
 
-				sensorData.SensorThreshold = threshold;
-				if (sensorData.SensorThreshold.ValueOutOfThreshold(sensorData.Value))
+				singleSensorData.SensorThreshold = threshold;
+				if (singleSensorData.SensorThreshold.ValueOutOfThreshold(singleSensorData.Value))
 					isUnderAlert = true;
 			}
 		}
@@ -306,9 +306,8 @@ public class BuildingSensorsController : MonoBehaviour {
 		yield return new WaitForSeconds(0.01F);
 
 		lock (synchronisationLock) {
-			foreach (KeyValuePair<string, BuildingSubsetData> subsetDataEntry in subsetsData) {
+			foreach (KeyValuePair<string, BuildingSubsetManagement> subsetDataEntry in subsetsManagement) {
 				uiBuilder.BuildBuidingDataBox(dataPanel, subsetDataEntry.Value);
-				//yield return new WaitForSeconds(0.01F);
 			}
 		}
 	}
@@ -353,7 +352,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		GameObject dataDisplay = dataPanel.transform.parent.gameObject;
 		RectTransform displayRect = (RectTransform) dataDisplay.transform;
 
-		GameObject buildingDataIconBackground = dataPanel.transform.parent.GetChild(0).GetChild(1).gameObject;
+		GameObject buildingDataIconBackground = dataPanel.transform.parent.GetChild(1).GetChild(1).gameObject;
 		GameObject buildingDataIcon = buildingDataIconBackground.transform.GetChild(0).gameObject;
 
 		Image iconBackgroundImage = buildingDataIconBackground.GetComponent<Image>();
@@ -445,7 +444,7 @@ public class BuildingSensorsController : MonoBehaviour {
 			targetScale = 1;
 		}
 
-		GameObject iconbackground = dataPanel.transform.parent.GetChild(0).GetChild(1).gameObject;
+		GameObject iconbackground = dataPanel.transform.parent.GetChild(1).GetChild(1).gameObject;
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
 
@@ -529,8 +528,8 @@ public class BuildingSensorsController : MonoBehaviour {
 	}
 
 	private IEnumerator ChangeDisplayIconStatus(string newIconBackgroundPath, string newIconPath, Color newLinkColor) {
-		GameObject link = dataPanel.transform.parent.GetChild(0).GetChild(0).gameObject;
-		GameObject iconBckground = dataPanel.transform.parent.GetChild(0).GetChild(1).gameObject;
+		GameObject link = dataPanel.transform.parent.GetChild(1).GetChild(0).gameObject;
+		GameObject iconBckground = dataPanel.transform.parent.GetChild(1).GetChild(1).gameObject;
 		GameObject icon = iconBckground.transform.GetChild(0).gameObject;
 
 		Image linkImage = link.GetComponent<Image>();

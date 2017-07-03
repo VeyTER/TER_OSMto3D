@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.6.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -113,7 +115,8 @@
     <Compile Include="Assets\Scripts\control\TurningEditor.cs" />
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
-    <Compile Include="Assets\Scripts\model\BuildingSubsetData.cs" />
+    <Compile Include="Assets\Scripts\model\ActuatorController.cs" />
+    <Compile Include="Assets\Scripts\model\BuildingSubsetManagement.cs" />
     <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
     <Compile Include="Assets\Scripts\model\DelauneyTriangulation.cs" />

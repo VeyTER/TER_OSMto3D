@@ -23,10 +23,10 @@ public class UiBuilder {
 		buildingTools.AddBuildingToDataDisplayEntry(building, buildBuildingDataCanvas);
 		buildingTools.AddDataDisplayEntryToBuilding(buildBuildingDataCanvas, building);
 
-		GameObject decorationPanel = buildBuildingDataCanvas.transform.GetChild(0).gameObject;
+		GameObject decorationPanel = buildBuildingDataCanvas.transform.GetChild(1).gameObject;
 		decorationPanel.name = decorationPanel.name + "_" + building.name;
 
-		GameObject dataPanel = buildBuildingDataCanvas.transform.GetChild(1).gameObject;
+		GameObject dataPanel = buildBuildingDataCanvas.transform.GetChild(0).gameObject;
 		dataPanel.name = dataPanel.name + "_" + building.name;
 
 		return dataPanel;
@@ -45,7 +45,7 @@ public class UiBuilder {
 		return buildBuildingDataCanvas;
 	}
 
-	public GameObject BuildBuidingDataBox(GameObject dataPanel, BuildingSubsetData subsetData) {
+	public GameObject BuildBuidingDataBox(GameObject dataPanel, BuildingSubsetManagement subsetData) {
 		GameObject dataBox = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_BOX));
 		dataBox.name = dataBox.name + "_" + dataPanel.name.Split('_')[1];
 		dataBox.transform.SetParent(dataPanel.transform, false);
@@ -56,29 +56,29 @@ public class UiBuilder {
 		return dataBox;
 	}
 
-	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingSubsetData buildingSubsetData, string dataPanelName) {
+	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingSubsetManagement buildingSubsetData, string dataPanelName) {
 		GameObject header = dataBox.transform.GetChild(0).gameObject;
 		header.name = header.name + dataBox.name.Split('_')[1];
 		return header;
 	}
 
-	private GameObject BuildBuildingDataBoxContent(GameObject dataBox, BuildingSubsetData buildingSubsetData) {
-		foreach (SensorData sensorData in buildingSubsetData.SensorsData) {
-			GameObject sensorIndicator = this.BuildBuildingSensorIndicator(dataBox, sensorData);
-			this.SetIndicatorValues(sensorIndicator, sensorData);
+	private GameObject BuildBuildingDataBoxContent(GameObject dataBox, BuildingSubsetManagement buildingSubsetData) {
+		foreach (SensorData singleSensorData in buildingSubsetData.SensorData) {
+			GameObject sensorIndicator = this.BuildBuildingSensorIndicator(dataBox);
+			this.SetIndicatorValues(sensorIndicator, singleSensorData);
 		}
 		return dataBox;
 	}
 
-	private GameObject BuildBuildingSensorIndicator(GameObject dataBox, SensorData sensorData) {
+	private GameObject BuildBuildingSensorIndicator(GameObject dataBox) {
 		string subsetName = dataBox.name.Split('_')[1];
 		GameObject sensorIndicator = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_INDICATOR));
 		sensorIndicator.transform.SetParent(dataBox.transform, false);
 		return sensorIndicator;
 	}
 
-	public void SetIndicatorValues(GameObject sensorIndicator, SensorData sensorData) {
-		bool sensorUnderAlert = sensorData.IsOutOfThreshold();
+	public void SetIndicatorValues(GameObject sensorIndicator, SensorData singleSensorData) {
+		bool sensorUnderAlert = singleSensorData.IsOutOfThreshold();
 
 		GameObject indicatorTitle = sensorIndicator.transform.GetChild(0).gameObject;
 		Image titleBackgroundImage = indicatorTitle.GetComponent<Image>();
@@ -86,18 +86,18 @@ public class UiBuilder {
 
 		GameObject titleIcon = indicatorTitle.transform.GetChild(0).gameObject;
 		Image titleIconImage = titleIcon.GetComponent<Image>();
-		titleIconImage.sprite = Resources.Load<Sprite>(sensorData.IconPath);
+		titleIconImage.sprite = Resources.Load<Sprite>(singleSensorData.IconPath);
 		titleIconImage.color = sensorUnderAlert ? ThemeColors.RED_BRIGHT : ThemeColors.BLUE_BRIGHT;
 
 		GameObject titleText = indicatorTitle.transform.GetChild(1).gameObject;
 		Text titleTextText = titleText.GetComponentInChildren<Text>();
-		titleTextText.text = sensorData.SensorName;
+		titleTextText.text = singleSensorData.SensorName;
 		titleTextText.color = sensorUnderAlert ? ThemeColors.RED_TEXT : ThemeColors.GREY_TEXT;
 
 		GameObject indicatorValue = sensorIndicator.transform.GetChild(1).gameObject;
 		GameObject valueText = indicatorValue.transform.GetChild(0).gameObject;
 		Text valueTextText = valueText.GetComponentInChildren<Text>();
-		valueTextText.text = sensorData.Value + sensorData.Unit;
+		valueTextText.text = singleSensorData.Value + singleSensorData.Unit;
 		valueTextText.color = sensorUnderAlert ? ThemeColors.RED_TEXT : ThemeColors.GREY_TEXT;
 	}
 
