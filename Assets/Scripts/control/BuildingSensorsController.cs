@@ -7,7 +7,7 @@ using System.Xml;
 using System.IO;
 
 public class BuildingSensorsController : MonoBehaviour {
-	private static int RELOADING_FREQUENCY = 30;
+	private static int RELOADING_FREQUENCY = 20;
 
 	private enum DisplayState { ICON_ONLY, ICON_ONLY_TO_FULL_DISPLAY, FULL_DISPLAY, FULL_DISPLAY_TO_ICON_ONLY }
 	private DisplayState displayState;
