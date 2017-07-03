@@ -56,5 +56,7 @@ public class FilePaths {
 
 	public const string TEXTURES_FOLDER_LOCAL = "Textures/";
 
-	public const string MAP_BACKGROUNDS_FILE = FilePaths.TEXTURES_FOLDER + "maps_background_details.txt";
+	public const string MAP_BACKGROUNDS_FILE = TEXTURES_FOLDER + "maps_background_details.txt";
+
+	public const string API_LOGIN_FILE = ASSETS_FOLDER + "Scripts data/api_login.txt";
 }

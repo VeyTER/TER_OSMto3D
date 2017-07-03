@@ -23,7 +23,11 @@ public class SensorDataLoader {
 		string url = "http://neocampus.univ-tlse3.fr:8004/api/" + buildingIdentifier + "/*/*?xml&pp";
 
 		WebRequest webRequest = WebRequest.Create(url);
-		webRequest.Credentials = new NetworkCredential("reader", "readerpassword"); // <-- Dans un fichier
+
+		StreamReader apiLoginFile = new StreamReader(File.Open(FilePaths.API_LOGIN_FILE, FileMode.Open));
+		string user = apiLoginFile.ReadLine();
+		string password = apiLoginFile.ReadLine();
+		webRequest.Credentials = new NetworkCredential(user, password);
 
 		RequestState myRequestState = new RequestState() {
 			Request = webRequest
