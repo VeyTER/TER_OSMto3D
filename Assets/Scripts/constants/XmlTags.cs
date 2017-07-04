@@ -129,11 +129,19 @@ public class XmlTags {
 	public const string VALUE_UNITS = "value_units";
 
 
+	public const string COMPONENTS = "components";
+
 	public const string THRESHOLDS = "thresholds";
-	public const string BUILDING_SENSOR_GROUP = "building";
-	public const string ROOM_SENSOR_GROUP = "room";
-	public const string BUILDING_SUBSET_SENSOR = "sensor";
+	public const string BUILDING_COMPONENTS_GROUP = "building";
+	public const string ROOM_COMPONENTS_GROUP = "room";
+
+	public const string ROOM_SENSOR = "sensor";
 	public const string FIXED_VALUE_THRESHOLD = "fixed";
 	public const string MIN_THRESHOLD = "min";
 	public const string MAX_THRESHOLD = "max";
+
+	public const string ROOM_ACTUATOR = "actuator";
+	public const string MIN_ACTUATOR_LIMIT = "min";
+	public const string MAX_ACTUATOR_LIMIT = "max";
+	public const string ACTUATOR_STEP = "step";
 }

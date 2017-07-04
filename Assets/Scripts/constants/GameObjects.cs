@@ -13,4 +13,6 @@ public class GameObjects {
 	public const string BUILDING_DATA_CANVAS = GAME_OBJECT_LOCAL_FOLER + "BuildingDataCanvas";
 	public const string BUILDING_DATA_BOX = GAME_OBJECT_LOCAL_FOLER + "BuildingDataBox";
 	public const string BUILDING_DATA_INDICATOR = GAME_OBJECT_LOCAL_FOLER + "BuildingDataIndicator";
+
+	public const string ACTUATOR_CONTROL = GAME_OBJECT_LOCAL_FOLER + "ActuatorControl";
 }

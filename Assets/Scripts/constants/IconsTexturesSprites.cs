@@ -25,4 +25,7 @@ public class IconsTexturesSprites {
 	//public const string MIN_THRESHOLD_VALUE = FilePaths.ICONS_FOLDER_LOCAL + "HumidityIcon";
 	//public const string MAX_THRESHOLD_VALUE = FilePaths.ICONS_FOLDER_LOCAL + "TemperatureIcon";
 	//public const string FIXED_THRESHOLD_VALUE = FilePaths.ICONS_FOLDER_LOCAL + "HumidityIcon";
+
+	public const string HEATERS_CONTROL_ICON = FilePaths.ICONS_FOLDER_LOCAL + "[mode]HeatersIcon";
+	public const string SHUTTERS_CONTROL_ICON = FilePaths.ICONS_FOLDER_LOCAL + "[mode]ShuttersIcon";
 }

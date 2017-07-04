@@ -24,16 +24,22 @@ public class SensorDataLoader {
 
 		WebRequest webRequest = WebRequest.Create(url);
 
-		StreamReader apiLoginFile = new StreamReader(File.Open(FilePaths.API_LOGIN_FILE, FileMode.Open));
-		string user = apiLoginFile.ReadLine();
-		string password = apiLoginFile.ReadLine();
-		webRequest.Credentials = new NetworkCredential(user, password);
-		apiLoginFile.Close();
+		string[] credentials = this.GetLoginId();
+		webRequest.Credentials = new NetworkCredential(credentials[0], credentials[1]);
 
 		RequestState myRequestState = new RequestState() {
 			Request = webRequest
 		};
 		webRequest.BeginGetResponse(callBack, myRequestState);
+	}
+
+	private string[] GetLoginId() {
+		StreamReader apiLoginFile = new StreamReader(File.Open(FilePaths.API_LOGIN_FILE, FileMode.Open));
+		string user = apiLoginFile.ReadLine();
+		string password = apiLoginFile.ReadLine();
+		apiLoginFile.Close();
+
+		return new string[] { user, password };
 	}
 
 	public void StopDataLoading() {

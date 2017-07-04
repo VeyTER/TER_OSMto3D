@@ -15,7 +15,7 @@ using System.IO;
 /// </summary>
 public class Main : MonoBehaviour {
 	/// <summary>Facteur d'échelle pour agrandir différents éléments dans la vue 3D.</summary>
-	public static double SCALE_FACTOR = 1000;
+	public static readonly double SCALE_FACTOR = 1000;
 
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
 	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAMPUS + ".osm";

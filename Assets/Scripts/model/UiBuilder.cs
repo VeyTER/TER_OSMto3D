@@ -36,47 +36,57 @@ public class UiBuilder {
 		Transform buildingFirstWallTransform = building.transform.GetChild(0);
 		float buildingHeight = buildingFirstWallTransform.localScale.y;
 
-		GameObject buildBuildingDataCanvas = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_CANVAS));
-		buildBuildingDataCanvas.name = buildBuildingDataCanvas.name + "_" + building.name;
+		GameObject buildingDataCanvas = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_CANVAS));
+		buildingDataCanvas.name = buildingDataCanvas.name + "_" + building.name;
 
-		buildBuildingDataCanvas.transform.SetParent(building.transform, false);
-		buildBuildingDataCanvas.transform.localPosition = new Vector3(0, buildingHeight / 2F, 0);
+		buildingDataCanvas.transform.SetParent(building.transform, false);
+		buildingDataCanvas.transform.localPosition = new Vector3(0, buildingHeight / 2F, 0);
 
-		return buildBuildingDataCanvas;
+		return buildingDataCanvas;
 	}
 
-	public GameObject BuildBuidingDataBox(GameObject dataPanel, BuildingSubsetManagement subsetData) {
+	public GameObject BuildBuidingDataBox(GameObject dataPanel, BuildingRoom buildingRoom) {
 		GameObject dataBox = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_BOX));
-		dataBox.name = dataBox.name + "_" + dataPanel.name.Split('_')[1];
+		dataBox.name = dataBox.name + "_" + dataPanel.name.Split('_')[1] + "_" + buildingRoom.Name;
 		dataBox.transform.SetParent(dataPanel.transform, false);
 
-		this.BuildBuildingDataBoxHeader(dataBox, subsetData, dataPanel.name);
-		this.BuildBuildingDataBoxContent(dataBox, subsetData);
+		this.BuildBuildingDataBoxHeader(dataBox, buildingRoom, dataPanel.name);
+		this.BuildBuildingDataBoxContent(dataBox, buildingRoom);
 
 		return dataBox;
 	}
 
-	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingSubsetManagement buildingSubsetData, string dataPanelName) {
+	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingRoom buildingRoom, string dataPanelName) {
 		GameObject header = dataBox.transform.GetChild(0).gameObject;
 		header.name = header.name + dataBox.name.Split('_')[1];
 		return header;
 	}
 
-	private GameObject BuildBuildingDataBoxContent(GameObject dataBox, BuildingSubsetManagement buildingSubsetData) {
-		foreach (SensorData singleSensorData in buildingSubsetData.SensorData) {
-			GameObject sensorIndicator = this.BuildBuildingSensorIndicator(dataBox);
-			this.SetIndicatorValues(sensorIndicator, singleSensorData);
+	private GameObject BuildBuildingDataBoxContent(GameObject dataBox, BuildingRoom buildingRoom) {
+		foreach (KeyValuePair<SensorData, ActuatorController> componentPair in buildingRoom.ComponentPairs) {
+			SensorData sensorData = componentPair.Key;
+			ActuatorController actuatorController = componentPair.Value;
+
+			GameObject sensorIndicator = this.BuildBuildingSensorIndicator(dataBox, sensorData.Index);
+			this.SetIndicatorValues(sensorIndicator, sensorData);
+
+			if (actuatorController != null) {
+				GameObject actuatorControl = this.BuildBuildingActuatorControl(sensorIndicator, actuatorController.Index);
+				this.SetControlValues(actuatorControl, actuatorController);
+			}
 		}
 		return dataBox;
 	}
 
-	private GameObject BuildBuildingSensorIndicator(GameObject dataBox) {
-		string subsetName = dataBox.name.Split('_')[1];
+	private GameObject BuildBuildingSensorIndicator(GameObject dataBox, uint sensorIndex) {
+		string roomName = dataBox.name.Split('_')[2];
 		GameObject sensorIndicator = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_INDICATOR));
+		sensorIndicator.name = sensorIndicator.name + "_" + roomName + "_" + sensorIndex;
 		sensorIndicator.transform.SetParent(dataBox.transform, false);
 		return sensorIndicator;
 	}
 
+	// À mettre dans BuildingComponentsController ==>
 	public void SetIndicatorValues(GameObject sensorIndicator, SensorData singleSensorData) {
 		bool sensorUnderAlert = singleSensorData.IsOutOfThreshold();
 
@@ -101,6 +111,34 @@ public class UiBuilder {
 		valueTextText.color = sensorUnderAlert ? ThemeColors.RED_TEXT : ThemeColors.GREY_TEXT;
 	}
 
+	private GameObject BuildBuildingActuatorControl(GameObject sensorIndicator, uint actuatorIndex) {
+		string roomName = sensorIndicator.name.Split('_')[1];
+		GameObject actuatorControl = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.ACTUATOR_CONTROL));
+		actuatorControl.name = actuatorControl.name + "_" + roomName + "_" + actuatorIndex;
+		actuatorControl.transform.SetParent(sensorIndicator.transform, false);
+		actuatorControl.transform.SetAsFirstSibling();
+
+		return actuatorControl;
+	}
+
+	// À mettre dans BuildingComponentsController ==>
+	public void SetControlValues(GameObject actuatorControl, ActuatorController actuatorController) {
+		GameObject actuatorActions = actuatorControl.transform.GetChild(1).gameObject;
+
+		GameObject decreaseButton = actuatorActions.transform.GetChild(0).gameObject;
+		GameObject decreaseButtonIcon = decreaseButton.transform.GetChild(0).gameObject;
+		Image decreaseIconImage = decreaseButtonIcon.GetComponent<Image>();
+		decreaseIconImage.sprite = Resources.Load<Sprite>(actuatorController.ActuatorButtonsPathPattern.Replace("[mode]", "Decrease"));
+
+		GameObject increaseButton = actuatorActions.transform.GetChild(2).gameObject;
+		GameObject increaseButtonIcon = increaseButton.transform.GetChild(0).gameObject;
+		Image increaseIconImage = increaseButtonIcon.GetComponent<Image>();
+		increaseIconImage.sprite = Resources.Load<Sprite>(actuatorController.ActuatorButtonsPathPattern.Replace("[mode]", "Increase"));
+
+		GameObject valueInput = actuatorActions.transform.GetChild(1).gameObject;
+		InputField valueText = valueInput.GetComponent<InputField>();
+		valueText.text = actuatorController.Value + actuatorController.Unit;
+	}
 
 	private GameObject NewUiRectangle(GameObject parent, string name, RectTransform rectTransform, Color color) {
 		GameObject newRectangle = this.NewUiRectangle(parent, name, Vector3.zero, rectTransform.sizeDelta, rectTransform.pivot, rectTransform.anchorMin, rectTransform.anchorMax, color);

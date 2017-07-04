@@ -129,5 +129,5 @@ public class XmlAttributes {
 
 
 	public const string THRESHOLD_CONDITION = "condition";
-	public const string THRESHOLD_VALUE = "value";
+	public const string COMPONENT_PROPERTY_VALUE = "value";
 }

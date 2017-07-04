@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Xml;
 using System.IO;
+using System.Text.RegularExpressions;
 
-public class BuildingSensorsController : MonoBehaviour {
+public class BuildingComponentsController : MonoBehaviour {
 	private static int RELOADING_PERIOD = 20;
 
 	private enum DisplayState { ICON_ONLY, ICON_ONLY_TO_FULL_DISPLAY, FULL_DISPLAY, FULL_DISPLAY_TO_ICON_ONLY }
@@ -16,7 +17,7 @@ public class BuildingSensorsController : MonoBehaviour {
 	private ReceptionStatus receptionStatus;
 
 	private SensorDataLoader sensorsDataLoader;
-	private Dictionary<string, BuildingSubsetManagement> subsetsManagement;
+	private Dictionary<string, BuildingRoom> buildingRooms;
 
 	private CityBuilder cityBuilder;
 	private UiBuilder uiBuilder;
@@ -37,7 +38,7 @@ public class BuildingSensorsController : MonoBehaviour {
 		this.uiBuilder = UiBuilder.GetInstance();
 
 		this.sensorsDataLoader = new SensorDataLoader(cityBuilder.SensorsEquippedBuildings[gameObject.name]);
-		this.subsetsManagement = new Dictionary<string, BuildingSubsetManagement>();
+		this.buildingRooms = new Dictionary<string, BuildingRoom>();
 
 		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject);
 		this.dataPanel.transform.parent.SetParent(uiBuilder.BuildingDataDisplays.transform);
@@ -80,12 +81,7 @@ public class BuildingSensorsController : MonoBehaviour {
 
 		isUnderAlert = false;
 		lock (synchronisationLock) {
-			foreach (KeyValuePair<string, BuildingSubsetManagement> subsetDataEntry in subsetsManagement) {
-				BuildingSubsetManagement subsetData = subsetDataEntry.Value;
-				foreach (SensorData singleSensorData in subsetDataEntry.Value.SensorData) {
-					this.CheckThreshold(subsetData, singleSensorData);
-				}
-			}
+			this.LoadComponentsProperties();
 		}
 
 		this.StopDataBuildingIconAnimation();
@@ -160,80 +156,115 @@ public class BuildingSensorsController : MonoBehaviour {
 		XmlNodeList sensorsData = sensorsDataDocument.GetElementsByTagName(XmlTags.SENSOR_DATA);
 
 		lock (synchronisationLock) {
-			subsetsManagement.Clear();
+			buildingRooms.Clear();
 			foreach (XmlNode sensorDataNode in sensorsData) {
 				if (sensorDataNode.ChildNodes.Count > 0) {
 					XmlNode dataRecord = sensorDataNode.FirstChild;
 					string sensorPath = sensorDataNode.Attributes[XmlAttributes.TOPIC].Value;
 
 					string subSetIdentifier = sensorPath.Split('/')[1];
-					string sensorIdentifier = sensorPath.Split('/')[2];
+					string xmlIdentifier = sensorPath.Split('/')[2];
 
-					BuildingSubsetManagement subsetData = null;
-					if (subsetsManagement.ContainsKey(subSetIdentifier)) {
-						subsetData = subsetsManagement[subSetIdentifier];
+					BuildingRoom buildingRoom = null;
+					if (buildingRooms.ContainsKey(subSetIdentifier)) {
+						buildingRoom = buildingRooms[subSetIdentifier];
 					} else {
-						subsetData = new BuildingSubsetManagement(subSetIdentifier);
-						subsetsManagement[subSetIdentifier] = subsetData;
+						buildingRoom = new BuildingRoom(subSetIdentifier);
+						buildingRooms[subSetIdentifier] = buildingRoom;
 					}
 
-					this.UpdateSubsetDataContainer(subsetData, sensorsDataDocument, sensorPath, sensorIdentifier);
+					this.UpdateRoomContainer(buildingRoom, sensorsDataDocument, sensorPath, xmlIdentifier);
 				}
 			}
 		}
 	}
 
-	private void UpdateSubsetDataContainer(BuildingSubsetManagement subsetData, XmlDocument sensorsDataDocument, string sensorPath, string sensorIdentifier) {
+	private void UpdateRoomContainer(BuildingRoom buildingRoom, XmlDocument sensorsDataDocument, string sensorPath, string xmlIdentifier) {
 		string xPath = XmlTags.RESULTS + "/" + XmlTags.SENSOR_DATA + "[@" + XmlAttributes.TOPIC + "=\"" + sensorPath + "\"]" + "/" + XmlTags.SENSOR_DATA_RECORD + "/" + XmlTags.SENSOR_VALUE;
 		XmlNode valueNode = sensorsDataDocument.SelectSingleNode(xPath);
 
 		if (valueNode != null) {
 			string sensorValue = valueNode.InnerText;
 
-			switch (sensorIdentifier) {
+			switch (xmlIdentifier) {
 			case Sensors.TEMPERATURE:
-				subsetData.AddSensorData(sensorIdentifier, "Température", sensorValue, "°", IconsTexturesSprites.TEMPERATURE_ICON, GoTags.TEMPERATURE_INDICATOR);
+				SensorData temperatureSensor = buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "Température", sensorValue, "°", IconsTexturesSprites.TEMPERATURE_ICON);
+
+				// À changer par l'identifiant du chauffage (changer aussi dans le fichiers XML des propriétés)
+				string heatersIdentifier = "heaters";
+
+				ActuatorController heatersController = buildingRoom.AddActuatorController(temperatureSensor, buildingRoom.Name, heatersIdentifier, "0", "°", IconsTexturesSprites.HEATERS_CONTROL_ICON);
 				break;
 			case Sensors.HUMIDITY:
-				subsetData.AddSensorData(sensorIdentifier, "Humidité", sensorValue, "%", IconsTexturesSprites.HUMIDITY_ICON, GoTags.HUMIDITY_INDICATOR);
+				buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "Humidité", sensorValue, "%", IconsTexturesSprites.HUMIDITY_ICON);
 				break;
 			case Sensors.LUMINOSITY:
-				subsetData.AddSensorData(sensorIdentifier, "Luminosité", sensorValue, "lux", IconsTexturesSprites.LUMINOSITY_ICON, GoTags.LUMINOSITY_INDICATOR);
+				SensorData luminositySensor = buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "Luminosité", sensorValue, "lux", IconsTexturesSprites.LUMINOSITY_ICON);
+
+				// À changer par l'identifiant des volets (changer aussi dans le fichiers XML des propriétés)
+				string shuttersIdentifier = "shutters";
+
+				buildingRoom.AddActuatorController(luminositySensor, buildingRoom.Name, shuttersIdentifier, "0", "%", IconsTexturesSprites.SHUTTERS_CONTROL_ICON);
 				break;
 			case Sensors.CO2:
-				subsetData.AddSensorData(sensorIdentifier, "CO2", sensorValue, "ppm", IconsTexturesSprites.CO2_ICON, GoTags.CO2_INDICATOR);
+				buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "CO2", sensorValue, "ppm", IconsTexturesSprites.CO2_ICON);
 				break;
 			case Sensors.PRESENCE:
-				subsetData.AddSensorData(sensorIdentifier, "Présence", (sensorValue == "0" ? "Non" : "Oui"), "", IconsTexturesSprites.PRESENCE_ICON, GoTags.PRESENCE_INDICATOR);
+				buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "Présence", (sensorValue == "0" ? "Non" : "Oui"), "", IconsTexturesSprites.PRESENCE_ICON);
 				break;
 			default:
-				subsetData.AddSensorData(sensorIdentifier, sensorIdentifier, sensorValue, "unit", IconsTexturesSprites.DEFAULT_SENSOR_ICON, GoTags.UNKNOWN_INDICATOR);
+				buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, xmlIdentifier, sensorValue, "unit", IconsTexturesSprites.DEFAULT_SENSOR_ICON);
 				break;
 			}
 		}
 	}
 
-	private void CheckThreshold(BuildingSubsetManagement subsetData, SensorData singleSensorData) {
+	private void LoadComponentsProperties() {
 		XmlDocument thresholdDocument = new XmlDocument();
 
-		if (File.Exists(FilePaths.ALERT_THRESHOLDS_FILE)) {
-			thresholdDocument.Load(FilePaths.ALERT_THRESHOLDS_FILE);
+		if (File.Exists(FilePaths.COMPONENTS_PROPERTIES_FILE)) {
+			thresholdDocument.Load(FilePaths.COMPONENTS_PROPERTIES_FILE);
 
-			string sensorXPath = XmlTags.THRESHOLDS + "/";
-			sensorXPath += XmlTags.BUILDING_SENSOR_GROUP + "[@" + XmlAttributes.NAME + "=\"" + name + "\"]" + "/";
-			sensorXPath += XmlTags.ROOM_SENSOR_GROUP + "[@" + XmlAttributes.NAME + "=\"" + subsetData.Name + "\"]" + "/";
-			sensorXPath += XmlTags.BUILDING_SUBSET_SENSOR + "[@" + XmlAttributes.NAME + "=\"" + singleSensorData.SensorIdentifier + "\"]";
-			XmlNode sensorNode = thresholdDocument.SelectSingleNode(sensorXPath);
+			foreach (KeyValuePair<string, BuildingRoom> buildingRoomEntry in buildingRooms) {
+				BuildingRoom buildingRoom = buildingRoomEntry.Value;
 
-			if (sensorNode != null) {
-				SensorThreshold threshold = new SensorThreshold();
-				this.ExtractThresholdCondition(threshold, sensorNode);
-				this.ExtractThresholdValues(threshold, sensorNode);
+				foreach (KeyValuePair<SensorData, ActuatorController> componentPair in buildingRoomEntry.Value.ComponentPairs) {
+					SensorData singleSensorData = componentPair.Key;
+					ActuatorController matchingActuatorController = buildingRoom.ComponentPairs[singleSensorData];
 
-				singleSensorData.SensorThreshold = threshold;
-				if (singleSensorData.SensorThreshold.ValueOutOfThreshold(singleSensorData.Value))
-					isUnderAlert = true;
+					string sensorXPath = XmlTags.THRESHOLDS + "/";
+					sensorXPath += XmlTags.BUILDING_COMPONENTS_GROUP + "[@" + XmlAttributes.NAME + "=\"" + name + "\"]" + "/";
+					sensorXPath += XmlTags.ROOM_COMPONENTS_GROUP + "[@" + XmlAttributes.NAME + "=\"" + buildingRoom.Name + "\"]" + "/";
+					sensorXPath += XmlTags.COMPONENTS + "[@" + XmlAttributes.NAME + "=\"" + singleSensorData.XmlIdentifier + "\"]" + "/";
+
+					string actuatorXPath = sensorXPath;
+
+					sensorXPath += XmlTags.ROOM_SENSOR;
+					XmlNode sensorNode = thresholdDocument.SelectSingleNode(sensorXPath);
+
+					if (sensorNode != null)
+						this.UpdateSensorThreshold(sensorNode, singleSensorData);
+
+					if (matchingActuatorController != null) {
+						actuatorXPath += XmlTags.ROOM_ACTUATOR + "[@" + XmlAttributes.NAME + "=\"" + matchingActuatorController.XmlIdentifier + "\"]";
+						XmlNode actuatorNode = thresholdDocument.SelectSingleNode(actuatorXPath);
+
+						if(actuatorNode != null)
+							this.UpdateActuatorLimits(actuatorNode, matchingActuatorController);
+					}
+				}
 			}
+		}
+	}
+
+	private void UpdateSensorThreshold(XmlNode sensorNode, SensorData sensorData) {
+		SensorThreshold threshold = new SensorThreshold();
+		this.ExtractThresholdCondition(threshold, sensorNode);
+		this.ExtractThresholdValues(threshold, sensorNode);
+
+		sensorData.SensorThreshold = threshold;
+		if (sensorData.SensorThreshold.ValueOutOfThreshold(sensorData.Value)) {
+			isUnderAlert = true;
 		}
 	}
 
@@ -259,7 +290,7 @@ public class BuildingSensorsController : MonoBehaviour {
 
 	private void ExtractThresholdValues(SensorThreshold threshold, XmlNode sensorNode) {
 		foreach (XmlNode thresholdValueNode in sensorNode.ChildNodes) {
-			XmlAttribute thresholdValueAttribute = thresholdValueNode.Attributes[XmlAttributes.THRESHOLD_VALUE];
+			XmlAttribute thresholdValueAttribute = thresholdValueNode.Attributes[XmlAttributes.COMPONENT_PROPERTY_VALUE];
 			string thresholdValue = thresholdValueAttribute.Value;
 			bool thresholdParsingOutcome = false;
 
@@ -287,6 +318,57 @@ public class BuildingSensorsController : MonoBehaviour {
 		}
 	}
 
+	private void UpdateActuatorLimits(XmlNode actuatorNode, ActuatorController actuatorController) {
+		foreach (XmlNode propertyNode in actuatorNode.ChildNodes) {
+			XmlAttribute propertyValueAttribute = propertyNode.Attributes[XmlAttributes.COMPONENT_PROPERTY_VALUE];
+			string propertyRawValue = propertyValueAttribute.Value;
+
+			double propertyValue = double.NaN;
+			bool parsingOutcome = double.TryParse(propertyRawValue, out propertyValue);
+			if (!parsingOutcome) {
+				Debug.LogError("La valeur d'une propriété n'est pas un nombre.");
+				continue;
+			}
+
+			switch (propertyNode.Name) {
+			case XmlTags.MIN_ACTUATOR_LIMIT:
+				actuatorController.MinValue = propertyValue;
+				break;
+			case XmlTags.MAX_ACTUATOR_LIMIT:
+				actuatorController.MaxValue = propertyValue;
+				break;
+			case XmlTags.ACTUATOR_STEP:
+				actuatorController.DefaultStep = propertyValue;
+				break;
+			}
+		}
+	}
+
+	public void ShiftUnitSuffixedValue(GameObject inputObject, float factor) {
+		InputField valueInput = inputObject.GetComponent<InputField>();
+
+		string numericalPart = string.Empty;
+		MatchCollection numericalMembers = Regex.Matches(valueInput.text, @"[0-9,.-]");
+		foreach (Match numericalMember in numericalMembers)
+			numericalPart += numericalMember.Value;
+
+		double value = double.Parse(numericalPart);
+
+		GameObject actuatorControl = inputObject.transform.parent.parent.gameObject;
+
+		string roomName = actuatorControl.name.Split('_')[1];
+		string rawActuatorIndex = actuatorControl.name.Split('_')[2];
+		int actuatorIndex = int.Parse(rawActuatorIndex);
+
+		BuildingRoom matchingRoom = buildingRooms[roomName];
+		ActuatorController matchingController = matchingRoom.GetActuatorController(actuatorIndex);
+
+		if ((value > matchingController.MinValue || (value <= matchingController.MinValue && factor > 0))
+		 && (value < matchingController.MaxValue || (value >= matchingController.MaxValue && factor < 0))) {
+			valueInput.text = valueInput.text.Replace(numericalPart, (value + matchingController.DefaultStep * factor).ToString());
+		}
+	}
+
 	private IEnumerator RebuildIndicators () {
 		if (dataPanel.transform.childCount > 0) {
 			foreach (Transform dataBoxTransform in dataPanel.transform) {
@@ -306,8 +388,8 @@ public class BuildingSensorsController : MonoBehaviour {
 		yield return new WaitForSeconds(0.01F);
 
 		lock (synchronisationLock) {
-			foreach (KeyValuePair<string, BuildingSubsetManagement> subsetDataEntry in subsetsManagement) {
-				uiBuilder.BuildBuidingDataBox(dataPanel, subsetDataEntry.Value);
+			foreach (KeyValuePair<string, BuildingRoom> buildingRoomEntry in buildingRooms) {
+				uiBuilder.BuildBuidingDataBox(dataPanel, buildingRoomEntry.Value);
 			}
 		}
 	}

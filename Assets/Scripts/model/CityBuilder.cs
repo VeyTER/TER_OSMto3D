@@ -397,7 +397,7 @@ public class CityBuilder {
 		}
 
 		if (sensorsEquippedBuildings.ContainsKey(wallGroup.name))
-			wallGroup.AddComponent<BuildingSensorsController>();
+			wallGroup.AddComponent<BuildingComponentsController>();
 	}
 
 	private ExternalObject ExternalBuildingAtPosition(Vector3 position, double radius) {

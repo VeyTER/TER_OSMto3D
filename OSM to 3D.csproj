@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.6.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -97,8 +95,8 @@
     <Compile Include="Assets\Scripts\constants\XmlTags.cs" />
     <Compile Include="Assets\Scripts\constants\XmlValues.cs" />
     <Compile Include="Assets\Scripts\control\BoxPanelController.cs" />
+    <Compile Include="Assets\Scripts\control\BuildingComponentsController.cs" />
     <Compile Include="Assets\Scripts\control\BuildingCreationEditor.cs" />
-    <Compile Include="Assets\Scripts\control\BuildingSensorsController.cs" />
     <Compile Include="Assets\Scripts\control\CameraController.cs" />
     <Compile Include="Assets\Scripts\control\CommonPanelController.cs" />
     <Compile Include="Assets\Scripts\control\ControlPanelManager.cs" />
@@ -116,7 +114,7 @@
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
     <Compile Include="Assets\Scripts\model\ActuatorController.cs" />
-    <Compile Include="Assets\Scripts\model\BuildingSubsetManagement.cs" />
+    <Compile Include="Assets\Scripts\model\BuildingRoom.cs" />
     <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
     <Compile Include="Assets\Scripts\model\DelauneyTriangulation.cs" />
@@ -130,6 +128,7 @@
     <Compile Include="Assets\Scripts\model\NodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\PointEditor.cs" />
     <Compile Include="Assets\Scripts\model\RoofBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\RoomComponent.cs" />
     <Compile Include="Assets\Scripts\model\SensorData.cs" />
     <Compile Include="Assets\Scripts\model\SensorDataLoader.cs" />
     <Compile Include="Assets\Scripts\model\SensorThreshold.cs" />
@@ -142,8 +141,8 @@
     <None Include="Assets\Resources\External objects\objects_properties.txt" />
     <None Include="Assets\Resources\Materials\materials_details.txt" />
     <None Include="Assets\Resources\Textures\maps_background_details.txt" />
-    <None Include="Assets\Scripts data\alert_thresholds.xml" />
     <None Include="Assets\Scripts data\api_login.txt" />
+    <None Include="Assets\Scripts data\components_properties.xml" />
     <None Include="Assets\Scripts data\sensors_equipped_buildings.txt" />
     <None Include="Assets\Shaders\Standard.shader" />
   </ItemGroup>

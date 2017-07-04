@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thresholds>
+	<building name="U4">
+		<room name="302">
+			<components name="temperature">
+				<sensor condition="in">
+					<min value="-7"/>
+					<max value="1"/>
+				</sensor>
+				<actuator name="heaters">
+					<min value="0"/>
+					<max value="40"/>
+					<step value="0.5"/>
+				</actuator>
+			</components>
+			<components name="luminosity">
+				<sensor condition="in">
+					<min value="0"/>
+					<max value="500"/>
+				</sensor>
+				<actuator name="shutters">
+					<min value="0"/>
+					<max value="100"/>
+					<step value="1"/>
+				</actuator>
+			</components>
+		</room>
+		<room name="campusfab">
+			<components name="temperature">
+				<sensor condition="in">
+					<min value="-7"/>
+					<max value="35"/>
+				</sensor>
+				<actuator name="heaters">
+					<min value="8"/>
+					<max value="40"/>
+					<step value="0.5"/>
+				</actuator>
+			</components>
+			<components name="luminosity">
+				<sensor condition="in">
+					<min value="0"/>
+					<max value="500"/>
+				</sensor>
+				<actuator name="shutters">
+					<min value="0"/>
+					<max value="100"/>
+					<step value="1"/>
+				</actuator>
+			</components>
+		</room>
+	</building>
+</thresholds>
