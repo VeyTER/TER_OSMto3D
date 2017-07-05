@@ -68,12 +68,8 @@ public class UiBuilder {
 			ActuatorController actuatorController = componentPair.Value;
 
 			GameObject sensorIndicator = this.BuildBuildingSensorIndicator(dataBox, sensorData.Index);
-			this.SetIndicatorValues(sensorIndicator, sensorData);
-
-			if (actuatorController != null) {
-				GameObject actuatorControl = this.BuildBuildingActuatorControl(sensorIndicator, actuatorController.Index);
-				this.SetControlValues(actuatorControl, actuatorController);
-			}
+			if (actuatorController != null)
+				this.BuildBuildingActuatorControl(sensorIndicator, actuatorController.Index);
 		}
 		return dataBox;
 	}
@@ -86,31 +82,6 @@ public class UiBuilder {
 		return sensorIndicator;
 	}
 
-	// À mettre dans BuildingComponentsController ==>
-	public void SetIndicatorValues(GameObject sensorIndicator, SensorData singleSensorData) {
-		bool sensorUnderAlert = singleSensorData.IsOutOfThreshold();
-
-		GameObject indicatorTitle = sensorIndicator.transform.GetChild(0).gameObject;
-		Image titleBackgroundImage = indicatorTitle.GetComponent<Image>();
-		titleBackgroundImage.color = sensorUnderAlert ? ThemeColors.RED_BRIGHT : ThemeColors.BLUE;
-
-		GameObject titleIcon = indicatorTitle.transform.GetChild(0).gameObject;
-		Image titleIconImage = titleIcon.GetComponent<Image>();
-		titleIconImage.sprite = Resources.Load<Sprite>(singleSensorData.IconPath);
-		titleIconImage.color = sensorUnderAlert ? ThemeColors.RED_BRIGHT : ThemeColors.BLUE_BRIGHT;
-
-		GameObject titleText = indicatorTitle.transform.GetChild(1).gameObject;
-		Text titleTextText = titleText.GetComponentInChildren<Text>();
-		titleTextText.text = singleSensorData.SensorName;
-		titleTextText.color = sensorUnderAlert ? ThemeColors.RED_TEXT : ThemeColors.GREY_TEXT;
-
-		GameObject indicatorValue = sensorIndicator.transform.GetChild(1).gameObject;
-		GameObject valueText = indicatorValue.transform.GetChild(0).gameObject;
-		Text valueTextText = valueText.GetComponentInChildren<Text>();
-		valueTextText.text = singleSensorData.Value + singleSensorData.Unit;
-		valueTextText.color = sensorUnderAlert ? ThemeColors.RED_TEXT : ThemeColors.GREY_TEXT;
-	}
-
 	private GameObject BuildBuildingActuatorControl(GameObject sensorIndicator, uint actuatorIndex) {
 		string roomName = sensorIndicator.name.Split('_')[1];
 		GameObject actuatorControl = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.ACTUATOR_CONTROL));
@@ -119,25 +90,6 @@ public class UiBuilder {
 		actuatorControl.transform.SetAsFirstSibling();
 
 		return actuatorControl;
-	}
-
-	// À mettre dans BuildingComponentsController ==>
-	public void SetControlValues(GameObject actuatorControl, ActuatorController actuatorController) {
-		GameObject actuatorActions = actuatorControl.transform.GetChild(1).gameObject;
-
-		GameObject decreaseButton = actuatorActions.transform.GetChild(0).gameObject;
-		GameObject decreaseButtonIcon = decreaseButton.transform.GetChild(0).gameObject;
-		Image decreaseIconImage = decreaseButtonIcon.GetComponent<Image>();
-		decreaseIconImage.sprite = Resources.Load<Sprite>(actuatorController.ActuatorButtonsPathPattern.Replace("[mode]", "Decrease"));
-
-		GameObject increaseButton = actuatorActions.transform.GetChild(2).gameObject;
-		GameObject increaseButtonIcon = increaseButton.transform.GetChild(0).gameObject;
-		Image increaseIconImage = increaseButtonIcon.GetComponent<Image>();
-		increaseIconImage.sprite = Resources.Load<Sprite>(actuatorController.ActuatorButtonsPathPattern.Replace("[mode]", "Increase"));
-
-		GameObject valueInput = actuatorActions.transform.GetChild(1).gameObject;
-		InputField valueText = valueInput.GetComponent<InputField>();
-		valueText.text = actuatorController.Value + actuatorController.Unit;
 	}
 
 	private GameObject NewUiRectangle(GameObject parent, string name, RectTransform rectTransform, Color color) {

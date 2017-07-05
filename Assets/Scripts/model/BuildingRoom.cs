@@ -47,18 +47,15 @@ public class BuildingRoom {
 	}
 
 	public SensorData GetSensorData(int sensorIndex) {
-		IEnumerator<SensorData> sensorsEnumerator = componentPairs.Keys.GetEnumerator();
-		for (sensorsEnumerator.MoveNext(); sensorsEnumerator.MoveNext() && sensorsEnumerator.Current.Index != sensorIndex;) ;
-		return sensorsEnumerator.Current;
+		IEnumerator<SensorData> sensorsEnum = componentPairs.Keys.GetEnumerator();
+		for (; sensorsEnum.MoveNext() && sensorsEnum.Current != null && sensorsEnum.Current.Index != sensorIndex;) ;
+		return sensorsEnum.Current;
 	}
 
 	public ActuatorController GetActuatorController(int actuatorIndex) {
-		IEnumerator<ActuatorController> actuatorsEnumerator = componentPairs.Values.GetEnumerator();
-
-		Debug.Log(componentPairs.Values.Count);
-
-		for (actuatorsEnumerator.MoveNext(); actuatorsEnumerator.MoveNext() && (actuatorsEnumerator.Current == null || actuatorsEnumerator.Current.Index != actuatorIndex);) ;
-		return actuatorsEnumerator.Current;
+		IEnumerator<ActuatorController> actuatorsEnum = componentPairs.Values.GetEnumerator();
+		for (; actuatorsEnum.MoveNext() && actuatorsEnum.Current != null && actuatorsEnum.Current.Index != actuatorIndex;) ;
+		return actuatorsEnum.Current;
 	}
 
 	public string Name {

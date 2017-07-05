@@ -118,10 +118,6 @@ public class CityBuilder {
 		}
 
 		sensorsEquippedBuildingsFile.Close();
-
-		foreach (KeyValuePair<string, string> test in sensorsEquippedBuildings) {
-			Debug.Log(test.Key + "  " + test.Value);
-		}
 	}
 
 	private List<ExternalObject> LoadExternalObject() {

@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.6.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -117,6 +119,7 @@
     <Compile Include="Assets\Scripts\model\BuildingRoom.cs" />
     <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\ComponentPropertiesLoader.cs" />
     <Compile Include="Assets\Scripts\model\DelauneyTriangulation.cs" />
     <Compile Include="Assets\Scripts\model\ExternalObject.cs" />
     <Compile Include="Assets\Scripts\model\GroundBuilder.cs" />
@@ -142,7 +145,9 @@
     <None Include="Assets\Resources\Materials\materials_details.txt" />
     <None Include="Assets\Resources\Textures\maps_background_details.txt" />
     <None Include="Assets\Scripts data\api_login.txt" />
-    <None Include="Assets\Scripts data\components_properties.xml" />
+    <None Include="Assets\Scripts data\components_properties.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Assets\Scripts data\sensors_equipped_buildings.txt" />
     <None Include="Assets\Shaders\Standard.shader" />
   </ItemGroup>

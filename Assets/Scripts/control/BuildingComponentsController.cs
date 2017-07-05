@@ -81,7 +81,8 @@ public class BuildingComponentsController : MonoBehaviour {
 
 		isUnderAlert = false;
 		lock (synchronisationLock) {
-			this.LoadComponentsProperties();
+			ComponentPropertiesLoader propertiesLoader = ComponentPropertiesLoader.GetInstance();
+			propertiesLoader.LoadComponentsProperties(buildingRooms, name, ref isUnderAlert);
 		}
 
 		this.StopDataBuildingIconAnimation();
@@ -219,131 +220,6 @@ public class BuildingComponentsController : MonoBehaviour {
 		}
 	}
 
-	private void LoadComponentsProperties() {
-		XmlDocument thresholdDocument = new XmlDocument();
-
-		if (File.Exists(FilePaths.COMPONENTS_PROPERTIES_FILE)) {
-			thresholdDocument.Load(FilePaths.COMPONENTS_PROPERTIES_FILE);
-
-			foreach (KeyValuePair<string, BuildingRoom> buildingRoomEntry in buildingRooms) {
-				BuildingRoom buildingRoom = buildingRoomEntry.Value;
-
-				foreach (KeyValuePair<SensorData, ActuatorController> componentPair in buildingRoomEntry.Value.ComponentPairs) {
-					SensorData singleSensorData = componentPair.Key;
-					ActuatorController matchingActuatorController = buildingRoom.ComponentPairs[singleSensorData];
-
-					string sensorXPath = XmlTags.THRESHOLDS + "/";
-					sensorXPath += XmlTags.BUILDING_COMPONENTS_GROUP + "[@" + XmlAttributes.NAME + "=\"" + name + "\"]" + "/";
-					sensorXPath += XmlTags.ROOM_COMPONENTS_GROUP + "[@" + XmlAttributes.NAME + "=\"" + buildingRoom.Name + "\"]" + "/";
-					sensorXPath += XmlTags.COMPONENTS + "[@" + XmlAttributes.NAME + "=\"" + singleSensorData.XmlIdentifier + "\"]" + "/";
-
-					string actuatorXPath = sensorXPath;
-
-					sensorXPath += XmlTags.ROOM_SENSOR;
-					XmlNode sensorNode = thresholdDocument.SelectSingleNode(sensorXPath);
-
-					if (sensorNode != null)
-						this.UpdateSensorThreshold(sensorNode, singleSensorData);
-
-					if (matchingActuatorController != null) {
-						actuatorXPath += XmlTags.ROOM_ACTUATOR + "[@" + XmlAttributes.NAME + "=\"" + matchingActuatorController.XmlIdentifier + "\"]";
-						XmlNode actuatorNode = thresholdDocument.SelectSingleNode(actuatorXPath);
-
-						if(actuatorNode != null)
-							this.UpdateActuatorLimits(actuatorNode, matchingActuatorController);
-					}
-				}
-			}
-		}
-	}
-
-	private void UpdateSensorThreshold(XmlNode sensorNode, SensorData sensorData) {
-		SensorThreshold threshold = new SensorThreshold();
-		this.ExtractThresholdCondition(threshold, sensorNode);
-		this.ExtractThresholdValues(threshold, sensorNode);
-
-		sensorData.SensorThreshold = threshold;
-		if (sensorData.SensorThreshold.ValueOutOfThreshold(sensorData.Value)) {
-			isUnderAlert = true;
-		}
-	}
-
-	private void ExtractThresholdCondition(SensorThreshold threshold, XmlNode sensorNode) {
-		XmlAttribute conditionAttribute = sensorNode.Attributes[XmlAttributes.THRESHOLD_CONDITION];
-		string condition = conditionAttribute.Value;
-
-		switch (condition) {
-		case XmlValues.THRESHOLD_EQUALS_CONDITION:
-			threshold.Condition = ThresholdConditions.EQUALS;
-			break;
-		case XmlValues.THRESHOLD_NOT_EQUALS_CONDITION:
-			threshold.Condition = ThresholdConditions.NOT_EQUALS;
-			break;
-		case XmlValues.THRESHOLD_IN_CONDITION:
-			threshold.Condition = ThresholdConditions.IN;
-			break;
-		case XmlValues.THRESHOLD_OUT_CONDITION:
-			threshold.Condition = ThresholdConditions.OUT;
-			break;
-		}
-	}
-
-	private void ExtractThresholdValues(SensorThreshold threshold, XmlNode sensorNode) {
-		foreach (XmlNode thresholdValueNode in sensorNode.ChildNodes) {
-			XmlAttribute thresholdValueAttribute = thresholdValueNode.Attributes[XmlAttributes.COMPONENT_PROPERTY_VALUE];
-			string thresholdValue = thresholdValueAttribute.Value;
-			bool thresholdParsingOutcome = false;
-
-			switch (thresholdValueNode.Name) {
-			case XmlTags.MIN_THRESHOLD:
-				double minValue = double.MinValue;
-				thresholdParsingOutcome = double.TryParse(thresholdValue, out minValue);
-				if (thresholdParsingOutcome)
-					threshold.MinValue = minValue;
-				else
-					throw new InvalidCastException("La valeur minimale de seuil doit être un nombre.");
-				break;
-			case XmlTags.MAX_THRESHOLD:
-				double maxValue = double.MaxValue;
-				thresholdParsingOutcome = double.TryParse(thresholdValue, out maxValue);
-				if (thresholdParsingOutcome)
-					threshold.MaxValue = maxValue;
-				else
-					throw new InvalidCastException("La valeur maximale de seuil doit être un nombre.");
-				break;
-			case XmlTags.FIXED_VALUE_THRESHOLD:
-				threshold.AddFixedValue(thresholdValue);
-				break;
-			}
-		}
-	}
-
-	private void UpdateActuatorLimits(XmlNode actuatorNode, ActuatorController actuatorController) {
-		foreach (XmlNode propertyNode in actuatorNode.ChildNodes) {
-			XmlAttribute propertyValueAttribute = propertyNode.Attributes[XmlAttributes.COMPONENT_PROPERTY_VALUE];
-			string propertyRawValue = propertyValueAttribute.Value;
-
-			double propertyValue = double.NaN;
-			bool parsingOutcome = double.TryParse(propertyRawValue, out propertyValue);
-			if (!parsingOutcome) {
-				Debug.LogError("La valeur d'une propriété n'est pas un nombre.");
-				continue;
-			}
-
-			switch (propertyNode.Name) {
-			case XmlTags.MIN_ACTUATOR_LIMIT:
-				actuatorController.MinValue = propertyValue;
-				break;
-			case XmlTags.MAX_ACTUATOR_LIMIT:
-				actuatorController.MaxValue = propertyValue;
-				break;
-			case XmlTags.ACTUATOR_STEP:
-				actuatorController.DefaultStep = propertyValue;
-				break;
-			}
-		}
-	}
-
 	public void ShiftUnitSuffixedValue(GameObject inputObject, float factor) {
 		InputField valueInput = inputObject.GetComponent<InputField>();
 
@@ -389,9 +265,79 @@ public class BuildingComponentsController : MonoBehaviour {
 
 		lock (synchronisationLock) {
 			foreach (KeyValuePair<string, BuildingRoom> buildingRoomEntry in buildingRooms) {
-				uiBuilder.BuildBuidingDataBox(dataPanel, buildingRoomEntry.Value);
+				BuildingRoom buildingRoom = buildingRoomEntry.Value;
+
+				uiBuilder.BuildBuidingDataBox(dataPanel, buildingRoom);
+
+				GameObject lastAddedDataBox = dataPanel.transform.GetChild(dataPanel.transform.childCount - 1).gameObject;
+				this.UpdateDataBoxTitle(lastAddedDataBox, buildingRoom.Name);
+
+				for (int i = 1; i < lastAddedDataBox.transform.childCount; i++) {
+					GameObject indicator = lastAddedDataBox.transform.GetChild(i).gameObject;
+
+					string[] titleComponents = indicator.name.Split('_');
+					int indicatorIndex = int.Parse(titleComponents[2]);
+
+					SensorData sensorData = buildingRoom.GetSensorData(indicatorIndex);
+					ActuatorController actuatorController = buildingRoom.ComponentPairs[sensorData];
+
+					this.UpdateIndicatorValues(indicator, sensorData);
+
+					if (indicator.transform.childCount == 3) {
+						GameObject actuatorControl = indicator.transform.GetChild(0).gameObject;
+
+						this.UpdateControlValues(actuatorControl, actuatorController);
+					}
+				}
 			}
 		}
+	}
+
+	public void UpdateDataBoxTitle(GameObject dataBox, string title) {
+		Text boxTitleText = dataBox.GetComponentInChildren<Text>();
+		boxTitleText.text = title;
+	}
+
+	public void UpdateIndicatorValues(GameObject sensorIndicator, SensorData singleSensorData) {
+		bool sensorUnderAlert = singleSensorData.IsOutOfThreshold();
+
+		GameObject indicatorTitle = sensorIndicator.transform.GetChild(sensorIndicator.transform.childCount - 2).gameObject;
+		Image titleBackgroundImage = indicatorTitle.GetComponent<Image>();
+		titleBackgroundImage.color = sensorUnderAlert ? ThemeColors.RED_BRIGHT : ThemeColors.BLUE;
+
+		GameObject titleIcon = indicatorTitle.transform.GetChild(0).gameObject;
+		Image titleIconImage = titleIcon.GetComponent<Image>();
+		titleIconImage.sprite = Resources.Load<Sprite>(singleSensorData.IconPath);
+		titleIconImage.color = sensorUnderAlert ? ThemeColors.RED_BRIGHT : ThemeColors.BLUE_BRIGHT;
+
+		GameObject titleText = indicatorTitle.transform.GetChild(1).gameObject;
+		Text titleTextText = titleText.GetComponentInChildren<Text>();
+		titleTextText.text = singleSensorData.SensorName;
+		titleTextText.color = sensorUnderAlert ? ThemeColors.RED_TEXT : ThemeColors.GREY_TEXT;
+
+		GameObject indicatorValue = sensorIndicator.transform.GetChild(sensorIndicator.transform.childCount - 1).gameObject;
+		GameObject valueText = indicatorValue.transform.GetChild(0).gameObject;
+		Text valueTextText = valueText.GetComponentInChildren<Text>();
+		valueTextText.text = singleSensorData.Value + singleSensorData.Unit;
+		valueTextText.color = sensorUnderAlert ? ThemeColors.RED_TEXT : ThemeColors.GREY_TEXT;
+	}
+
+	public void UpdateControlValues(GameObject actuatorControl, ActuatorController actuatorController) {
+		GameObject actuatorActions = actuatorControl.transform.GetChild(1).gameObject;
+
+		GameObject decreaseButton = actuatorActions.transform.GetChild(0).gameObject;
+		GameObject decreaseButtonIcon = decreaseButton.transform.GetChild(0).gameObject;
+		Image decreaseIconImage = decreaseButtonIcon.GetComponent<Image>();
+		decreaseIconImage.sprite = Resources.Load<Sprite>(actuatorController.ActuatorButtonsPathPattern.Replace("[mode]", "Decrease"));
+
+		GameObject increaseButton = actuatorActions.transform.GetChild(2).gameObject;
+		GameObject increaseButtonIcon = increaseButton.transform.GetChild(0).gameObject;
+		Image increaseIconImage = increaseButtonIcon.GetComponent<Image>();
+		increaseIconImage.sprite = Resources.Load<Sprite>(actuatorController.ActuatorButtonsPathPattern.Replace("[mode]", "Increase"));
+
+		GameObject valueInput = actuatorActions.transform.GetChild(1).gameObject;
+		InputField valueText = valueInput.GetComponent<InputField>();
+		valueText.text = actuatorController.Value + actuatorController.Unit;
 	}
 
 	public void ToggleHeightState() {
