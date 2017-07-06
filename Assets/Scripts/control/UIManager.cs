@@ -589,23 +589,25 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	private void OnPointerUpBuildingComponentsController() {
 		GameObject dataDisplay = gameObject;
-		for (; !dataDisplay.transform.parent.tag.Equals(GoTags.WALL_TAG) && dataDisplay.transform.parent.parent != null; dataDisplay = dataDisplay.transform.parent.gameObject) ;
+		for (; !dataDisplay.tag.Equals(GoTags.DATA_CANVAS) && dataDisplay.transform.parent != null; dataDisplay = dataDisplay.transform.parent.gameObject) ;
 
-		GameObject attachedBuilding = BuildingsTools.GetInstance().DataDisplayToBuilding(dataDisplay);
-		BuildingComponentsController componentsController = attachedBuilding.GetComponent<BuildingComponentsController>();
+		if (dataDisplay != null && dataDisplay.tag.Equals(GoTags.DATA_CANVAS)) {
+			GameObject attachedBuilding = BuildingsTools.GetInstance().DataDisplayToBuilding(dataDisplay);
+			BuildingComponentsController componentsController = attachedBuilding.GetComponent<BuildingComponentsController>();
 
-		switch (name.Split('_')[0]) {
-		case UiNames.BUILDING_DATA_ICON_BUTTON:
-			componentsController.ToggleHeightState();
-			break;
-		case UiNames.DECREASE_ACTUATOR_BUTTON:
-			GameObject decreaseActuatorInput = transform.parent.GetChild(1).gameObject;
-			componentsController.ShiftUnitSuffixedValue(decreaseActuatorInput, -1);
-			break;
-		case UiNames.INCREASE_ACTUATOR_BUTTON:
-			GameObject increaseActuatorInput = transform.parent.GetChild(1).gameObject;
-			componentsController.ShiftUnitSuffixedValue(increaseActuatorInput, 1);
-			break;
+			switch (name.Split('_')[0]) {
+			case UiNames.BUILDING_DATA_ICON_BUTTON:
+				componentsController.ToggleHeightState();
+				break;
+			case UiNames.DECREASE_ACTUATOR_BUTTON:
+				GameObject decreaseActuatorInput = transform.parent.GetChild(1).gameObject;
+				componentsController.ShiftUnitSuffixedValue(decreaseActuatorInput, -1);
+				break;
+			case UiNames.INCREASE_ACTUATOR_BUTTON:
+				GameObject increaseActuatorInput = transform.parent.GetChild(1).gameObject;
+				componentsController.ShiftUnitSuffixedValue(increaseActuatorInput, 1);
+				break;
+			}
 		}
 	}
 

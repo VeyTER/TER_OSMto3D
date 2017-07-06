@@ -20,8 +20,7 @@ public class UiBuilder {
 		GameObject buildBuildingDataCanvas = this.BuildBuildingDataCanvas(building);
 
 		BuildingsTools buildingTools = BuildingsTools.GetInstance();
-		buildingTools.AddBuildingToDataDisplayEntry(building, buildBuildingDataCanvas);
-		buildingTools.AddDataDisplayEntryToBuilding(buildBuildingDataCanvas, building);
+		buildingTools.AddBuildingAndDataDisplayEntryPair(building, buildBuildingDataCanvas);
 
 		GameObject decorationPanel = buildBuildingDataCanvas.transform.GetChild(1).gameObject;
 		decorationPanel.name = decorationPanel.name + "_" + building.name;

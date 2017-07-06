@@ -16,15 +16,17 @@ public class RoofBuilder {
 	/// <param name="floorSize">Hauteur des étages du bâtiment sur lequel le toit va être ajouté.</param>
 	public GameObject BuildRoof(float posX, float posZ, DelauneyTriangulation triangulation, int nbFloor, float floorSize) {
 		// Création et paramétrage de l'objet 3D destiné à former un toit
-		GameObject roof = new GameObject("Roof", typeof(MeshFilter), typeof(MeshRenderer));
-		roof.tag = GoTags.ROOF_TAG;
+		GameObject roof = new GameObject("Roof", typeof(MeshFilter), typeof(MeshRenderer)) {
+			tag = GoTags.ROOF_TAG
+		};
 		roof.transform.position = new Vector3(posX, (nbFloor * floorSize), posZ);
 
 		// Création, construction et texturing du maillage formant un toit
-		Mesh mesh = new Mesh();
-		mesh.vertices = RoofVertices(triangulation,posX,posZ);
-		mesh.triangles = RoofTriangles(triangulation);
-		mesh.normals = RoofNormals(triangulation);
+		Mesh mesh = new Mesh() {
+			vertices = RoofVertices(triangulation, posX, posZ),
+			triangles = RoofTriangles(triangulation),
+			normals = RoofNormals(triangulation)
+		};
 
 		// Affectation du maillage au toit pour lui donner la forme voulue
 		MeshFilter meshFilter = roof.GetComponent<MeshFilter>();

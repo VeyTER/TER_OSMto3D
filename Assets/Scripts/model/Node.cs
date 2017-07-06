@@ -32,6 +32,10 @@ public class Node {
 		this.longitude = longitude;
 	}
 
+	public string GetId() {
+		return reference + "/" + index;
+	}
+
 	public string Reference {
 		get { return reference; }
 		set { reference = value; }

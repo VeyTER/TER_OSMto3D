@@ -172,7 +172,6 @@ public class CityBuilder {
 		return CityBuilderHolder.instance;
 	}
 
-
 	/// <summary>
 	/// 	Copie et change l'échelle des groupes de noeuds.
 	/// </summary>
@@ -240,21 +239,20 @@ public class CityBuilder {
 		// Ajout du groupe de noeuds à l'objet contenant les groupes de noeuds de bâtiments
 		// et ajout d'une entrée dans la table de correspondances
 		buildingNodeGroup.transform.parent = buildingNodes.transform;
-		buildingsTools.AddBuildingNodeGroupToNodeGroupEntry(buildingNodeGroup, nodeGroup);
-		buildingsTools.AddNodeGroupToBuildingNodeGroupEntry(nodeGroup, buildingNodeGroup);
+		buildingsTools.AddBuildingNodeGroupAndNodeGroupPair(buildingNodeGroup, nodeGroup);
 
 		// Construction des angles de noeuds de bâtiments
-		foreach (Node n in nodeGroup.Nodes) {
+		foreach (Node node in nodeGroup.Nodes) {
 			// Création et paramétrage de l'objet 3D destiné à former un noeud de bâtiment
 			GameObject buildingNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			buildingNode.name = n.Reference;
+			buildingNode.name = node.Reference;
 			buildingNode.tag = GoTags.BUILDING_NODE_TAG;
-			buildingNode.transform.position = new Vector3((float) n.Longitude, 0, (float) n.Latitude);
+			buildingNode.transform.position = new Vector3((float) node.Longitude, 0, (float) node.Latitude);
 			buildingNode.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
 
 			// Ajout du noeud au groupe de noeuds et ajout d'une entrée dans la table de correspondances
 			buildingNode.transform.parent = buildingNodeGroup.transform;
-			buildingsTools.AddBuildingNodeToNodeEntry(buildingNode, n);
+			buildingsTools.AddBuildingNodeAndNodeEntryPair(buildingNode, node);
 		}
 
 		// Déplacement des noeuds 3D au sein du groupe pour qu'ils aient une position relative au centre
@@ -372,30 +370,29 @@ public class CityBuilder {
 		return wallGroup;
 	}
 
-	public void SetupSingleWallGroup(GameObject wallGroup, NodeGroup ngp) {
+	public void SetupSingleWallGroup(GameObject wallGroup, NodeGroup nodeGroup) {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance();
 
 		// Ajout d'une entrée dans la table de correspondances
-		buildingsTools.AddBuildingToNodeGroupEntry(wallGroup, ngp);
-		buildingsTools.AddNodeGroupToBuildingEntry(ngp, wallGroup);
+		buildingsTools.AddBuildingAndNodeGroupPair(wallGroup, nodeGroup);
 
 		// Déplacement des murs au sein du bâtiment pour qu'ils aient une position relative au centre
-		Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup);
+		Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup, nodeGroup);
 		wallGroup.transform.position = wallGroupCenter;
 		foreach (Transform wallTransform in wallGroup.transform)
 			wallTransform.transform.position -= wallGroup.transform.position;
 
 		// Nommage du bâtiment avec son nom dans les fichiers de données s'il existe, sinon, utilisation de
 		// son ID
-		if (ngp.Name == "unknown")
-			wallGroup.name = "Bâtiment n°" + ngp.Id;
+		if (nodeGroup.Name == "unknown")
+			wallGroup.name = "Bâtiment n°" + nodeGroup.Id;
 		else
-			wallGroup.name = ngp.Name;
+			wallGroup.name = nodeGroup.Name;
 
 		// Ajout du bâtiment au groupe de bâtiments
 		wallGroup.transform.parent = wallGroups.transform;
 
-		ExternalObject externalObject = this.ExternalBuildingAtPosition(wallGroup.transform.position, buildingsTools.BuildingRadius(wallGroup));
+		ExternalObject externalObject = this.ExternalBuildingAtPosition(wallGroup.transform.position, buildingsTools.BuildingRadius(wallGroup, nodeGroup));
 		if (externalObject != null) {
 			if (externalObject.NeverUsed) {
 				GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFileName));

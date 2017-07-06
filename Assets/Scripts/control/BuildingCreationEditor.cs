@@ -35,8 +35,8 @@ public class BuildingCreationEditor : ObjectEditor {
 		building.transform.parent = Camera.main.transform;
 		GameObject.Destroy(building.GetComponent<UiManager>());
 
-		buildingsTools.AddBuildingToNodeGroupEntry(building, nodeGroup);
-		buildingsTools.AddNodeGroupToBuildingEntry(nodeGroup, building);
+		cityBuilder.AddNodeGroup(nodeGroup);
+		buildingsTools.AddBuildingAndNodeGroupPair(building, nodeGroup);
 
 		selectedBuilding = building;
 	}
@@ -126,6 +126,7 @@ public class BuildingCreationEditor : ObjectEditor {
 
 	private void RemoveBuilding() {
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		cityBuilder.RemoveNodeGroup(nodeGroup);
 
 		GameObject.Destroy(selectedBuilding);
 

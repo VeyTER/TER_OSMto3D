@@ -9,6 +9,7 @@ public class NodeGroup {
 
 	private List<Node> nodes;
 	private List<NodeGroup> decomposition;
+
 	private Dictionary<string, string> tags;
 
 	private double minLon;
@@ -97,23 +98,30 @@ public class NodeGroup {
 		this.overlayColor = overlayColor;
 	}
 
-	// ajoute une node à l'ensemble 
-	public void AddNode(Node n) {
-		this.nodes.Add (n);
+	public Node AddNode(Node newNode) {
+		 nodes.Add(newNode);
+		return newNode;
 	}
 
-	//supprime la n ieme valeur de node 
-	public void RemoveNode(int n) {
-		this.nodes.RemoveAt(n);
+	public Node GetNode(int nodeOrder) {
+		return nodes[nodeOrder];
+	}
+
+	public Node GetNode(string nodeId) {
+		int i = 0;
+		for (; i < nodes.Count && nodes[i].GetId().Equals(nodeId); i++);
+		if (i < nodes.Count)
+			return nodes[i];
+		else
+			return null;
+	}
+
+	public void RemoveNode(int nodeOrder) {
+		nodes.RemoveAt(nodeOrder);
 	}
 
 	public int NodeCount() {
 		return nodes.Count;
-	}
-
-	// retourne la node demandée 
-	public Node GetNode(int i) {
-		return (Node)this.nodes [i];
 	}
 
 	// ajoute un tag au NodeGroup
