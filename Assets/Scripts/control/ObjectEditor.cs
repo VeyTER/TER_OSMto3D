@@ -27,9 +27,8 @@ public abstract class ObjectEditor {
 	/// <summary>Témoin de transformation d'un bâtiment.</summary>
 	protected bool buildingTransformed;
 
-
 	protected BuildingsTools buildingsTools;
-
+	protected CityBuilder cityBuilder;
 
 	public ObjectEditor () {
 		this.selectedWall = null;
@@ -44,6 +43,7 @@ public abstract class ObjectEditor {
 		this.buildingTransformed = false;
 
 		this.buildingsTools = BuildingsTools.GetInstance();
+		this.cityBuilder = CityBuilder.GetInstance();
 	}
 
 

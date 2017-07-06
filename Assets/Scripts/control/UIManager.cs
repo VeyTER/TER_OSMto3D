@@ -18,15 +18,6 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// </summary>
 	public static EditController editController;
 
-	/// <summary>Controlleur gérant le déplacement d'un seul objet (déplacement d'un bâtiment par ex).</summary>
-	private static MovingEditor movingEditor;
-
-	/// <summary>Controlleur gérant la rotation d'un seul objet (déplacement d'un bâtiment par ex).</summary>
-	private static TurningEditor turningEditor;
-
-	private static HeightChangingEditor heightChangingEditor;
-	private static SkinChangingEditor skinChangingEditor;
-
 	private static ControlPanelManager controlPanelManager;
 
 	private static BuildingCreationEditor buildingCreationEditor;
@@ -41,21 +32,6 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	}
 
 	public void Start() {
-		// Initialisation des "transformateurs" d'objet s'ils sont null
-		if (editController != null) {
-			if (movingEditor == null)
-				movingEditor = editController.MovingEditor;
-
-			if (turningEditor == null)
-				turningEditor = editController.TurningEditor;
-
-			if (heightChangingEditor == null)
-				heightChangingEditor = editController.HeightChangingEditor;
-
-			if (skinChangingEditor == null)
-				skinChangingEditor = editController.SkinChangingEditor;
-		}
-
 		if (buildingCreationEditor == null)
 			buildingCreationEditor = new BuildingCreationEditor();
 
@@ -68,9 +44,9 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.MOVE_HANDLER:
 			// Décalage de la caméra et mise à jour de la position de l'objet sélectionné si on est en cours de
 			// déplacement d'un objet
-			if (Input.GetMouseButton (0) && editController.EditState == EditController.EditStates.MOVING_MODE && movingEditor.IsMoving()) {
-				movingEditor.UpdateObjectMoving (editController.SelectionRange);
-				movingEditor.ShiftCamera ();
+			if (Input.GetMouseButton (0) && editController.EditState == EditController.EditStates.MOVING_MODE && editController.MovingEditor.IsMoving()) {
+				editController.MovingEditor.UpdateObjectMoving (editController.SelectionRange);
+				editController.MovingEditor.ShiftCamera ();
 			}
 			break;
 		case UiNames.CANCEL_BUILDING_CREATION_BUTTON:
@@ -192,15 +168,15 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.MOVE_HANDLER:
 			// Démarrage du déplacement si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
-			if (editController.EditState == EditController.EditStates.MOVING_MODE && movingEditor.IsMotionless()) {
-				movingEditor.StartObjectMoving (editController.SelectionRange);
+			if (editController.EditState == EditController.EditStates.MOVING_MODE && editController.MovingEditor.IsMotionless()) {
+				editController.MovingEditor.StartObjectMoving (editController.SelectionRange);
 			}
 			break;
 		case UiNames.TURN_HANDLER:
 			// Démarrage de la rotation si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
-			if (editController.EditState == EditController.EditStates.TURNING_MODE && turningEditor.IsMotionless()) {
-				turningEditor.StartObjectTurning (editController.SelectionRange);
+			if (editController.EditState == EditController.EditStates.TURNING_MODE && editController.TurningEditor.IsMotionless()) {
+				editController.TurningEditor.StartObjectTurning (editController.SelectionRange);
 			}
 			break;
 		}
@@ -217,15 +193,15 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.MOVE_HANDLER:
 			// Mise à jour du déplacement si l'objet est immobile et que le controlleur de modification se trouve dans
 			// le bon état
-			if (editController.EditState == EditController.EditStates.MOVING_MODE && movingEditor.IsMoving()) {
-				movingEditor.UpdateObjectMoving (editController.SelectionRange);
+			if (editController.EditState == EditController.EditStates.MOVING_MODE && editController.MovingEditor.IsMoving()) {
+				editController.MovingEditor.UpdateObjectMoving (editController.SelectionRange);
 			}
 			break;
 		case UiNames.TURN_HANDLER:
 			// Mise à jour de la rotation si l'objet est immobile et que le controlleur de modification se trouve dans
 			// le bon état
-			if (editController.EditState == EditController.EditStates.TURNING_MODE && turningEditor.IsTurning()) {
-				turningEditor.UpdateObjectTurning (editController.SelectionRange);
+			if (editController.EditState == EditController.EditStates.TURNING_MODE && editController.TurningEditor.IsTurning()) {
+				editController.TurningEditor.UpdateObjectTurning (editController.SelectionRange);
 			}
 			break;
 		}
@@ -242,15 +218,15 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.MOVE_HANDLER:
 			// Fin du déplacement si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
-			if (editController.EditState == EditController.EditStates.MOVING_MODE && movingEditor.IsMoving()) {
-				movingEditor.EndObjectMoving ();
+			if (editController.EditState == EditController.EditStates.MOVING_MODE && editController.MovingEditor.IsMoving()) {
+				editController.MovingEditor.EndObjectMoving ();
 			}
 			break;
 		case UiNames.TURN_HANDLER:
 			// Fin de la rotation si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
-			if (editController.EditState == EditController.EditStates.TURNING_MODE && turningEditor.IsTurning()) {
-				turningEditor.EndObjectTurning ();
+			if (editController.EditState == EditController.EditStates.TURNING_MODE && editController.TurningEditor.IsTurning()) {
+				editController.TurningEditor.EndObjectTurning ();
 			}
 			break;
 		}
@@ -259,11 +235,11 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	public void OnMouseDown() {
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
 		if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE) {
-			int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
+			int expansionDirection = editController.HeightChangingEditor.DesiredDirection(gameObject);
 			if (expansionDirection > 0) {
-				heightChangingEditor.TopFloorColorController.SetPressed();
+				editController.HeightChangingEditor.TopFloorColorController.SetPressed();
 			} else if (expansionDirection < 0) {
-				heightChangingEditor.BottomFloorColorController.SetPressed();
+				editController.HeightChangingEditor.BottomFloorColorController.SetPressed();
 			}
 		}
 	}
@@ -277,13 +253,13 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if ((editController.EditState == EditController.EditStates.NONE_SELECTION || editController.EditState == EditController.EditStates.READY_TO_EDIT) && controlPanelManager.AllPanelsClosed()) {
 				editController.SwitchBuilding(gameObject);
 			} else if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE && controlPanelManager.AllPanelsClosed()) {
-				int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
+				int expansionDirection = editController.HeightChangingEditor.DesiredDirection(gameObject);
 				if (expansionDirection > 0) {
-					heightChangingEditor.IncrementObjectHeight();
-					heightChangingEditor.TopFloorColorController.SetHovered();
+					editController.HeightChangingEditor.IncrementObjectHeight();
+					editController.HeightChangingEditor.TopFloorColorController.SetHovered();
 				} else if (expansionDirection < 0) {
-					heightChangingEditor.DecrementObjectHeight();
-					heightChangingEditor.BottomFloorColorController.SetHovered();
+					editController.HeightChangingEditor.DecrementObjectHeight();
+					editController.HeightChangingEditor.BottomFloorColorController.SetHovered();
 				}
 			}
 		}
@@ -291,22 +267,22 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 
 	public void OnMouseEnter() {
 		 if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE) {
-			int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
+			int expansionDirection = editController.HeightChangingEditor.DesiredDirection(gameObject);
 			if (expansionDirection > 0)
-				heightChangingEditor.TopFloorColorController.SetHovered();
+				editController.HeightChangingEditor.TopFloorColorController.SetHovered();
 			else if (expansionDirection < 0)
-				heightChangingEditor.BottomFloorColorController.SetHovered();
+				editController.HeightChangingEditor.BottomFloorColorController.SetHovered();
 
 		}
 	}
 
 	private void OnMouseExit() {
 		 if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE) {
-			int expansionDirection = heightChangingEditor.DesiredDirection(gameObject);
+			int expansionDirection = editController.HeightChangingEditor.DesiredDirection(gameObject);
 			if (expansionDirection > 0)
-				heightChangingEditor.TopFloorColorController.SetInactive();
+				editController.HeightChangingEditor.TopFloorColorController.SetInactive();
 			else if (expansionDirection < 0)
-				heightChangingEditor.BottomFloorColorController.SetInactive();
+				editController.HeightChangingEditor.BottomFloorColorController.SetInactive();
 		}
 	}
 
@@ -552,9 +528,9 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (editController.EditState != EditController.EditStates.NONE_SELECTION) {
 					editController.SelectionRange = EditController.SelectionRanges.WALL;
 				if (editController.EditState == EditController.EditStates.MOVING_MODE)
-					movingEditor.InitializeMovingMode(editController.SelectionRange);
+					editController.MovingEditor.InitializeMovingMode(editController.SelectionRange);
 				else if (editController.EditState == EditController.EditStates.TURNING_MODE)
-					turningEditor.InitializeTurningMode(editController.SelectionRange);
+					editController.TurningEditor.InitializeTurningMode(editController.SelectionRange);
 				this.ActivateWallRangeButton();
 			}
 			break;
@@ -564,34 +540,34 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (editController.EditState != EditController.EditStates.NONE_SELECTION) {
 				editController.SelectionRange = EditController.SelectionRanges.BUILDING;
 				if (editController.EditState == EditController.EditStates.MOVING_MODE)
-					movingEditor.InitializeMovingMode(editController.SelectionRange);
+					editController.MovingEditor.InitializeMovingMode(editController.SelectionRange);
 				else if (editController.EditState == EditController.EditStates.TURNING_MODE)
-					turningEditor.InitializeTurningMode(editController.SelectionRange);
+					editController.TurningEditor.InitializeTurningMode(editController.SelectionRange);
 				this.ActivateBuildingRangeButton();
 			}
 			break;
 		case UiNames.MATERIALS_BUTTON:
 			if (editController.EditState == EditController.EditStates.SKIN_CHANGING_MODE) {
-				skinChangingEditor.SwitchPallet(gameObject);
-				skinChangingEditor.SkinPanelController.SlideSliderRight();
+				editController.SkinChangingEditor.SwitchPallet(gameObject);
+				editController.SkinChangingEditor.SkinPanelController.SlideSliderRight();
 			}
 			break;
 		case UiNames.COLORS_BUTTON:
 			if (editController.EditState == EditController.EditStates.SKIN_CHANGING_MODE) {
-				skinChangingEditor.SwitchPallet(gameObject);
-				skinChangingEditor.SkinPanelController.SlideSliderLeft();
+				editController.SkinChangingEditor.SwitchPallet(gameObject);
+				editController.SkinChangingEditor.SkinPanelController.SlideSliderLeft();
 			}
 			break;
 		case UiNames.MATERIAL_ITEM_BUTTON:
 			if (editController.EditState == EditController.EditStates.SKIN_CHANGING_MODE) {
-				skinChangingEditor.UpdateMaterialItems(gameObject);
-				skinChangingEditor.ChangeBuildingMaterial(gameObject);
+				editController.SkinChangingEditor.UpdateMaterialItems(gameObject);
+				editController.SkinChangingEditor.ChangeBuildingMaterial(gameObject);
 			}
 			break;
 		case UiNames.COLOR_ITEM_BUTTON:
 			if (editController.EditState == EditController.EditStates.SKIN_CHANGING_MODE) {
-				skinChangingEditor.UpdateColorItems(gameObject);
-				skinChangingEditor.ChangeBuildingColor(gameObject);
+				editController.SkinChangingEditor.UpdateColorItems(gameObject);
+				editController.SkinChangingEditor.ChangeBuildingColor(gameObject);
 			}
 			break;
 		case UiNames.VALIDATE_EDIT_BUTTON:

@@ -131,7 +131,7 @@ public class MapLoader {
 						// Ajout d'un noeud, correspondant à l'objet simple, au groupe de noeuds courant, et ajout de ce
 						// dernier à la liste des groupes de noeuds de l'application
 						nodeGroup.AddNode (new Node (id, latitude, longitude));
-						cityBuilder.NodeGroups.Add (nodeGroup);
+						cityBuilder.AddNodeGroup(nodeGroup);
 					}
 				}
 			}
@@ -215,7 +215,7 @@ public class MapLoader {
 			// Ajout du groupe de noeuds à la liste globale s'il représente un bâtiment, une route ou une
 			// voie maritime
 			if ((nodeGroup.IsBuilding () || nodeGroup.IsHighway ()) || nodeGroup.IsWaterway ())
-				cityBuilder.NodeGroups.Add (nodeGroup);
+				cityBuilder.AddNodeGroup(nodeGroup);
 		}
 	}
 
@@ -246,8 +246,10 @@ public class MapLoader {
 					// valeur des attributs correspondant dans les groupes de noeuds concernés
 					string[] earthBuildingInfo = this.BuildingInfo(earthInfoNode);
 
-					foreach (NodeGroup nodeGroup in cityBuilder.NodeGroups) {
-						this.SetupAreaNodeGroups (nodeGroup, null, new double[] {0, 0, 0}, earthBuildingInfo, XmlTags.EARTH);
+					foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in cityBuilder.NodeGroups) {
+						NodeGroup nodeGroup = nodeGroupEntry.Value;
+
+						this.SetupAreaNodeGroups(nodeGroup, null, new double[] { 0, 0, 0 }, earthBuildingInfo, XmlTags.EARTH);
 
 						// Appel de la fonction récursive mettant à jour les attributs des groupes de noeuds pour le zones
 						// indiquées dans le tableau de zones
@@ -444,7 +446,9 @@ public class MapLoader {
 				earthNode.InsertBefore (boundsNode, earthNode.FirstChild);
 
 				// Ajout d'un nouveau noeud XML pour chaque groupe de noeuds contenu dans l'application
-				foreach (NodeGroup nodeGroup in cityBuilder.NodeGroups) {
+				foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in cityBuilder.NodeGroups) {
+					NodeGroup nodeGroup = nodeGroupEntry.Value;
+
 					// Appel de la fonction récursive mettant à jour les attributs des groupes de noeuds pour le zones
 					// indiquées dans le tableau de zones
 					string zoningXPath = "/" + XmlTags.EARTH + this.MatchingZoningPath(mapResumedDocument, earthNode, nodeGroup, areasMinimalList, 0, "/" + XmlTags.EARTH);
@@ -915,7 +919,7 @@ public class MapLoader {
 				}
 
 				// Ajout du groupe de noeuds courant à la liste de tous les groupes de noeuds
-				cityBuilder.NodeGroups.Add(nodeGroup);
+				cityBuilder.AddNodeGroup(nodeGroup);
 			}
 		}
 	}

@@ -5,11 +5,9 @@ using System;
 
 public class BuildingCreationEditor : ObjectEditor {
 	private CameraController cameraController;
-	private CityBuilder cityBuilder;
 
 	public BuildingCreationEditor() {
 		this.cameraController = Camera.main.GetComponent<CameraController>();
-		this.cityBuilder = CityBuilder.GetInstance();
 	}
 
 	public void InitializeBuildingCreation() {

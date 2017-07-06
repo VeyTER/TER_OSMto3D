@@ -193,6 +193,20 @@ public class NodeGroup {
 		return this.tags.ContainsValue ("cycleway");
 	}
 
+	public bool IsWay() {
+		return (this.IsHighway()
+			   && (this.IsResidential()
+				 || this.IsPrimary()
+				 || this.IsSecondary()
+				 || this.IsTertiary()
+				 || this.IsService()
+				 || this.IsUnclassified()
+				 || this.IsCycleWay()
+				 || this.IsFootway()
+				/*|| this.isBusWayLane()*/
+				)) || this.IsWaterway();
+	}
+
 	// teste l'egalité de deux NodeGroup
 	public bool Equals (NodeGroup ng) {
 		return this.id.Equals(ng.id);

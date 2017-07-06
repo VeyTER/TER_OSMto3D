@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HeightChangingEditor : ObjectEditor {
-	private CityBuilder cityBuilder;
-
 	private int selectedBuildingStartHeight;
 
 	private GameObject topFloor;
@@ -14,8 +12,6 @@ public class HeightChangingEditor : ObjectEditor {
 	private StageColorController bottomFloorColorController;
 
 	public HeightChangingEditor() {
-		this.cityBuilder = CityBuilder.GetInstance();
-
 		this.selectedBuildingStartHeight = -1;
 
 		this.topFloor = null;

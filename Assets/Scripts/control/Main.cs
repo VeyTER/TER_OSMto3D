@@ -22,7 +22,6 @@ public class Main : MonoBehaviour {
 
 	private GameObject editPanel;
 
-
 	/// <summary>
 	/// 	Undique instance du singleton MapLoader servant à charger une carte OSM.
 	/// </summary>

@@ -12,7 +12,7 @@ public class CityBuilder {
 	/// <summary>
 	/// 	Groupes de noeuds contenant toutes les informations sur les objets de la scène 3D.
 	/// </summary>
-	private List<NodeGroup> nodeGroups;
+	private Dictionary<string, NodeGroup> nodeGroups;
 
 
 	/// <summary>Latitude minimale de la ville.</summary>
@@ -91,7 +91,7 @@ public class CityBuilder {
 	private Dictionary<string, string> sensorsEquippedBuildings;
 
 	private CityBuilder() {
-		this.nodeGroups = new List<NodeGroup> ();
+		this.nodeGroups = new Dictionary<string, NodeGroup> ();
 
 		this.roadBuilder = new HighwayBuilder ();
 		this.roofBuilder = new RoofBuilder ();
@@ -102,6 +102,20 @@ public class CityBuilder {
 
 		this.sensorsEquippedBuildings = new Dictionary<string, string>();
 		this.GetSensorEquippedBuildingsList();
+	}
+
+	public NodeGroup AddNodeGroup(NodeGroup newNodeGroup) {
+		nodeGroups[newNodeGroup.Id] = newNodeGroup;
+		return newNodeGroup;
+	}
+
+	public NodeGroup GetNodeGroup(string nodeGroupId) {
+		return nodeGroups[nodeGroupId];
+	}
+
+	public NodeGroup RemoveNodeGroup(NodeGroup oldNodeGroup) {
+		nodeGroups.Remove(oldNodeGroup.Id);
+		return oldNodeGroup;
 	}
 
 	private void GetSensorEquippedBuildingsList() {
@@ -165,8 +179,8 @@ public class CityBuilder {
 	/// <param name="scaleFactor">Facteur d'échelle.</param>
 	public void ScaleNodes(double scaleFactor) {
 		List<Node> groupsMemo = new List<Node>();
-		foreach (NodeGroup nodeGroup in nodeGroups) {
-			foreach (Node node in nodeGroup.Nodes) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+			foreach (Node node in nodeGroupEntry.Value.Nodes) {
 				if (!groupsMemo.Contains(node)) {
 					node.Latitude = node.Latitude * scaleFactor;
 					node.Longitude = node.Longitude * scaleFactor;
@@ -204,31 +218,33 @@ public class CityBuilder {
 		highwayNodes = new GameObject(ObjectNames.HIGHWAY_NODES);
 		highwayNodes.transform.parent = cityComponents.transform;
 
-		foreach (NodeGroup ngp in nodeGroups) {
-			if(ngp.IsBuilding())
-				this.BuildSingleBuildingNodeGroup(ngp);
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
-			if (ngp.IsHighway ())
-				this.BuildSingleHighwayNodeGroup(ngp);
+			if (nodeGroup.IsBuilding())
+				this.BuildSingleBuildingNodeGroup(nodeGroup);
+
+			if (nodeGroup.IsHighway ())
+				this.BuildSingleHighwayNodeGroup(nodeGroup);
 		}
 	}
 
-	public GameObject BuildSingleBuildingNodeGroup(NodeGroup ngp) {
+	public GameObject BuildSingleBuildingNodeGroup(NodeGroup nodeGroup) {
 		BuildingsTools buildingsTools = BuildingsTools.GetInstance();
 
 		// Création et paramétrage de l'objet 3D destiné à former un groupe de noeuds de bâtiment
 		GameObject buildingNodeGroup = new GameObject() {
-			name = ngp.Id
+			name = nodeGroup.Id
 		};
 
 		// Ajout du groupe de noeuds à l'objet contenant les groupes de noeuds de bâtiments
 		// et ajout d'une entrée dans la table de correspondances
 		buildingNodeGroup.transform.parent = buildingNodes.transform;
-		buildingsTools.AddBuildingNodeGroupToNodeGroupEntry(buildingNodeGroup, ngp);
-		buildingsTools.AddNodeGroupToBuildingNodeGroupEntry(ngp, buildingNodeGroup);
+		buildingsTools.AddBuildingNodeGroupToNodeGroupEntry(buildingNodeGroup, nodeGroup);
+		buildingsTools.AddNodeGroupToBuildingNodeGroupEntry(nodeGroup, buildingNodeGroup);
 
 		// Construction des angles de noeuds de bâtiments
-		foreach (Node n in ngp.Nodes) {
+		foreach (Node n in nodeGroup.Nodes) {
 			// Création et paramétrage de l'objet 3D destiné à former un noeud de bâtiment
 			GameObject buildingNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			buildingNode.name = n.Reference;
@@ -242,7 +258,7 @@ public class CityBuilder {
 		}
 
 		// Déplacement des noeuds 3D au sein du groupe pour qu'ils aient une position relative au centre
-		Vector3 nodeGroupCenter = buildingsTools.BuildingNodesCenter(buildingNodeGroup, ngp);
+		Vector3 nodeGroupCenter = buildingsTools.BuildingNodesCenter(buildingNodeGroup, nodeGroup);
 		buildingNodeGroup.transform.position = nodeGroupCenter;
 		foreach (Transform wallTransform in buildingNodeGroup.transform)
 			wallTransform.transform.position -= buildingNodeGroup.transform.position;
@@ -282,26 +298,28 @@ public class CityBuilder {
 		UiManager.editController = wallGroups.GetComponent<EditController>();
 
 		// Construction et ajout des bâtiments
-		foreach (NodeGroup ngp in nodeGroups) {
-			if(ngp.IsBuilding()) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+			NodeGroup nodeGroup = nodeGroupEntry.Value;
+
+			if (nodeGroup.IsBuilding()) {
 				// Décomposition du bâtiment en triangles
-				if(!ngp.RightDecomposition())
-					ngp.LeftDecomposition();
+				if(!nodeGroup.RightDecomposition())
+					nodeGroup.LeftDecomposition();
 
 				// Création et paramétrage de l'objet 3D destiné à former un bâtiment. Pour cela, chaque mur est
 				// construit à partir du noeud courant et du noeud suivant dans le groupe de noeuds courant, puis, il
 				// est ajouté au bâtiment
-				GameObject wallGroup = this.BuildSingleWallGroup(ngp);
-				this.SetupSingleWallGroup(wallGroup, ngp);
+				GameObject wallGroup = this.BuildSingleWallGroup(nodeGroup);
+				this.SetupSingleWallGroup(wallGroup, nodeGroup);
 			}
 		}
 	}
 	
-	public GameObject BuildSingleWallGroup(NodeGroup ngp) {
+	public GameObject BuildSingleWallGroup(NodeGroup nodeGroup) {
 		GameObject wallGroup = new GameObject();
-		for (int i = 0; i < ngp.NodeCount() - 1; i++) {
-			Node currentNode = ngp.GetNode(i);
-			Node nextNode = ngp.GetNode(i + 1);
+		for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
+			Node currentNode = nodeGroup.GetNode(i);
+			Node nextNode = nodeGroup.GetNode(i + 1);
 
 			// Récupération des coordonnées utiles
 			double posX = (currentNode.Longitude + nextNode.Longitude) / 2;
@@ -317,7 +335,7 @@ public class CityBuilder {
 			wall.tag = GoTags.WALL_TAG;
 
 			// Paramétrage du mur 3D
-			int nbFloor = ngp.NbFloor;
+			int nbFloor = nodeGroup.NbFloor;
 			wall.transform.localScale = new Vector3((float) length + Dimensions.WALL_THICKNESS * 1.5F, Dimensions.FLOOR_HEIGHT * nbFloor, Dimensions.WALL_THICKNESS);
 			wall.transform.position = new Vector3((float) posX, (Dimensions.FLOOR_HEIGHT / 2F) * (float) nbFloor, (float) posY);
 
@@ -341,15 +359,15 @@ public class CityBuilder {
 			}
 
 			// Nommage du mur à partir du nom du bâtiment s'il existe, sinon, utilisation de la référence du mur
-			if (ngp.Name == "unknown")
+			if (nodeGroup.Name == "unknown")
 				wall.name = currentNode.Reference + "_wall_" + i;
 			else
-				wall.name = ngp.Name + "_wall_" + i;
+				wall.name = nodeGroup.Name + "_wall_" + i;
 
 			// Affectation du matériau et de sa couleur au mur pour lui donner la texture voulue
 			MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
-			meshRenderer.material = ngp.CustomMaterial;
-			meshRenderer.materials[0].color = ngp.OverlayColor;
+			meshRenderer.material = nodeGroup.CustomMaterial;
+			meshRenderer.materials[0].color = nodeGroup.OverlayColor;
 		}
 		return wallGroup;
 	}
@@ -468,10 +486,12 @@ public class CityBuilder {
 		roofs = new GameObject(ObjectNames.ROOFS);
 		roofs.transform.parent = cityComponents.transform;
 
-		foreach(NodeGroup ngp in nodeGroups) {
-			if (ngp.IsBuilding()) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+			NodeGroup nodeGroup = nodeGroupEntry.Value;
+
+			if (nodeGroup.IsBuilding()) {
 				// Initialisation d'une triangulation de Delauney
-				DelauneyTriangulation triangulation = new DelauneyTriangulation(ngp);
+				DelauneyTriangulation triangulation = new DelauneyTriangulation(nodeGroup);
 				triangulation.CreateBoundingBox();
 				triangulation.Start();
 
@@ -480,8 +500,8 @@ public class CityBuilder {
 				float posZ = (float)triangulation.Triangles[0].NodeA.Latitude;
 
 				// Construction et paramétrage de l'objet 3D destiné à former un toit
-				GameObject newRoof = roofBuilder.BuildRoof(posX, posZ, triangulation, ngp.NbFloor, Dimensions.FLOOR_HEIGHT);
-				newRoof.name = ngp.Id;
+				GameObject newRoof = roofBuilder.BuildRoof(posX, posZ, triangulation, nodeGroup.NbFloor, Dimensions.FLOOR_HEIGHT);
+				newRoof.name = nodeGroup.Id;
 
 				// Ajout du toit au groupe de toits
 				newRoof.transform.parent = roofs.transform;
@@ -507,21 +527,20 @@ public class CityBuilder {
 		footways.transform.parent = cityComponents.transform;
 
 		// Récupération de l'objet contenant les chemins voies de bus et ajout de celui-ci à la ville
-//		busways = new GameObject(ObjectNames.BUSWAYS);
-//		busways.transform.parent = cityComponents.transform;
+		//		busways = new GameObject(ObjectNames.BUSWAYS);
+		//		busways.transform.parent = cityComponents.transform;
 
 		// Récupération de l'objet contenant les chemins voies maritimes et ajout de celui-ci à la ville
-//		waterways = new GameObject(ObjectNames.WATERWAYS);
-//		waterways.transform.parent = cityComponents.transform;
+		//		waterways = new GameObject(ObjectNames.WATERWAYS);
+		//		waterways.transform.parent = cityComponents.transform;
 
-		foreach (NodeGroup ngp in nodeGroups) {
-			if ( (ngp.IsHighway () && (ngp.IsResidential () || ngp.IsPrimary() || ngp.IsSecondary() || ngp.IsTertiary() 
-				|| ngp.IsService() || ngp.IsUnclassified() || ngp.IsCycleWay() || ngp.IsFootway())) 
-				/*|| ngp.isBusWayLane()*/ || ngp.IsWaterway() ) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
-				for (int i = 0; i < ngp.NodeCount () - 1; i++) {
-					Node currentNode = ngp.GetNode (i);
-					Node nextNode = ngp.GetNode (i + 1);
+			if (nodeGroup.IsWay()) {
+				for (int i = 0; i < nodeGroup.NodeCount () - 1; i++) {
+					Node currentNode = nodeGroup.GetNode (i);
+					Node nextNode = nodeGroup.GetNode (i + 1);
 
 					// Calcul des coordonnées du milieu du vectuer formé par les 2 noeuds consécutifs
 					Vector3 node1 = new Vector3 ((float)currentNode.Longitude, 0, (float)currentNode.Latitude);
@@ -538,32 +557,32 @@ public class CityBuilder {
 
 					// Calcul de la position de la route, dépendant du signe du delta entre les deux noeuds
 					if (delta.z <= 0) {
-						posX = ngp.GetNode (i + 1).Longitude;
-						posY = ngp.GetNode (i + 1).Latitude;
+						posX = nodeGroup.GetNode (i + 1).Longitude;
+						posY = nodeGroup.GetNode (i + 1).Latitude;
 						length = Math.Sqrt (Math.Pow (nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow (nextNode.Longitude - currentNode.Longitude, 2));
 						angle = (double)Vector3.Angle (Vector3.right, delta) + 180;
 					} else {
-						posX = ngp.GetNode (i).Longitude;
-						posY = ngp.GetNode (i).Latitude;
+						posX = nodeGroup.GetNode (i).Longitude;
+						posY = nodeGroup.GetNode (i).Latitude;
 						length = Math.Sqrt (Math.Pow (nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow (nextNode.Longitude - currentNode.Longitude, 2));
 						angle = (double)Vector3.Angle (Vector3.right, -delta) + 180;
 					}
 
-					if (ngp.IsHighway () && (ngp.IsResidential () || ngp.IsPrimary () || ngp.IsSecondary () || ngp.IsTertiary () || ngp.IsService () || ngp.IsUnclassified ())) {
+					if (nodeGroup.IsHighway () && (nodeGroup.IsResidential () || nodeGroup.IsPrimary () || nodeGroup.IsSecondary () || nodeGroup.IsTertiary () || nodeGroup.IsService () || nodeGroup.IsUnclassified ())) {
 						// Construction et paramétrage de l'objet 3D destiné à former une route classique
 						GameObject newClassicHighway = roadBuilder.BuildClassicHighway ((float)posX, (float)posY, (float)length, (float)width, (float)angle);
 						newClassicHighway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout de la route au groupe de routes
 						newClassicHighway.transform.parent = highways.transform;
-					} else if (ngp.IsCycleWay ()) {
+					} else if (nodeGroup.IsCycleWay ()) {
 						// Construction et paramétrage de l'objet 3D destiné à former une piste cyclable
 						GameObject newCycleway = roadBuilder.BuildCycleway ((float)posX, (float)posY, (float)length, (float)width / 2F, (float)angle);
 						newCycleway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout de la piste cyclable au groupe de pistes cyclables
 						newCycleway.transform.parent = cycleways.transform;
-					} else if (ngp.IsFootway ()) {
+					} else if (nodeGroup.IsFootway ()) {
 						// Construction et paramétrage de l'objet 3D destiné à former un chemin piéton
 						GameObject newFootway = roadBuilder.BuildFootway ((float)posX, (float)posY, (float)length, (float)width / 1.5F, (float)angle);
 						newFootway.name = currentNode.Reference + " to " + nextNode.Reference;
@@ -576,7 +595,7 @@ public class CityBuilder {
 
 						// Ajout de la voie maritime au groupe de voies de bus
 						// newBusways.transform.parent = busways.transform;
-					} else if (ngp.IsWaterway ()) {
+					} else if (nodeGroup.IsWaterway ()) {
 						// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
 						GameObject newWaterway = roadBuilder.BuildWaterway ((float)posX, (float)posY, (float)length, (float)width / 1.5F, (float)angle);
 						newWaterway.name = currentNode.Reference + " to " + nextNode.Reference;
@@ -589,7 +608,6 @@ public class CityBuilder {
 		}
 	}
 
-
 	/// <summary>
 	/// 	Place les arbres dans la scène.
 	/// </summary>
@@ -601,11 +619,13 @@ public class CityBuilder {
 		float height = 0.12F;
 		float diameter = 0.08F;
 
-		foreach (NodeGroup ngp in nodeGroups) {
-			if ( ngp.IsTree() ) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+			NodeGroup nodeGroup = nodeGroupEntry.Value;
+
+			if (nodeGroup.IsTree()) {
 				// Récupération de la position de l'arbre depuis le groupe de noeuds correspondant
-				double posX = ngp.GetNode (0).Longitude;
-				double posZ = ngp.GetNode (0).Latitude;
+				double posX = nodeGroup.GetNode (0).Longitude;
+				double posZ = nodeGroup.GetNode (0).Latitude;
 
 				// Création et paramétrage de l'objet 3D (cylindre) destiné à former un tronc d'arbre 
 				GameObject trunk = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
@@ -629,7 +649,7 @@ public class CityBuilder {
 				MeshRenderer foliageMeshRenderer = foliage.GetComponent<MeshRenderer> ();
 				foliageMeshRenderer.material = Resources.Load (Materials.TREE_LEAF) as Material;
 
-				GameObject tree = new GameObject (ngp.Id);
+				GameObject tree = new GameObject (nodeGroup.Id);
 
 				// Ajout du tronc et du feuillage à l'arbre
 				trunk.transform.parent = tree.transform;
@@ -650,11 +670,13 @@ public class CityBuilder {
 		float height = 0.03F;
 		float diameter = 0.015F;
 
-		foreach (NodeGroup ngp in nodeGroups) {
-			if ( ngp.IsHighway() && ngp.IsTrafficLight() ) {
-				for (int i = 0; i < ngp.NodeCount(); i++) {
-					z = ngp.GetNode (i).Latitude;
-					x = ngp.GetNode (i).Longitude;
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+			NodeGroup nodeGroup = nodeGroupEntry.Value;
+
+			if ( nodeGroup.IsHighway() && nodeGroup.IsTrafficLight() ) {
+				for (int i = 0; i < nodeGroup.NodeCount(); i++) {
+					z = nodeGroup.GetNode (i).Latitude;
+					x = nodeGroup.GetNode (i).Longitude;
 
 					// Création et paramétrage de l'objet 3D (cylindre) destiné à former un support du feu tricolore 
 					GameObject mount = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
@@ -677,7 +699,7 @@ public class CityBuilder {
 					lightsMeshRenderer.material = Resources.Load (Materials.TRAFFIC_LIGHT) as Material;
 
 					// Création de l'objet 3D destiné à former un feu tricolore
-					GameObject trafficLight = new GameObject (ngp.Id);
+					GameObject trafficLight = new GameObject (nodeGroup.Id);
 
 					// Ajout du support et des feux au feu tricolore
 					mount.transform.parent = trafficLight.transform;
@@ -745,7 +767,7 @@ public class CityBuilder {
 		groundBuilder.BuildGround ((float)length, (float)width, (float)minLat, (float)minLon, groundMaterial, textureExpansion);
 	}
 
-	public List<NodeGroup> NodeGroups {
+	public Dictionary<string, NodeGroup> NodeGroups {
 		get { return nodeGroups; }
 	}
 
