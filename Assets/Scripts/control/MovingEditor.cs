@@ -16,9 +16,6 @@ public class MovingEditor : ObjectEditor {
 	private MovingStates movingState;
 
 
-	/// <summary>Position de départ du mur sélectionné pour le déplacement courant.</summary>
-	protected Vector3 selectedWallStartPos;
-
 	/// <summary>Position de départ du bâtiment sélectionné pour le déplacement courant.</summary>
 	protected Vector3 selectedBuildingStartPos;
 
@@ -33,7 +30,6 @@ public class MovingEditor : ObjectEditor {
 	public MovingEditor (GameObject moveHandler) {
 		this.movingState = MovingStates.MOTIONLESS;
 
-		this.selectedWallStartPos = Vector3.zero;
 		this.selectedBuildingStartPos = Vector3.zero;
 
 		this.moveHandler = moveHandler;
@@ -46,20 +42,14 @@ public class MovingEditor : ObjectEditor {
 	/// 	déplacement courant.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void InitializeMovingMode(EditController.SelectionRanges selectionRange) {
+	public void InitializeMovingMode() {
 		Vector3 objectPosition = Vector3.zero;
 		Vector3 objectScale = Vector3.zero;
 
 		// Affectation de la position courante de l'objet à la position initiale
-		if (selectionRange == EditController.SelectionRanges.WALL) {
-			objectPosition = selectedWall.transform.position;
-			objectScale = selectedWall.transform.localScale;
-			selectedWallStartPos = objectPosition;
-		} else if (selectionRange == EditController.SelectionRanges.BUILDING) {
-			objectPosition = selectedBuilding.transform.position;
-			objectScale = selectedBuilding.transform.localScale;
-			selectedBuildingStartPos = objectPosition;
-		}
+		objectPosition = selectedBuilding.transform.position;
+		objectScale = selectedBuilding.transform.localScale;
+		selectedBuildingStartPos = objectPosition;
 
 		// Initialisation de la position de la poignée de déplacement
 		Vector3 objectScreenPosition = Camera.main.WorldToScreenPoint (objectPosition);
@@ -72,7 +62,7 @@ public class MovingEditor : ObjectEditor {
 	/// 	sélectionné.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void StartObjectMoving(EditController.SelectionRanges selectionRange) {
+	public void StartObjectMoving() {
 		Vector2 moveHandlerStartPosition = moveHandler.transform.position;
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 
@@ -80,13 +70,10 @@ public class MovingEditor : ObjectEditor {
 		moveHandlerStartOffset = mousePosition - moveHandlerStartPosition;
 
 		// Mise à jour des témoins de sélection
-		if (selectionRange == EditController.SelectionRanges.WALL)
-			wallTransformed = true;
-		else if (selectionRange == EditController.SelectionRanges.BUILDING)
-			buildingTransformed = true;
+		buildingTransformed = true;
 
 		// Déplacement de l'objet à sa position initiale
-		this.MoveObject (selectionRange);
+		this.MoveObject ();
 
 		movingState = MovingStates.MOVING;
 	}
@@ -96,13 +83,13 @@ public class MovingEditor : ObjectEditor {
 	/// 	Met à jour la position de l'objet sélectionné en fonction de l'emplacement de la souris.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void UpdateObjectMoving(EditController.SelectionRanges selectionRange) {
+	public void UpdateObjectMoving() {
 		// Calcul de la nouvelle position de la poignée
 		Vector2 mousePosition = new Vector2 (Input.mousePosition.x, Input.mousePosition.y);
 		moveHandler.transform.position = mousePosition - moveHandlerStartOffset;
 
 		// Déplacement de l'objet à sa nouvelle position
-		this.MoveObject (selectionRange);
+		this.MoveObject ();
 	}
 
 
@@ -110,20 +97,15 @@ public class MovingEditor : ObjectEditor {
 	/// 	Déplace l'objet sélectionné à la position correspondante de la poignée dans le repère 3D.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	private void MoveObject(EditController.SelectionRanges selectionRange) {
+	private void MoveObject() {
 		Camera mainCamera = Camera.main;
 		Vector3 moveHandlerPosition = moveHandler.transform.position;
 
 		// Déplace l'objet ainsi que les nodes noeuds 3D correspondant si l'objet est un bâtiment. Les murs ne sont en
 		// effet pas pris en charge.
 		Vector3 selectedObjectCurrentPos = mainCamera.ScreenToWorldPoint(new Vector3(moveHandlerPosition.x, moveHandlerPosition.y, mainCamera.transform.position.y));
-		if (selectionRange == EditController.SelectionRanges.WALL) {
-			selectedWall.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedWall.transform.position.y, selectedObjectCurrentPos.z);
-
-		} else if (selectionRange == EditController.SelectionRanges.BUILDING) {
-			selectedBuilding.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuilding.transform.position.y, selectedObjectCurrentPos.z);
-			selectedBuildingNodes.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuildingNodes.transform.position.y, selectedObjectCurrentPos.z);
-		}
+		selectedBuilding.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuilding.transform.position.y, selectedObjectCurrentPos.z);
+		selectedBuildingNodes.transform.position = new Vector3 (selectedObjectCurrentPos.x, selectedBuildingNodes.transform.position.y, selectedObjectCurrentPos.z);
 	}
 
 
@@ -164,10 +146,7 @@ public class MovingEditor : ObjectEditor {
 	}
 
 	public override void ValidateTransform() {
-		if (wallTransformed) {
-			if (!transformedObjects.Contains(selectedWall))
-				transformedObjects.Add(selectedWall);
-		} else if(buildingTransformed) {
+		if(buildingTransformed) {
 			if (!transformedObjects.Contains(selectedBuilding))
 				transformedObjects.Add(selectedBuilding);
 
@@ -176,9 +155,7 @@ public class MovingEditor : ObjectEditor {
 	}
 
 	public override void CancelTransform() {
-		if (wallTransformed) {
-				selectedWall.transform.position = selectedWallStartPos;
-		} else if(buildingTransformed) {
+		if(buildingTransformed) {
 			selectedBuilding.transform.position = selectedBuildingStartPos;
 
 			Vector3 buildingPosition = selectedBuilding.transform.position;
@@ -210,11 +187,6 @@ public class MovingEditor : ObjectEditor {
 	public MovingStates MovingState {
 		get { return movingState; }
 		set { movingState = value; }
-	}
-
-	public Vector3 SelectedWallStartPos {
-		get { return selectedWallStartPos; }
-		set { selectedWallStartPos = value; }
 	}
 
 	public Vector3 SelectedBuildingStartPos {

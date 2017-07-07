@@ -9,7 +9,7 @@ public class PointEditor {
 	/// possibilité de créer les angles droit mais il reste des buggs a traiter
 	/// </summary>
 	/// <param name="nodeGroups"> ensemble des gruopes de node qui vont etre modifié</param>
-	public void EditPoint(List<NodeGroup> nodeGroups) {
+	public void EditPoint(Dictionary<string, NodeGroup> nodeGroups) {
 		double xa;
 		double ya;
 
@@ -30,17 +30,19 @@ public class PointEditor {
 //		double newLat, newLon, a, d, coef, dist;
 
 		for (int j = 0; j < 5; j++) {
-			foreach (NodeGroup ngp in nodeGroups) {
-				if (ngp.IsBuilding()) {
-					for (int i = 0; i < ngp.NodeCount() - 2; i++) {
-						xa = ngp.GetNode(i).Longitude;
-						ya = ngp.GetNode(i).Latitude;
+			foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+				NodeGroup noudeGroup = nodeGroupEntry.Value;
 
-						xb = ngp.GetNode(i + 1).Longitude;
-						yb = ngp.GetNode(i + 1).Latitude;
+				if (noudeGroup.IsBuilding()) {
+					for (int i = 0; i < noudeGroup.NodeCount() - 2; i++) {
+						xa = noudeGroup.GetNode(i).Longitude;
+						ya = noudeGroup.GetNode(i).Latitude;
 
-						xc = ngp.GetNode(i + 2).Longitude;
-						yc = ngp.GetNode(i + 2).Latitude;
+						xb = noudeGroup.GetNode(i + 1).Longitude;
+						yb = noudeGroup.GetNode(i + 1).Latitude;
+
+						xc = noudeGroup.GetNode(i + 2).Longitude;
+						yc = noudeGroup.GetNode(i + 2).Latitude;
 
 						xba = xa - xb;
 						yba = ya - yb;
@@ -65,8 +67,8 @@ public class PointEditor {
                                 nouvLat = yb + (dist * coef);
                                 dist = xc - xb;
                                 xc = xb + (dist * coef);
-                                ngp.getNode(i + 2).setLatitude(nouvLat);
-                                ngp.getNode(i + 2).setLongitude(xc);
+                                noudeGroup.getNode(i + 2).setLatitude(nouvLat);
+                                noudeGroup.getNode(i + 2).setLongitude(xc);
                             }  else {
                                 d = Math.Sqrt(Math.Pow(nouvLon - xb, 2) + Math.Pow(yc - yb, 2));
                                 coef = a / d;
@@ -74,13 +76,14 @@ public class PointEditor {
                                 nouvLon = xb + (dist * coef);
                                 dist = yc - yb;
                                 yc = yb + (dist * coef);
-                                //Math.Pow(ngp.getNode(i).getLatitude(),2);
-                                ngp.getNode(i + 2).setLongitude(nouvLon);
-                                ngp.getNode(i + 2).setLatitude(yc);
+                                //Math.Pow(noudeGroup.getNode(i).getLatitude(),2);
+                                noudeGroup.getNode(i + 2).setLongitude(nouvLon);
+                                noudeGroup.getNode(i + 2).setLatitude(yc);
                             }
 
-                        } else */if (angleABC < 20 || angleABC > 170) {
-							ngp.RemoveNode(i + 1);
+                        } else */
+						if (angleABC < 20 || angleABC > 170) {
+							noudeGroup.RemoveNode(i + 1);
 						}
 					}
 				}

@@ -45,7 +45,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			// Décalage de la caméra et mise à jour de la position de l'objet sélectionné si on est en cours de
 			// déplacement d'un objet
 			if (Input.GetMouseButton (0) && editController.EditState == EditController.EditStates.MOVING_MODE && editController.MovingEditor.IsMoving()) {
-				editController.MovingEditor.UpdateObjectMoving (editController.SelectionRange);
+				editController.MovingEditor.UpdateObjectMoving ();
 				editController.MovingEditor.ShiftCamera ();
 			}
 			break;
@@ -169,14 +169,14 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			// Démarrage du déplacement si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
 			if (editController.EditState == EditController.EditStates.MOVING_MODE && editController.MovingEditor.IsMotionless()) {
-				editController.MovingEditor.StartObjectMoving (editController.SelectionRange);
+				editController.MovingEditor.StartObjectMoving ();
 			}
 			break;
 		case UiNames.TURN_HANDLER:
 			// Démarrage de la rotation si l'objet est immobile et que le controlleur de modification se trouve dans le
 			// bon état
 			if (editController.EditState == EditController.EditStates.TURNING_MODE && editController.TurningEditor.IsMotionless()) {
-				editController.TurningEditor.StartObjectTurning (editController.SelectionRange);
+				editController.TurningEditor.StartObjectTurning ();
 			}
 			break;
 		}
@@ -194,14 +194,14 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			// Mise à jour du déplacement si l'objet est immobile et que le controlleur de modification se trouve dans
 			// le bon état
 			if (editController.EditState == EditController.EditStates.MOVING_MODE && editController.MovingEditor.IsMoving()) {
-				editController.MovingEditor.UpdateObjectMoving (editController.SelectionRange);
+				editController.MovingEditor.UpdateObjectMoving ();
 			}
 			break;
 		case UiNames.TURN_HANDLER:
 			// Mise à jour de la rotation si l'objet est immobile et que le controlleur de modification se trouve dans
 			// le bon état
 			if (editController.EditState == EditController.EditStates.TURNING_MODE && editController.TurningEditor.IsTurning()) {
-				editController.TurningEditor.UpdateObjectTurning (editController.SelectionRange);
+				editController.TurningEditor.UpdateObjectTurning ();
 			}
 			break;
 		}
@@ -520,30 +520,6 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
 				editController.CancelEdit();
 				editController.ExitBuilding();
-			}
-			break;
-		case UiNames.WALL_RANGE_BUTTON:
-			// Inversion de l'étendue de sélection et du statuts des boutons de d'étende de sélection si le controlleur
-			// de modification n'est pas en attente d'une sélection de bâtiment et si le bouton est bien actif
-			if (editController.EditState != EditController.EditStates.NONE_SELECTION) {
-					editController.SelectionRange = EditController.SelectionRanges.WALL;
-				if (editController.EditState == EditController.EditStates.MOVING_MODE)
-					editController.MovingEditor.InitializeMovingMode(editController.SelectionRange);
-				else if (editController.EditState == EditController.EditStates.TURNING_MODE)
-					editController.TurningEditor.InitializeTurningMode(editController.SelectionRange);
-				this.ActivateWallRangeButton();
-			}
-			break;
-		case UiNames.BUILDING_RANGE_BUTTON:
-			// Inversion de l'étendue de sélection et du statuts des boutons de d'étende de sélection si le controlleur
-			// de modification n'est pas en attente d'une sélection de bâtiment et si le bouton est bien actif
-			if (editController.EditState != EditController.EditStates.NONE_SELECTION) {
-				editController.SelectionRange = EditController.SelectionRanges.BUILDING;
-				if (editController.EditState == EditController.EditStates.MOVING_MODE)
-					editController.MovingEditor.InitializeMovingMode(editController.SelectionRange);
-				else if (editController.EditState == EditController.EditStates.TURNING_MODE)
-					editController.TurningEditor.InitializeTurningMode(editController.SelectionRange);
-				this.ActivateBuildingRangeButton();
 			}
 			break;
 		case UiNames.MATERIALS_BUTTON:

@@ -29,7 +29,7 @@ public class CityBuilder {
 
 
 	/// <summary>Constructeur de routes.</summary>
-	private HighwayBuilder roadBuilder;
+	private HighwayBuilder highwayBuilder;
 
 	/// <summary>Constructeur de toits.</summary>
 	private RoofBuilder roofBuilder;
@@ -93,7 +93,7 @@ public class CityBuilder {
 	private CityBuilder() {
 		this.nodeGroups = new Dictionary<string, NodeGroup> ();
 
-		this.roadBuilder = new HighwayBuilder ();
+		this.highwayBuilder = new HighwayBuilder ();
 		this.roofBuilder = new RoofBuilder ();
 		this.groundBuilder = new GroundBuilder ();
 
@@ -143,8 +143,8 @@ public class CityBuilder {
 
 			foreach (String line in lines) {
 				String[] objectData = line.Split('\t');
-				ExternalObject materialData = new ExternalObject(objectData);
-				externalObjects.Add(materialData);
+				ExternalObject externalObject = new ExternalObject(objectData);
+				externalObjects.Add(externalObject);
 			}
 		}
 
@@ -377,7 +377,7 @@ public class CityBuilder {
 		buildingsTools.AddBuildingAndNodeGroupPair(wallGroup, nodeGroup);
 
 		// Déplacement des murs au sein du bâtiment pour qu'ils aient une position relative au centre
-		Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup, nodeGroup);
+		Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup);
 		wallGroup.transform.position = wallGroupCenter;
 		foreach (Transform wallTransform in wallGroup.transform)
 			wallTransform.transform.position -= wallGroup.transform.position;
@@ -392,7 +392,8 @@ public class CityBuilder {
 		// Ajout du bâtiment au groupe de bâtiments
 		wallGroup.transform.parent = wallGroups.transform;
 
-		ExternalObject externalObject = this.ExternalBuildingAtPosition(wallGroup.transform.position, buildingsTools.BuildingRadius(wallGroup, nodeGroup));
+		double buildingRadius = buildingsTools.BuildingRadius(wallGroup);
+		ExternalObject externalObject = this.ExternalBuildingAtPosition(wallGroup.transform.position, buildingRadius);
 		if (externalObject != null) {
 			if (externalObject.NeverUsed) {
 				GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFileName));
@@ -567,21 +568,21 @@ public class CityBuilder {
 
 					if (nodeGroup.IsHighway () && (nodeGroup.IsResidential () || nodeGroup.IsPrimary () || nodeGroup.IsSecondary () || nodeGroup.IsTertiary () || nodeGroup.IsService () || nodeGroup.IsUnclassified ())) {
 						// Construction et paramétrage de l'objet 3D destiné à former une route classique
-						GameObject newClassicHighway = roadBuilder.BuildClassicHighway ((float)posX, (float)posY, (float)length, (float)width, (float)angle);
+						GameObject newClassicHighway = highwayBuilder.BuildClassicHighway ((float)posX, (float)posY, (float)length, (float)width, (float)angle);
 						newClassicHighway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout de la route au groupe de routes
 						newClassicHighway.transform.parent = highways.transform;
 					} else if (nodeGroup.IsCycleWay ()) {
 						// Construction et paramétrage de l'objet 3D destiné à former une piste cyclable
-						GameObject newCycleway = roadBuilder.BuildCycleway ((float)posX, (float)posY, (float)length, (float)width / 2F, (float)angle);
+						GameObject newCycleway = highwayBuilder.BuildCycleway ((float)posX, (float)posY, (float)length, (float)width / 2F, (float)angle);
 						newCycleway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout de la piste cyclable au groupe de pistes cyclables
 						newCycleway.transform.parent = cycleways.transform;
 					} else if (nodeGroup.IsFootway ()) {
 						// Construction et paramétrage de l'objet 3D destiné à former un chemin piéton
-						GameObject newFootway = roadBuilder.BuildFootway ((float)posX, (float)posY, (float)length, (float)width / 1.5F, (float)angle);
+						GameObject newFootway = highwayBuilder.BuildFootway ((float)posX, (float)posY, (float)length, (float)width / 1.5F, (float)angle);
 						newFootway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout du chemin piéton au groupe de chemins piétons
@@ -594,7 +595,7 @@ public class CityBuilder {
 						// newBusways.transform.parent = busways.transform;
 					} else if (nodeGroup.IsWaterway ()) {
 						// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
-						GameObject newWaterway = roadBuilder.BuildWaterway ((float)posX, (float)posY, (float)length, (float)width / 1.5F, (float)angle);
+						GameObject newWaterway = highwayBuilder.BuildWaterway ((float)posX, (float)posY, (float)length, (float)width / 1.5F, (float)angle);
 						newWaterway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout de la voie maritime au groupe de voies maritimes

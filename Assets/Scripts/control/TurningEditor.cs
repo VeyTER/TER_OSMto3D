@@ -16,9 +16,6 @@ public class TurningEditor : ObjectEditor {
 	private TurningStates turningState;
 
 
-	/// <summary>Position de départ du mur sélectionné pour la rotation courante.</summary>
-	protected float selectedWallStartAngle;
-
 	/// <summary>Position de départ du bâtiment sélectionné pour la rotation courante.</summary>
 	protected float selectedBuildingStartAngle;
 
@@ -34,7 +31,6 @@ public class TurningEditor : ObjectEditor {
 		this.turningState = TurningStates.MOTIONLESS;
 
 		this.selectedBuildingStartAngle = 0F;
-		this.selectedWallStartAngle = 0F;
 
 		this.turnHandler = turnHandler;
 		this.turnHandler.SetActive (false);
@@ -46,22 +42,15 @@ public class TurningEditor : ObjectEditor {
 	/// 	rotation courante.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void InitializeTurningMode(EditController.SelectionRanges selectionRange) {
+	public void InitializeTurningMode() {
 		Quaternion turnHandlerRotation = turnHandler.transform.rotation;
 		Vector3 objectScreenPosition = Vector3.zero;
 
 		// Affectation de l'orientation courante de l'objet à l'orientation initiale
-		if (selectionRange == EditController.SelectionRanges.WALL) {
-			objectScreenPosition = Camera.main.WorldToScreenPoint (selectedWall.transform.position);
-			selectedWallStartAngle = selectedWall.transform.rotation.eulerAngles.y;
-			turnHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
-			turnHandler.transform.rotation = Quaternion.Euler (turnHandlerRotation.x, turnHandlerRotation.z, 360 - selectedWall.transform.rotation.eulerAngles.y); 
-		} else if (selectionRange == EditController.SelectionRanges.BUILDING) {
-			objectScreenPosition = Camera.main.WorldToScreenPoint (selectedBuilding.transform.position);
-			selectedBuildingStartAngle = selectedBuilding.transform.rotation.eulerAngles.y;
-			turnHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
-			turnHandler.transform.rotation = Quaternion.Euler (turnHandlerRotation.x, turnHandlerRotation.z,  360 - selectedBuilding.transform.rotation.eulerAngles.y); 
-		}
+		objectScreenPosition = Camera.main.WorldToScreenPoint (selectedBuilding.transform.position);
+		selectedBuildingStartAngle = selectedBuilding.transform.rotation.eulerAngles.y;
+		turnHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
+		turnHandler.transform.rotation = Quaternion.Euler (turnHandlerRotation.x, turnHandlerRotation.z,  360 - selectedBuilding.transform.rotation.eulerAngles.y); 
 	}
 
 
@@ -70,7 +59,7 @@ public class TurningEditor : ObjectEditor {
 	/// 	sélectionné.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void StartObjectTurning(EditController.SelectionRanges selectionRange) {
+	public void StartObjectTurning() {
 		Vector3 turnHandlerStartPosition = turnHandler.transform.position;
 		float turnHandlerStartAngle = turnHandler.transform.rotation.eulerAngles.z;
 
@@ -80,13 +69,10 @@ public class TurningEditor : ObjectEditor {
 		turnHandlerStartOffset = mouseAngle - turnHandlerStartAngle;
 
 		// Mise à jour des témoins de sélection
-		if (selectionRange == EditController.SelectionRanges.WALL)
-			wallTransformed = true;
-		else if (selectionRange == EditController.SelectionRanges.BUILDING)
-			buildingTransformed = true;
+		buildingTransformed = true;
 
 		// Rotation de l'objet à sa position initiale
-		this.TurnObject (selectionRange);
+		this.TurnObject ();
 
 		turningState = TurningStates.TURNING;
 	}
@@ -96,7 +82,7 @@ public class TurningEditor : ObjectEditor {
 	/// 	Met à jour l'orientation de l'objet sélectionné en fonction de l'emplacement de la souris.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void UpdateObjectTurning(EditController.SelectionRanges selectionRange) {
+	public void UpdateObjectTurning() {
 		Vector3 turnHandlerPosition = turnHandler.transform.position;
 
 		// Calcul de la nouvelle orientation de la poignée
@@ -106,7 +92,7 @@ public class TurningEditor : ObjectEditor {
 		turnHandler.transform.rotation = Quaternion.Euler(turnHandlerRotation.x, turnHandlerRotation.y, (mouseAngle - turnHandlerStartOffset));
 
 		// Rotation de l'objet à sa nouvelle orientation
-		this.TurnObject (selectionRange);
+		this.TurnObject ();
 	}
 
 
@@ -114,19 +100,14 @@ public class TurningEditor : ObjectEditor {
 	/// 	Oriente l'objet sélectionné selon l'angle de la poignée.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	private void TurnObject(EditController.SelectionRanges selectionRange) {
+	private void TurnObject() {
 		// Calcul de l'orientation à effecter à l'objet (le sens étant inversé)
 		float turnHandlerAngle = 360 - turnHandler.transform.rotation.eulerAngles.z;
 
 		// Affectation de l'orientation à l'objet
-		if (selectionRange == EditController.SelectionRanges.WALL) {
-			Quaternion selectedWallRotation = selectedWall.transform.rotation;
-			selectedWall.transform.rotation = Quaternion.Euler (selectedWallRotation.x, turnHandlerAngle, selectedWallRotation.z);
-		} else if (selectionRange == EditController.SelectionRanges.BUILDING) {
-			Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
-			selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);
-			selectedBuildingNodes.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);
-		}
+		Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
+		selectedBuilding.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);
+		selectedBuildingNodes.transform.rotation = Quaternion.Euler (selectedBuildingRotation.x, turnHandlerAngle, selectedBuildingRotation.z);
 	}
 
 
@@ -138,10 +119,7 @@ public class TurningEditor : ObjectEditor {
 	}
 
 	public override void ValidateTransform() {
-		if (wallTransformed) {
-			if (!transformedObjects.Contains(selectedWall))
-				transformedObjects.Add(selectedWall);
-		} else if (buildingTransformed) {
+		if (buildingTransformed) {
 			if (!transformedObjects.Contains(selectedBuilding))
 				transformedObjects.Add(selectedBuilding);
 
@@ -150,10 +128,7 @@ public class TurningEditor : ObjectEditor {
 	}
 
 	public override void CancelTransform() {
-		if (wallTransformed) {
-			Quaternion selectedWallRotation = selectedWall.transform.rotation;
-			selectedWall.transform.rotation = Quaternion.Euler(selectedWallRotation.x, selectedWallStartAngle, selectedWallRotation.z);
-		} else if (buildingTransformed) {
+		if (buildingTransformed) {
 			Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
 			selectedBuilding.transform.rotation = Quaternion.Euler(selectedBuildingRotation.x, selectedBuildingStartAngle, selectedBuildingRotation.z);
 
@@ -190,11 +165,6 @@ public class TurningEditor : ObjectEditor {
 	public float SelectedBuildingStartAngle {
 		get { return selectedBuildingStartAngle; }
 		set { selectedBuildingStartAngle = value; }
-	}
-
-	public float SelectedWallStartAngle {
-		get { return selectedWallStartAngle; }
-		set { selectedWallStartAngle = value; }
 	}
 
 	public GameObject TurnHandler {

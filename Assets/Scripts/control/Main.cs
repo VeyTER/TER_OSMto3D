@@ -112,7 +112,7 @@ public class Main : MonoBehaviour {
 	/// 	Mise en place de l'interface
 	/// </summary>
 	public void InstantiateMainElements() {
-		GameObject mainCamera = (GameObject) GameObject.Instantiate(Resources.Load("Game objects/Camera Campus"));
+		GameObject mainCamera = (GameObject) GameObject.Instantiate(Resources.Load("Game objects/CampusCamera"));
 		mainCamera.name = "Camera";
 
 		GameObject.Instantiate (Resources.Load(GameObjects.MAIN_CANVAS));

@@ -46,19 +46,8 @@ public class EditController : MonoBehaviour {
 	}
 
 
-	/// <summary>
-	/// 	Les différentes étendues de sélection pour le déplacement ou l'orientation. L'étendue WALL indique que seul
-	/// 	le mur courant doit être modifié tandis que l'étendue BUILDING signifie que le bâtiment enier doit être
-	/// 	modifié.
-	/// </summary>
-	public enum SelectionRanges { WALL, BUILDING }
-
-
 	/// <summary>Etat courant de modification.</summary>
 	private EditStates editState;
-
-	/// <summary>Etendue courante de sélection.</summary>
-	private SelectionRanges selectionRange;
 
 
 	/// <summary>Editeur de la position des objets, permet de controler le déplacement un objet.</summary>
@@ -83,18 +72,9 @@ public class EditController : MonoBehaviour {
 	private Dictionary<GameObject, string> renamedBuildings;
 
 
-	/// <summary>Mur sélectionné pour modification.</summary>
-	private GameObject selectedWall;
-
 	/// <summary>Bâtiment sélectionné pour modification.</summary>
 	private GameObject selectedBuilding;
 
-
-	/// <summary>
-	/// 	Positions initiales des murs avant qu'ils ne soient modififés pour la 1ère fois durant une période
-	/// 	de modification.
-	/// </summary>
-	private Dictionary<GameObject, Vector3> wallsInitPos;
 
 	/// <summary>
 	/// 	Positions initiales des bâtiments avant qu'ils ne soient modififés pour la 1ère fois durant une période
@@ -102,12 +82,6 @@ public class EditController : MonoBehaviour {
 	/// </summary>
 	private Dictionary<GameObject, Vector3> buildingsInitPos;
 
-
-	/// <summary>
-	/// 	Angles initiaux des murs avant qu'ils ne soient modifiés pour la 1ère fois durant une période
-	/// 	de modification.
-	/// </summary>
-	private Dictionary<GameObject, float> wallsInitAngle;
 
 	/// <summary>
 	/// 	Angles initiaux des bâtiments avant qu'ils ne soient modifiés pour la 1ère fois durant une période
@@ -140,7 +114,6 @@ public class EditController : MonoBehaviour {
 
 	public void Start() {
 		this.editState = EditStates.NONE_SELECTION;
-		this.selectionRange = SelectionRanges.BUILDING;
 
 		this.movingEditor = new MovingEditor (GameObject.Find(UiNames.MOVE_HANDLER));
 		this.turningEditor = new TurningEditor (GameObject.Find(UiNames.TURN_HANDLER));
@@ -152,13 +125,8 @@ public class EditController : MonoBehaviour {
 		this.uiBuilder = UiBuilder.GetInstance();
 
 		this.renamedBuildings = new Dictionary<GameObject, string> ();
-
-		this.wallsInitPos = new Dictionary<GameObject, Vector3>();
 		this.buildingsInitPos = new Dictionary<GameObject, Vector3>();
-
-		this.wallsInitAngle = new Dictionary<GameObject, float>();
 		this.buildingsInitAngle = new Dictionary<GameObject, float>();
-
 		this.buildingsInitHeight = new Dictionary<GameObject, int>();
 
 		this.buildingsInitMaterial = new Dictionary<GameObject, Material>();
@@ -166,12 +134,6 @@ public class EditController : MonoBehaviour {
 
 		this.wallRangeButton = GameObject.Find(UiNames.WALL_RANGE_BUTTON);
 		this.buildingRangeButton = GameObject.Find(UiNames.BUILDING_RANGE_BUTTON);
-
-//		this.wallRangeButton.transform.localScale = Vector3.zero;
-//		this.buildingRangeButton.transform.localScale = Vector3.zero;
-//
-//		Button wallrangeButtonComponent = buildingRangeButton.GetComponent<Button> ();
-//		wallrangeButtonComponent.interactable = false;
 
 		this.controlPanel = GameObject.Find(UiNames.CONTROL_PANEL);
 
@@ -196,7 +158,6 @@ public class EditController : MonoBehaviour {
 		if(selectedBuilding != null)
 			buildingsTools.DiscolorAsSelected(selectedBuilding);
 
-		this.selectedWall = selectedWall;
 		GameObject newBuilding = selectedWall.transform.parent.gameObject;
 
 		// Changement de la couleur du bâtiment sélectionné
@@ -222,12 +183,6 @@ public class EditController : MonoBehaviour {
 			GameObject IdValueLabel = GameObject.Find(UiNames.ID_INDICATOR_LABEL);
 			Text idText = IdValueLabel.GetComponent<Text>();
 			idText.text = nodeGroup.Id;
-
-			// Enregistrement de la situation initiale du mur courant
-			if (!wallsInitPos.ContainsKey(this.selectedWall) && !wallsInitAngle.ContainsKey(this.selectedWall)) {
-				wallsInitPos.Add(this.selectedWall, this.selectedWall.transform.position);
-				wallsInitAngle.Add(this.selectedWall, this.selectedWall.transform.rotation.eulerAngles.y);
-			}
 
 			// Enregistrement de la situation initiale du bâtiment courant
 			if (!buildingsInitPos.ContainsKey(selectedBuilding) && !buildingsInitAngle.ContainsKey(selectedBuilding)) {
@@ -280,7 +235,6 @@ public class EditController : MonoBehaviour {
 		buildingsTools.DiscolorAsSelected(selectedBuilding);
 
 		selectedBuilding = null;
-		selectedWall = null;
 
 		// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
 		editPanelController.ClosePanel (() => {
@@ -332,9 +286,9 @@ public class EditController : MonoBehaviour {
 	/// </summary>
 	public void EnterMovingMode() {
 		this.EnterTransformMode ();
-		movingEditor.InitializeBasics(selectedWall, selectedBuilding);
+		movingEditor.InitializeBasics(selectedBuilding);
 		movingEditor.MoveHandler.SetActive (true);
-		movingEditor.InitializeMovingMode(selectionRange);
+		movingEditor.InitializeMovingMode();
 		editState = EditStates.MOVING_MODE;
 	}
 
@@ -344,15 +298,15 @@ public class EditController : MonoBehaviour {
 	/// </summary>
 	public void EnterTurningMode() {
 		this.EnterTransformMode ();
-		turningEditor.InitializeBasics(selectedWall, selectedBuilding);
+		turningEditor.InitializeBasics(selectedBuilding);
 		turningEditor.TurnHandler.SetActive (true);
-		turningEditor.InitializeTurningMode(SelectionRange);
+		turningEditor.InitializeTurningMode();
 		editState = EditStates.TURNING_MODE;
 	}
 
 	public void EnterHeightChangingMode() {
 		this.EnterTransformMode();
-		heightChangingEditor.InitializeBasics(selectedWall, selectedBuilding);
+		heightChangingEditor.InitializeBasics(selectedBuilding);
 		heightChangingEditor.InitializeHeightChangingMode();
 		cameraController.StartCoroutine( cameraController.MoveToBuilding(selectedBuilding, true, null, 15) );
 		editState = EditStates.HEIGHT_CHANGING_MODE;
@@ -361,7 +315,7 @@ public class EditController : MonoBehaviour {
 
 	public void EnterSkinChangingMode() {
 		this.EnterTransformMode();
-		skinChangingEditor.InitializeBasics(selectedWall, selectedBuilding);
+		skinChangingEditor.InitializeBasics(selectedBuilding);
 		skinChangingEditor.InitializeSkinChangingMode();
 
 		cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, () => {
@@ -506,10 +460,6 @@ public class EditController : MonoBehaviour {
 			movedOrTurnedObjects.Add (building);
 		}
 
-		// [NON MAINTENU] Mise à jour des groupes de noeuds correspondant aux murs déplacés et tournés
-		foreach (KeyValuePair<GameObject, Vector3> wallPositionEntry in wallsInitPos);
-		foreach (KeyValuePair<GameObject, float> wallAngleEntry in wallsInitAngle);
-
 		// Mise à jour, dans les fichiers, des données conernant les bâtiments modifiés
 		foreach (GameObject building in movedOrTurnedObjects) {
 			Vector3 buildingInitPos = buildingsInitPos[building];
@@ -604,20 +554,6 @@ public class EditController : MonoBehaviour {
 			buildingsTools.UpdateNodesPosition (building);
 		}
 
-		// [NON MAINTENU] Affectation à chaque mur de la position qu'il avait lorsqu'il a été sélectionné par
-		// l'utilisateur
-		foreach (KeyValuePair<GameObject, Vector3> wallPositionEntry in wallsInitPos) {
-			GameObject wall = wallPositionEntry.Key;
-			wall.transform.position = wallPositionEntry.Value;
-		}
-
-		// [NON MAINTENU] Affectation à chaque mur de l'angle qu'il avait lorsqu'il a été sélectionné par l'utilisateur
-		foreach (KeyValuePair<GameObject, float> wallAngleEntry in wallsInitAngle) {
-			GameObject wall = wallAngleEntry.Key;
-			Quaternion wallRotation = wall.transform.rotation;
-			wall.transform.rotation = wall.transform.rotation = Quaternion.Euler (wallRotation.x, wallAngleEntry.Value, wallRotation.z);
-		}
-
 		foreach (KeyValuePair<GameObject, int> buildingHeightEntry in buildingsInitHeight) {
 			GameObject building = buildingHeightEntry.Key;
 			int buildingHeight = buildingHeightEntry.Value;
@@ -661,9 +597,6 @@ public class EditController : MonoBehaviour {
 	private void ClearHistory() {
 		renamedBuildings.Clear();
 
-		wallsInitPos.Clear();
-		wallsInitAngle.Clear ();
-
 		buildingsInitPos.Clear();
 		buildingsInitAngle.Clear();
 
@@ -685,11 +618,6 @@ public class EditController : MonoBehaviour {
 	public EditStates EditState {
 		get { return editState; }
 		set { editState = value; }
-	}
-
-	public SelectionRanges SelectionRange {
-		get { return selectionRange; }
-		set { selectionRange = value; }
 	}
 
 	public MovingEditor MovingEditor {
@@ -714,11 +642,6 @@ public class EditController : MonoBehaviour {
 
 	public Dictionary<GameObject, string> RenamedBuildings {
 		get { return renamedBuildings; }
-	}
-
-	public GameObject SelectedWall {
-		get { return selectedWall; }
-		set { selectedWall = value; }
 	}
 
 	public GameObject SelectedBuilding {

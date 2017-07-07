@@ -7,184 +7,20 @@ Direct3D:
     VRAM:     2018 MB
     Driver:   10.18.10.4358
 Begin MonoManager ReloadAssembly
-Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
-Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-- Completed reload, in  0.047 seconds
-Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\System.Core.dll (this message is harmless)
-Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\System.dll (this message is harmless)
-Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Projet OSM to 3D\Code\campus_et_grandrond_Data\Managed\System.Xml.dll (this message is harmless)
+Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+- Completed reload, in  0.179 seconds
+Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\System.dll (this message is harmless)
+Platform assembly: D:\Documents\Dorian\Cours\UPSSITECH\S8\Stage\Travail effectué\Projet OSM to 3D\OSM to 3D\campus_et_grandrond_Data\Managed\System.Xml.dll (this message is harmless)
 desktop: 1920x1080 59Hz; virtual: 3200x1080 at -1280,0
 <RI> Initializing input.
 <RI> Input initialized.
-<RI> Initialized touch support.
-UnloadTime: 1.765701 ms
--1176  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--1300  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--1594  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--1778  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--1862  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--1936  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--2190  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--2274  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--2328  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--2522  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--2586  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--3430  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--3864  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--4378  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--4982  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--5236  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--5970  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--6324  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--6378  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--6432  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--6976  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--7260  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--7334  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--7468  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--7842  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--8096  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--8510  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--9464  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--9618  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--9692  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--9786  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--9850  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--9964  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--11078  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
--11582  -4980
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at MovingEditor.MoveObject (SelectionRanges selectionRange) [0x00000] in <filename unknown>:0 
-  at MovingEditor.StartObjectMoving (SelectionRanges selectionRange) [0x00000] in <filename unknown>:0 
-  at UiManager.OnBeginDrag (UnityEngine.EventSystems.PointerEventData eventData) [0x00000] in <filename unknown>:0 
-  at UnityEngine.EventSystems.ExecuteEvents.Execute (IBeginDragHandler handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00000] in <filename unknown>:0 
-  at UnityEngine.EventSystems.ExecuteEvents.Execute[IBeginDragHandler] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.EventFunction`1 functor) [0x00000] in <filename unknown>:0 
-UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
-UnityEngine.DebugLogHandler:LogException(Exception, Object)
-UnityEngine.Logger:LogException(Exception, Object)
-UnityEngine.Debug:LogException(Exception)
-UnityEngine.EventSystems.ExecuteEvents:Execute(GameObject, BaseEventData, EventFunction`1)
-UnityEngine.EventSystems.PointerInputModule:ProcessDrag(PointerEventData)
-UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent(Int32)
-UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent()
-UnityEngine.EventSystems.StandaloneInputModule:Process()
-UnityEngine.EventSystems.EventSystem:Update()
- 
-(Filename:  Line: -1)
-
-Setting up 2 worker threads for Enlighten.
-  Thread -> id: 2088 -> priority: 1 
-  Thread -> id: 154 -> priority: 1 

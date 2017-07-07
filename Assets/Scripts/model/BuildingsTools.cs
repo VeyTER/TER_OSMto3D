@@ -216,6 +216,7 @@ public class BuildingsTools {
 			// du groupe de noeud correspondant au bâtiment
 			XmlNodeList resumedBuildingNd = resumeBuildingNode.ChildNodes;
 			foreach(Node node in nodeGroup.Nodes) {
+
 				// Recherche du nd correspondant au noeud courant à partir le la référence et de l'index du noeud.
 				// En effet, deux nd peuvent avoir la même référence à l'interieur d'un même noeud dans un fichier
 				// (pour faire boucler les bâtiments), c'est pourquoi, un index a été ajouté pour cibler précisément le
@@ -504,14 +505,14 @@ public class BuildingsTools {
 		// Affectation de la position des noeuds 3D de bâtiments aux noeuds correspondants
 		foreach(Transform buildingNodeTransform in buildingNodeGroup.transform) {
 			Node node = this.BuildingNodeToNode (buildingNodeTransform.gameObject, parentNodeGroup);
+
+			//string id = buildingNodeToNodeTable[buildingNodeTransform.gameObject];
+			//Node nodeTest = parentNodeGroup.GetNode(id);
+			//Debug.Log(buildingNodeTransform.gameObject.GetInstanceID() + " => " + id + " => " + nodeTest.GeneratedId());
+
 			node.Latitude = buildingNodeTransform.position.z;
 			node.Longitude = buildingNodeTransform.position.x;
 		}
-	}
-
-	public Vector3 BuildingCenter(GameObject building) {
-		NodeGroup nodeGroup = this.BuildingToNodeGroup(building);
-		return this.BuildingCenter(building, nodeGroup);
 	}
 
 	/// <summary>
@@ -519,7 +520,9 @@ public class BuildingsTools {
 	/// </summary>
 	/// <returns>Centre du batiment.</returns>
 	/// <param name="building">Batiment, de type GameObject, dont on veut calculer le centre.</param>
-	public Vector3 BuildingCenter(GameObject building, NodeGroup nodeGroup) {
+	public Vector3 BuildingCenter(GameObject building) {
+		NodeGroup nodeGroup = this.BuildingToNodeGroup(building);
+
 		// Somme des coordonnées des murs de bâtiments
 		if (nodeGroup != null) {
 			Vector3 positionSum = Vector3.zero;
@@ -559,10 +562,6 @@ public class BuildingsTools {
 		return positionSum / ((NodeGroup.Nodes.Count - 1) * 1F);
 	}
 
-	public double BuildingRadius(GameObject building) {
-		NodeGroup nodeGroup = this.BuildingToNodeGroup(building);
-		return this.BuildingRadius(building, nodeGroup);
-	}
 
 	/// <summary>
 	/// 	Calcule et renvoie le "rayon" d'un bâtiment, c'est à dire la distance entre le sommet le plus éloigné du
@@ -570,9 +569,11 @@ public class BuildingsTools {
 	/// </summary>
 	/// <returns>Rayon du bâtiment.</returns>
 	/// <param name="building">Bâtiment dont on veut calculer le rayon.</param>
-	public double BuildingRadius(GameObject building, NodeGroup nodeGroup) {
+	public double BuildingRadius(GameObject building) {
+		NodeGroup nodeGroup = this.BuildingToNodeGroup(building);
+
 		// Calcul du centre du bâtiment
-		Vector3 buildingCenter = this.BuildingCenter (building, nodeGroup);
+		Vector3 buildingCenter = this.BuildingCenter (building);
 
 		// Calcul du rayon si le groupe de noeuds a bien été trouvé
 		if (nodeGroup != null) {
@@ -624,7 +625,7 @@ public class BuildingsTools {
 	/// <param name="buildingNode">Noeuds 3D en temps que clé.</param>
 	/// <param name="node">Noeud en temps que valeur.</param>
 	public void AddBuildingNodeAndNodeEntryPair(GameObject buildingNode, Node node) {
-		buildingNodeToNodeTable[buildingNode] = node.GetId();
+		buildingNodeToNodeTable[buildingNode] = node.GeneratedId();
 	}
 
 	public void AddBuildingAndDataDisplayEntryPair(GameObject building, GameObject dataDisplay) {

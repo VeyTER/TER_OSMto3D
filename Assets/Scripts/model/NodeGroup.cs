@@ -109,7 +109,7 @@ public class NodeGroup {
 
 	public Node GetNode(string nodeId) {
 		int i = 0;
-		for (; i < nodes.Count && nodes[i].GetId().Equals(nodeId); i++);
+		for (; i < nodes.Count && !nodes[i].GeneratedId().Equals(nodeId); i++);
 		if (i < nodes.Count)
 			return nodes[i];
 		else

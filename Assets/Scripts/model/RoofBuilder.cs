@@ -23,9 +23,9 @@ public class RoofBuilder {
 
 		// Création, construction et texturing du maillage formant un toit
 		Mesh mesh = new Mesh() {
-			vertices = RoofVertices(triangulation, posX, posZ),
-			triangles = RoofTriangles(triangulation),
-			normals = RoofNormals(triangulation)
+			vertices = this.RoofVertices(triangulation, posX, posZ),
+			triangles = this.RoofTriangles(triangulation),
+			normals = this.RoofNormals(triangulation)
 		};
 
 		// Affectation du maillage au toit pour lui donner la forme voulue
@@ -67,6 +67,7 @@ public class RoofBuilder {
 			posZ2 = (float)tri.NodeC.Latitude - posZ;
 			posX2 = (float)tri.NodeC.Longitude - posX;
 			res[i] = new Vector3(posX2, 0, posZ2);
+
 			i++;
 		}
 		return res;
