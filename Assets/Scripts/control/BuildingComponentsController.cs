@@ -220,32 +220,67 @@ public class BuildingComponentsController : MonoBehaviour {
 		}
 	}
 
-	public void ShiftUnitSuffixedValue(GameObject inputObject, float factor) {
+	public void ShiftActuatorValue(GameObject inputObject, float factor) {
 		InputField valueInput = inputObject.GetComponent<InputField>();
+		ActuatorController matchingController = this.TextInputToActuatorController(inputObject);
+		ActuatorInputParsingResult parsingResult = this.ExtactActuatorInputValue(valueInput);
 
-		string numericalPart = string.Empty;
-		MatchCollection numericalMembers = Regex.Matches(valueInput.text, @"[0-9,.-]");
-		foreach (Match numericalMember in numericalMembers)
-			numericalPart += numericalMember.Value;
+		if ((parsingResult.inputValue > matchingController.MinValue || (parsingResult.inputValue <= matchingController.MinValue && factor > 0))
+		 && (parsingResult.inputValue < matchingController.MaxValue || (parsingResult.inputValue >= matchingController.MaxValue && factor < 0))) {
+			string newActuatorValue = (parsingResult.inputValue + matchingController.DefaultStep * factor).ToString();
 
-		double value = double.Parse(numericalPart);
-
-		GameObject actuatorControl = inputObject.transform.parent.parent.gameObject;
-
-		string roomName = actuatorControl.name.Split('_')[1];
-		string rawActuatorIndex = actuatorControl.name.Split('_')[2];
-		int actuatorIndex = int.Parse(rawActuatorIndex);
-
-		BuildingRoom matchingRoom = buildingRooms[roomName];
-		ActuatorController matchingController = matchingRoom.GetActuatorController(actuatorIndex);
-
-		if ((value > matchingController.MinValue || (value <= matchingController.MinValue && factor > 0))
-		 && (value < matchingController.MaxValue || (value >= matchingController.MaxValue && factor < 0))) {
-			valueInput.text = valueInput.text.Replace(numericalPart, (value + matchingController.DefaultStep * factor).ToString());
+			valueInput.text = valueInput.text.Replace(parsingResult.numericalPart, newActuatorValue);
+			matchingController.Value = newActuatorValue;
 		}
 	}
 
+	public void FixActuatorValue(GameObject inputObject) {
+		InputField valueInput = inputObject.GetComponent<InputField>();
+		ActuatorController matchingController = this.TextInputToActuatorController(inputObject);
+		ActuatorInputParsingResult parsingResult = this.ExtactActuatorInputValue(valueInput);
+
+		double newActuatorValue = parsingResult.inputValue;
+
+		if (newActuatorValue == double.NaN)
+			newActuatorValue = matchingController.MinValue;
+
+		newActuatorValue = Math.Max(newActuatorValue, matchingController.MinValue);
+		newActuatorValue = Math.Min(newActuatorValue, matchingController.MaxValue);
+		newActuatorValue = Math.Round(newActuatorValue, 2);
+
+		valueInput.text = newActuatorValue + matchingController.Unit;
+		matchingController.Value = newActuatorValue.ToString();
+	}
+
+	private ActuatorController TextInputToActuatorController(GameObject inputObject) {
+		GameObject uiActuatorControl = inputObject.transform.parent.parent.gameObject;
+
+		string roomName = uiActuatorControl.name.Split('_')[1];
+		string rawActuatorIndex = uiActuatorControl.name.Split('_')[2];
+		int actuatorIndex = int.Parse(rawActuatorIndex);
+
+		BuildingRoom matchingRoom = buildingRooms[roomName];
+		return matchingRoom.GetActuatorController(actuatorIndex);
+	}
+
+	private ActuatorInputParsingResult ExtactActuatorInputValue(InputField valueInput) {
+		string numericalPart = string.Empty;
+		MatchCollection numericalMembers = Regex.Matches(valueInput.text, @"[0-9\,\.\-]");
+		foreach (Match numericalMember in numericalMembers)
+			numericalPart += numericalMember.Value;
+
+		double inputValue = double.NaN;
+		double.TryParse(numericalPart, out inputValue);
+		return new ActuatorInputParsingResult(inputValue, numericalPart);
+	}
+
 	private IEnumerator RebuildIndicators () {
+		this.DestroyIndicators();
+		yield return new WaitForSeconds(0.01F);
+		this.BuildIndicators();
+	}
+
+	private void DestroyIndicators() {
 		if (dataPanel.transform.childCount > 0) {
 			foreach (Transform dataBoxTransform in dataPanel.transform) {
 				HorizontalLayoutGroup[] horizontalLayoutsInChildren = dataBoxTransform.GetComponentsInChildren<HorizontalLayoutGroup>();
@@ -260,9 +295,9 @@ public class BuildingComponentsController : MonoBehaviour {
 				GameObject.Destroy(dataBox);
 			}
 		}
+	}
 
-		yield return new WaitForSeconds(0.01F);
-
+	private void BuildIndicators() {
 		lock (synchronisationLock) {
 			foreach (KeyValuePair<string, BuildingRoom> buildingRoomEntry in buildingRooms) {
 				BuildingRoom buildingRoom = buildingRoomEntry.Value;
@@ -598,6 +633,16 @@ public class BuildingComponentsController : MonoBehaviour {
 
 			yield return new WaitForSeconds(0.01F);
 			pCursor = cursor;
+		}
+	}
+
+	private class ActuatorInputParsingResult {
+		internal double inputValue;
+		internal string numericalPart;
+
+		internal ActuatorInputParsingResult(double inputValue, string numericalPart) {
+			this.inputValue = inputValue;
+			this.numericalPart = numericalPart;
 		}
 	}
 }

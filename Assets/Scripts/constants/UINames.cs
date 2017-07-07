@@ -184,5 +184,6 @@ public class UiNames {
 	public const string BUILDING_DATA_ICON_BUTTON = "BuildingDataIconBackground";
 
 	public const string DECREASE_ACTUATOR_BUTTON = "DecreaseActuatorButton";
+	public const string ACTUATOR_VALUE_INPUT = "ActuatorInput";
 	public const string INCREASE_ACTUATOR_BUTTON = "IncreaseActuatorButton";
 }

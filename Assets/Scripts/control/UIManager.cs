@@ -64,9 +64,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		return (Input.GetKey("up") || Input.GetKey(KeyCode.Z)
 			 || Input.GetKey("down") || Input.GetKey(KeyCode.S)
 			 || Input.GetKey("left") || Input.GetKey(KeyCode.Q)
-			 || Input.GetKey("right") || Input.GetKey(KeyCode.D)
-			 || Input.GetKey("up") || Input.GetKey(KeyCode.Z)
-			 || Input.GetKey("down") || Input.GetKey(KeyCode.S));
+			 || Input.GetKey("right") || Input.GetKey(KeyCode.D));
 	}
 
 	/// <summary>
@@ -74,7 +72,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 	/// </summary>
 	/// <param name="originInputFiled">Champ de saisie source.</param>
 	public void OnValueChanged(InputField originInputFiled) {
-		switch (originInputFiled.name) {
+		switch (originInputFiled.name.Split('_')[0]) {
 		case UiNames.BUILDING_NAME_INPUT:
 			// Changement du nom du bâtiment si le nom en entrée est différent du nom courant
 			if (!editController.SelectedBuilding.name.Equals(originInputFiled.text))
@@ -83,21 +81,21 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		case UiNames.BUILDING_CREATION_X_COORD_INPUT:
 			Vector3 buildingPositionInXEdit = buildingCreationEditor.SelectedBuilding.transform.position;
 
-			float newPosX = this.ProcessInputValue(originInputFiled, 0);
+			float newPosX = this.ProcessIndicatorLabel(originInputFiled, 0);
 			if (!float.IsNaN(newPosX))
 				buildingCreationEditor.UpdatePosition(new Vector3(newPosX, buildingPositionInXEdit.y, buildingPositionInXEdit.z));
 			break;
 		case UiNames.BUILDING_CREATION_Z_COORD_INPUT:
 			Vector3 buildingPositionInZEdit = buildingCreationEditor.SelectedBuilding.transform.position;
 
-			float newPosZ = this.ProcessInputValue(originInputFiled, 0);
+			float newPosZ = this.ProcessIndicatorLabel(originInputFiled, 0);
 			if(!float.IsNaN(newPosZ))
 				buildingCreationEditor.UpdatePosition(new Vector3(buildingPositionInZEdit.x, buildingPositionInZEdit.y, newPosZ));
 			break;
 		case UiNames.BUILDING_CREATION_ORIENTATION_INPUT:
 			Quaternion buildingRotationInOrientationEdit = buildingCreationEditor.SelectedBuilding.transform.rotation;
 
-			float newOrientation = this.ProcessInputValue(originInputFiled, 0);
+			float newOrientation = this.ProcessIndicatorLabel(originInputFiled, 0);
 			if (!float.IsNaN(newOrientation))
 				buildingCreationEditor.UpdateOrientation(newOrientation);
 			break;
@@ -106,7 +104,7 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			NodeGroup nodeGroupInLengthEdit = BuildingsTools.GetInstance().BuildingToNodeGroup(buildingCreationEditor.SelectedBuilding);
 			float buildingWidth = (float) Math.Abs(nodeGroupInLengthEdit.GetNode(0).Longitude - nodeGroupInLengthEdit.GetNode(2).Longitude);
 
-			float newLength = this.ProcessInputValue(originInputFiled, 1);
+			float newLength = this.ProcessIndicatorLabel(originInputFiled, 1);
 			if (!float.IsNaN(newLength))
 				buildingCreationEditor.UpdateDimensions(new Vector2(newLength, buildingWidth));
 			break;
@@ -115,14 +113,38 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			NodeGroup nodeGroupInWidthEdit = BuildingsTools.GetInstance().BuildingToNodeGroup(buildingCreationEditor.SelectedBuilding);
 			float buildingLength = (float)Math.Abs(nodeGroupInWidthEdit.GetNode(0).Latitude - nodeGroupInWidthEdit.GetNode(2).Latitude);
 
-			float newWidth = this.ProcessInputValue(originInputFiled, 1);
+			float newWidth = this.ProcessIndicatorLabel(originInputFiled, 1);
 			if (!float.IsNaN(newWidth))
 				buildingCreationEditor.UpdateDimensions(new Vector2(buildingLength, newWidth));
 			break;
 		}
 	}
 
-	private float ProcessInputValue(InputField originInputFiled, float defaultValue) {
+	/// <summary>
+	/// 	Trigger se déclanchant lorsque l'utilisateur a terminé d'entrer un nouveau nom pour un bâtiment.
+	/// </summary>
+	/// <param name="originInputFiled">Champ de saisie source.</param>
+	public void OnEndEdit(InputField originInputFiled) {
+		switch (originInputFiled.name.Split('_')[0]) {
+		case UiNames.BUILDING_NAME_INPUT:
+			// Changement du nom du bâtiment si le nom en entrée est différent du nom courant
+			if (!editController.SelectedBuilding.name.Equals(originInputFiled.text))
+				editController.RenameBuilding(editController.SelectedBuilding, originInputFiled.text);
+			break;
+		case UiNames.ACTUATOR_VALUE_INPUT:
+			GameObject dataDisplay = originInputFiled.gameObject;
+			for (; !dataDisplay.tag.Equals(GoTags.DATA_CANVAS) && dataDisplay.transform.parent != null; dataDisplay = dataDisplay.transform.parent.gameObject) ;
+
+			if (dataDisplay != null && dataDisplay.tag.Equals(GoTags.DATA_CANVAS)) {
+				GameObject attachedBuilding = BuildingsTools.GetInstance().DataDisplayToBuilding(dataDisplay);
+				BuildingComponentsController componentsController = attachedBuilding.GetComponent<BuildingComponentsController>();
+				componentsController.FixActuatorValue(originInputFiled.gameObject);
+			}
+			break;
+		}
+	}
+
+	private float ProcessIndicatorLabel(InputField originInputFiled, float defaultValue) {
 		float parsedValue = 0;
 		string inputValue = originInputFiled.text;
 
@@ -140,20 +162,6 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		} else {
 			inputImage.color = new Color(ThemeColors.RED.r * 1.5F, ThemeColors.RED.g * 1.5F, ThemeColors.RED.b * 1.5F, 0.65F);
 			return float.NaN;
-		}
-	}
-
-	/// <summary>
-	/// 	Trigger se déclanchant lorsque l'utilisateur a terminé d'entrer un nouveau nom pour un bâtiment.
-	/// </summary>
-	/// <param name="originInputFiled">Champ de saisie source.</param>
-	public void OnEndEdit(InputField originInputFiled) {
-		switch (originInputFiled.name) {
-		case UiNames.BUILDING_NAME_INPUT:
-			// Changement du nom du bâtiment si le nom en entrée est différent du nom courant
-			if (!editController.SelectedBuilding.name.Equals(originInputFiled.text))
-				editController.RenameBuilding(editController.SelectedBuilding, originInputFiled.text);
-			break;
 		}
 	}
 
@@ -577,11 +585,11 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				break;
 			case UiNames.DECREASE_ACTUATOR_BUTTON:
 				GameObject decreaseActuatorInput = transform.parent.GetChild(1).gameObject;
-				componentsController.ShiftUnitSuffixedValue(decreaseActuatorInput, -1);
+				componentsController.ShiftActuatorValue(decreaseActuatorInput, -1);
 				break;
 			case UiNames.INCREASE_ACTUATOR_BUTTON:
 				GameObject increaseActuatorInput = transform.parent.GetChild(1).gameObject;
-				componentsController.ShiftUnitSuffixedValue(increaseActuatorInput, 1);
+				componentsController.ShiftActuatorValue(increaseActuatorInput, 1);
 				break;
 			}
 		}

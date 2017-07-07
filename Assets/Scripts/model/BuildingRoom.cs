@@ -54,7 +54,7 @@ public class BuildingRoom {
 
 	public ActuatorController GetActuatorController(int actuatorIndex) {
 		IEnumerator<ActuatorController> actuatorsEnum = componentPairs.Values.GetEnumerator();
-		for (; actuatorsEnum.MoveNext() && actuatorsEnum.Current != null && actuatorsEnum.Current.Index != actuatorIndex;) ;
+		for (; actuatorsEnum.MoveNext() && (actuatorsEnum.Current == null || (actuatorsEnum.Current != null && actuatorsEnum.Current.Index != actuatorIndex));) ;
 		return actuatorsEnum.Current;
 	}
 
