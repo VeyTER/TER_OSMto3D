@@ -11,9 +11,11 @@ public class BuildingCreationEditor : ObjectEditor {
 	}
 
 	public void InitializeBuildingCreation() {
+		float cameraAngle = (180 - (Camera.main.transform.rotation.eulerAngles.y + 90)) * Mathf.Deg2Rad;
+
 		float REMOTNESS = 2;
-		float cosOffset = (float)(Math.Cos(Camera.main.transform.rotation.y) * REMOTNESS);
-		float sinOffset = (float)(Math.Sin(Camera.main.transform.rotation.y) * REMOTNESS);
+		float cosOffset = (float)(Math.Cos(cameraAngle) * REMOTNESS);
+		float sinOffset = (float)(Math.Sin(cameraAngle) * REMOTNESS);
 
 		Vector3 buildingPosition = Camera.main.transform.position + new Vector3(cosOffset, 0, sinOffset);
 		Vector2 buildingDimensions = Vector2.one;
@@ -28,6 +30,7 @@ public class BuildingCreationEditor : ObjectEditor {
 		GameObject building = cityBuilder.BuildSingleWallGroup(nodeGroup);
 		buildingsTools.ReplaceColor(building, new Color(1, 1, 1, 0.5F));
 
+		cityBuilder.AddNodeGroup(nodeGroup);
 		cityBuilder.SetupSingleWallGroup(building, nodeGroup);
 
 		building.transform.rotation = Quaternion.Euler(0, orientation, 0);
@@ -35,7 +38,6 @@ public class BuildingCreationEditor : ObjectEditor {
 		building.transform.parent = Camera.main.transform;
 		GameObject.Destroy(building.GetComponent<UiManager>());
 
-		cityBuilder.AddNodeGroup(nodeGroup);
 		buildingsTools.AddBuildingAndNodeGroupPair(building, nodeGroup);
 
 		selectedBuilding = building;

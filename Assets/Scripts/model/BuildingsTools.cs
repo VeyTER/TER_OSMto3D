@@ -467,7 +467,6 @@ public class BuildingsTools {
 
 		// Récupération du noeud XML d'information et récupération de l'attribut ciblé
 		XmlNode infoNode = mapResumeDocument.SelectSingleNode (zoningXPath);
-
 		res = infoNode.Attributes[attributeName];
 
 		return res;
@@ -505,11 +504,6 @@ public class BuildingsTools {
 		// Affectation de la position des noeuds 3D de bâtiments aux noeuds correspondants
 		foreach(Transform buildingNodeTransform in buildingNodeGroup.transform) {
 			Node node = this.BuildingNodeToNode (buildingNodeTransform.gameObject, parentNodeGroup);
-
-			//string id = buildingNodeToNodeTable[buildingNodeTransform.gameObject];
-			//Node nodeTest = parentNodeGroup.GetNode(id);
-			//Debug.Log(buildingNodeTransform.gameObject.GetInstanceID() + " => " + id + " => " + nodeTest.GeneratedId());
-
 			node.Latitude = buildingNodeTransform.position.z;
 			node.Longitude = buildingNodeTransform.position.x;
 		}
@@ -742,7 +736,7 @@ public class BuildingsTools {
 		Node topRightWallNode = this.NewWallNode(1, centerPosition, new Vector2(halfLength, -halfWidth));
 		Node bottomRightWallNode = this.NewWallNode(2, centerPosition, new Vector2(halfLength, halfWidth));
 		Node bottomLeftWallNode = this.NewWallNode(3, centerPosition, new Vector2(-halfLength, halfWidth));
-		Node topLeftDupliWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfLength, -halfWidth));
+		Node topLeftDupliWallNode = this.NewWallNode(4, centerPosition, new Vector2(-halfLength, -halfWidth));
 
 		nodeGroup.AddNode(topLeftWallNode);
 		nodeGroup.AddNode(topRightWallNode);
