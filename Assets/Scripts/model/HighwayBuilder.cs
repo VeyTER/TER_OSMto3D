@@ -57,7 +57,7 @@ public class HighwayBuilder {
 			tag = GoTags.BUS_LANE_TAG
 		};
 
-		highway.transform.position = new Vector3 (posX, 0, posZ);
+		highway.transform.position = new Vector3 (posX, 0.002F, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
 
 		Mesh mesh = new Mesh() {
@@ -95,7 +95,7 @@ public class HighwayBuilder {
 			tag = GoTags.CYCLEWAY_TAG
 		};
 
-		highway.transform.position = new Vector3 (posX, 0, posZ);
+		highway.transform.position = new Vector3 (posX, 0.002F, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
 
 		Mesh mesh = new Mesh() {
@@ -133,7 +133,7 @@ public class HighwayBuilder {
 			tag = GoTags.FOOTWAY_TAG
 		};
 
-		highway.transform.position = new Vector3 (posX, 0, posZ);
+		highway.transform.position = new Vector3 (posX, 0.002F, posZ);
 		highway.transform.rotation = Quaternion.Euler (0, angle, 0);
 
 		Mesh mesh = new Mesh() {
@@ -170,7 +170,7 @@ public class HighwayBuilder {
 		GameObject highway = new GameObject ("Waterway", typeof(MeshFilter), typeof(MeshRenderer));
 		//highway.tag = "Waterway";
 
-		highway.transform.position = new Vector3 (posX, 0, posZ);
+		highway.transform.position = new Vector3 (posX, 0.002F, posZ);
 		highway.transform.rotation = Quaternion.Euler(0, angle, 0);
 
 		Mesh mesh = new Mesh() {

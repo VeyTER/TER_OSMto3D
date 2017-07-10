@@ -566,7 +566,7 @@ public class CityBuilder {
 						angle = (double)Vector3.Angle (Vector3.right, -delta) + 180;
 					}
 
-					if (nodeGroup.IsHighway () && (nodeGroup.IsResidential () || nodeGroup.IsPrimary () || nodeGroup.IsSecondary () || nodeGroup.IsTertiary () || nodeGroup.IsService () || nodeGroup.IsUnclassified ())) {
+					if (nodeGroup.IsWay()) {
 						// Construction et paramétrage de l'objet 3D destiné à former une route classique
 						GameObject newClassicHighway = highwayBuilder.BuildClassicHighway ((float)posX, (float)posY, (float)length, (float)width, (float)angle);
 						newClassicHighway.name = currentNode.Reference + " to " + nextNode.Reference;
