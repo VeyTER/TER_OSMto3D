@@ -449,12 +449,3 @@ public class SkinChangingEditor : ObjectEditor {
 		set { skinPanelController = value; }
 	}
 }
-
-/*
-
-foreach (Transform wall in selectedBuilding.transform) {
-	MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
-	meshRenderer.materials[0].color = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
-}
-
-*/

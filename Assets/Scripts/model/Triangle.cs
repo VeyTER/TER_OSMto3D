@@ -11,10 +11,10 @@ public class Triangle {
 	private Node nodeC;
 
 	// Constructeur
-	public Triangle (Node noeudA,Node noeudB, Node noeudC) {
-		this.nodeA = noeudA;
-		this.nodeB = noeudB;
-		this.nodeC = noeudC;
+	public Triangle (Node nodeA, Node nodeB, Node nodeC) {
+		this.nodeA = nodeA;
+		this.nodeB = nodeB;
+		this.nodeC = nodeC;
 	}
 
 	/// <summary>

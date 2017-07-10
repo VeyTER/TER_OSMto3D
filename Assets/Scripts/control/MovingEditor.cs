@@ -149,7 +149,6 @@ public class MovingEditor : ObjectEditor {
 		if(buildingTransformed) {
 			if (!transformedObjects.Contains(selectedBuilding))
 				transformedObjects.Add(selectedBuilding);
-
 			buildingsTools.UpdateNodesPosition(selectedBuilding);
 		}
 	}

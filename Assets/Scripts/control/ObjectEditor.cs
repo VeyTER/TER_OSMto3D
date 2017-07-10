@@ -41,7 +41,6 @@ public abstract class ObjectEditor {
 		this.selectedBuilding = selectedBuilding;
 
 		// Initialisation des nodes correspondant au bâtiment sélectionné (les mus n'étant pas gérés)
-		BuildingsTools buildingsTools = BuildingsTools.GetInstance ();
 		selectedBuildingNodes = buildingsTools.BuildingToBuildingNodeGroup (selectedBuilding);
 
 		// Initialisation des témoins de transformation

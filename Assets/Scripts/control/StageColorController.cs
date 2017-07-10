@@ -34,15 +34,13 @@ public class StageColorController : MonoBehaviour {
 				cursor += 0.05F;
 				if (cursor >= Mathf.PI * 2)
 					cursor -= Mathf.PI * 2;
-
 				break;
 
 			case StageStates.INACTIVE_TO_HOVERED:
-				if (brightness < HOVERED_BRIGHTNESS) {
+				if (brightness < HOVERED_BRIGHTNESS)
 					brightness += Math.Min(0.05F, HOVERED_BRIGHTNESS - brightness);
-				} else {
+				else
 					stageState = StageStates.HOVERED;
-				}
 				break;
 
 			case StageStates.HOVERED:
@@ -50,20 +48,18 @@ public class StageColorController : MonoBehaviour {
 				break;
 
 			case StageStates.HOVERED_TO_INACTIVE:
-				if (brightness > INACTIVE_MAX_BRIGHTNESS) {
+				if (brightness > INACTIVE_MAX_BRIGHTNESS)
 					brightness -= Math.Min(0.05F, brightness - INACTIVE_MAX_BRIGHTNESS);
-				} else {
+				else
 					cursor = 0F;
 					stageState = StageStates.INACTIVE;
-				}
 				break;
 
 			case StageStates.HOVERED_TO_PRESSED:
-				if (brightness < PRESSED_BRIGHTNESS) {
+				if (brightness < PRESSED_BRIGHTNESS)
 					brightness += Math.Min(0.05F, PRESSED_BRIGHTNESS - brightness);
-				} else {
+				else
 					stageState = StageStates.PRESSED;
-				}
 				break;
 
 			case StageStates.PRESSED:
@@ -71,11 +67,10 @@ public class StageColorController : MonoBehaviour {
 				break;
 
 			case StageStates.PRESSED_TO_HOVERED:
-				if (brightness > HOVERED_BRIGHTNESS) {
+				if (brightness > HOVERED_BRIGHTNESS)
 					brightness -= Math.Min(0.05F, brightness - HOVERED_BRIGHTNESS);
-				} else {
+				else
 					stageState = StageStates.HOVERED;
-				}
 				break;
 			}
 
