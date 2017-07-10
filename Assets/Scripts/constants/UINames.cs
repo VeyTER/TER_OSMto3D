@@ -8,6 +8,8 @@ public class UiNames {
 
 	public const string CREATE_BUILDING_BUTTON = "CreateBuildingButton";
 
+	public const string CREATE_BUILDING_ICON = "CreateBuildingButtonIcon";
+
 	public const string BUILDING_CREATION_X_COORD_INPUT = "BuildingCreationXCoordInput";
 
 	public const string BUILDING_CREATION_Z_COORD_INPUT = "BuildingCreationYCoordInput";
@@ -20,6 +22,7 @@ public class UiNames {
 
 
 	public const string TOGGLE_VISIBILITY_BUTTON = "ToggleVisibilityButton";
+	public const string TOGGLE_VISIBILITY_ICON = "ToggleVisibilityIcon";
 
 	public const string VISIBILITY_WHEEL_PANEL = "VisibilityWheelPanel";
 
@@ -103,12 +106,6 @@ public class UiNames {
 
 	public const string ID_INDICATOR_LABEL = "IdValue";
 
-	/// <summary>Nom de l'étiquette de l'indicateur de température.</summary>
-	public const string TEMPERATURE_INDICATOR_INPUT_TEXT = "TemperatureInputText";
-
-	/// <summary>Nom de l'étiquette de l'indicateur d'humidité.</summary>
-	public const string HUMIDITY_INDICATOR_INPUT_TEXT = "HumidityInputText";
-
 	/// <summary>Nom du bouton de translation d'un bâtiment.</summary>
 	public const string MOVE_BUTTON = "MoveButton";
 
@@ -131,6 +128,18 @@ public class UiNames {
 
 	public const string COLORS_BUTTON = "ColorsButton";
 
+	public const string MATERIAL_ITEM_BUTTON = "MaterialButton";
+	public const string COLOR_ITEM_BUTTON = "ColorButton";
+
+	public const string MATERIAL_ITEM_DECORATION = "Decorations";
+	public const string MATERIAL_ITEM_BODY = "Body";
+
+	public const string MATERIAL_ITEM_LEFT_DECORATION = "LeftDecoration";
+	public const string MATERIAL_ITEM_RIGHT_DECORATION = "RightDecoration";
+
+	public const string COLOR_ITEM_SUPPORT = "ColorSupport";
+
+	public const string ITEM_SELECTION_BACKGROUND = "SelectionBackground";
 
 	/// <summary>Nom du bouton de coulissement du panneau latéral.</summary>
 	public const string SLIDE_BUTTON = "SlidePanelButton";
@@ -163,27 +172,45 @@ public class UiNames {
 
 	public const string SKIN_SELECTION_PANEL = "SkinSelectionPanel";
 
-	public const string MATERIALS_PANEL = "ColorContainerPanel";
-
-	public const string COLORS_PANEL = "MaterialsContainerPanel";
+	public const string MATERIALS_CONTAINER = "MaterialsContainerPanel";
+	public const string COLORS_CONTAINER = "ColorContainerPanel";
 
 	public const string MATERIALS_GRID = "MaterialsGridPanel";
-
-
 	public const string MATERIALS_SCROLLBAR = "MaterialsScrollbar";
 
 	public const string COLORS_SCROLLBAR = "ColorsScrollbar";
-
 	public const string COLORS_GRID = "ColorsGridPanel";
 
 	public const string SKIN_SLIDER = "SkinSlider";
 
-	public const string MATERIAL_ITEM_BUTTON = "MaterialButton";
-	public const string COLOR_ITEM_BUTTON = "ColorButton";
+	public const string BUILDING_DATA_BODY = "BuildingDataBody";
+	public const string BUILDING_DATA_DECORATIONS = "BuildingDataDecorations";
+
+	public const string BUILDING_DATA_LINK = "BuildingDataLink";
+
+	public const string BUILDING_DATA_HEADER = "DataBoxHeader";
 
 	public const string BUILDING_DATA_ICON_BUTTON = "BuildingDataIconBackground";
+	public const string BUILDING_DATA_STATIC_ICON = "BuildingDataStaticIcon";
+	public const string BUILDING_DATA_ANIMATED_ICON = "BuildingDataAnimatedIcon";
 
-	public const string DECREASE_ACTUATOR_BUTTON = "DecreaseActuatorButton";
+	public const string SENSOR_TITLE = "IndicatorTitle";
+	public const string SENSOR_TITLE_TEXT = "IndicatorTitleText";
+	public const string SENSOR_TITLE_ICON = "IndicatorTitleIcon";
+
+	public const string SENSOR_VALUE = "IndicatorValue";
+	public const string SENSOR_VALUE_TEXT = "IndicatorValueText";
+
+	public const string ACTUATOR_CONTROL = "ActuatorControl";
+
+	public const string ACTUATOR_ACTIONS = "ActuatorActions";
+
+	public const string ACTUATOR_DECREASE_BUTTON = "DecreaseActuatorButton";
+	public const string ACTUATOR_DECREASE_ICON = "DecreaseActuatorIcon";
+
+	public const string ACTUATOR_INCREASE_BUTTON = "IncreaseActuatorButton";
+	public const string ACTUATOR_INCREASE_ICON = "IncreaseActuatorIcon";
+
 	public const string ACTUATOR_VALUE_INPUT = "ActuatorInput";
-	public const string INCREASE_ACTUATOR_BUTTON = "IncreaseActuatorButton";
+	public const string ACTUATOR_VALUE_TEXT = "ActuatorInputText";
 }

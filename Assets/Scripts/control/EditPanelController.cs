@@ -82,18 +82,8 @@ public class EditPanelController : CommonPanelController {
 		Vector3 validateButtonInitScale = validateEditButton.transform.localScale;
 		Vector3 cancelButtonInitScale = cancelEditButton.transform.localScale;
 
-		// Echelle courante des boutons d'étendue de mur et de bâtiment
-		//		Vector3 wallRangeInitScale = wallRangeButton.transform.localScale;
-		//		Vector3 buildingRangeInitScale = buildingRangeButton.transform.localScale;
-
 		// Calcul de l'échelle à atteindre à partir de l'échelle courante
 		Vector3 targetScale = direction >= 0 ? Vector3.one : Vector3.zero;
-
-		Transform validateButtonTransform = validateEditButton.transform;
-		Transform cancelButtonTransform = cancelEditButton.transform;
-
-//		Transform wallRangeButtonTransform = wallRangeButton.transform;
-//		Transform buildingRangeButtonTransform = buildingRangeButton.transform;
 
 		// Génération de l'animation
 		for (double i = 0; i <= 1; i += 0.1) {
@@ -101,27 +91,18 @@ public class EditPanelController : CommonPanelController {
 
 			// Calcul de la situation courante
 			if (direction > 0) {
-				validateButtonTransform.localScale = new Vector3(cursor, cursor, cursor);
-				cancelButtonTransform.localScale = new Vector3(cursor, cursor, cursor);
-
-//				wallRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
-//				buildingRangeButtonTransform.localScale = new Vector3 (cursor, cursor, cursor);
+				validateEditButton.transform.localScale = new Vector3(cursor, cursor, cursor);
+				cancelEditButton.transform.localScale = new Vector3(cursor, cursor, cursor);
 			}  else {
-				validateButtonTransform.localScale = Vector3.one - new Vector3(cursor, cursor, cursor);
-				cancelButtonTransform.localScale = Vector3.one - new Vector3(cursor, cursor, cursor);
-
-//				wallRangeButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
-//				buildingRangeButtonTransform.localScale = Vector3.one - new Vector3 (cursor, cursor, cursor);
+				validateEditButton.transform.localScale = Vector3.one - new Vector3(cursor, cursor, cursor);
+				cancelEditButton.transform.localScale = Vector3.one - new Vector3(cursor, cursor, cursor);
 			}
 
 			yield return new WaitForSeconds(0.01F);
 		}
 
 		// Affectation de l'échelle finale pour éviter les imprécisions
-		validateButtonTransform.localScale = targetScale;
-		cancelButtonTransform.localScale = targetScale;
-
-//		wallRangeButtonTransform.localScale = targetScale;
-//		buildingRangeButtonTransform.localScale = targetScale;
+		validateEditButton.transform.localScale = targetScale;
+		cancelEditButton.transform.localScale = targetScale;
 	}
 }

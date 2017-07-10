@@ -58,16 +58,17 @@ public class BoxPanelController : PanelController {
 		Color visibilitylPanelImageColor = visibilitylPanelImage.color;
 
 		GameObject createBuildingButton = transform.parent.gameObject;
-		GameObject createBuildingIcon = transform.parent.GetChild(0).gameObject;
+
+		GameObject createBuildingIcon = createBuildingButton.transform.Find(UiNames.CREATE_BUILDING_ICON).gameObject;
 		Image buildingCreationIconImage = createBuildingIcon.GetComponent<Image>();
 		Color buildingCreationIconColor = buildingCreationIconImage.color;
 
-		GameObject validateBuildingCreationButton = transform.parent.GetChild(2).gameObject;
+		GameObject validateBuildingCreationButton = createBuildingButton.transform.Find(UiNames.VALIDATE_BUILDING_CREATION_BUTTON).gameObject;
 		Vector3 validateButtonPosition = validateBuildingCreationButton.transform.localPosition;
 		Image validateButtonImage = validateBuildingCreationButton.GetComponent<Image>();
 		Color validateButtonColor = validateButtonImage.color;
 
-		GameObject cancelBuildingCreationButton = transform.parent.GetChild(3).gameObject;
+		GameObject cancelBuildingCreationButton = createBuildingButton.transform.Find(UiNames.CANCEL_BUILDING_CREATION_BUTTON).gameObject;
 		Vector3 cancelButtonPosition = cancelBuildingCreationButton.transform.localPosition;
 		Image cancelButtonImage = cancelBuildingCreationButton.GetComponent<Image>();
 		Color cancelButtonColor = cancelButtonImage.color;

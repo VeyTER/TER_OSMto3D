@@ -22,21 +22,21 @@ public class UiBuilder {
 		BuildingsTools buildingTools = BuildingsTools.GetInstance();
 		buildingTools.AddBuildingAndDataDisplayEntryPair(building, buildBuildingDataCanvas);
 
-		GameObject decorationPanel = buildBuildingDataCanvas.transform.GetChild(1).gameObject;
-		decorationPanel.name = decorationPanel.name + "_" + building.name;
+		GameObject decorationPanel = buildBuildingDataCanvas.transform.Find(UiNames.BUILDING_DATA_DECORATIONS).gameObject;
+		decorationPanel.name = decorationPanel.name;
 
-		GameObject dataPanel = buildBuildingDataCanvas.transform.GetChild(0).gameObject;
-		dataPanel.name = dataPanel.name + "_" + building.name;
+		GameObject dataPanel = buildBuildingDataCanvas.transform.Find(UiNames.BUILDING_DATA_BODY).gameObject;
+		dataPanel.name = dataPanel.name;
 
 		return dataPanel;
 	}
 
 	private GameObject BuildBuildingDataCanvas(GameObject building) {
-		Transform buildingFirstWallTransform = building.transform.GetChild(0);
-		float buildingHeight = buildingFirstWallTransform.localScale.y;
+		GameObject buildingFirstWall = building.transform.GetChild(0).gameObject;
+		float buildingHeight = buildingFirstWall.transform.localScale.y;
 
 		GameObject buildingDataCanvas = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_CANVAS));
-		buildingDataCanvas.name = buildingDataCanvas.name + "_" + building.name;
+		buildingDataCanvas.name = buildingDataCanvas.name.Replace("(Clone)", "") + "_" + building.name;
 
 		buildingDataCanvas.transform.SetParent(building.transform, false);
 		buildingDataCanvas.transform.localPosition = new Vector3(0, buildingHeight / 2F, 0);
@@ -46,19 +46,10 @@ public class UiBuilder {
 
 	public GameObject BuildBuidingDataBox(GameObject dataPanel, BuildingRoom buildingRoom) {
 		GameObject dataBox = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_BOX));
-		dataBox.name = dataBox.name + "_" + dataPanel.name.Split('_')[1] + "_" + buildingRoom.Name;
+		dataBox.name = dataBox.name.Replace("(Clone)", "") + "_" + buildingRoom.Name;
 		dataBox.transform.SetParent(dataPanel.transform, false);
-
-		this.BuildBuildingDataBoxHeader(dataBox, buildingRoom, dataPanel.name);
 		this.BuildBuildingDataBoxContent(dataBox, buildingRoom);
-
 		return dataBox;
-	}
-
-	private GameObject BuildBuildingDataBoxHeader(GameObject dataBox, BuildingRoom buildingRoom, string dataPanelName) {
-		GameObject header = dataBox.transform.GetChild(0).gameObject;
-		header.name = header.name + dataBox.name.Split('_')[1];
-		return header;
 	}
 
 	private GameObject BuildBuildingDataBoxContent(GameObject dataBox, BuildingRoom buildingRoom) {
@@ -74,9 +65,9 @@ public class UiBuilder {
 	}
 
 	private GameObject BuildBuildingSensorIndicator(GameObject dataBox, uint sensorIndex) {
-		string roomName = dataBox.name.Split('_')[2];
+		string roomName = dataBox.name.Split('_')[1];
 		GameObject sensorIndicator = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_INDICATOR));
-		sensorIndicator.name = sensorIndicator.name + "_" + roomName + "_" + sensorIndex;
+		sensorIndicator.name = sensorIndicator.name.Replace("(Clone)", "") + "_" + roomName + "_" + sensorIndex;
 		sensorIndicator.transform.SetParent(dataBox.transform, false);
 		return sensorIndicator;
 	}
@@ -84,11 +75,49 @@ public class UiBuilder {
 	private GameObject BuildBuildingActuatorControl(GameObject sensorIndicator, uint actuatorIndex) {
 		string roomName = sensorIndicator.name.Split('_')[1];
 		GameObject actuatorControl = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.ACTUATOR_CONTROL));
-		actuatorControl.name = actuatorControl.name + "_" + roomName + "_" + actuatorIndex;
+		actuatorControl.name = actuatorControl.name.Replace("(Clone)", "") + "_" + roomName + "_" + actuatorIndex;
 		actuatorControl.transform.SetParent(sensorIndicator.transform, false);
 		actuatorControl.transform.SetAsFirstSibling();
 
 		return actuatorControl;
+	}
+
+	public GameObject BuildMaterialItem(MaterialData materialData, GameObject materialsGridPanel, Dictionary<int, Material> buttonIdToMaterialTable) {
+		GameObject materialItem = GameObject.Instantiate<GameObject>(Resources.Load<GameObject>(GameObjects.MATERIAL_ITEM));
+		materialItem.name = materialItem.name + "_" + materialData.ReadableName;
+		materialItem.transform.SetParent(materialsGridPanel.transform, false);
+
+		GameObject materialButton = materialItem.transform.Find(UiNames.MATERIAL_ITEM_BUTTON).gameObject;
+		GameObject itemBody = materialButton.transform.Find(UiNames.MATERIAL_ITEM_BODY).gameObject;
+
+		Image bodyImage = itemBody.GetComponent<Image>();
+		Sprite textureSprite = Resources.Load<Sprite>(materialData.SourceTexturePath);
+		bodyImage.sprite = textureSprite;
+
+		Material targetMaterial = Resources.Load(materialData.TargetMaterialPath) as Material;
+		buttonIdToMaterialTable.Add(materialItem.GetInstanceID(), targetMaterial);
+
+		Text titleText = itemBody.GetComponentInChildren<Text>();
+		titleText.text = materialData.ReadableName;
+
+		return materialItem;
+	}
+
+	public void BuildColorsItem(Color itemColor, GameObject colorsGridPanel, Dictionary<int, Color> buttonIdToColorTable) {
+		GameObject colorItem = GameObject.Instantiate<GameObject>(Resources.Load<GameObject>(GameObjects.COLOR_ITEM));
+		colorItem.name = colorItem.name + "_" + itemColor.ToString();
+		colorItem.transform.SetParent(colorsGridPanel.transform, false);
+
+		GameObject colorButton = colorItem.transform.Find(UiNames.COLOR_ITEM_BUTTON).gameObject;
+		GameObject itemColorSupport = colorButton.transform.Find(UiNames.COLOR_ITEM_SUPPORT).gameObject;
+
+		Image colorSupportImage = itemColorSupport.GetComponent<Image>();
+		if (!itemColor.Equals(Color.white)) {
+			colorSupportImage.sprite = null;
+			colorSupportImage.color = itemColor;
+		}
+
+		buttonIdToColorTable.Add(colorItem.GetInstanceID(), itemColor);
 	}
 
 	private GameObject NewUiRectangle(GameObject parent, string name, RectTransform rectTransform, Color color) {

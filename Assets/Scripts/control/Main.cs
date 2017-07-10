@@ -73,9 +73,10 @@ public class Main : MonoBehaviour {
 			visibilityPanelContoller.EndPosition = new Vector3(110, visibilityWheelPanel.transform.parent.localPosition.y, 0);
 
 			GameObject buildingCreationBoxPanel = GameObject.Find(UiNames.BUILDING_CREATION_BOX_PANEL);
+			GameObject buildingCreationButtonIcon = buildingCreationBoxPanel.transform.parent.Find(UiNames.CREATE_BUILDING_ICON).gameObject;
 			BoxPanelController buildingCreationPanelContoller = buildingCreationBoxPanel.GetComponent<BoxPanelController>();
-			buildingCreationPanelContoller.StartPosition = buildingCreationBoxPanel.transform.parent.GetChild(0).localPosition;
-			buildingCreationPanelContoller.EndPosition = new Vector3(58.7F, buildingCreationBoxPanel.transform.parent.GetChild(0).localPosition.y, 0);
+			buildingCreationPanelContoller.StartPosition = buildingCreationButtonIcon.transform.localPosition;
+			buildingCreationPanelContoller.EndPosition = new Vector3(58.7F, buildingCreationButtonIcon.transform.localPosition.y, 0);
 
 			ControlPanelManager controlPanelManager = ControlPanelManager.GetInstance();
 			controlPanelManager.AddPanel(visibilityWheelPanel);
@@ -115,7 +116,7 @@ public class Main : MonoBehaviour {
 		GameObject mainCamera = (GameObject) GameObject.Instantiate(Resources.Load("Game objects/CampusCamera"));
 		mainCamera.name = "Camera";
 
-		GameObject.Instantiate (Resources.Load(GameObjects.MAIN_CANVAS));
+		GameObject.Instantiate (Resources.Load(GameObjects.EDIT_CANVAS));
 		GameObject.Instantiate (Resources.Load(GameObjects.UI_MANAGER_SCRIPT));
 		GameObject.Instantiate (Resources.Load(GameObjects.EVENT_SYSTEM));
 

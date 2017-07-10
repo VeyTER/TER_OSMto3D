@@ -583,12 +583,12 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			case UiNames.BUILDING_DATA_ICON_BUTTON:
 				componentsController.ToggleHeightState();
 				break;
-			case UiNames.DECREASE_ACTUATOR_BUTTON:
-				GameObject decreaseActuatorInput = transform.parent.GetChild(1).gameObject;
+			case UiNames.ACTUATOR_DECREASE_BUTTON:
+				GameObject decreaseActuatorInput = transform.parent.Find(UiNames.ACTUATOR_VALUE_INPUT).gameObject;
 				componentsController.ShiftActuatorValue(decreaseActuatorInput, -1);
 				break;
-			case UiNames.INCREASE_ACTUATOR_BUTTON:
-				GameObject increaseActuatorInput = transform.parent.GetChild(1).gameObject;
+			case UiNames.ACTUATOR_INCREASE_BUTTON:
+				GameObject increaseActuatorInput = transform.parent.Find(UiNames.ACTUATOR_VALUE_INPUT).gameObject;
 				componentsController.ShiftActuatorValue(increaseActuatorInput, 1);
 				break;
 			}

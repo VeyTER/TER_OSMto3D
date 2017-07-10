@@ -110,17 +110,17 @@ public class BuildingComponentsController : MonoBehaviour {
 	}
 
 	private void StartDataBuildingIconAnimation() {
-		Transform dataBuildingDecorations = dataPanel.transform.parent.GetChild(1);
-		GameObject iconBackgroundPanel = dataBuildingDecorations.GetChild(1).gameObject;
-		iconBackgroundPanel.transform.GetChild(0).gameObject.SetActive(false);
-		iconBackgroundPanel.transform.GetChild(1).gameObject.SetActive(true);
+		GameObject dataBuildingDecorations = dataPanel.transform.parent.Find(UiNames.BUILDING_DATA_DECORATIONS).gameObject;
+		GameObject iconBackgroundPanel = dataBuildingDecorations.transform.Find(UiNames.BUILDING_DATA_ICON_BUTTON).gameObject;
+		iconBackgroundPanel.transform.Find(UiNames.BUILDING_DATA_STATIC_ICON).gameObject.SetActive(false);
+		iconBackgroundPanel.transform.Find(UiNames.BUILDING_DATA_ANIMATED_ICON).gameObject.SetActive(true);
 	}
 
 	private void StopDataBuildingIconAnimation() {
-		Transform dataBuildingDecorations = dataPanel.transform.parent.GetChild(1);
-		GameObject iconBackgroundPanel = dataBuildingDecorations.GetChild(1).gameObject;
-		iconBackgroundPanel.transform.GetChild(0).gameObject.SetActive(true);
-		iconBackgroundPanel.transform.GetChild(1).gameObject.SetActive(false);
+		GameObject dataBuildingDecorations = dataPanel.transform.parent.Find(UiNames.BUILDING_DATA_DECORATIONS).gameObject;
+		GameObject iconBackgroundPanel = dataBuildingDecorations.transform.Find(UiNames.BUILDING_DATA_ICON_BUTTON).gameObject;
+		iconBackgroundPanel.transform.Find(UiNames.BUILDING_DATA_STATIC_ICON).gameObject.SetActive(true);
+		iconBackgroundPanel.transform.Find(UiNames.BUILDING_DATA_ANIMATED_ICON).gameObject.SetActive(false);
 	}
 
 	private void SetOrientationToCamera() {
@@ -319,8 +319,7 @@ public class BuildingComponentsController : MonoBehaviour {
 					this.UpdateIndicatorValues(indicator, sensorData);
 
 					if (indicator.transform.childCount == 3) {
-						GameObject actuatorControl = indicator.transform.GetChild(0).gameObject;
-
+						GameObject actuatorControl = indicator.transform.Find(UiNames.ACTUATOR_CONTROL + "_" + buildingRoom.Name + "_" + actuatorController.Index).gameObject;
 						this.UpdateControlValues(actuatorControl, actuatorController);
 					}
 				}
@@ -336,41 +335,41 @@ public class BuildingComponentsController : MonoBehaviour {
 	public void UpdateIndicatorValues(GameObject sensorIndicator, SensorData singleSensorData) {
 		bool sensorUnderAlert = singleSensorData.IsOutOfThreshold();
 
-		GameObject indicatorTitle = sensorIndicator.transform.GetChild(sensorIndicator.transform.childCount - 2).gameObject;
+		GameObject indicatorTitle = sensorIndicator.transform.Find(UiNames.SENSOR_TITLE).gameObject;
 		Image titleBackgroundImage = indicatorTitle.GetComponent<Image>();
 		titleBackgroundImage.color = sensorUnderAlert ? ThemeColors.RED_BRIGHT : ThemeColors.BLUE;
 
-		GameObject titleIcon = indicatorTitle.transform.GetChild(0).gameObject;
+		GameObject titleIcon = indicatorTitle.transform.Find(UiNames.SENSOR_TITLE_ICON).gameObject;
 		Image titleIconImage = titleIcon.GetComponent<Image>();
 		titleIconImage.sprite = Resources.Load<Sprite>(singleSensorData.IconPath);
 		titleIconImage.color = sensorUnderAlert ? ThemeColors.RED_BRIGHT : ThemeColors.BLUE_BRIGHT;
 
-		GameObject titleText = indicatorTitle.transform.GetChild(1).gameObject;
+		GameObject titleText = indicatorTitle.transform.Find(UiNames.SENSOR_TITLE_TEXT).gameObject;
 		Text titleTextText = titleText.GetComponentInChildren<Text>();
 		titleTextText.text = singleSensorData.SensorName;
 		titleTextText.color = sensorUnderAlert ? ThemeColors.RED_TEXT : ThemeColors.GREY_TEXT;
 
-		GameObject indicatorValue = sensorIndicator.transform.GetChild(sensorIndicator.transform.childCount - 1).gameObject;
-		GameObject valueText = indicatorValue.transform.GetChild(0).gameObject;
+		GameObject indicatorValue = sensorIndicator.transform.Find(UiNames.SENSOR_VALUE).gameObject;
+		GameObject valueText = indicatorValue.transform.Find(UiNames.SENSOR_VALUE_TEXT).gameObject;
 		Text valueTextText = valueText.GetComponentInChildren<Text>();
 		valueTextText.text = singleSensorData.Value + singleSensorData.Unit;
 		valueTextText.color = sensorUnderAlert ? ThemeColors.RED_TEXT : ThemeColors.GREY_TEXT;
 	}
 
 	public void UpdateControlValues(GameObject actuatorControl, ActuatorController actuatorController) {
-		GameObject actuatorActions = actuatorControl.transform.GetChild(1).gameObject;
+		GameObject actuatorActions = actuatorControl.transform.Find(UiNames.ACTUATOR_ACTIONS).gameObject;
 
-		GameObject decreaseButton = actuatorActions.transform.GetChild(0).gameObject;
-		GameObject decreaseButtonIcon = decreaseButton.transform.GetChild(0).gameObject;
+		GameObject decreaseButton = actuatorActions.transform.Find(UiNames.ACTUATOR_DECREASE_BUTTON).gameObject;
+		GameObject decreaseButtonIcon = decreaseButton.transform.Find(UiNames.ACTUATOR_DECREASE_ICON).gameObject;
 		Image decreaseIconImage = decreaseButtonIcon.GetComponent<Image>();
 		decreaseIconImage.sprite = Resources.Load<Sprite>(actuatorController.ActuatorButtonsPathPattern.Replace("[mode]", "Decrease"));
 
-		GameObject increaseButton = actuatorActions.transform.GetChild(2).gameObject;
-		GameObject increaseButtonIcon = increaseButton.transform.GetChild(0).gameObject;
+		GameObject increaseButton = actuatorActions.transform.Find(UiNames.ACTUATOR_INCREASE_BUTTON).gameObject;
+		GameObject increaseButtonIcon = increaseButton.transform.Find(UiNames.ACTUATOR_INCREASE_ICON).gameObject;
 		Image increaseIconImage = increaseButtonIcon.GetComponent<Image>();
 		increaseIconImage.sprite = Resources.Load<Sprite>(actuatorController.ActuatorButtonsPathPattern.Replace("[mode]", "Increase"));
 
-		GameObject valueInput = actuatorActions.transform.GetChild(1).gameObject;
+		GameObject valueInput = actuatorActions.transform.Find(UiNames.ACTUATOR_VALUE_INPUT).gameObject;
 		InputField valueText = valueInput.GetComponent<InputField>();
 		valueText.text = actuatorController.Value + actuatorController.Unit;
 	}
@@ -415,11 +414,12 @@ public class BuildingComponentsController : MonoBehaviour {
 		GameObject dataDisplay = dataPanel.transform.parent.gameObject;
 		RectTransform displayRect = (RectTransform) dataDisplay.transform;
 
-		GameObject buildingDataIconBackground = dataPanel.transform.parent.GetChild(1).GetChild(1).gameObject;
-		GameObject buildingDataIcon = buildingDataIconBackground.transform.GetChild(0).gameObject;
+		string iconBackgroundPath = UiNames.BUILDING_DATA_DECORATIONS + "/" + UiNames.BUILDING_DATA_ICON_BUTTON;
+		GameObject buildingDataIconBackground = dataPanel.transform.parent.Find(iconBackgroundPath).gameObject;
+		GameObject buildingDataStaticIcon = buildingDataIconBackground.transform.Find(UiNames.BUILDING_DATA_STATIC_ICON).gameObject;
 
 		Image iconBackgroundImage = buildingDataIconBackground.GetComponent<Image>();
-		Image iconImage = buildingDataIcon.GetComponent<Image>();
+		Image iconImage = buildingDataStaticIcon.GetComponent<Image>();
 
 		Color iconBackgroundColor = iconBackgroundImage.color;
 		Color iconColor = iconImage.color;
@@ -507,7 +507,8 @@ public class BuildingComponentsController : MonoBehaviour {
 			targetScale = 1;
 		}
 
-		GameObject iconbackground = dataPanel.transform.parent.GetChild(1).GetChild(1).gameObject;
+		string iconBackgroundPath = UiNames.BUILDING_DATA_DECORATIONS + "/" + UiNames.BUILDING_DATA_ICON_BUTTON;
+		GameObject iconbackground = dataPanel.transform.parent.Find(iconBackgroundPath).gameObject;
 		for (double i = 0; i <= 1; i += 0.1) {
 			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
 
@@ -591,12 +592,16 @@ public class BuildingComponentsController : MonoBehaviour {
 	}
 
 	private IEnumerator ChangeDisplayIconStatus(string newIconBackgroundPath, string newIconPath, Color newLinkColor) {
-		GameObject link = dataPanel.transform.parent.GetChild(1).GetChild(0).gameObject;
-		GameObject iconBckground = dataPanel.transform.parent.GetChild(1).GetChild(1).gameObject;
-		GameObject icon = iconBckground.transform.GetChild(0).gameObject;
+		string linkPath = UiNames.BUILDING_DATA_DECORATIONS + "/" + UiNames.BUILDING_DATA_LINK;
+		GameObject link = dataPanel.transform.parent.Find(linkPath).gameObject;
+
+		string iconBackgroundPath = UiNames.BUILDING_DATA_DECORATIONS + "/" + UiNames.BUILDING_DATA_ICON_BUTTON;
+		GameObject iconBackground = dataPanel.transform.parent.Find(iconBackgroundPath).gameObject;
+
+		GameObject icon = iconBackground.transform.Find(UiNames.BUILDING_DATA_STATIC_ICON).gameObject;
 
 		Image linkImage = link.GetComponent<Image>();
-		Image iconBckgroundImage = iconBckground.GetComponent<Image>();
+		Image iconBckgroundImage = iconBackground.GetComponent<Image>();
 		Image iconImage = icon.GetComponent<Image>();
 
 		Color linkColor = linkImage.color;

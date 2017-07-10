@@ -52,8 +52,8 @@ public class BuildingCreationEditor : ObjectEditor {
 		float buildingOrientation = 0;
 		float.TryParse(orientationInputTextInput.text, out buildingOrientation);
 
-		Transform firstWallTransform = selectedBuilding.transform.GetChild(0);
-		float buildingHeight = firstWallTransform.localScale.y;
+		GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
+		float buildingHeight = firstWall.transform.localScale.y;
 
 		selectedBuilding.transform.position = new Vector3(buildingPosition.x, buildingHeight / 2F, buildingPosition.z);
 		selectedBuilding.transform.rotation = Quaternion.Euler(0, (float)Math.Round(buildingOrientation, 2), 0);
@@ -70,9 +70,9 @@ public class BuildingCreationEditor : ObjectEditor {
 	}
 
 	public void UpdateDimensions(Vector2 newDimensions) {
-		Transform selectedBuilingTransform = selectedBuilding.transform;
+		GameObject selectedBuiling = selectedBuilding.transform.gameObject;
 		this.RemoveBuilding();
-		this.InitializeBuilding(selectedBuilingTransform.position, selectedBuilingTransform.rotation.eulerAngles.y, newDimensions);
+		this.InitializeBuilding(selectedBuiling.transform.position, selectedBuiling.transform.rotation.eulerAngles.y, newDimensions);
 	}
 
 	public void UpdateDisplayedSituation() {

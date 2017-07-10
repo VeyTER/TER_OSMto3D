@@ -13,7 +13,7 @@ public class WheelPanelController : PanelController {
 
 	private void BuildWheel() {
 		RectTransform wheelRect = this.GetComponent<RectTransform>();
-		RectTransform closeWheelButtonRect = transform.GetChild(transform.childCount - 1).GetComponent<RectTransform>();
+		RectTransform closeWheelButtonRect = transform.Find(UiNames.CLOSE_VISIBILITY_WHEEL_BUTTON).GetComponent<RectTransform>();
 
 		float remoteness = wheelRect.sizeDelta.x / 2F - closeWheelButtonRect.sizeDelta.x / 2F - 3;
 		float angleStep = 360 / ((transform.childCount - 1) * 1F);
@@ -23,8 +23,8 @@ public class WheelPanelController : PanelController {
 			float localPosX = (float) (Math.Cos(currentAngle * Mathf.Deg2Rad) * remoteness);
 			float localPosY = (float) (Math.Sin(currentAngle * Mathf.Deg2Rad) * remoteness);
 
-			Transform wheelSwitchTransform = transform.GetChild(i);
-			wheelSwitchTransform.localPosition = new Vector3(localPosX + wheelRect.sizeDelta.x / 2F, localPosY, 0);
+			GameObject wheelSwitch = transform.GetChild(i).gameObject;
+			wheelSwitch.transform.localPosition = new Vector3(localPosX + wheelRect.sizeDelta.x / 2F, localPosY, 0);
 
 			currentAngle += angleStep;
 		}
@@ -105,12 +105,12 @@ public class WheelPanelController : PanelController {
 		Color visibilitylPanelImageColor = visibilitylPanelImage.color;
 
 		GameObject toggleVisibilityButton = transform.parent.gameObject;
-		GameObject toggleVisibilityIcon = transform.parent.GetChild(0).gameObject;
+		GameObject toggleVisibilityIcon = toggleVisibilityButton.transform.Find(UiNames.TOGGLE_VISIBILITY_ICON).gameObject;
 		Image visibilityIconImage = toggleVisibilityIcon.GetComponent<Image>();
 		Color visibilityIconColor = visibilityIconImage.color;
 
-		int nbChildren = transform.childCount - 1;
-		GameObject closeVisibilityWheelButton = transform.GetChild(nbChildren).gameObject;
+		int childCount = transform.childCount - 1;
+		GameObject closeVisibilityWheelButton = transform.Find(UiNames.CLOSE_VISIBILITY_WHEEL_BUTTON).gameObject;
 		Image closeButtonImage = closeVisibilityWheelButton.GetComponent<Image>();
 		Color closeButtonImageColor = closeButtonImage.color;
 
@@ -155,11 +155,11 @@ public class WheelPanelController : PanelController {
 
 	private void FadeInHierarchy(float alpha) {
 		for (int i = 0; i < transform.childCount - 1; i++) {
-			Transform switchTransform = transform.GetChild(i);
-			switchTransform.rotation = Quaternion.Euler(0, 0, 0);
+			GameObject switchButton = transform.GetChild(i).gameObject;
+			switchButton.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-			Image disabledButtonImage = switchTransform.GetChild(0).GetComponent<Image>();
-			Image enabledButtonImage = switchTransform.GetChild(1).GetComponent<Image>();
+			Image disabledButtonImage = switchButton.transform.GetChild(0).GetComponent<Image>();
+			Image enabledButtonImage = switchButton.transform.GetChild(1).GetComponent<Image>();
 
 			Color disabledButtonImageColor = disabledButtonImage.color;
 			Color enabledButtonImageColor = disabledButtonImage.color;

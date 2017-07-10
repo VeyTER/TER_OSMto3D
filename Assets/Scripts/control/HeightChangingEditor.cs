@@ -46,19 +46,16 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public int DesiredDirection(GameObject clickedWall) {
-		Transform topWallsTransform = topFloor.transform;
-		Transform bottomWallsTransform = bottomFloor.transform;
-
 		int i = 0;
-		for (; i < topWallsTransform.childCount && clickedWall != topWallsTransform.GetChild(i).gameObject; i++) ;
+		for (; i < topFloor.transform.childCount && clickedWall != topFloor.transform.GetChild(i).gameObject; i++) ;
 
-		if (i < topWallsTransform.childCount) {
+		if (i < topFloor.transform.childCount) {
 			return 1;
 		} else {
 			int j = 0;
-			for (; j < bottomWallsTransform.childCount && clickedWall != bottomWallsTransform.GetChild(j).gameObject; j++) ;
+			for (; j < bottomFloor.transform.childCount && clickedWall != bottomFloor.transform.GetChild(j).gameObject; j++) ;
 
-			if (j < bottomWallsTransform.childCount)
+			if (j < bottomFloor.transform.childCount)
 				return -1;
 			else
 				return 0;
