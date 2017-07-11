@@ -2516,11 +2516,11 @@
           </building>
           <building>
             <info id="+8877481589" name="Bâtiment n°+8877481589" nbfloor="8" roofangle="0" rooftype="unknown" custmat="BricksOrange" />
-            <nd ref="+8877481589" index="0" lat="43.554046875" lon="1.47157751464844" />
-            <nd ref="+8877481589" index="1" lat="43.55605078125" lon="1.47163647460938" />
-            <nd ref="+8877481589" index="2" lat="43.556015625" lon="1.47262829589844" />
-            <nd ref="+8877481589" index="3" lat="43.55401171875" lon="1.4725693359375" />
-            <nd ref="+8877481589" index="4" lat="43.554046875" lon="1.47157751464844" />
+            <nd ref="+8877481589" index="0" lat="43.552734375" lon="1.47323693847656" />
+            <nd ref="+8877481589" index="1" lat="43.55415234375" lon="1.47182470703125" />
+            <nd ref="+8877481589" index="2" lat="43.5548515625" lon="1.47252917480469" />
+            <nd ref="+8877481589" index="3" lat="43.55343359375" lon="1.47394140625" />
+            <nd ref="+8877481589" index="4" lat="43.552734375" lon="1.47323693847656" />
           </building>
           <building>
             <info id="+6380733503" name="Bâtiment n°+6380733503" nbfloor="3" roofangle="0" rooftype="unknown" />

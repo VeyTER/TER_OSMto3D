@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 /// 	plusieurs classes n'instanciant qu'un seul objet. Une fois les évènements interceptés, l'action requise est donc
 /// 	effectuée sur une classe de contrôle adaptée.
 /// </summary>
-public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	/// <summary>
 	/// 	Controlleur gérant l'enchainement des modifications d'un objet (déplacement de 5 bâtiments par ex).
 	/// </summary>
@@ -280,7 +280,6 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				editController.HeightChangingEditor.TopFloorColorController.SetHovered();
 			else if (expansionDirection < 0)
 				editController.HeightChangingEditor.BottomFloorColorController.SetHovered();
-
 		}
 	}
 
@@ -294,6 +293,23 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		}
 	}
 
+
+	public void OnPointerDown(PointerEventData eventData) {
+		switch (name.Split('_')[0]) {
+		case UiNames.MOVE_HANDLER:
+			if (editController.EditState == EditController.EditStates.MOVING_MODE) {
+				Animator animator = this.GetComponent<Animator>();
+				animator.Play("PointerDownAnimation");
+			}
+			break;
+		case UiNames.TURN_HANDLER:
+			if (editController.EditState == EditController.EditStates.TURNING_MODE) {
+				Animator animator = this.GetComponent<Animator>();
+				animator.Play("PointerDownAnimation");
+			}
+			break;
+		}
+	}
 
 	/// <summary>
 	/// 	Méthode appelée lorsque l'utilisateur relâche la pression d'un bouton de la souris sur un élement
@@ -485,10 +501,22 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 				editController.EnterMovingMode();
 			}
 			break;
+		case UiNames.MOVE_HANDLER:
+			if (editController.EditState == EditController.EditStates.MOVING_MODE) {
+				Animator animator = this.GetComponent<Animator>();
+				animator.Play("PointerUpAnimation");
+			}
+			break;
 		case UiNames.TURN_BUTTON:
 			// Préparation de la rotation d'un objet si le controlleur est prêt
 			if (editController.IsTransforming() || editController.EditState == EditController.EditStates.READY_TO_EDIT) {
 				editController.EnterTurningMode();
+			}
+			break;
+		case UiNames.TURN_HANDLER:
+			if (editController.EditState == EditController.EditStates.TURNING_MODE) {
+				Animator animator = this.GetComponent<Animator>();
+				animator.Play("PointerUpAnimation");
 			}
 			break;
 		case UiNames.CHANGE_HEIGHT_BUTTON:

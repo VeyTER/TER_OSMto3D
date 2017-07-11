@@ -1,0 +1,294 @@
+fileFormatVersion: 2
+guid: a4f8aebad5a32b749b44a1bcc1033687
+timeCreated: 1499771518
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: MovingHandlerIcon_0
+    21300002: MovingHandlerIcon_1
+    21300004: MovingHandlerIcon_2
+    21300006: MovingHandlerIcon_3
+    21300008: MovingHandlerIcon_4
+    21300010: MovingHandlerIcon_5
+    21300012: MovingHandlerIcon_6
+    21300014: MovingHandlerIcon_7
+    21300016: MovingHandlerIcon_8
+    21300018: MovingHandlerIcon_9
+    21300020: MovingHandlerIcon_10
+    21300022: MovingHandlerIcon_11
+    21300024: MovingHandlerIcon_12
+    21300026: MovingHandlerIcon_13
+    21300028: MovingHandlerIcon_14
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 4096
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 4096
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: MovingHandlerIcon_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_1
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_2
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_3
+      rect:
+        serializedVersion: 2
+        x: 1629
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_4
+      rect:
+        serializedVersion: 2
+        x: 2172
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_5
+      rect:
+        serializedVersion: 2
+        x: 2716
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_6
+      rect:
+        serializedVersion: 2
+        x: 3260
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_7
+      rect:
+        serializedVersion: 2
+        x: 3802
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_8
+      rect:
+        serializedVersion: 2
+        x: 4345
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_9
+      rect:
+        serializedVersion: 2
+        x: 4890
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_10
+      rect:
+        serializedVersion: 2
+        x: 5433
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_11
+      rect:
+        serializedVersion: 2
+        x: 5977
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_12
+      rect:
+        serializedVersion: 2
+        x: 6520
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_13
+      rect:
+        serializedVersion: 2
+        x: 7064
+        y: 0
+        width: 527
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: MovingHandlerIcon_14
+      rect:
+        serializedVersion: 2
+        x: 7605
+        y: 0
+        width: 524
+        height: 527
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
