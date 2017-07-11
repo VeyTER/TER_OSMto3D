@@ -1,6 +1,4 @@
-﻿using System;
-
-/// <summary>
+﻿/// <summary>
 /// 	<para>
 /// 		Contient le nom des tags contenus dans objets de type Node.
 /// 	</para>

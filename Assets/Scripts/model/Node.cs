@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-public class Node {
+﻿public class Node {
 	private string reference;
 	private int index;
 

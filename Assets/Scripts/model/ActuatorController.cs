@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-public class ActuatorController : RoomComponent {
+﻿public class ActuatorController : RoomComponent {
 	private double minValue;
 	private double maxValue;
 

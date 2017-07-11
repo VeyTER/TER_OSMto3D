@@ -1,6 +1,4 @@
-﻿using System;
-
-/// <summary>
+﻿/// <summary>
 /// 	Contient le nom des différents éléments graphiques.
 ///</summary>
 public class GameObjects {

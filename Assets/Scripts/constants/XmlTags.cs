@@ -1,6 +1,4 @@
-﻿using System;
-
-/// <summary>
+﻿/// <summary>
 /// 	<para>
 /// 		Contient les noms de balises des documents OSM utilisés par l'application.
 /// 	</para>

@@ -2,11 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Collections;
-using System.Net;
-using System.IO;
-using System.Text;
-using System.Xml;
 
 /// <summary>
 /// 	<para>

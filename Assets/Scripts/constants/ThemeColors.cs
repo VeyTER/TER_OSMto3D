@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ThemeColors {
 	public static Color GREY_TEXT = new Color(50 / 255F, 50 / 255F, 50 / 255F);

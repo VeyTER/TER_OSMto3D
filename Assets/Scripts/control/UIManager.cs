@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 /// <summary>
 /// 	Gère l'intératction de l'utilisateur avec l'interface et les éléments 3D de la scène. Il y a une instance de

@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-public class Sensors {
+﻿public class Sensors {
 	public const string TEMPERATURE = "temperature";
 
 	public const string HUMIDITY = "humidity";

@@ -1,6 +1,4 @@
-﻿using System;
-
-///<summary>
+﻿///<summary>
 /// 	Contient tous chemins vers les matérieux utilisés dans le projet. S'il doivent être changés de dossier, il
 /// 	suffit ce changer le chemin stocké dans la première variable.
 ///</summary>

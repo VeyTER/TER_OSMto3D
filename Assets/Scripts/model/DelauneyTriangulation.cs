@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using System.Text;
 
 /// <summary>
 /// 	Suite de méthodes permettant d'effectuer une triangulation de Delaunay pour construire les toits.

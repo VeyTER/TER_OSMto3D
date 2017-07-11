@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 
 public class ExternalObject {
 	private string blendFileName;

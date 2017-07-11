@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-public class MapNames : ScriptableObject {
+﻿public class MapNames {
 	public static string CAMPUS = "campus";
 
 	public static string CAMPUS_ETENDU = "campus_etendu";

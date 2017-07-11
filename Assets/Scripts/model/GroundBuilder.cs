@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// 	Générateur de sol, représenté par un sol vert.

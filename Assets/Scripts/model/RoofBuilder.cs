@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// 	Gère la génération des toits à partir des triangles créés avec la triangulation de Delauney.

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Xml;
-using System.IO;
 using System.Text.RegularExpressions;
 
 public class BuildingComponentsController : MonoBehaviour {
@@ -147,6 +146,8 @@ public class BuildingComponentsController : MonoBehaviour {
 		XmlNode rootNode = sensorsDataDocument.CreateElement("root");
 		rootNode.InnerXml = requestResult;
 		sensorsDataDocument.InnerXml = rootNode.InnerText;
+
+		Debug.Log(sensorsDataDocument.InnerXml);
 
 		this.ExtractSensorsData(sensorsDataDocument);
 

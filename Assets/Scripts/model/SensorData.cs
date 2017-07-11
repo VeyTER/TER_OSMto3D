@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-public class SensorData : RoomComponent {
+﻿public class SensorData : RoomComponent {
 	private string sensorName;
 	private string iconPath;
 

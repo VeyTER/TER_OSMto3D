@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-public class MaterialData {
+﻿public class MaterialData {
 	private string sourceTexturePath;
 	private string targetMaterialPath;
 	private string readableName;

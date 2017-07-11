@@ -1,6 +1,4 @@
-﻿using System;
-
-///<summary>
+﻿///<summary>
 /// 	Contient tous chemins vers certains fichiers du projet.
 ///</summary>
 public class FilePaths {

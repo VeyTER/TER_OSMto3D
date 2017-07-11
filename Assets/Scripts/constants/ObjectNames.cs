@@ -1,6 +1,4 @@
-﻿using System;
-
-/// <summary>
+﻿/// <summary>
 /// 	Contient le nom des objects d'une ville.
 ///</summary>
 public class ObjectNames {

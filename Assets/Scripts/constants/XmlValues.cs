@@ -1,6 +1,4 @@
-﻿using System;
-
-/// <summary>
+﻿/// <summary>
 /// 	<para>
 /// 		Contient les valeurs propriétés des documents OSM utilisés par l'application.
 /// 	</para>
