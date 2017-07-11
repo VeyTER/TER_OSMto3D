@@ -481,24 +481,24 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 		switch (name.Split('_')[0]) {
 		case UiNames.MOVE_BUTTON:
 			// Préparation du déplacement d'un objet si le controlleur est prêt
-			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+			if (editController.IsTransforming() || editController.EditState == EditController.EditStates.READY_TO_EDIT) {
 				editController.EnterMovingMode();
 			}
 			break;
 		case UiNames.TURN_BUTTON:
 			// Préparation de la rotation d'un objet si le controlleur est prêt
-			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+			if (editController.IsTransforming() || editController.EditState == EditController.EditStates.READY_TO_EDIT) {
 				editController.EnterTurningMode();
 			}
 			break;
 		case UiNames.CHANGE_HEIGHT_BUTTON:
-			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+			if (editController.IsTransforming() || editController.EditState == EditController.EditStates.READY_TO_EDIT) {
 				editController.EnterHeightChangingMode();
 			}
 			break;
 		case UiNames.CHANGE_SKIN_BUTTON:
 			// Préparation du déplacement d'un objet si le controlleur est prêt
-			if (editController.EditState == EditController.EditStates.READY_TO_EDIT) {
+			if (editController.IsTransforming() || editController.EditState == EditController.EditStates.READY_TO_EDIT) {
 				editController.EnterSkinChangingMode();
 			}
 			break;
@@ -556,14 +556,14 @@ public class UiManager : MonoBehaviour, IPointerUpHandler, IBeginDragHandler, ID
 			break;
 		case UiNames.VALIDATE_EDIT_BUTTON:
 			// Validation d'une transformation si le controlleur de modification est bien en cours de modification
-			if (editController.Transforming()) {
+			if (editController.IsTransforming()) {
 				editController.ValidateTransform();
 				editController.ExitTransformMode();
 			}
 			break;
 		case UiNames.CANCEL_EDIT_BUTTON:
 			// Annulation d'une transformation si le controlleur de modification est bien en cours de modification
-			if (editController.Transforming()) {
+			if (editController.IsTransforming()) {
 				editController.CancelTransform();
 				editController.ExitTransformMode();
 			}

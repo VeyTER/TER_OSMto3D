@@ -244,7 +244,7 @@ public class EditController : MonoBehaviour {
 
 		editPanelController.CloseSlideButton();
 
-		// Déplacement de la caméra à sa position initiale et réinitialisation de l'état de modification à la fin du
+		// Déplacement de la caméra à sa position initiale et réinitialization de l'état de modification à la fin du
 		// déplacement
 		editState = EditController.EditStates.MOVING_TO_INITIAL_SITUATION;
 		cameraController.StartCoroutine (
@@ -285,11 +285,13 @@ public class EditController : MonoBehaviour {
 	/// 	les éditeurs.
 	/// </summary>
 	public void EnterMovingMode() {
-		this.EnterTransformMode ();
-		movingEditor.InitializeBasics(selectedBuilding);
-		movingEditor.MoveHandler.SetActive (true);
-		movingEditor.InitializeMovingMode();
-		editState = EditStates.MOVING_MODE;
+		Action initializationSequence = () => {
+			movingEditor.InitializeBasics(selectedBuilding);
+			movingEditor.MoveHandler.SetActive(true);
+			movingEditor.InitializeMovingMode();
+			editState = EditStates.MOVING_MODE;
+		};
+		this.EnterTransformMode (initializationSequence);
 	}
 
 	/// <summary>
@@ -297,32 +299,39 @@ public class EditController : MonoBehaviour {
 	/// 	les éditeurs.
 	/// </summary>
 	public void EnterTurningMode() {
-		this.EnterTransformMode ();
-		turningEditor.InitializeBasics(selectedBuilding);
-		turningEditor.TurnHandler.SetActive (true);
-		turningEditor.InitializeTurningMode();
-		editState = EditStates.TURNING_MODE;
+		Action initializationSequence = () => {
+			turningEditor.InitializeBasics(selectedBuilding);
+			turningEditor.TurnHandler.SetActive(true);
+			turningEditor.InitializeTurningMode();
+			editState = EditStates.TURNING_MODE;
+		};
+		this.EnterTransformMode (initializationSequence);
 	}
 
 	public void EnterHeightChangingMode() {
-		this.EnterTransformMode();
-		heightChangingEditor.InitializeBasics(selectedBuilding);
-		heightChangingEditor.InitializeHeightChangingMode();
-		cameraController.StartCoroutine( cameraController.MoveToBuilding(selectedBuilding, true, null, 15) );
-		editState = EditStates.HEIGHT_CHANGING_MODE;
+		Action initializationSequence = () => {
+			heightChangingEditor.InitializeBasics(selectedBuilding);
+			heightChangingEditor.InitializeHeightChangingMode();
+			cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, null, 15));
+			editState = EditStates.HEIGHT_CHANGING_MODE;
+		};
+		this.EnterTransformMode(initializationSequence);
 	}
 
 
 	public void EnterSkinChangingMode() {
-		this.EnterTransformMode();
-		skinChangingEditor.InitializeBasics(selectedBuilding);
-		skinChangingEditor.InitializeSkinChangingMode();
+		Action initializationSequence = () => {
+			skinChangingEditor.InitializeBasics(selectedBuilding);
+			skinChangingEditor.InitializeSkinChangingMode();
 
-		cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, () => {
-			cameraController.StartCoroutine( cameraController.TurnAroundBuilding(selectedBuilding, 15) );
-		}, 15));
-		buildingsTools.DiscolorAsSelected(selectedBuilding);
-		editState = EditStates.SKIN_CHANGING_MODE;
+			cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, () => {
+				cameraController.StartCoroutine(cameraController.TurnAroundBuilding(selectedBuilding, 15));
+			}, 15));
+
+			buildingsTools.DiscolorAsSelected(selectedBuilding);
+			editState = EditStates.SKIN_CHANGING_MODE;
+		};
+		this.EnterTransformMode(initializationSequence);
 	}
 
 
@@ -330,8 +339,14 @@ public class EditController : MonoBehaviour {
 	/// 	Active le mode de transformation d'un bâtiment en fermant le panneau latéral et en inversant
 	/// 	l'affichage des boutons flottants.
 	/// </summary>
-	private void EnterTransformMode() {
-		editPanelController.ClosePanel (null);
+	private void EnterTransformMode(Action initializationSequence) {
+		if (this.IsTransforming()) {
+			this.ValidateTransform();
+			this.ExitTransformMode(initializationSequence);
+		} else {
+			initializationSequence();
+		}
+		editPanelController.ClosePanel(null);
 		editPanelController.CloseSlideButton();
 		editPanelController.OpenFloattingButtons();
 	}
@@ -341,7 +356,7 @@ public class EditController : MonoBehaviour {
 	/// 	Désactive le mode de transformation courant d'un bâtiment en effetuant les tâches permettant de revenir à
 	/// 	la configuration d'avant la modification.
 	/// </summary>
-	public void ExitTransformMode() {
+	public void ExitTransformMode(Action initializationSequence = null) {
 		switch (editState) {
 		case EditStates.MOVING_MODE:
 			movingEditor.MoveHandler.SetActive (false);
@@ -376,7 +391,10 @@ public class EditController : MonoBehaviour {
 		editState = EditStates.MOVING_TO_OBJECT;
 		cameraController.StartCoroutine (
 			cameraController.MoveToBuilding (selectedBuilding, false, () => {
-				editState = EditStates.READY_TO_EDIT;
+				if (initializationSequence == null)
+					editState = EditStates.READY_TO_EDIT;
+				else
+					initializationSequence();
 			}, 90)
 		);
 	}
@@ -419,7 +437,7 @@ public class EditController : MonoBehaviour {
 	/// 	Indique si un objet est en cours de transformation (en déplacement par ex).
 	/// </summary>
 	/// <returns><c>true</c>, un objet est en cours de transformation, <c>false</c> sinon.</returns>
-	public bool Transforming() {
+	public bool IsTransforming() {
 		return editState == EditStates.MOVING_MODE
 			|| editState == EditStates.TURNING_MODE
 			|| editState == EditStates.RENAMING_MODE

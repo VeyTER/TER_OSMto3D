@@ -44,10 +44,9 @@ public class TurningEditor : ObjectEditor {
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
 	public void InitializeTurningMode() {
 		Quaternion turnHandlerRotation = turnHandler.transform.rotation;
-		Vector3 objectScreenPosition = Vector3.zero;
 
 		// Affectation de l'orientation courante de l'objet à l'orientation initiale
-		objectScreenPosition = Camera.main.WorldToScreenPoint (selectedBuilding.transform.position);
+		Vector3 objectScreenPosition = Camera.main.WorldToScreenPoint (selectedBuilding.transform.position);
 		selectedBuildingStartAngle = selectedBuilding.transform.rotation.eulerAngles.y;
 		turnHandler.transform.position = new Vector3 (objectScreenPosition.x, objectScreenPosition.y, 0);
 		turnHandler.transform.rotation = Quaternion.Euler (turnHandlerRotation.x, turnHandlerRotation.z,  360 - selectedBuilding.transform.rotation.eulerAngles.y); 
