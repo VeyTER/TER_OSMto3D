@@ -52,21 +52,20 @@ public class RoofBuilder {
 		Vector3[] res = new Vector3[nbVertex];
 
 		int i = 0;
-		foreach(Triangle tri in triangulation.Triangles) {
+		foreach(TriangleOld tri in triangulation.Triangles) {
 			float posX2 = (float)tri.NodeA.Latitude - posZ;
 			float posZ2 = (float)tri.NodeA.Longitude - posX;
 			res[i] = new Vector3(posX2, 0, posZ2);		// [x, y, z] = [RIGHT, TOP, FORWARD];
-
 			i++;
+
 			posZ2 = (float)tri.NodeB.Latitude - posZ;
 			posX2 = (float)tri.NodeB.Longitude - posX;
 			res[i] = new Vector3(posX2, 0, posZ2);		// [x, y, z] = [RIGHT, TOP, FORWARD];
-
 			i++;
+
 			posZ2 = (float)tri.NodeC.Latitude - posZ;
 			posX2 = (float)tri.NodeC.Longitude - posX;
 			res[i] = new Vector3(posX2, 0, posZ2);
-
 			i++;
 		}
 		return res;

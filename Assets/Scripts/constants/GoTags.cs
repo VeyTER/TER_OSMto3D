@@ -1,6 +1,6 @@
 ﻿/// <summary>
 /// 	<para>
-/// 		Contient le nom des tags contenus dans objets de type Node.
+/// 		Contient les tags permettant d'identifier le types des objets 3D et des noeuds.
 /// 	</para>
 /// 	<para>
 /// 		ATTENTION : ces chaines n'ont techniquement aucun lien avec les tags contenus dans les fichiers XML.

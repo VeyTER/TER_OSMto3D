@@ -1,4 +1,7 @@
-﻿public class Dimensions {
+﻿/// <summary>
+///		Contient des dimensions de référence, comme la hauteur des étages des bâtiments.
+/// </summary>
+public class Dimensions {
 	public static float FLOOR_HEIGHT = 0.08F;
 	public static float WALL_THICKNESS = 0.01F;
 

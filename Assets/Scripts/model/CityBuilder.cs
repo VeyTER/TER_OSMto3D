@@ -208,11 +208,11 @@ public class CityBuilder {
 	/// </summary>
 	public void BuildNodes() {
 		// Récupération de l'objet contenant les groupes de noeuds de bâtiments et ajout de celui-ci à la ville
-		buildingNodes = new GameObject(ObjectNames.BUILDING_NODES);
+		buildingNodes = new GameObject(CityObjectNames.BUILDING_NODES);
 		buildingNodes.transform.parent = cityComponents.transform;
 
 		// Récupération de l'objet contenant les groupes de noeuds de routes et ajout de celui-ci à la ville
-		highwayNodes = new GameObject(ObjectNames.HIGHWAY_NODES);
+		highwayNodes = new GameObject(CityObjectNames.HIGHWAY_NODES);
 		highwayNodes.transform.parent = cityComponents.transform;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
@@ -285,7 +285,7 @@ public class CityBuilder {
 	/// </summary>
 	public void BuildWalls() {
 		// Récupération de l'objet contenant les groupes de murs (bâtiments) et ajout de celui-ci à la ville
-		wallGroups = new GameObject(ObjectNames.WALLS);
+		wallGroups = new GameObject(CityObjectNames.WALLS);
 		wallGroups.transform.parent = cityComponents.transform;
 
 		// Ajout d'un gestionnaire d'interface au groupe de bâtiments et affectaton du controlleur de modification,
@@ -479,7 +479,7 @@ public class CityBuilder {
 	/// </summary>
 	public void BuildRoofs() {
 		// Récupération de l'objet contenant les toits et ajout de celui-ci à la ville
-		roofs = new GameObject(ObjectNames.ROOFS);
+		roofs = new GameObject(CityObjectNames.ROOFS);
 		roofs.transform.parent = cityComponents.transform;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
@@ -491,8 +491,13 @@ public class CityBuilder {
 				triangulation.CreateBoundingBox();
 				triangulation.Start();
 
+				if (nodeGroup.Name.Equals("U4")) {
+					Triangulation triangulationNew = new Triangulation(nodeGroup);
+					triangulationNew.Triangulate();
+				}
+
 				// Récupération de la position du toit à partir de la triangulation
-				float posX = (float)triangulation.Triangles[0].NodeA.Longitude;
+					float posX = (float)triangulation.Triangles[0].NodeA.Longitude;
 				float posZ = (float)triangulation.Triangles[0].NodeA.Latitude;
 
 				// Construction et paramétrage de l'objet 3D destiné à former un toit
@@ -511,15 +516,15 @@ public class CityBuilder {
 	/// </summary>
 	public void BuildRoads() {
 		// Récupération de l'objet contenant les routes classiques et ajout de celui-ci à la ville
-		highways = new GameObject(ObjectNames.HIGHWAYS);
+		highways = new GameObject(CityObjectNames.HIGHWAYS);
 		highways.transform.parent = cityComponents.transform;
 
 		// Récupération de l'objet contenant les pistes cyclables et ajout de celui-ci à la ville
-		cycleways = new GameObject(ObjectNames.CYCLEWAYS);
+		cycleways = new GameObject(CityObjectNames.CYCLEWAYS);
 		cycleways.transform.parent = cityComponents.transform;
 
 		// Récupération de l'objet contenant les chemins piétons et ajout de celui-ci à la ville
-		footways = new GameObject(ObjectNames.FOOTWAYS);
+		footways = new GameObject(CityObjectNames.FOOTWAYS);
 		footways.transform.parent = cityComponents.transform;
 
 		// Récupération de l'objet contenant les chemins voies de bus et ajout de celui-ci à la ville
@@ -609,7 +614,7 @@ public class CityBuilder {
 	/// </summary>
 	public void BuildTrees() {
 		// Récupération de l'objet contenant les arbres et ajout de celui-ci à la ville
-		trees = new GameObject(ObjectNames.TREES);
+		trees = new GameObject(CityObjectNames.TREES);
 		trees.transform.parent = cityComponents.transform;
 
 		float height = 0.12F;

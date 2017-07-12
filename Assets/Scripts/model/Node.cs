@@ -1,4 +1,6 @@
-﻿public class Node {
+﻿using UnityEngine;
+
+public class Node {
 	private string reference;
 	private int index;
 
@@ -33,9 +35,17 @@
 		return reference + "/" + index;
 	}
 
+	public Vector2 ToVector() {
+		return new Vector2((float)latitude, (float)longitude);
+	}
+
 	public string Reference {
 		get { return reference; }
 		set { reference = value; }
+	}
+
+	public bool Equals(Node node) {
+		return latitude == node.Latitude && longitude == node.Longitude;
 	}
 
 	public int Index {

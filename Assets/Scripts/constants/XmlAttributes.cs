@@ -3,8 +3,8 @@
 /// 		Contient les noms d'attributs des documents OSM utilisés par l'application.
 /// 	</para>
 /// 	<para>
-/// 		ATTENTION : Certains de ces attributs sont utilisés pour extraire des données des cartes OSM et ne doivent
-/// 		donc pas être modifiés, sauf si Open Street Map change le nom des attributs.
+/// 		ATTENTION : Certains de ces attributs sont utilisés pour extraire des données des cartes OSM et ne
+/// 		doivent	donc pas être modifiés, sauf si Open Street Map change le nom des attributs.
 /// 	</para>
 ///</summary>
 public class XmlAttributes {

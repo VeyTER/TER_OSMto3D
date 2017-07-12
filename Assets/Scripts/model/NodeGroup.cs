@@ -214,8 +214,8 @@ public class NodeGroup {
 	}
 
 	// teste l'egalité de deux NodeGroup
-	public bool Equals (NodeGroup ng) {
-		return this.id.Equals(ng.id);
+	public bool Equals (NodeGroup nodeGroup) {
+		return this.id.Equals(nodeGroup.id);
 	}
 
 	// renvoie la valeur du tag si la clé existe

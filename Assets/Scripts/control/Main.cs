@@ -57,7 +57,7 @@ public class Main : MonoBehaviour {
 			this.cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
 
 			// Construction de la ville
-			this.cityBuilder.CityComponents = new GameObject(ObjectNames.CITY);
+			this.cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
 			this.cityBuilder.BuildNodes();
 			this.cityBuilder.BuildWalls();
 			this.cityBuilder.BuildRoofs();

@@ -3,8 +3,8 @@
 /// 		Contient les noms de balises des documents OSM utilisés par l'application.
 /// 	</para>
 /// 	<para>
-/// 		ATTENTION : Certaines de ces balises sont utilisées pour extraire des données des cartes OSM et ne doivent
-/// 		donc pas être modifiées, sauf si Open Street Map change le nom des balises.
+/// 		ATTENTION : Certaines de ces balises sont utilisées pour extraire des données des cartes OSM et ne 
+/// 		doivent	donc pas être modifiées, sauf si Open Street Map change le nom des balises.
 /// 	</para>
 ///</summary>
 public class XmlTags {

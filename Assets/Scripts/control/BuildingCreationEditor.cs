@@ -2,6 +2,10 @@
 using UnityEngine.UI;
 using System;
 
+/// <summary>
+///		Gère le déroulement de la création d'un nouveau bâtiment en mettant à jour ses coordonnées, son angle et 
+///		ses dimensions en fonction des actions de l'utilisateur.
+/// </summary>
 public class BuildingCreationEditor : ObjectEditor {
 	private CameraController cameraController;
 

@@ -1,4 +1,7 @@
-﻿public class MapNames {
+﻿/// <summary>
+///		Contient le nom de toutes les cartes OSM disponibles.
+/// </summary>
+public class MapNames {
 	public static string CAMPUS = "campus";
 
 	public static string CAMPUS_ETENDU = "campus_etendu";

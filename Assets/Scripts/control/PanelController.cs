@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System;
 
+/// <summary>
+///		Classe-mère contrôlant un panneau d'éléments graphiques et permettant de l'animer.
+/// </summary>
 public abstract class PanelController : MonoBehaviour {
 	/// <summary>
 	/// 	Les états du panneau latéral. Celui-ci peut-être fermé ou ouvert, mais également en cours d'ouverture ou

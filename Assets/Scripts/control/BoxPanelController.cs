@@ -3,6 +3,9 @@ using System.Collections;
 using System;
 using UnityEngine.UI;
 
+/// <summary>
+///		Contrôle les panneaux de type "boîte" (rectangulaires).
+/// </summary>
 public class BoxPanelController : PanelController {
 	private void Start() {
 		this.panelState = PanelStates.CLOSED;

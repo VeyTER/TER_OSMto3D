@@ -6,14 +6,14 @@ using System.Collections.Generic;
 /// </summary>
 public class DelauneyTriangulation {
 	/// <summary>Triangles produit par la triangulation et destinés à être affichés.</summary>
-	private List<Triangle> triangles;
+	private List<TriangleOld> triangles;
 
 
 	/// <summary>Triangles destiné à être supprimés de la liste finale car ne respectant pas les conditions.</summary>
-	private List<Triangle> oldTriangles;
+	private List<TriangleOld> oldTriangles;
 
 	/// <summary>Triangles destiné à être ajoutés de la liste finale.</summary>
-	private List<Triangle> newTriangles;
+	private List<TriangleOld> newTriangles;
 
 
 	/// <summary>Neods à partir desquels construire la triangulation.</summary>
@@ -24,10 +24,10 @@ public class DelauneyTriangulation {
 
 
 	public DelauneyTriangulation (NodeGroup nodeGroup) {
-		this.triangles = new List<Triangle>();
+		this.triangles = new List<TriangleOld>();
 
-		this.oldTriangles = new List<Triangle>();
-		this.newTriangles = new List<Triangle>();
+		this.oldTriangles = new List<TriangleOld>();
+		this.newTriangles = new List<TriangleOld>();
 
 		foreach (Node node in nodeGroup.Nodes)
 			nodes.Add(node);
@@ -97,11 +97,11 @@ public class DelauneyTriangulation {
 		// Création des triangles
 		for (int i = 0; i < nodes.Count; i++) {
 			if (i < (nodes.Count - 2))
-				newTriangles.Add(new Triangle(nodes[i], nodes[i + 1], nodes[i + 2]));
+				newTriangles.Add(new TriangleOld(nodes[i], nodes[i + 1], nodes[i + 2]));
 			else if (i < (nodes.Count - 1))
-				newTriangles.Add(new Triangle(nodes[i], nodes[i + 1], nodes[0]));
+				newTriangles.Add(new TriangleOld(nodes[i], nodes[i + 1], nodes[0]));
 			else
-				newTriangles.Add(new Triangle(nodes[i], nodes[0], nodes[1]));
+				newTriangles.Add(new TriangleOld(nodes[i], nodes[0], nodes[1]));
 		}
 
 		/*for (int i = 0; i < listNode.Count; i++)
@@ -131,7 +131,7 @@ public class DelauneyTriangulation {
 		foreach(Node node in nodes) {
 
 			// Parcours de la liste des triangles
-			foreach(Triangle triangle1 in triangles) {
+			foreach(TriangleOld triangle1 in triangles) {
 				// Ajout du triangle à la liste des triangles à supprimer de la liste des triangles si celui-ci ne
 				// respecte pas les conditions
 				if (this.IsWithin(triangle1, node))
@@ -139,7 +139,7 @@ public class DelauneyTriangulation {
 			}
 
 			// Ajout de tout les noeuds differents des triangles à supprimer dans la liste des noeuds temporaire
-			foreach(Triangle triangle2 in oldTriangles) {
+			foreach(TriangleOld triangle2 in oldTriangles) {
 				if (!nodesTemp.Contains(triangle2.NodeA))
 					nodesTemp.Add(triangle2.NodeA);
 
@@ -153,17 +153,17 @@ public class DelauneyTriangulation {
 			// Creation des triangles à partir de deux points dans la liste des noeuds temporaire et le noeud courant
 			for(int i = 0; i < nodesTemp.Count; i++) {
 				if (i < (nodesTemp.Count - 1))
-					newTriangles.Add(new Triangle(nodesTemp[i], nodesTemp[i + 1], node));
+					newTriangles.Add(new TriangleOld(nodesTemp[i], nodesTemp[i + 1], node));
 				else
-					newTriangles.Add(new Triangle(nodesTemp[i], nodesTemp[0], node));
+					newTriangles.Add(new TriangleOld(nodesTemp[i], nodesTemp[0], node));
 			}
 
 			// Suppression les triangle à supprimer de la liste des triangles 
-			foreach (Triangle triangle3 in oldTriangles)
+			foreach (TriangleOld triangle3 in oldTriangles)
 				triangles.Remove(triangle3);
 
 			// Ajout des triangles à ajouter à la liste des triangles
-			foreach(Triangle triangle4 in newTriangles)
+			foreach(TriangleOld triangle4 in newTriangles)
 				triangles.Add(triangle4);
 
 			// Suppression des listes temporaires
@@ -180,7 +180,7 @@ public class DelauneyTriangulation {
 	/// <param name="tri">Triangle à tester.</param>
 	/// <param name="n">Point à traiter.</param>
 	/// <returns><c>true</c>, si le point est à l'interieur du triangle, <c>false</c> sinon.</returns>
-	public bool IsWithin(Triangle triangle, Node node) {
+	public bool IsWithin(TriangleOld triangle, Node node) {
 		Node triangleCenter = triangle.Center ();
 
 		// Calcul du rayon du cercle circonscri au triangle
@@ -197,7 +197,7 @@ public class DelauneyTriangulation {
 			return false;
 	}
 
-	public List<Triangle> Triangles {
+	public List<TriangleOld> Triangles {
 		get { return triangles; }
 	}
 }

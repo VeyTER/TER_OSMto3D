@@ -6,6 +6,10 @@ using UnityEngine.UI;
 using System.Xml;
 using System.Text.RegularExpressions;
 
+/// <summary>
+///		Contrôle les composants présents sur les bâtiments, c'est à dire les capteurs et les actionneurs. Cette
+///		classe lance la récupération des données et actualise l'affichage dès que les données sont récupérées.
+/// </summary>
 public class BuildingComponentsController : MonoBehaviour {
 	private static int RELOADING_PERIOD = 20;
 

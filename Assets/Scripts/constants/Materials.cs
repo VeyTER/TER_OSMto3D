@@ -1,6 +1,5 @@
 ﻿///<summary>
-/// 	Contient tous chemins vers les matérieux utilisés dans le projet. S'il doivent être changés de dossier, il
-/// 	suffit ce changer le chemin stocké dans la première variable.
+/// 	Contient le chemin de chaque matériau utilisé dans le projet.
 ///</summary>
 public class Materials {
 	///<summary>Chemin vers le matériau des murs.</summary>

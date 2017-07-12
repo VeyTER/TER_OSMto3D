@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// 	Contient le nom des différents éléments graphiques.
+/// 	Contient le nom des objets 3D instanciables depuis l'arborescence du projet.
 ///</summary>
 public class GameObjects {
 	public const string GAME_OBJECT_LOCAL_FOLER = "Game objects/";

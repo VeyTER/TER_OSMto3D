@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// 	Contient le nom des différents éléments graphiques.
+/// 	Contient le nom des différents éléments d'interface graphique.
 ///</summary>
 public class UiNames {
 	public const string MAIN_CANVAS = "MainCanvas";

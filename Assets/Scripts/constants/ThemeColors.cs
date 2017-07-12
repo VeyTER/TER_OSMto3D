@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+///		Couleurs du thème, permettant d'homogénéiser l'interface.
+/// </summary>
 public class ThemeColors {
 	public static Color GREY_TEXT = new Color(50 / 255F, 50 / 255F, 50 / 255F);
 
