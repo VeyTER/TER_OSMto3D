@@ -20,10 +20,6 @@ public class EdgeShape {
 		return edges[index];
 	}
 
-	public int IndexOfEdge(Edge edge) {
-		return edges.IndexOf(edge);
-	}
-
 	public Edge RemoveEdge(int index) {
 		Edge oldEdge = edges[index];
 		edges.Remove(oldEdge);
@@ -33,6 +29,10 @@ public class EdgeShape {
 	public Edge RemoveEdge(Edge oldEdge) {
 		edges.Remove(oldEdge);
 		return oldEdge;
+	}
+
+	public int EdgeCount() {
+		return edges.Count;
 	}
 
 	public Edge PreviousEdge(Edge flagEdge) {

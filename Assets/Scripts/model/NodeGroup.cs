@@ -129,9 +129,9 @@ public class NodeGroup {
 
 	// retourne vrai si le nodeGroup correspond à un batiment
 	public bool IsBuilding() {
-		return this.tags.ContainsKey ("building")
-			|| this.tags.ContainsKey("leisure")
-			|| this.tags.ContainsKey("landuse");
+		return this.tags.ContainsKey("building");
+			//|| this.tags.ContainsKey("leisure")
+			//|| this.tags.ContainsKey("landuse");
 	}
 
 	// retourne vrai si le nodeGroup correspond à une voie d'eau

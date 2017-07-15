@@ -491,13 +491,17 @@ public class CityBuilder {
 				triangulation.CreateBoundingBox();
 				triangulation.Start();
 
-				if (nodeGroup.Name.Equals("U4")) {
-					Triangulation triangulationNew = new Triangulation(nodeGroup);
-					triangulationNew.Triangulate();
-				}
+
+
+
+				Triangulation triangulationNew = new Triangulation(nodeGroup);
+				triangulationNew.Triangulate(nodeGroup.Name);
+
+
+
 
 				// Récupération de la position du toit à partir de la triangulation
-					float posX = (float)triangulation.Triangles[0].NodeA.Longitude;
+				float posX = (float)triangulation.Triangles[0].NodeA.Longitude;
 				float posZ = (float)triangulation.Triangles[0].NodeA.Latitude;
 
 				// Construction et paramétrage de l'objet 3D destiné à former un toit

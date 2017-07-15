@@ -26,99 +26,74 @@ public class Triangulation {
 		this.edgeShape = new EdgeShape();
 	}
 
-	public void Triangulate() {
+	public void Triangulate(string name) {
 		if (nodeGroup.NodeCount() >= 3) {
 			this.BuildShapeEdges();
-			this.FilterVectices();
+			this.FilterVectices(name);
 
-			Debug.Log(convexVertices.Count + "  " + reflexVertices.Count + "  " + earTipVertices.Count);
+			//Debug.Log(convexVertices.Count + "  " + reflexVertices.Count + "  " + earTipVertices.Count);
 
 			//this.BuildTriangulation();
 		}
 	}
 
 	private void BuildShapeEdges() {
+		float shapeArea = 0;
 		for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
+			Vector2 currentPoint = nodeGroup.GetNode(i).ToVector();
+			Vector2 nextPoint = nodeGroup.GetNode(i + 1).ToVector();
+
+			shapeArea += (nextPoint.x - currentPoint.x) * (nextPoint.y + currentPoint.y);
+		}
+
+		for (int i = shapeArea >= 0 ? 0 : nodeGroup.NodeCount() - 1; (shapeArea >= 0 && i < nodeGroup.NodeCount() - 1) || (shapeArea < 0 && i >= 1); i = shapeArea >= 0 ? i + 1 : i - 1) {
 			Node currentNode = nodeGroup.GetNode(i);
-			Node nextNode = nodeGroup.GetNode(i + 1);
+			Node nextNode = nodeGroup.GetNode(i + (shapeArea >= 0 ? 1 : -1));
 
 			Edge newEdge = new Edge(currentNode, nextNode, Edge.EdgeTypes.SHAPE);
 			edgeShape.AddEdge(newEdge);
 		}
 	}
 
-	private void FilterVectices() {
-		foreach (Edge currentEdge in edgeShape.Edges) {
-			if (this.IsConvex(currentEdge.NodeB, currentEdge, edgeShape.NextEdge(currentEdge))) {
+	private void FilterVectices(string name) {
+		float sum = 0;
+		for (int i = 0; i < nodeGroup.NodeCount() - 2; i++) {
+			Vector2 currentPoint = nodeGroup.GetNode(i).ToVector();
+			Vector2 nextPoint = nodeGroup.GetNode(i + 1).ToVector();
+
+			sum += (nextPoint.x - currentPoint.x) * (nextPoint.y + currentPoint.y);
+		}
+
+		for(int i = 0; i < edgeShape.EdgeCount(); i++) {
+			Edge currentEdge = edgeShape.GetEdge(i);
+			Edge nextEdge = edgeShape.NextEdge(currentEdge);
+
+			if (this.IsConvex(currentEdge.NodeB, currentEdge, nextEdge)) {
 				convexVertices.Add(currentEdge.NodeB.ToVector());
 
 				if (this.IsEarTip(currentEdge.NodeB))
 					earTipVertices.Add(currentEdge.NodeB.ToVector());
 			} else {
 				reflexVertices.Add(currentEdge.NodeB.ToVector());
-				GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				obj.transform.position = new Vector3((float) currentEdge.NodeB.Longitude, 0, (float) currentEdge.NodeB.Latitude);
-				obj.transform.localScale = new Vector3(0.01F, 0.01F, 0.01F);
+
+				GameObject objj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+				objj.transform.position = new Vector3((float) currentEdge.NodeB.Longitude, 0, (float) currentEdge.NodeB.Latitude);
+				objj.transform.localScale = new Vector3(0.05F, 0.05F, 0.05F);
 			}
 		}
 	}
 
 	private bool IsConvex(Node testedNode, Edge currentEdge, Edge nextEdge) {
-		//Vector2 testedVertex = testedNode.ToVector();
-		//VertexSides previousSide = VertexSides.NONE;
+		Vector2 previousVertex = currentEdge.NodeA.ToVector();
+		Vector2 testedVertex = currentEdge.NodeB.ToVector();
+		Vector2 nextVertex = nextEdge.NodeB.ToVector();
 
-		//for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
-		//	if (!testedNode.Equals(nodeGroup.GetNode(i))) {
-		//		Vector2 currentVertex = nodeGroup.GetNode(i).ToVector();
-		//		Vector2 nextVertex = nodeGroup.GetNode(i + 1).ToVector();
+		float testOperation = (testedVertex.x - previousVertex.x) * (nextVertex.y - previousVertex.y)
+						    - (nextVertex.x - previousVertex.x) * (testedVertex.y - previousVertex.y);
 
-		//		Vector2 affineSegment = this.Affine(nextVertex, currentVertex);
-		//		Vector2 affinePoint = this.Affine(testedVertex, currentVertex);
+		return testOperation <= 0;
 
-		//		VertexSides currentSide = this.VertexSide(affineSegment, affinePoint);
-
-		//		if (currentSide == VertexSides.NONE) {
-		//			//Debug.Log("ok 1");
-		//			return false;
-		//		} else if (previousSide == VertexSides.NONE) {
-		//			//Debug.Log("ok 2");
-		//			previousSide = currentSide;
-		//		} else if (previousSide != currentSide) {
-		//			//Debug.Log("ok 3");
-		//			return false;
-		//		}
-		//	}
-		//}
-
-		//Debug.Log("ok 4");
-
-		Debug.Log((currentEdge.Orientation() - nextEdge.Orientation()) / (2F * Math.PI) * 360);
-
-		return Math.Abs(currentEdge.Orientation() - nextEdge.Orientation()) / (2F * Math.PI) * 360 < 180;
-	}
-
-	private Vector2 Affine(Vector2 vertexA, Vector2 vertexB) {
-		return new Vector2(vertexA.x - vertexB.x, vertexA.y - vertexB.y);
-	}
-
-	private VertexSides VertexSide(Vector2 affineA, Vector2 affineB) {
-		if ((affineA.x == 0 && affineB.y == 0) || (affineB.y == 0 && affineB.x == 0))
-			Debug.Log("Aïe aïe aïe");
-
-		float xProduct = this.XProduct(affineA, affineB);
-
-		Debug.Log("( " + affineA.x + " ; " + affineA.y + " ) - ( " + affineB.x + " ; " + affineB.y + " )  ==>" + xProduct);
-
-		if (xProduct < 0)
-			return VertexSides.LEFT;
-		else if (xProduct > 0)
-			return VertexSides.RIGHT;
-		else
-			return VertexSides.NONE;
-	}
-
-	private float XProduct(Vector2 affineA, Vector2 affineB) {
-		return affineA.x * affineB.y - affineA.y * affineB.x;
 	}
 
 	private bool IsEarTip(Node testedNode) {
