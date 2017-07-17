@@ -33,7 +33,6 @@ public class EditController : MonoBehaviour {
 		MOVING_TO_OBJECT,
 		MOVING_TO_INITIAL_SITUATION,
 		READY_TO_EDIT,
-		RENAMING_MODE,
 		MOVING_MODE,
 		TURNING_MODE,
 		HEIGHT_CHANGING_MODE,
@@ -435,7 +434,6 @@ public class EditController : MonoBehaviour {
 	public bool IsTransforming() {
 		return editState == EditStates.MOVING_MODE
 			|| editState == EditStates.TURNING_MODE
-			|| editState == EditStates.RENAMING_MODE
 			|| editState == EditStates.HEIGHT_CHANGING_MODE
 			|| editState == EditStates.SKIN_CHANGING_MODE;
 	}
