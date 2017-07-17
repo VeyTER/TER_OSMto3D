@@ -487,9 +487,9 @@ public class CityBuilder {
 
 			if (nodeGroup.IsBuilding()) {
 				// Initialisation d'une triangulation de Delauney
-				DelauneyTriangulation triangulation = new DelauneyTriangulation(nodeGroup);
-				triangulation.CreateBoundingBox();
-				triangulation.Start();
+				//DelauneyTriangulation triangulation = new DelauneyTriangulation(nodeGroup);
+				//triangulation.CreateBoundingBox();
+				//triangulation.Start();
 
 
 
@@ -501,11 +501,11 @@ public class CityBuilder {
 
 
 				// Récupération de la position du toit à partir de la triangulation
-				float posX = (float)triangulation.Triangles[0].NodeA.Longitude;
-				float posZ = (float)triangulation.Triangles[0].NodeA.Latitude;
+				float posX = (float) triangulationNew.Triangles[0].NodeA.Longitude;
+				float posZ = (float) triangulationNew.Triangles[0].NodeA.Latitude;
 
 				// Construction et paramétrage de l'objet 3D destiné à former un toit
-				GameObject newRoof = roofBuilder.BuildRoof(posX, posZ, triangulation, nodeGroup.NbFloor, Dimensions.FLOOR_HEIGHT);
+				GameObject newRoof = roofBuilder.BuildRoof(posX, posZ, triangulationNew, nodeGroup.NbFloor, Dimensions.FLOOR_HEIGHT);
 				newRoof.name = nodeGroup.Id;
 
 				// Ajout du toit au groupe de toits

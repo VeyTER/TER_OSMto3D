@@ -50,6 +50,15 @@ public class Edge {
 		return nodeA.ToVector() + (nodeB.ToVector() - nodeA.ToVector()) / 2F;
 	}
 
+	public override bool Equals(object obj) {
+		if (obj.GetType() == typeof(Edge)) {
+			Edge edge = (Edge) obj;
+			return nodeA.Equals(edge.NodeA) && nodeB.Equals(edge.NodeB);
+		} else {
+			return false;
+		}
+	}
+
 	public Edge GetCopy() {
 		return new Edge(nodeA, nodeB);
 	}

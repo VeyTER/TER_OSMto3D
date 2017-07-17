@@ -4,11 +4,9 @@ using System.Collections.Generic;
 
 public class EdgeShape {
 	private List<Edge> edges;
-	private int index;
 
 	public EdgeShape() {
 		this.edges = new List<Edge>();
-		this.index = 0;
 	}
 
 	public Edge AddEdge(Edge newEdge) {
@@ -20,6 +18,15 @@ public class EdgeShape {
 		return edges[index];
 	}
 
+	public void ReplaceEdge(int index, Edge newEdge) {
+		edges[index] = newEdge;
+	}
+
+	public void ReplaceEdge(Edge oldEdge, Edge newEdge) {
+		int oldEdgeIndex = edges.IndexOf(oldEdge);
+		edges[oldEdgeIndex] = newEdge;
+	}
+
 	public Edge RemoveEdge(int index) {
 		Edge oldEdge = edges[index];
 		edges.Remove(oldEdge);
@@ -29,6 +36,10 @@ public class EdgeShape {
 	public Edge RemoveEdge(Edge oldEdge) {
 		edges.Remove(oldEdge);
 		return oldEdge;
+	}
+
+	public void Clear() {
+		edges.Clear();
 	}
 
 	public int EdgeCount() {
@@ -52,7 +63,7 @@ public class EdgeShape {
 		return edges[nextEdgeIndex];
 	}
 
-	public Edge NextEdge(int iindex) {
+	public Edge NextEdge(int index) {
 		int nextEdgeIndex = (index + 1) % edges.Count;
 		return edges[nextEdgeIndex];
 	}

@@ -151,7 +151,7 @@ public class BuildingComponentsController : MonoBehaviour {
 		rootNode.InnerXml = requestResult;
 		sensorsDataDocument.InnerXml = rootNode.InnerText;
 
-		Debug.Log(sensorsDataDocument.InnerXml);
+		//Debug.Log(sensorsDataDocument.InnerXml);
 
 		this.ExtractSensorsData(sensorsDataDocument);
 

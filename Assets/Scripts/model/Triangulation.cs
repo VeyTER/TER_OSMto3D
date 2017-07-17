@@ -11,30 +11,34 @@ public class Triangulation {
 
 	private NodeGroup nodeGroup;
 
-	private List<Vector2> convexVertices;
-	private List<Vector2> reflexVertices;
-	private List<Vector2> earTipVertices;
+	private List<Node> convexNodes;
+	private List<Node> earTipNodes;
+	private List<Node> reflexNodes;
 
 	private EdgeShape edgeShape;
+	private List<Triangle> triangles;
+
+	private List<GameObject> testCubes;
 
 	public Triangulation(NodeGroup nodeGroup) {
 		this.nodeGroup = nodeGroup;
 
-		this.convexVertices = new List<Vector2>();
-		this.reflexVertices = new List<Vector2>();
-		this.earTipVertices = new List<Vector2>();
+		this.convexNodes = new List<Node>();
+		this.reflexNodes = new List<Node>();
+		this.earTipNodes = new List<Node>();
 
 		this.edgeShape = new EdgeShape();
+		this.triangles = new List<Triangle>();
+
+		this.testCubes = new List<GameObject>();
 	}
 
 	public void Triangulate(string name) {
 		if (nodeGroup.NodeCount() >= 3) {
 			this.BuildShapeEdges();
-			this.LabelVectices(name);
 
-			//Debug.Log(convexVertices.Count + "  " + reflexVertices.Count + "  " + earTipVertices.Count);
-
-			//this.BuildTriangulation();
+			this.LabelVectices();
+			this.BuildTriangulation();
 		}
 	}
 
@@ -56,7 +60,15 @@ public class Triangulation {
 		}
 	}
 
-	private void LabelVectices(string name) {
+	private void LabelVectices() {
+		convexNodes.Clear();
+		earTipNodes.Clear();
+		reflexNodes.Clear();
+
+		foreach (GameObject cube in testCubes)
+			GameObject.Destroy(cube);
+		testCubes.Clear();
+
 		float sum = 0;
 		for (int i = 0; i < nodeGroup.NodeCount() - 2; i++) {
 			Vector2 currentPoint = nodeGroup.GetNode(i).ToVector();
@@ -70,30 +82,31 @@ public class Triangulation {
 			Edge nextEdge = edgeShape.NextEdge(currentEdge);
 
 			if (this.IsVertexConvex(currentEdge.NodeB, currentEdge, nextEdge)) {
-				convexVertices.Add(currentEdge.NodeB.ToVector());
+				convexNodes.Add(currentEdge.NodeB);
 
 				if (this.IsVertexEarTip(new Triangle(currentEdge.NodeA, currentEdge.NodeB, nextEdge.NodeB))) {
-					earTipVertices.Add(currentEdge.NodeB.ToVector());
+					earTipNodes.Add(currentEdge.NodeB);
 					this.AddCube(new Vector3((float) currentEdge.NodeB.Longitude, 0, (float) currentEdge.NodeB.Latitude), Color.green);
 				} else {
 					this.AddCube(new Vector3((float) currentEdge.NodeB.Longitude, 0, (float) currentEdge.NodeB.Latitude), Color.yellow);
 				}
 			} else {
-				reflexVertices.Add(currentEdge.NodeB.ToVector());
+				reflexNodes.Add(currentEdge.NodeB);
 				this.AddCube(new Vector3((float) currentEdge.NodeB.Longitude, 0, (float) currentEdge.NodeB.Latitude), Color.red);
 			}
 		}
 	}
 
 	private void AddCube(Vector3 position, Color color, float scale = 0.05F, string name = "cube") {
-		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		//GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		//testCubes.Add(cube);
 
-		cube.transform.position = position;
-		cube.transform.localScale = new Vector3(scale, scale, scale);
-		cube.name = name;
+		//cube.transform.position = position;
+		//cube.transform.localScale = new Vector3(scale, scale, scale);
+		//cube.name = name;
 
-		MeshRenderer cubeRenderer = cube.GetComponent<MeshRenderer>();
-		cubeRenderer.material.color = color;
+		//MeshRenderer cubeRenderer = cube.GetComponent<MeshRenderer>();
+		//cubeRenderer.material.color = color;
 	}
 
 	private bool IsVertexConvex(Node testedNode, Edge currentEdge, Edge nextEdge) {
@@ -107,80 +120,85 @@ public class Triangulation {
 		return testOperation <= 0;
 	}
 
-	private bool IsVertexEarTip(Triangle currentTriangle) {
-		bool nonePointInsideTriangle = true;
+	private bool IsVertexEarTip(Triangle triangle) {
+		bool nonePointInside = true;
 		for (int i = 0; i < edgeShape.EdgeCount(); i++) {
 			Node testedNode = edgeShape.GetEdge(i).NodeA;
 			Vector2 testedVertex = testedNode.ToVector();
 
-			if (!testedNode.Equals(currentTriangle.NodeA) && !testedNode.Equals(currentTriangle.NodeB) && !testedNode.Equals(currentTriangle.NodeC)
-			&& !currentTriangle.NodeA.Equals(currentTriangle.NodeC) && !currentTriangle.NodeB.Equals(currentTriangle.NodeA) && !currentTriangle.NodeB.Equals(currentTriangle.NodeC)) {
-				if (this.IsVertexInsideTriangle(testedVertex, currentTriangle)) {
-					nonePointInsideTriangle = false;
+			if (!testedNode.Equals(triangle.NodeA) && !testedNode.Equals(triangle.NodeB) && !testedNode.Equals(triangle.NodeC)
+			&& !triangle.NodeA.Equals(triangle.NodeC) && !triangle.NodeB.Equals(triangle.NodeA) && !triangle.NodeB.Equals(triangle.NodeC)) {
+				if (this.IsVertexInsideTriangle(testedVertex, triangle)) {
+					nonePointInside = false;
 				}
 			}
 		}
 
-		return nonePointInsideTriangle;
+		return nonePointInside;
 	}
 
 	private bool IsVertexInsideTriangle(Vector2 testedVertex, Triangle triangle) {
-		bool test1 = this.PointSign(testedVertex, triangle.NodeA.ToVector(), triangle.NodeB.ToVector(), triangle.NodeC.ToVector()) < 0;
-		bool test2 = this.PointSign(testedVertex, triangle.NodeB.ToVector(), triangle.NodeB.ToVector(), triangle.NodeC.ToVector()) < 0;
-		bool test3 = this.PointSign(testedVertex, triangle.NodeC.ToVector(), triangle.NodeA.ToVector(), triangle.NodeB.ToVector()) < 0;
+		bool test1 = this.PointSign2(testedVertex, triangle.NodeA.ToVector(), triangle.NodeB.ToVector()) < 0;
+		bool test2 = this.PointSign2(testedVertex, triangle.NodeB.ToVector(), triangle.NodeC.ToVector()) < 0;
+		bool test3 = this.PointSign2(testedVertex, triangle.NodeC.ToVector(), triangle.NodeA.ToVector()) < 0;
 		return test1 && test2 && test3;
-
-		//bool test1 = this.PointSign2(testedVertex, triangle.NodeA.ToVector(), triangle.NodeB.ToVector()) < 0;
-		//bool test2 = this.PointSign2(testedVertex, triangle.NodeB.ToVector(), triangle.NodeC.ToVector()) < 0;
-		//bool test3 = this.PointSign2(testedVertex, triangle.NodeC.ToVector(), triangle.NodeA.ToVector()) < 0;
-		//return test1 && test2 && test3;
 	}
 
-	private float PointSign(Vector2 testedVertex, Vector2 vertexA, Vector2 vertexB, Vector2 vertexC) {
-		Vector2 deltaAB = vertexB - vertexA;
-		Vector2 deltaAT = testedVertex - vertexA;
-		Vector2 deltaAC = vertexC - vertexA;
-
-		Vector3 crossProductABT = Vector3.Cross(new Vector3(deltaAB.x, deltaAB.y, 0), new Vector3(deltaAT.x, deltaAT.y, 0));
-		Vector3 crossProductABC = Vector3.Cross(new Vector3(deltaAB.x, deltaAB.y, 0), new Vector3(deltaAC.x, deltaAC.y, 0));
-
-		return Vector3.Dot(crossProductABT, crossProductABC);
+	private float PointSign2(Vector2 testedVertex, Vector2 vertexA, Vector2 vertexB) {
+		return (testedVertex.x - vertexB.x) * (vertexA.y - vertexB.y) - (vertexA.x - vertexB.x) * (testedVertex.y - vertexB.y);
 	}
-
-	//private float PointSign2(Vector2 testedVertex, Vector2 vertexA, Vector2 vertexB) {
-	//	return (testedVertex.x - vertexB.x) * (vertexA.y - vertexB.y) - (vertexA.x - vertexB.x) * (testedVertex.y - vertexB.y);
-	//}
 
 	private void BuildTriangulation() {
-		//Edge startEdge = this.SmallestEdge();
+		int cpt = 100;
 
-		//Edge previousEdge = edgeShape.PreviousEdge(startEdge);
-		//Edge nextEdge = edgeShape.NextEdge(startEdge);
+		while (edgeShape.EdgeCount() > 3/* && cpt > 0*/ && earTipNodes.Count > 0) {
+			this.LabelVectices();
 
-		//float startPreviousAngle = this.AngleBetweenEdges(previousEdge, startEdge);
-		//float startNextAngle = this.AngleBetweenEdges(nextEdge, startEdge);
+			if (earTipNodes.Count == 0) {
+				//Debug.Log(nodeGroup.Id + "  " + nodeGroup.Name + " | cpt : " + cpt + " | edge count : " + edgeShape.EdgeCount() + " | convex count : " + convexNodes.Count + " | reflex count : " + reflexNodes.Count);
+				Debug.Log("inversion");
 
-		//Debug.Log("3 => Différence d'angles : " + startPreviousAngle + "  " + startNextAngle);
+				earTipNodes.AddRange(reflexNodes);
+				reflexNodes.Clear();
+			}
 
-		//Edge downStreamEdge = null;
-		//Edge upHillEdge = null;
+			int i = 0;
+			for (; i < edgeShape.EdgeCount() && !earTipNodes.Contains(edgeShape.GetEdge(i).NodeB); i++) ;
 
-		//if (Math.Abs(90 - startPreviousAngle) > Math.Abs(90 - startNextAngle)) {
-		//	upHillEdge = startEdge;
-		//	downStreamEdge = previousEdge;
-		//} else {
-		//	downStreamEdge = startEdge;
-		//	upHillEdge = nextEdge;
-		//}
+			if (i < edgeShape.EdgeCount()) {
+				Edge currentEdge = edgeShape.GetEdge(i);
+				Edge nextEdge = edgeShape.NextEdge(i);
 
-		//Edge linkEdge = new Edge(downStreamEdge.NodeA, upHillEdge.NodeB);
-		//Vector2 linkMedianPoint = linkEdge.MedianPoint();
+				//Debug.Log("nb : " + edgeShape.EdgeCount() + " | " + edgeShape.Edges.IndexOf(currentEdge) + " | " + edgeShape.Edges.IndexOf(nextEdge));
 
-		//Edge downStreamPreviousEdge = edgeShape.PreviousEdge(downStreamEdge);
-		//Edge upHillNextEdge = edgeShape.NextEdge(upHillEdge);
+				Node previousNode = currentEdge.NodeA;
+				Node earTipNode = currentEdge.NodeB;
+				Node nextNode = nextEdge.NodeB;
 
-		//Edge upHillFollowingEdge = shapeEdges(downStreamEdgeIndex + 
+				Edge newEdge = new Edge(previousNode, nextNode);
 
-		//linkMedianPoint
+				Triangle triangle = new Triangle(previousNode, earTipNode, nextNode);
+
+				edgeShape.RemoveEdge(currentEdge);
+
+				if (!currentEdge.Equals(nextEdge)) {
+					edgeShape.ReplaceEdge(nextEdge, newEdge);
+					triangles.Add(triangle);
+				}
+			}
+
+			cpt--;
+		}
+
+		if (edgeShape.EdgeCount() == 3) {
+			Triangle triangle = new Triangle(edgeShape.GetEdge(0).NodeA, edgeShape.GetEdge(0).NodeB, edgeShape.GetEdge(1).NodeB);
+			triangles.Add(triangle);
+		}
+
+		edgeShape.Clear();
+	}
+
+	public List<Triangle> Triangles {
+		get { return triangles; }
 	}
 }

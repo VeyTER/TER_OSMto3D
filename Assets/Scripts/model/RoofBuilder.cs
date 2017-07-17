@@ -13,7 +13,7 @@ public class RoofBuilder {
 	/// <param name="triangulation">Triangulation de Delauney.</param>
 	/// <param name="nbFloor">Nombre d'étages du bâtiments sur lequel le toit va être ajouté.</param>
 	/// <param name="floorSize">Hauteur des étages du bâtiment sur lequel le toit va être ajouté.</param>
-	public GameObject BuildRoof(float posX, float posZ, DelauneyTriangulation triangulation, int nbFloor, float floorSize) {
+	public GameObject BuildRoof(float posX, float posZ, Triangulation triangulation, int nbFloor, float floorSize) {
 		// Création et paramétrage de l'objet 3D destiné à former un toit
 		GameObject roof = new GameObject("Roof", typeof(MeshFilter), typeof(MeshRenderer)) {
 			tag = GoTags.ROOF_TAG
@@ -47,25 +47,27 @@ public class RoofBuilder {
 	/// <param name="triangulation">Triangulation de Dealauney.</param>
 	/// <param name="posX">Position en X du toit.</param>
 	/// <param name="posZ">Position en Z du toit.</param>
-	private Vector3[] RoofVertices(DelauneyTriangulation triangulation, float posX, float posZ) {
+	private Vector3[] RoofVertices(Triangulation triangulation, float posX, float posZ) {
 		int nbVertex = triangulation.Triangles.Count * 3;
 		Vector3[] res = new Vector3[nbVertex];
 
 		int i = 0;
-		foreach(TriangleOld tri in triangulation.Triangles) {
-			float posX2 = (float)tri.NodeA.Latitude - posZ;
-			float posZ2 = (float)tri.NodeA.Longitude - posX;
-			res[i] = new Vector3(posX2, 0, posZ2);		// [x, y, z] = [RIGHT, TOP, FORWARD];
+		foreach(Triangle triangle in triangulation.Triangles) {
+			float jitter = 0.0F;
+
+			float posX2 = (float)(triangle.NodeA.Longitude - posX);
+			float posZ2 = (float)(triangle.NodeA.Latitude - posZ);
+			res[i] = new Vector3(posX2, Random.Range(-jitter / 2F, jitter / 2F), posZ2);        // [x, y, z] = [RIGHT, TOP, FORWARD];
 			i++;
 
-			posZ2 = (float)tri.NodeB.Latitude - posZ;
-			posX2 = (float)tri.NodeB.Longitude - posX;
-			res[i] = new Vector3(posX2, 0, posZ2);		// [x, y, z] = [RIGHT, TOP, FORWARD];
+			posX2 = (float)(triangle.NodeB.Longitude - posX);
+			posZ2 = (float)(triangle.NodeB.Latitude - posZ);
+			res[i] = new Vector3(posX2, Random.Range(-jitter / 2F, jitter / 2F), posZ2);		// [x, y, z] = [RIGHT, TOP, FORWARD];
 			i++;
 
-			posZ2 = (float)tri.NodeC.Latitude - posZ;
-			posX2 = (float)tri.NodeC.Longitude - posX;
-			res[i] = new Vector3(posX2, 0, posZ2);
+			posX2 = (float)(triangle.NodeC.Longitude - posX);
+			posZ2 = (float)(triangle.NodeC.Latitude - posZ);
+			res[i] = new Vector3(posX2, Random.Range(-jitter / 2F, jitter / 2F), posZ2);
 			i++;
 		}
 		return res;
@@ -76,7 +78,7 @@ public class RoofBuilder {
 	/// 	Créé de 2 triangles qui vont former à eux deux une portion de toit.
 	/// </summary>
 	/// <returns>Triangles sur le toit.</returns>
-	private int[] RoofTriangles(DelauneyTriangulation triangulation) {
+	private int[] RoofTriangles(Triangulation triangulation) {
 		int nbVertex = triangulation.Triangles.Count * 3;
 
 		int[] res = new int[nbVertex];
@@ -109,7 +111,7 @@ public class RoofBuilder {
 	/// 	trop sombre.
 	/// </summary>
 	/// <returns>Normales de la texture.</returns>
-	private Vector3[] RoofNormals(DelauneyTriangulation triangulation) {
+	private Vector3[] RoofNormals(Triangulation triangulation) {
 		int nbVertex = triangulation.Triangles.Count * 3;
 
 		Vector3[] res = new Vector3[nbVertex];
