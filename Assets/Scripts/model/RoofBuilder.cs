@@ -51,10 +51,9 @@ public class RoofBuilder {
 		int nbVertex = triangulation.Triangles.Count * 3;
 		Vector3[] res = new Vector3[nbVertex];
 
+		float jitter = 0.0F;
 		int i = 0;
 		foreach(Triangle triangle in triangulation.Triangles) {
-			float jitter = 0.0F;
-
 			float posX2 = (float)(triangle.NodeA.Longitude - posX);
 			float posZ2 = (float)(triangle.NodeA.Latitude - posZ);
 			res[i] = new Vector3(posX2, Random.Range(-jitter / 2F, jitter / 2F), posZ2);        // [x, y, z] = [RIGHT, TOP, FORWARD];

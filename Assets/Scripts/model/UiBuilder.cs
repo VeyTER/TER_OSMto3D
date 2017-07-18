@@ -3,9 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UiBuilder {
-	public static float BUILDING_DATA_CANVAS_LOW_HEIGHT = 50;
-	public static float BUILDING_DATA_CANVAS_HIGH_HEIGHT = 200;
-
 	private GameObject sensorsDisplays;
 
 	private UiBuilder() {
@@ -34,12 +31,14 @@ public class UiBuilder {
 	private GameObject BuildBuildingDataCanvas(GameObject building) {
 		GameObject buildingFirstWall = building.transform.GetChild(0).gameObject;
 		float buildingHeight = buildingFirstWall.transform.localScale.y;
+		float scale = 0.00001F * Dimensions.SCALE_FACTOR;
 
 		GameObject buildingDataCanvas = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_CANVAS));
 		buildingDataCanvas.name = buildingDataCanvas.name.Replace("(Clone)", "") + "_" + building.name;
 
 		buildingDataCanvas.transform.SetParent(building.transform, false);
 		buildingDataCanvas.transform.localPosition = new Vector3(0, buildingHeight / 2F, 0);
+		buildingDataCanvas.transform.localScale = Vector3.one * scale;
 
 		return buildingDataCanvas;
 	}

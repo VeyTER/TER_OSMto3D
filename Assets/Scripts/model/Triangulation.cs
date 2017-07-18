@@ -154,22 +154,12 @@ public class Triangulation {
 		while (edgeShape.EdgeCount() > 3/* && cpt > 0*/ && earTipNodes.Count > 0) {
 			this.LabelVectices();
 
-			if (earTipNodes.Count == 0) {
-				//Debug.Log(nodeGroup.Id + "  " + nodeGroup.Name + " | cpt : " + cpt + " | edge count : " + edgeShape.EdgeCount() + " | convex count : " + convexNodes.Count + " | reflex count : " + reflexNodes.Count);
-				Debug.Log("inversion");
-
-				earTipNodes.AddRange(reflexNodes);
-				reflexNodes.Clear();
-			}
-
 			int i = 0;
 			for (; i < edgeShape.EdgeCount() && !earTipNodes.Contains(edgeShape.GetEdge(i).NodeB); i++) ;
 
 			if (i < edgeShape.EdgeCount()) {
 				Edge currentEdge = edgeShape.GetEdge(i);
 				Edge nextEdge = edgeShape.NextEdge(i);
-
-				//Debug.Log("nb : " + edgeShape.EdgeCount() + " | " + edgeShape.Edges.IndexOf(currentEdge) + " | " + edgeShape.Edges.IndexOf(nextEdge));
 
 				Node previousNode = currentEdge.NodeA;
 				Node earTipNode = currentEdge.NodeB;

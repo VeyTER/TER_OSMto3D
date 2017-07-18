@@ -175,14 +175,10 @@ public class CityBuilder {
 	/// </summary>
 	/// <param name="scaleFactor">Facteur d'échelle.</param>
 	public void ScaleNodes(double scaleFactor) {
-		List<Node> groupsMemo = new List<Node>();
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
 			foreach (Node node in nodeGroupEntry.Value.Nodes) {
-				if (!groupsMemo.Contains(node)) {
-					node.Latitude = node.Latitude * scaleFactor;
-					node.Longitude = node.Longitude * scaleFactor;
-					groupsMemo.Add(node);
-				}
+				node.Latitude = node.Latitude * scaleFactor;
+				node.Longitude = node.Longitude * scaleFactor;
 			}
 		}
 	}
@@ -313,46 +309,42 @@ public class CityBuilder {
 	
 	public GameObject BuildSingleWallGroup(NodeGroup nodeGroup) {
 		GameObject wallGroup = new GameObject();
+
 		for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
 			Node currentNode = nodeGroup.GetNode(i);
 			Node nextNode = nodeGroup.GetNode(i + 1);
 
 			// Récupération des coordonnées utiles
-			double posX = (currentNode.Longitude + nextNode.Longitude) / 2;
-			double posY = (currentNode.Latitude + nextNode.Latitude) / 2;
-
-			// Calcul de l'orientation du mur courant
-			double length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
-			double deltaLat = Math.Abs(nextNode.Latitude - currentNode.Latitude);
-			double angle = (Math.Acos(deltaLat / length) * 180 / Math.PI);
+			float posX = (float) (currentNode.Longitude + (currentNode.Longitude + nextNode.Longitude) / 2);
+			float posY = (float) (currentNode.Latitude + (currentNode.Latitude + nextNode.Latitude) / 2);
 
 			// Création et paramétrage de l'objet 3D destiné à former un mur
-			GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			wall.tag = GoTags.WALL_TAG;
+			GameObject wall = new GameObject(nodeGroup.Name, typeof(MeshFilter), typeof(MeshRenderer)) {
+				tag = GoTags.WALL_TAG
+			};
+			wall.transform.SetParent(wallGroup.transform);
+			wall.transform.position = new Vector3(posX, 0, posY);
 
-			// Paramétrage du mur 3D
-			int nbFloor = nodeGroup.NbFloor;
-			wall.transform.localScale = new Vector3((float) length + Dimensions.WALL_THICKNESS * 1.5F, Dimensions.FLOOR_HEIGHT * nbFloor, Dimensions.WALL_THICKNESS);
-			wall.transform.position = new Vector3((float) posX, (Dimensions.FLOOR_HEIGHT / 2F) * (float) nbFloor, (float) posY);
+			MeshFilter wallMeshFilter = wall.GetComponent<MeshFilter>();
+			float wallHeight = Dimensions.FLOOR_HEIGHT * nodeGroup.NbFloor;
+			wallMeshFilter.mesh.vertices = new Vector3[] {
+				new Vector3((float)(currentNode.Longitude - posX), 0, (float)(currentNode.Latitude - posY)),
+				new Vector3((float)(nextNode.Longitude - posX), 0, (float)(nextNode.Latitude - posY)),
+				new Vector3((float)(nextNode.Longitude - posX), wallHeight, (float)(nextNode.Latitude - posY)),
+				new Vector3((float)(currentNode.Longitude - posX), wallHeight, (float)(currentNode.Latitude - posY))
+			};
+
+			wallMeshFilter.mesh.triangles = new int[] {
+				0, 1, 2, 0, 2, 3 
+			};
 
 			// Récupération et configuration de la boite de collision du mur
-			BoxCollider wallBoxColliser = wall.GetComponent<BoxCollider>();
+			BoxCollider wallBoxColliser = wall.AddComponent<BoxCollider>();
 			wallBoxColliser.isTrigger = true;
 
 			// Ajout d'une instance du gestionnaire d'interface pour que cette dernière soit déclenchée lors
 			// d'un clic
 			wall.AddComponent<UiManager>();
-
-			// Ajout du mur au bâtiment
-			wall.transform.SetParent(wallGroup.transform);
-
-			// Modification de l'angle en fonction de l'ordre des points
-			if ((currentNode.Latitude > nextNode.Latitude && currentNode.Longitude < nextNode.Longitude)
-			|| (currentNode.Latitude < nextNode.Latitude && currentNode.Longitude > nextNode.Longitude)) {
-				wall.transform.localEulerAngles = new Vector3(0, 90 - (float) angle, 0);
-			} else {
-				wall.transform.localEulerAngles = new Vector3(0, (float) angle + 90, 0);
-			}
 
 			// Nommage du mur à partir du nom du bâtiment s'il existe, sinon, utilisation de la référence du mur
 			if (nodeGroup.Name == "unknown")
@@ -486,19 +478,8 @@ public class CityBuilder {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 			if (nodeGroup.IsBuilding()) {
-				// Initialisation d'une triangulation de Delauney
-				//DelauneyTriangulation triangulation = new DelauneyTriangulation(nodeGroup);
-				//triangulation.CreateBoundingBox();
-				//triangulation.Start();
-
-
-
-
 				Triangulation triangulationNew = new Triangulation(nodeGroup);
 				triangulationNew.Triangulate(nodeGroup.Name);
-
-
-
 
 				// Récupération de la position du toit à partir de la triangulation
 				float posX = (float) triangulationNew.Triangles[0].NodeA.Longitude;
@@ -621,11 +602,14 @@ public class CityBuilder {
 		trees = new GameObject(CityObjectNames.TREES);
 		trees.transform.parent = cityComponents.transform;
 
-		float height = 0.12F;
-		float diameter = 0.08F;
+		float heightJitter = Dimensions.TRUNC_HEIGHT * 0.4F;
+		float diameterJitter = Dimensions.TRUNC_DIAMTETER * 0.2F;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
+
+			float height = Dimensions.TRUNC_HEIGHT + UnityEngine.Random.Range(-heightJitter / 2F, heightJitter / 2F);
+			float diameter = Dimensions.TRUNC_DIAMTETER + UnityEngine.Random.Range(-diameterJitter / 2F, diameterJitter / 2F);
 
 			if (nodeGroup.IsTree()) {
 				// Récupération de la position de l'arbre depuis le groupe de noeuds correspondant
@@ -720,8 +704,8 @@ public class CityBuilder {
 	/// </summary>
 	public void BuildMainCamera() {
 		// On centre la camera 
-		double camLat = (minLat * Main.SCALE_FACTOR + maxLat * Main.SCALE_FACTOR) / 2F;
-		double camLon = (minLon * Main.SCALE_FACTOR + maxLon * Main.SCALE_FACTOR) / 2F;
+		double camLat = (minLat * Dimensions.SCALE_FACTOR + maxLat * Dimensions.SCALE_FACTOR) / 2F;
+		double camLon = (minLon * Dimensions.SCALE_FACTOR + maxLon * Dimensions.SCALE_FACTOR) / 2F;
 
 		// Création de l'objet 3D représenant la caméra
 		GameObject mainCameraGo = Camera.main.gameObject;
@@ -752,11 +736,11 @@ public class CityBuilder {
 			groundMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
 		}
 
-		double lat = (minLat * Main.SCALE_FACTOR + maxLat * Main.SCALE_FACTOR) / 2F;
-		double lon = (minLon * Main.SCALE_FACTOR + maxLon * Main.SCALE_FACTOR) / 2F;
+		double lat = (minLat * Dimensions.SCALE_FACTOR + maxLat * Dimensions.SCALE_FACTOR) / 2F;
+		double lon = (minLon * Dimensions.SCALE_FACTOR + maxLon * Dimensions.SCALE_FACTOR) / 2F;
 
-		double length = maxLon * Main.SCALE_FACTOR - minLon * Main.SCALE_FACTOR;
-		double width = maxLat * Main.SCALE_FACTOR - minLat * Main.SCALE_FACTOR;
+		double length = maxLon * Dimensions.SCALE_FACTOR - minLon * Dimensions.SCALE_FACTOR;
+		double width = maxLat * Dimensions.SCALE_FACTOR - minLat * Dimensions.SCALE_FACTOR;
 
 		Vector2 textureExpansion = Vector2.one;
 		if (backgroundName == null)

@@ -18,7 +18,7 @@ public class GroundBuilder {
 		GameObject ground = new GameObject ("Ground", typeof(MeshFilter), typeof(MeshRenderer));
 
 		// Positionnement et orientation du sol
-		ground.transform.position = new Vector3 ((float)(minLon * Main.SCALE_FACTOR/* - width / 2F*/), 0, (float)(minLat * Main.SCALE_FACTOR/* - length / 2F*/));
+		ground.transform.position = new Vector3 ((float)(minLon * Dimensions.SCALE_FACTOR/* - width / 2F*/), 0, (float)(minLat * Dimensions.SCALE_FACTOR/* - length / 2F*/));
 
 		// Création du maillage du sol
 		Mesh groundMesh = new Mesh() {

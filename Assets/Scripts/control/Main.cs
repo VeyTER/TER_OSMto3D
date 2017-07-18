@@ -14,9 +14,6 @@ using System.IO;
 /// 	</para>
 /// </summary>
 public class Main : MonoBehaviour {
-	/// <summary>Facteur d'échelle pour agrandir différents éléments dans la vue 3D.</summary>
-	public static readonly double SCALE_FACTOR = 1000;
-
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
 	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAMPUS + ".osm";
 
@@ -53,7 +50,7 @@ public class Main : MonoBehaviour {
 			this.mapLoader.LoadResumedData();
 
 			// Réglage de l'échelle et des dimensions
-			this.cityBuilder.ScaleNodes(Main.SCALE_FACTOR);
+			this.cityBuilder.ScaleNodes(Dimensions.SCALE_FACTOR);
 			this.cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
 
 			// Construction de la ville

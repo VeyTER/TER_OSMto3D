@@ -2,7 +2,7 @@
 <thresholds>
 	<building name="U4">
 		<room name="302">
-			<components name="temperature">
+			<components name="luminosity">
 				<sensor condition="in">
 					<min value="-7"/>
 					<max value="1"/>

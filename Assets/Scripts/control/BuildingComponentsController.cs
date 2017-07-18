@@ -409,11 +409,11 @@ public class BuildingComponentsController : MonoBehaviour {
 		float initHeight = -1;
 
 		if (direction > 0) {
-			initHeight = UiBuilder.BUILDING_DATA_CANVAS_LOW_HEIGHT;
-			targetHeight = UiBuilder.BUILDING_DATA_CANVAS_HIGH_HEIGHT;
+			initHeight = Dimensions.BUILDING_DATA_CANVAS_LOW_HEIGHT;
+			targetHeight = Dimensions.BUILDING_DATA_CANVAS_HIGH_HEIGHT;
 		} else if (direction < 0) {
-			initHeight = UiBuilder.BUILDING_DATA_CANVAS_HIGH_HEIGHT;
-			targetHeight = UiBuilder.BUILDING_DATA_CANVAS_LOW_HEIGHT;
+			initHeight = Dimensions.BUILDING_DATA_CANVAS_HIGH_HEIGHT;
+			targetHeight = Dimensions.BUILDING_DATA_CANVAS_LOW_HEIGHT;
 		}
 
 		GameObject dataDisplay = dataPanel.transform.parent.gameObject;

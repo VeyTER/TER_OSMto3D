@@ -228,8 +228,8 @@ public class BuildingsTools {
 				// Mise à jour de la position du nd s'il a été trouvé
 				if (i < resumedBuildingNd.Count) {
 					// Mise à jour de la position
-					resumedBuildingNd [i].Attributes [XmlAttributes.LATITUDE].Value = (node.Latitude / Main.SCALE_FACTOR).ToString();
-					resumedBuildingNd [i].Attributes [XmlAttributes.LONGIUDE].Value = (node.Longitude / Main.SCALE_FACTOR).ToString();
+					resumedBuildingNd [i].Attributes [XmlAttributes.LATITUDE].Value = (node.Latitude / Dimensions.SCALE_FACTOR).ToString();
+					resumedBuildingNd [i].Attributes [XmlAttributes.LONGIUDE].Value = (node.Longitude / Dimensions.SCALE_FACTOR).ToString();
 
 					// Importation du nd dans le fichier map_resumedd
 					XmlNode customBuildingNd = mapCustomDocument.ImportNode (resumedBuildingNd [i], true);
@@ -508,6 +508,26 @@ public class BuildingsTools {
 			node.Longitude = buildingNodeTransform.position.x;
 		}
 	}
+
+
+	/// <summary>
+	/// 	Calcule et renvoie le centre d'un bâtiment 3D en faisant la moyenne de la position de ses murs.
+	/// </summary>
+	/// <returns>Centre du batiment.</returns>
+	/// <param name="building">Batiment, de type GameObject, dont on veut calculer le centre.</param>
+	public Vector2 BuildingCenter(NodeGroup nodeGroup) {
+		// Somme des coordonnées des murs de bâtiments
+		if (nodeGroup != null) {
+			Vector2 positionSum = Vector3.zero;
+			foreach(Node node in nodeGroup.Nodes) {
+				positionSum += node.ToVector();
+			}
+			return positionSum / ((nodeGroup.Nodes.Count - 1) * 1F);
+		} else {
+			return Vector3.zero;
+		}
+	}
+
 
 	/// <summary>
 	/// 	Calcule et renvoie le centre d'un bâtiment 3D en faisant la moyenne de la position de ses murs.
