@@ -43,17 +43,11 @@ public class Triangulation {
 	}
 
 	private void BuildShapeEdges() {
-		float shapeArea = 0;
-		for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
-			Vector2 currentPoint = nodeGroup.GetNode(i).ToVector();
-			Vector2 nextPoint = nodeGroup.GetNode(i + 1).ToVector();
+		float area = BuildingsTools.GetInstance().BuildingArea(nodeGroup);
 
-			shapeArea += (nextPoint.x - currentPoint.x) * (nextPoint.y + currentPoint.y);
-		}
-
-		for (int i = shapeArea >= 0 ? 0 : nodeGroup.NodeCount() - 1; (shapeArea >= 0 && i < nodeGroup.NodeCount() - 1) || (shapeArea < 0 && i >= 1); i = shapeArea >= 0 ? i + 1 : i - 1) {
+		for (int i = area >= 0 ? 0 : nodeGroup.NodeCount() - 1; (area >= 0 && i < nodeGroup.NodeCount() - 1) || (area < 0 && i >= 1); i = area >= 0 ? i + 1 : i - 1) {
 			Node currentNode = nodeGroup.GetNode(i);
-			Node nextNode = nodeGroup.GetNode(i + (shapeArea >= 0 ? 1 : -1));
+			Node nextNode = nodeGroup.GetNode(i + (area >= 0 ? 1 : -1));
 
 			Edge newEdge = new Edge(currentNode, nextNode, Edge.EdgeTypes.SHAPE);
 			edgeShape.AddEdge(newEdge);
@@ -64,10 +58,6 @@ public class Triangulation {
 		convexNodes.Clear();
 		earTipNodes.Clear();
 		reflexNodes.Clear();
-
-		foreach (GameObject cube in testCubes)
-			GameObject.Destroy(cube);
-		testCubes.Clear();
 
 		float sum = 0;
 		for (int i = 0; i < nodeGroup.NodeCount() - 2; i++) {
@@ -84,29 +74,12 @@ public class Triangulation {
 			if (this.IsVertexConvex(currentEdge.NodeB, currentEdge, nextEdge)) {
 				convexNodes.Add(currentEdge.NodeB);
 
-				if (this.IsVertexEarTip(new Triangle(currentEdge.NodeA, currentEdge.NodeB, nextEdge.NodeB))) {
+				if (this.IsVertexEarTip(new Triangle(currentEdge.NodeA, currentEdge.NodeB, nextEdge.NodeB)))
 					earTipNodes.Add(currentEdge.NodeB);
-					this.AddCube(new Vector3((float) currentEdge.NodeB.Longitude, 0, (float) currentEdge.NodeB.Latitude), Color.green);
-				} else {
-					this.AddCube(new Vector3((float) currentEdge.NodeB.Longitude, 0, (float) currentEdge.NodeB.Latitude), Color.yellow);
-				}
 			} else {
 				reflexNodes.Add(currentEdge.NodeB);
-				this.AddCube(new Vector3((float) currentEdge.NodeB.Longitude, 0, (float) currentEdge.NodeB.Latitude), Color.red);
 			}
 		}
-	}
-
-	private void AddCube(Vector3 position, Color color, float scale = 0.05F, string name = "cube") {
-		//GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		//testCubes.Add(cube);
-
-		//cube.transform.position = position;
-		//cube.transform.localScale = new Vector3(scale, scale, scale);
-		//cube.name = name;
-
-		//MeshRenderer cubeRenderer = cube.GetComponent<MeshRenderer>();
-		//cubeRenderer.material.color = color;
 	}
 
 	private bool IsVertexConvex(Node testedNode, Edge currentEdge, Edge nextEdge) {
@@ -149,9 +122,7 @@ public class Triangulation {
 	}
 
 	private void BuildTriangulation() {
-		int cpt = 100;
-
-		while (edgeShape.EdgeCount() > 3/* && cpt > 0*/ && earTipNodes.Count > 0) {
+		while (edgeShape.EdgeCount() > 3 && earTipNodes.Count > 0) {
 			this.LabelVectices();
 
 			int i = 0;
@@ -176,8 +147,6 @@ public class Triangulation {
 					triangles.Add(triangle);
 				}
 			}
-
-			cpt--;
 		}
 
 		if (edgeShape.EdgeCount() == 3) {

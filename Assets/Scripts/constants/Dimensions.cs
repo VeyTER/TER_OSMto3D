@@ -5,7 +5,7 @@ public class Dimensions {
 	/// <summary>Facteur d'échelle pour agrandir différents éléments dans la vue 3D.</summary>
 	public const float SCALE_FACTOR = 1000;
 
-	public const float FLOOR_HEIGHT = 0.00008F * SCALE_FACTOR;
+	public const float FLOOR_HEIGHT = 0.00006F * SCALE_FACTOR;
 
 	public const float ROAD_WIDTH = 0.00006F * SCALE_FACTOR;
 

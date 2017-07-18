@@ -89,11 +89,11 @@ public class CityBuilder {
 	private Dictionary<string, string> sensorsEquippedBuildings;
 
 	private CityBuilder() {
-		this.nodeGroups = new Dictionary<string, NodeGroup> ();
+		this.nodeGroups = new Dictionary<string, NodeGroup>();
 
-		this.highwayBuilder = new HighwayBuilder ();
-		this.roofBuilder = new RoofBuilder ();
-		this.groundBuilder = new GroundBuilder ();
+		this.highwayBuilder = new HighwayBuilder();
+		this.roofBuilder = new RoofBuilder();
+		this.groundBuilder = new GroundBuilder();
 
 		this.externalObjects = this.LoadExternalObject();
 		this.mapBackgrounds = this.LoadMapBackgrounds();
@@ -122,7 +122,7 @@ public class CityBuilder {
 		string lines = sensorsEquippedBuildingsFile.ReadToEnd();
 		string[] linesArray = lines.Split('\n');
 
-		foreach(string line in linesArray) {
+		foreach (string line in linesArray) {
 			string[] lineComponents = line.Split('\t');
 			string buildingName = lineComponents[0];
 			string buildingIdentifier = lineComponents[1].Replace("\r", "");
@@ -217,7 +217,7 @@ public class CityBuilder {
 			if (nodeGroup.IsBuilding())
 				this.BuildSingleBuildingNodeGroup(nodeGroup);
 
-			if (nodeGroup.IsHighway ())
+			if (nodeGroup.IsHighway())
 				this.BuildSingleHighwayNodeGroup(nodeGroup);
 		}
 	}
@@ -286,7 +286,7 @@ public class CityBuilder {
 
 		// Ajout d'un gestionnaire d'interface au groupe de bâtiments et affectaton du controlleur de modification,
 		// contenu dans ce groupe, à ce gestionnaire
-		wallGroups.AddComponent<EditController> ();
+		wallGroups.AddComponent<EditController>();
 		UiManager.editController = wallGroups.GetComponent<EditController>();
 
 		// Construction et ajout des bâtiments
@@ -295,7 +295,7 @@ public class CityBuilder {
 
 			if (nodeGroup.IsBuilding()) {
 				// Décomposition du bâtiment en triangles
-				if(!nodeGroup.RightDecomposition())
+				if (!nodeGroup.RightDecomposition())
 					nodeGroup.LeftDecomposition();
 
 				// Création et paramétrage de l'objet 3D destiné à former un bâtiment. Pour cela, chaque mur est
@@ -306,57 +306,87 @@ public class CityBuilder {
 			}
 		}
 	}
-	
+
 	public GameObject BuildSingleWallGroup(NodeGroup nodeGroup) {
 		GameObject wallGroup = new GameObject();
 
-		for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
-			Node currentNode = nodeGroup.GetNode(i);
-			Node nextNode = nodeGroup.GetNode(i + 1);
+		// Création et paramétrage de l'objet 3D destiné à former un mur
+		GameObject walls = new GameObject(nodeGroup.Name, typeof(MeshFilter), typeof(MeshRenderer)) {
+			tag = GoTags.WALL_TAG
+		};
+		walls.transform.SetParent(wallGroup.transform);
+		walls.transform.localPosition = Vector3.zero;
 
-			// Récupération des coordonnées utiles
-			float posX = (float) (currentNode.Longitude + (currentNode.Longitude + nextNode.Longitude) / 2);
-			float posY = (float) (currentNode.Latitude + (currentNode.Latitude + nextNode.Latitude) / 2);
+		// Récupération et configuration de la boite de collision du mur
+		BoxCollider wallBoxColliser = walls.AddComponent<BoxCollider>();
+		wallBoxColliser.isTrigger = true;
 
-			// Création et paramétrage de l'objet 3D destiné à former un mur
-			GameObject wall = new GameObject(nodeGroup.Name, typeof(MeshFilter), typeof(MeshRenderer)) {
-				tag = GoTags.WALL_TAG
-			};
-			wall.transform.SetParent(wallGroup.transform);
-			wall.transform.position = new Vector3(posX, 0, posY);
+		// Ajout d'une instance du gestionnaire d'interface pour que cette dernière soit déclenchée lors
+		// d'un clic
+		walls.AddComponent<UiManager>();
 
-			MeshFilter wallMeshFilter = wall.GetComponent<MeshFilter>();
+		// Affectation du matériau et de sa couleur au mur pour lui donner la texture voulue
+		MeshRenderer meshRenderer = walls.GetComponent<MeshRenderer>();
+		meshRenderer.material = nodeGroup.CustomMaterial;
+		meshRenderer.materials[0].color = nodeGroup.OverlayColor;
+		meshRenderer.material.mainTexture.wrapMode = TextureWrapMode.Repeat;
+
+		MeshFilter wallMeshFilter = walls.GetComponent<MeshFilter>();
+
+		List<Vector3> wallVertices = new List<Vector3>();
+		for (int i = 0; i < nodeGroup.NodeCount(); i++) {
+			Node node = nodeGroup.GetNode(i);
+
 			float wallHeight = Dimensions.FLOOR_HEIGHT * nodeGroup.NbFloor;
-			wallMeshFilter.mesh.vertices = new Vector3[] {
-				new Vector3((float)(currentNode.Longitude - posX), 0, (float)(currentNode.Latitude - posY)),
-				new Vector3((float)(nextNode.Longitude - posX), 0, (float)(nextNode.Latitude - posY)),
-				new Vector3((float)(nextNode.Longitude - posX), wallHeight, (float)(nextNode.Latitude - posY)),
-				new Vector3((float)(currentNode.Longitude - posX), wallHeight, (float)(currentNode.Latitude - posY))
-			};
+			wallVertices.Add(new Vector3((float)node.Longitude, 0, (float)node.Latitude));
+			wallVertices.Add(new Vector3((float)node.Longitude, wallHeight, (float)node.Latitude));
 
-			wallMeshFilter.mesh.triangles = new int[] {
-				0, 1, 2, 0, 2, 3 
-			};
-
-			// Récupération et configuration de la boite de collision du mur
-			BoxCollider wallBoxColliser = wall.AddComponent<BoxCollider>();
-			wallBoxColliser.isTrigger = true;
-
-			// Ajout d'une instance du gestionnaire d'interface pour que cette dernière soit déclenchée lors
-			// d'un clic
-			wall.AddComponent<UiManager>();
-
-			// Nommage du mur à partir du nom du bâtiment s'il existe, sinon, utilisation de la référence du mur
-			if (nodeGroup.Name == "unknown")
-				wall.name = currentNode.Reference + "_wall_" + i;
-			else
-				wall.name = nodeGroup.Name + "_wall_" + i;
-
-			// Affectation du matériau et de sa couleur au mur pour lui donner la texture voulue
-			MeshRenderer meshRenderer = wall.GetComponent<MeshRenderer>();
-			meshRenderer.material = nodeGroup.CustomMaterial;
-			meshRenderer.materials[0].color = nodeGroup.OverlayColor;
+			wallVertices.Add(new Vector3((float) node.Longitude, 0, (float) node.Latitude));
+			wallVertices.Add(new Vector3((float) node.Longitude, wallHeight, (float) node.Latitude));
 		}
+
+		float cursorX = 0;
+		List<Vector2> uvVertices = new List<Vector2>();
+		for (int i = 0; i < nodeGroup.NodeCount(); i++) {
+			Node currentNode = nodeGroup.GetNode(i);
+			Node nextNode = nodeGroup.GetNode((i + 1) % nodeGroup.NodeCount());
+
+			float scale = 1F;
+			float posU = cursorX / Dimensions.FLOOR_HEIGHT;
+			float posV = 0;
+
+			uvVertices.Add(new Vector2(posU, posV) * scale);
+			uvVertices.Add(new Vector2(posU, (posV + nodeGroup.NbFloor)) * scale);
+
+			uvVertices.Add(new Vector2(posU, posV) * scale);
+			uvVertices.Add(new Vector2(posU, (posV + nodeGroup.NbFloor)) * scale);
+
+			float wallLength = Math.Abs(Vector2.Distance(currentNode.ToVector(), nextNode.ToVector()));
+			cursorX += wallLength;
+		}
+
+		List<int> triangles = new List<int>();
+		for (int i = 0; i < wallVertices.Count; i += 2) {
+			int index = i % (wallVertices.Count - 2);
+
+			triangles.Add(index);
+			triangles.Add(index + 2);
+			triangles.Add(index + 1);
+
+			triangles.Add(index + 2);
+			triangles.Add(index + 3);
+			triangles.Add(index + 1);
+		}
+
+		if (BuildingsTools.GetInstance().BuildingArea(nodeGroup) >= 0)
+			triangles.Reverse();
+
+		wallMeshFilter.mesh.vertices = wallVertices.ToArray();
+		wallMeshFilter.mesh.triangles = triangles.ToArray();
+		wallMeshFilter.mesh.uv = uvVertices.ToArray();
+
+		wallMeshFilter.mesh.RecalculateNormals();
+
 		return wallGroup;
 	}
 
@@ -425,8 +455,8 @@ public class CityBuilder {
 	/// <param name="wallSetGo">Bâtiment à modifier.</param>
 	/// <param name="nbFloor">Nombre d'étages qui doivent former le bâtiment.</param>
 	public void RebuildBuilding(GameObject building, int nbFloor) {
-		foreach(Transform wallTransform in building.transform) {
-			wallTransform.position = new Vector3 (wallTransform.position.x, (Dimensions.FLOOR_HEIGHT / 2F) * (float)nbFloor, wallTransform.position.z);
+		foreach (Transform wallTransform in building.transform) {
+			wallTransform.position = new Vector3(wallTransform.position.x, (Dimensions.FLOOR_HEIGHT / 2F) * (float) nbFloor, wallTransform.position.z);
 			wallTransform.localScale = new Vector3(wallTransform.localScale.x, Dimensions.FLOOR_HEIGHT * nbFloor, wallTransform.localScale.z);
 		}
 	}
@@ -524,13 +554,13 @@ public class CityBuilder {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 			if (nodeGroup.IsWay()) {
-				for (int i = 0; i < nodeGroup.NodeCount () - 1; i++) {
-					Node currentNode = nodeGroup.GetNode (i);
-					Node nextNode = nodeGroup.GetNode (i + 1);
+				for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
+					Node currentNode = nodeGroup.GetNode(i);
+					Node nextNode = nodeGroup.GetNode(i + 1);
 
 					// Calcul des coordonnées du milieu du vectuer formé par les 2 noeuds consécutifs
-					Vector3 node1 = new Vector3 ((float)currentNode.Longitude, 0, (float)currentNode.Latitude);
-					Vector3 node2 = new Vector3 ((float)nextNode.Longitude, 0, (float)nextNode.Latitude);
+					Vector3 node1 = new Vector3((float) currentNode.Longitude, 0, (float) currentNode.Latitude);
+					Vector3 node2 = new Vector3((float) nextNode.Longitude, 0, (float) nextNode.Latitude);
 					Vector3 delta = node2 - node1;
 
 					double posX = 0;
@@ -543,54 +573,54 @@ public class CityBuilder {
 
 					// Calcul de la position de la route, dépendant du signe du delta entre les deux noeuds
 					if (delta.z <= 0) {
-						posX = nodeGroup.GetNode (i + 1).Longitude;
-						posY = nodeGroup.GetNode (i + 1).Latitude;
-						length = Math.Sqrt (Math.Pow (nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow (nextNode.Longitude - currentNode.Longitude, 2));
-						angle = (double)Vector3.Angle (Vector3.right, delta) + 180;
+						posX = nodeGroup.GetNode(i + 1).Longitude;
+						posY = nodeGroup.GetNode(i + 1).Latitude;
+						length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
+						angle = (double) Vector3.Angle(Vector3.right, delta) + 180;
 					} else {
-						posX = nodeGroup.GetNode (i).Longitude;
-						posY = nodeGroup.GetNode (i).Latitude;
-						length = Math.Sqrt (Math.Pow (nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow (nextNode.Longitude - currentNode.Longitude, 2));
-						angle = (double)Vector3.Angle (Vector3.right, -delta) + 180;
+						posX = nodeGroup.GetNode(i).Longitude;
+						posY = nodeGroup.GetNode(i).Latitude;
+						length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
+						angle = (double) Vector3.Angle(Vector3.right, -delta) + 180;
 					}
 
 					if (nodeGroup.IsWay()) {
 						// Construction et paramétrage de l'objet 3D destiné à former une route classique
-						GameObject newClassicHighway = highwayBuilder.BuildClassicHighway ((float)posX, (float)posY, (float)length, (float)width, (float)angle);
+						GameObject newClassicHighway = highwayBuilder.BuildClassicHighway((float) posX, (float) posY, (float) length, (float) width, (float) angle);
 						newClassicHighway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout de la route au groupe de routes
 						newClassicHighway.transform.parent = highways.transform;
-					} else if (nodeGroup.IsCycleWay ()) {
+					} else if (nodeGroup.IsCycleWay()) {
 						// Construction et paramétrage de l'objet 3D destiné à former une piste cyclable
-						GameObject newCycleway = highwayBuilder.BuildCycleway ((float)posX, (float)posY, (float)length, (float)width / 2F, (float)angle);
+						GameObject newCycleway = highwayBuilder.BuildCycleway((float) posX, (float) posY, (float) length, (float) width / 2F, (float) angle);
 						newCycleway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout de la piste cyclable au groupe de pistes cyclables
 						newCycleway.transform.parent = cycleways.transform;
-					} else if (nodeGroup.IsFootway ()) {
+					} else if (nodeGroup.IsFootway()) {
 						// Construction et paramétrage de l'objet 3D destiné à former un chemin piéton
-						GameObject newFootway = highwayBuilder.BuildFootway ((float)posX, (float)posY, (float)length, (float)width / 1.5F, (float)angle);
+						GameObject newFootway = highwayBuilder.BuildFootway((float) posX, (float) posY, (float) length, (float) width / 1.5F, (float) angle);
 						newFootway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout du chemin piéton au groupe de chemins piétons
 						newFootway.transform.parent = footways.transform;
-// 					} else if (ngp.isBusWayLane ()) {
+						// 					} else if (ngp.isBusWayLane ()) {
 						// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
-// 						newHighWay = roadBuilder.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
+						// 						newHighWay = roadBuilder.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
 
 						// Ajout de la voie maritime au groupe de voies de bus
 						// newBusways.transform.parent = busways.transform;
-					} else if (nodeGroup.IsWaterway ()) {
+					} else if (nodeGroup.IsWaterway()) {
 						// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
-						GameObject newWaterway = highwayBuilder.BuildWaterway ((float)posX, (float)posY, (float)length, (float)width / 1.5F, (float)angle);
+						GameObject newWaterway = highwayBuilder.BuildWaterway((float) posX, (float) posY, (float) length, (float) width / 1.5F, (float) angle);
 						newWaterway.name = currentNode.Reference + " to " + nextNode.Reference;
 
 						// Ajout de la voie maritime au groupe de voies maritimes
-//						newWaterway.transform.parent = waterways.transform;
+						//						newWaterway.transform.parent = waterways.transform;
 					}
 				}
-			}	
+			}
 		}
 	}
 
@@ -613,32 +643,32 @@ public class CityBuilder {
 
 			if (nodeGroup.IsTree()) {
 				// Récupération de la position de l'arbre depuis le groupe de noeuds correspondant
-				double posX = nodeGroup.GetNode (0).Longitude;
-				double posZ = nodeGroup.GetNode (0).Latitude;
+				double posX = nodeGroup.GetNode(0).Longitude;
+				double posZ = nodeGroup.GetNode(0).Latitude;
 
 				// Création et paramétrage de l'objet 3D (cylindre) destiné à former un tronc d'arbre 
-				GameObject trunk = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
+				GameObject trunk = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
 				trunk.name = "Trunk";
 				trunk.tag = GoTags.TREE_TAG;
-				trunk.transform.position = new Vector3 ((float)posX, height / 2F, (float)posZ);
-				trunk.transform.localScale = new Vector3 (height / 6F, height / 2F, height / 6F);
+				trunk.transform.position = new Vector3((float) posX, height / 2F, (float) posZ);
+				trunk.transform.localScale = new Vector3(height / 6F, height / 2F, height / 6F);
 
 				// Création et paramétrage de l'objet 3D (sphere) destiné à former un feuillage 
 				GameObject foliage = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 				foliage.name = "Foliage";
 				foliage.tag = GoTags.TREE_TAG;
-				foliage.transform.position = new Vector3 ((float)posX, height, (float)posZ);
-				foliage.transform.localScale = new Vector3 (diameter, diameter, diameter);
+				foliage.transform.position = new Vector3((float) posX, height, (float) posZ);
+				foliage.transform.localScale = new Vector3(diameter, diameter, diameter);
 
 				// Affectation du matériau au tronc pour lui donner la texture voulue
-				MeshRenderer trunkMeshRenderer = trunk.GetComponent<MeshRenderer> ();
-				trunkMeshRenderer.material = Resources.Load (Materials.TREE_TRUNK) as Material;
+				MeshRenderer trunkMeshRenderer = trunk.GetComponent<MeshRenderer>();
+				trunkMeshRenderer.material = Resources.Load(Materials.TREE_TRUNK) as Material;
 
 				// Affectation du matériau au feuillage pour lui donner la texture voulue
-				MeshRenderer foliageMeshRenderer = foliage.GetComponent<MeshRenderer> ();
-				foliageMeshRenderer.material = Resources.Load (Materials.TREE_LEAF) as Material;
+				MeshRenderer foliageMeshRenderer = foliage.GetComponent<MeshRenderer>();
+				foliageMeshRenderer.material = Resources.Load(Materials.TREE_LEAF) as Material;
 
-				GameObject tree = new GameObject (nodeGroup.Id);
+				GameObject tree = new GameObject(nodeGroup.Id);
 
 				// Ajout du tronc et du feuillage à l'arbre
 				trunk.transform.parent = tree.transform;
@@ -647,7 +677,7 @@ public class CityBuilder {
 				// Ajout de l'arbre au groupe d'arbres
 				tree.transform.parent = trees.transform;
 			}
-		}	
+		}
 	}
 
 
@@ -662,40 +692,40 @@ public class CityBuilder {
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
-			if ( nodeGroup.IsHighway() && nodeGroup.IsTrafficLight() ) {
+			if (nodeGroup.IsHighway() && nodeGroup.IsTrafficLight()) {
 				for (int i = 0; i < nodeGroup.NodeCount(); i++) {
-					z = nodeGroup.GetNode (i).Latitude;
-					x = nodeGroup.GetNode (i).Longitude;
+					z = nodeGroup.GetNode(i).Latitude;
+					x = nodeGroup.GetNode(i).Longitude;
 
 					// Création et paramétrage de l'objet 3D (cylindre) destiné à former un support du feu tricolore 
-					GameObject mount = GameObject.CreatePrimitive (PrimitiveType.Cylinder);
+					GameObject mount = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
 					mount.name = "Support de feu tricolore";
-					mount.transform.position = new Vector3 ((float)x, height / 2f, (float)z);
-					mount.transform.localScale = new Vector3 (0.005F, 0.015F, 0.005F);
+					mount.transform.position = new Vector3((float) x, height / 2f, (float) z);
+					mount.transform.localScale = new Vector3(0.005F, 0.015F, 0.005F);
 
 					// Création et paramétrage de l'objet 3D (cube) destiné à former un lumières du feu tricolore 
-					GameObject lights = GameObject.CreatePrimitive (PrimitiveType.Cube);
+					GameObject lights = GameObject.CreatePrimitive(PrimitiveType.Cube);
 					lights.name = "Lumière de feu tricolore";
-					lights.transform.position = new Vector3 ((float)x, height, (float)z);
-					lights.transform.localScale = new Vector3 (diameter, diameter * 2F, diameter);
+					lights.transform.position = new Vector3((float) x, height, (float) z);
+					lights.transform.localScale = new Vector3(diameter, diameter * 2F, diameter);
 
 					// Affectation du matériau au support pour lui donner la texture voulue
-					MeshRenderer mountMeshRenderer = mount.GetComponent<MeshRenderer> ();
-					mountMeshRenderer.material = Resources.Load (Materials.METAL) as Material;
+					MeshRenderer mountMeshRenderer = mount.GetComponent<MeshRenderer>();
+					mountMeshRenderer.material = Resources.Load(Materials.METAL) as Material;
 
 					// Affectation du matériau aux lumières pour lui donner la texture voulue
-					MeshRenderer lightsMeshRenderer = lights.GetComponent<MeshRenderer> ();
-					lightsMeshRenderer.material = Resources.Load (Materials.TRAFFIC_LIGHT) as Material;
+					MeshRenderer lightsMeshRenderer = lights.GetComponent<MeshRenderer>();
+					lightsMeshRenderer.material = Resources.Load(Materials.TRAFFIC_LIGHT) as Material;
 
 					// Création de l'objet 3D destiné à former un feu tricolore
-					GameObject trafficLight = new GameObject (nodeGroup.Id);
+					GameObject trafficLight = new GameObject(nodeGroup.Id);
 
 					// Ajout du support et des feux au feu tricolore
 					mount.transform.parent = trafficLight.transform;
 					lights.transform.parent = trafficLight.transform;
 				}
 			}
-		}	
+		}
 	}
 
 
@@ -744,16 +774,16 @@ public class CityBuilder {
 
 		Vector2 textureExpansion = Vector2.one;
 		if (backgroundName == null)
-			textureExpansion = new Vector2((float)length * 4F, (float)width * 4F);
+			textureExpansion = new Vector2((float) length * 4F, (float) width * 4F);
 
 		// Calcul des coordonnées du milieu du vecteur formé par les 2 noeuds des extrémités
-		Vector3 node1 = new Vector3((float)maxLon, 0, (float)maxLat);
-		Vector3 node2 = new Vector3((float)minLon, 0, (float)minLat);
+		Vector3 node1 = new Vector3((float) maxLon, 0, (float) maxLat);
+		Vector3 node2 = new Vector3((float) minLon, 0, (float) minLat);
 
 		Vector3 diff = node2 - node1;
 
 		// Construction de l'objet 3D (cube) destiné à former un sol 
-		groundBuilder.BuildGround ((float)length, (float)width, (float)minLat, (float)minLon, groundMaterial, textureExpansion);
+		groundBuilder.BuildGround((float) length, (float) width, (float) minLat, (float) minLon, groundMaterial, textureExpansion);
 	}
 
 	public Dictionary<string, NodeGroup> NodeGroups {

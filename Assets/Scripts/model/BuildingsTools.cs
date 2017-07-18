@@ -610,6 +610,16 @@ public class BuildingsTools {
 		}
 	}
 
+	public float BuildingArea(NodeGroup nodeGroup) {
+		float area = 0;
+		for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
+			Vector2 currentPoint = nodeGroup.GetNode(i).ToVector();
+			Vector2 nextPoint = nodeGroup.GetNode(i + 1).ToVector();
+
+			area += (nextPoint.x - currentPoint.x) * (nextPoint.y + currentPoint.y);
+		}
+		return area;
+	}
 
 	/// <summary>
 	/// 	Ajout une entrée dans la table de correspondance entre les bâtiments 3D et leurs groupes de noeuds

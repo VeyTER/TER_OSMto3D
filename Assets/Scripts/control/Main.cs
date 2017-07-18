@@ -86,9 +86,6 @@ public class Main : MonoBehaviour {
 			this.cityBuilder.HighwayNodes.SetActive(false);
 			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.HIGHWAY_NODES_SWITCH));
 
-			this.cityBuilder.Roofs.SetActive(false);
-			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.ROOFS_SWITCH));
-
 			// Récupération de la référence du panneau et ajout d'un controlleur
 			this.editPanel = GameObject.Find(UiNames.EDIT_PANEL);
 			this.editPanel.AddComponent<EditPanelController>();
