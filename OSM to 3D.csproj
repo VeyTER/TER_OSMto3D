@@ -115,6 +115,9 @@
     <Compile Include="Assets\Scripts\control\TurningEditor.cs" />
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
+    <Compile Include="Assets\Scripts\model\MapBackgroundsBase.cs" />
+    <Compile Include="Assets\Scripts\model\ExternalObjectsBase.cs" />
+    <Compile Include="Assets\Scripts\model\SensorEquippedBuildingsBase.cs" />
     <Compile Include="Assets\Scripts\model\ActuatorController.cs" />
     <Compile Include="Assets\Scripts\model\BuildingRoom.cs" />
     <Compile Include="Assets\Scripts\model\BuildingsTools.cs" />
@@ -122,6 +125,8 @@
     <Compile Include="Assets\Scripts\model\ComponentPropertiesLoader.cs" />
     <Compile Include="Assets\Scripts\model\Edge.cs" />
     <Compile Include="Assets\Scripts\model\EdgeShape.cs" />
+    <Compile Include="Assets\Scripts\model\MetaDataLoader.cs" />
+    <Compile Include="Assets\Scripts\model\WallsBuilder.cs" />
     <Compile Include="Assets\Scripts\model\Triangle.cs" />
     <Compile Include="Assets\Scripts\model\Triangulation.cs" />
     <Compile Include="Assets\Scripts\model\DelauneyTriangulation.cs" />

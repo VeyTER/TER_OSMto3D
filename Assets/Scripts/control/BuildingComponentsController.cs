@@ -40,7 +40,7 @@ public class BuildingComponentsController : MonoBehaviour {
 		this.cityBuilder = CityBuilder.GetInstance();
 		this.uiBuilder = UiBuilder.GetInstance();
 
-		this.sensorsDataLoader = new SensorDataLoader(cityBuilder.SensorsEquippedBuildings[gameObject.name]);
+		this.sensorsDataLoader = new SensorDataLoader(cityBuilder.SensorsEquippedBuildingBase.GetEquippedBuilding(gameObject.name));
 		this.buildingRooms = new Dictionary<string, BuildingRoom>();
 
 		this.dataPanel = uiBuilder.BuildBuildingDataPanel(gameObject);

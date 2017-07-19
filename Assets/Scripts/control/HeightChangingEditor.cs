@@ -62,7 +62,7 @@ public class HeightChangingEditor : ObjectEditor {
 
 	public void IncrementObjectHeight() {
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		cityBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor + 1);
+		buildingsTools.ChangeBuildingHeight(selectedBuilding, nodeGroup.NbFloor + 1);
 		nodeGroup.NbFloor++;
 
 		this.ShiftFloor(1);
@@ -71,7 +71,7 @@ public class HeightChangingEditor : ObjectEditor {
 
 	public void DecrementObjectHeight() {
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		cityBuilder.RebuildBuilding(selectedBuilding, nodeGroup.NbFloor - 1);
+		buildingsTools.ChangeBuildingHeight(selectedBuilding, nodeGroup.NbFloor - 1);
 		nodeGroup.NbFloor--;
 
 		this.ShiftFloor(-1);
@@ -104,7 +104,7 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public override void CancelTransform() {
-		cityBuilder.RebuildBuilding(selectedBuilding, selectedBuildingStartHeight);
+		buildingsTools.ChangeBuildingHeight(selectedBuilding, selectedBuildingStartHeight);
 
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 		nodeGroup.NbFloor = selectedBuildingStartHeight;

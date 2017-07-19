@@ -13,16 +13,17 @@ public class RoofBuilder {
 	/// <param name="triangulation">Triangulation de Delauney.</param>
 	/// <param name="nbFloor">Nombre d'étages du bâtiments sur lequel le toit va être ajouté.</param>
 	/// <param name="floorSize">Hauteur des étages du bâtiment sur lequel le toit va être ajouté.</param>
-	public GameObject BuildRoof(float posX, float posZ, Triangulation triangulation, int nbFloor, float floorSize) {
+	public GameObject BuildRoof(GameObject building, float buildingHeight, Triangulation triangulation, int nbFloor, float floorSize) {
 		// Création et paramétrage de l'objet 3D destiné à former un toit
-		GameObject roof = new GameObject("Roof", typeof(MeshFilter), typeof(MeshRenderer)) {
+		GameObject roof = new GameObject(building.name + "_roofs", typeof(MeshFilter), typeof(MeshRenderer)) {
 			tag = GoTags.ROOF_TAG
 		};
-		roof.transform.position = new Vector3(posX, (nbFloor * floorSize), posZ);
+		roof.transform.SetParent(building.transform, false);
+		roof.transform.localPosition = new Vector3(0, buildingHeight, 0);
 
 		// Création, construction et texturing du maillage formant un toit
 		Mesh mesh = new Mesh() {
-			vertices = this.RoofVertices(triangulation, posX, posZ),
+			vertices = this.RoofVertices(triangulation, building),
 			triangles = this.RoofTriangles(triangulation),
 			normals = this.RoofNormals(triangulation)
 		};
@@ -47,9 +48,12 @@ public class RoofBuilder {
 	/// <param name="triangulation">Triangulation de Dealauney.</param>
 	/// <param name="posX">Position en X du toit.</param>
 	/// <param name="posZ">Position en Z du toit.</param>
-	private Vector3[] RoofVertices(Triangulation triangulation, float posX, float posZ) {
+	private Vector3[] RoofVertices(Triangulation triangulation, GameObject building) {
 		int nbVertex = triangulation.Triangles.Count * 3;
 		Vector3[] res = new Vector3[nbVertex];
+
+		float posX = building.transform.position.x;
+		float posZ = building.transform.position.z;
 
 		float jitter = 0.0F;
 		int i = 0;

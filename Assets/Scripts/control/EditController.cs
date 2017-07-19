@@ -479,7 +479,7 @@ public class EditController : MonoBehaviour {
 			if (!building.transform.position.Equals (buildingInitPos) || building.transform.rotation.eulerAngles.y != buildingInitAngle)
 				buildingsTools.UpdateLocation (building);
 
-			if (cityBuilder.SensorsEquippedBuildings.ContainsKey(building.name))
+			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
 				this.UpdateAttachedDisplayPosition(building);
 		}
 
@@ -491,7 +491,7 @@ public class EditController : MonoBehaviour {
 			if (buildingInitHeight != nodeGroup.NbFloor)
 				buildingsTools.UpdateHeight(building, nodeGroup.NbFloor);
 
-			if (cityBuilder.SensorsEquippedBuildings.ContainsKey(building.name))
+			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
 				this.UpdateAttachedDisplayPosition(building);
 		}
 
@@ -546,7 +546,7 @@ public class EditController : MonoBehaviour {
 			buildingNodes.transform.position = new Vector3 (buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
 			buildingsTools.UpdateNodesPosition (building);
 
-			if (cityBuilder.SensorsEquippedBuildings.ContainsKey(building.name))
+			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
 				this.UpdateAttachedDisplayPosition(building);
 		}
 
@@ -572,9 +572,9 @@ public class EditController : MonoBehaviour {
 			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
 			nodeGroup.NbFloor = buildingHeight;
 
-			cityBuilder.RebuildBuilding(building, buildingHeight);
+			buildingsTools.ChangeBuildingHeight(building, buildingHeight);
 
-			if (cityBuilder.SensorsEquippedBuildings.ContainsKey(building.name))
+			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
 				this.UpdateAttachedDisplayPosition(building);
 		}
 

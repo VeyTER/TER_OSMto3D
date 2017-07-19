@@ -12,7 +12,7 @@ public class CityObjectNames {
 	public const string HIGHWAY_NODES = "Highway nodes";
 
 	/// <summary>Nom des bâtiments.</summary>
-	public const string WALLS = "Walls groups (buildings)";
+	public const string WALLS = "Buildings";
 
 	/// <summary>Nom des toîts.</summary>
 	public const string ROOFS = "Roofs";

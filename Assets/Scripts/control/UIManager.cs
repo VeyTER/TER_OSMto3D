@@ -396,7 +396,7 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 			break;
 		case UiNames.DISABLED_BUILDING_NODES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.BuildingNodes.SetActive(true);
+				cityBuilder.ShowBuildingNodes();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
@@ -408,13 +408,13 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 			break;
 		case UiNames.DISABLED_WALLS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.WallGroups.SetActive(true);
+				cityBuilder.ShowWalls();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
 		case UiNames.DISABLED_ROOFS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Roofs.SetActive(true);
+				cityBuilder.ShowRoofs();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
@@ -445,7 +445,7 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 
 		case UiNames.ENABLED_BUILDING_NODES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.BuildingNodes.SetActive(false);
+				cityBuilder.HideBuildingNodes();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
@@ -457,13 +457,13 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 			break;
 		case UiNames.ENABLED_WALLS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.WallGroups.SetActive(false);
+				cityBuilder.HideWalls();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
 		case UiNames.ENABLED_ROOFS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Roofs.SetActive(false);
+				cityBuilder.HideRoofs();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;

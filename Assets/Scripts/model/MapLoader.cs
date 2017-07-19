@@ -8,6 +8,8 @@ using System.Xml;
 /// 	Suite d'outils destinés au chargement et au stockage des différents objects d'une carte OSM.
 /// </summary>
 public class MapLoader {
+	private static MapLoader instance;
+
 	/// <summary>
 	/// 	Unique instance du singleton CityBuilder, servant à construire la ville en 3D à partir des données OSM.
 	/// </summary>
@@ -52,11 +54,11 @@ public class MapLoader {
 		};
 	}
 
-
 	public static MapLoader GetInstance() {
-		return MapLoaderHolder.instance;
+		if (instance == null)
+			instance = new MapLoader();
+		return instance;
 	}
-
 
 	/// <summary>
 	///		Extrait les données du fichier OSM contenant la carte les stocke dans des noeuds eux-même contenus dans des
@@ -942,9 +944,5 @@ public class MapLoader {
 	public double Maxlon {
 		get { return maxLon; }
 		set { maxLon = value; }
-	}
-
-	private static class MapLoaderHolder {
-		internal static MapLoader instance = new MapLoader();
 	}
 }

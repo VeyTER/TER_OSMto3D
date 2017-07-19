@@ -5,8 +5,12 @@ using System.Collections.Generic;
 using System;
 
 public class ComponentPropertiesLoader {
+	private static ComponentPropertiesLoader instance;
+
 	public static ComponentPropertiesLoader GetInstance() {
-		return ComponentPropertiesLoaderHolder.instance;
+		if (instance == null)
+			instance = new ComponentPropertiesLoader();
+		return instance;
 	}
 
 	public void LoadComponentsProperties(Dictionary<string, BuildingRoom> buildingRooms, string buildingName, ref bool alertDetected) {
@@ -131,9 +135,5 @@ public class ComponentPropertiesLoader {
 				break;
 			}
 		}
-	}
-
-	private class ComponentPropertiesLoaderHolder {
-		internal static ComponentPropertiesLoader instance = new ComponentPropertiesLoader();
 	}
 }

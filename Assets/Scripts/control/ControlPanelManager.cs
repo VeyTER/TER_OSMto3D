@@ -2,6 +2,8 @@
 using UnityEngine;
 
 public class ControlPanelManager {
+	private static ControlPanelManager instance;
+
 	public enum ControlStates { NONE, BUILDING_CREATION, VISIBILITY_TOGGLELING }
 	private ControlStates controlState;
 
@@ -12,7 +14,9 @@ public class ControlPanelManager {
 	}
 
 	public static ControlPanelManager GetInstance() {
-		return ControlPanelManagerHolder.instance;
+		if (instance == null)
+			instance = new ControlPanelManager();
+		return instance;
 	}
 
 	public void AddPanel(GameObject panel) {
@@ -31,10 +35,6 @@ public class ControlPanelManager {
 
 	public PanelController GetPanelController(GameObject panel) {
 		return panelsBehaviours[panel];
-	}
-
-	private class ControlPanelManagerHolder {
-		internal static ControlPanelManager instance = new ControlPanelManager();
 	}
 
 	public bool AllPanelsClosed() {

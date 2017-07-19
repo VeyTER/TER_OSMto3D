@@ -56,8 +56,7 @@ public class Main : MonoBehaviour {
 			// Construction de la ville
 			this.cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
 			this.cityBuilder.BuildNodes();
-			this.cityBuilder.BuildWalls();
-			this.cityBuilder.BuildRoofs();
+			this.cityBuilder.BuildBuildings();
 			this.cityBuilder.BuildRoads();
 			this.cityBuilder.BuildTrees();
 			this.cityBuilder.BuildTrafficLights();
@@ -80,7 +79,7 @@ public class Main : MonoBehaviour {
 			controlPanelManager.AddPanel(buildingCreationBoxPanel);
 
 			// Désactivation des certains groupes d'objets
-			this.cityBuilder.BuildingNodes.SetActive(false);
+			this.cityBuilder.HideBuildingNodes();
 			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.BUILDING_NODES_SWITCH));
 
 			this.cityBuilder.HighwayNodes.SetActive(false);

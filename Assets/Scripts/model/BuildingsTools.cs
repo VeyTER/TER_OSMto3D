@@ -9,6 +9,8 @@ using System.Collections.Generic;
 /// 	dans les fichiers de données.
 /// </summary>
 public class BuildingsTools {
+	private static BuildingsTools instance;
+
 	/// <summary>Chemin vers le fichier résumant la carte OSM.</summary>
 	private string resumeFilePath;
 
@@ -75,7 +77,9 @@ public class BuildingsTools {
 	}
 
 	public static BuildingsTools GetInstance() {
-		return BuildingsToolsInstanceHolder.instance;
+		if (instance == null)
+			instance = new BuildingsTools();
+		return instance;
 	}
 
 	public void ReplaceMaterial(GameObject building, Material newMaterial) {
@@ -144,6 +148,18 @@ public class BuildingsTools {
 		}
 	}
 
+	/// <summary>
+	/// 	Modifie la hauteur et l'orientation d'un bâtiment. Pour cela, la méthode modifie la hauteur et de la
+	/// 	position de tous les murs du bâtiment.
+	/// </summary>
+	/// <param name="wallSetGo">Bâtiment à modifier.</param>
+	/// <param name="nbFloor">Nombre d'étages qui doivent former le bâtiment.</param>
+	public void ChangeBuildingHeight(GameObject building, int nbFloor) {
+		foreach (Transform wallTransform in building.transform) {
+			wallTransform.position = new Vector3(wallTransform.position.x, (Dimensions.FLOOR_HEIGHT / 2F) * (float) nbFloor, wallTransform.position.z);
+			wallTransform.localScale = new Vector3(wallTransform.localScale.x, Dimensions.FLOOR_HEIGHT * nbFloor, wallTransform.localScale.z);
+		}
+	}
 
 	/// <summary>
 	/// 	Change le nom d'un bâtiment dans l'application et dans les fichiers MapResumed et MapCustom.
@@ -275,8 +291,7 @@ public class BuildingsTools {
 		}
 
 		// Modification de la hauteur du bâtiment 3D
-		CityBuilder cityBuilder = CityBuilder.GetInstance();
-		cityBuilder.RebuildBuilding (building, nbFloor);
+		this.ChangeBuildingHeight (building, nbFloor);
 	}
 
 	public void UpdateMaterial(GameObject building, Material newMaterial) {
@@ -518,13 +533,13 @@ public class BuildingsTools {
 	public Vector2 BuildingCenter(NodeGroup nodeGroup) {
 		// Somme des coordonnées des murs de bâtiments
 		if (nodeGroup != null) {
-			Vector2 positionSum = Vector3.zero;
-			foreach(Node node in nodeGroup.Nodes) {
-				positionSum += node.ToVector();
-			}
+			Vector2 positionSum = Vector2.zero;
+			for (int i = 0; i < nodeGroup.NodeCount() - 1; i++)
+				positionSum += nodeGroup.GetNode(i).ToVector();
+
 			return positionSum / ((nodeGroup.Nodes.Count - 1) * 1F);
 		} else {
-			return Vector3.zero;
+			return Vector2.zero;
 		}
 	}
 
@@ -582,24 +597,24 @@ public class BuildingsTools {
 	/// 	centre du bâtiment et ce dernier.
 	/// </summary>
 	/// <returns>Rayon du bâtiment.</returns>
-	/// <param name="building">Bâtiment dont on veut calculer le rayon.</param>
-	public double BuildingRadius(GameObject building) {
-		NodeGroup nodeGroup = this.BuildingToNodeGroup(building);
+	/// <param name="walls">Bâtiment dont on veut calculer le rayon.</param>
+	public double BuildingRadius(GameObject walls) {
+		NodeGroup nodeGroup = this.BuildingToNodeGroup(walls);
 
 		// Calcul du centre du bâtiment
-		Vector3 buildingCenter = this.BuildingCenter (building);
+		Vector3 buildingCenter = this.BuildingCenter(walls);
 
 		// Calcul du rayon si le groupe de noeuds a bien été trouvé
 		if (nodeGroup != null) {
 
 			// Somme des distances de chaque sommet par rapport au centre avec mise à jour du maximum
 			double maxDistance = 0;
-			for(int i = 0; i < nodeGroup.Nodes.Count - 1; i++) {
-				Node buildingNode = (Node)nodeGroup.Nodes [i];
-				Vector2 nodePosition = new Vector2 ((float)buildingNode.Longitude, (float)buildingNode.Latitude);
-				Vector2 buildingCenter2D = new Vector2 (buildingCenter.x, buildingCenter.z);
+			for (int i = 0; i < nodeGroup.Nodes.Count - 1; i++) {
+				Node buildingNode = (Node) nodeGroup.Nodes[i];
+				Vector2 nodePosition = new Vector2((float) buildingNode.Longitude, (float) buildingNode.Latitude);
+				Vector2 buildingCenter2D = new Vector2(buildingCenter.x, buildingCenter.z);
 
-				double currentDistance = Vector2.Distance (buildingCenter2D, nodePosition);
+				double currentDistance = Vector2.Distance(buildingCenter2D, nodePosition);
 				if (currentDistance > maxDistance)
 					maxDistance = currentDistance;
 			}
@@ -620,6 +635,9 @@ public class BuildingsTools {
 		}
 		return area;
 	}
+
+
+	// TODO : Enlever ces trucs
 
 	/// <summary>
 	/// 	Ajout une entrée dans la table de correspondance entre les bâtiments 3D et leurs groupes de noeuds
@@ -788,9 +806,5 @@ public class BuildingsTools {
 		for (int i = 0; i < nbDigits; i++)
 			res += System.Math.Floor((double) randomGenerator.Next(0, 10));
 		return res;
-	}
-
-	public static class BuildingsToolsInstanceHolder {
-		internal static BuildingsTools instance = new BuildingsTools();
 	}
 }

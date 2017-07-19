@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UiBuilder {
+	private static UiBuilder instance;
+
 	private GameObject sensorsDisplays;
 
 	private UiBuilder() {
@@ -10,7 +12,9 @@ public class UiBuilder {
 	}
 
 	public static UiBuilder GetInstance() {
-		return UiBuilderHolder.instance;
+		if (instance == null)
+			instance = new UiBuilder();
+		return instance;
 	}
 
 	public GameObject BuildBuildingDataPanel(GameObject building) {
@@ -322,9 +326,5 @@ public class UiBuilder {
 	public GameObject BuildingDataDisplays {
 		get { return sensorsDisplays; }
 		set { sensorsDisplays = value; }
-	}
-
-	private class UiBuilderHolder {
-		internal static UiBuilder instance = new UiBuilder();
 	}
 }

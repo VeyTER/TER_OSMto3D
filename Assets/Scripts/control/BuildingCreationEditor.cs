@@ -30,20 +30,21 @@ public class BuildingCreationEditor : ObjectEditor {
 		Material defaultWallMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
 		NodeGroup nodeGroup = buildingsTools.NewBasicNodeGroup(position, Dimensions, defaultWallMaterial);
 
-		GameObject building = cityBuilder.BuildSingleWallGroup(nodeGroup);
-		buildingsTools.ReplaceColor(building, new Color(1, 1, 1, 0.5F));
+		// TODO
+		//GameObject building = cityBuilder.WallsBuilder.BuildWalls(building, nodeGroup);
+		//buildingsTools.ReplaceColor(building, new Color(1, 1, 1, 0.5F));
 
-		cityBuilder.AddNodeGroup(nodeGroup);
-		cityBuilder.SetupSingleWallGroup(building, nodeGroup);
+		//cityBuilder.AddNodeGroup(nodeGroup);
+		//cityBuilder.WallsBuilder.SetupWalls(cityBuilder.Buildings, building, nodeGroup);
 
-		building.transform.rotation = Quaternion.Euler(0, orientation, 0);
+		//building.transform.rotation = Quaternion.Euler(0, orientation, 0);
 
-		building.transform.parent = Camera.main.transform;
-		GameObject.Destroy(building.GetComponent<UiManager>());
+		//building.transform.parent = Camera.main.transform;
+		//GameObject.Destroy(building.GetComponent<UiManager>());
 
-		buildingsTools.AddBuildingAndNodeGroupPair(building, nodeGroup);
+		//buildingsTools.AddBuildingAndNodeGroupPair(building, nodeGroup);
 
-		selectedBuilding = building;
+		//selectedBuilding = building;
 	}
 
 	public void CompensateCameraMoves() {
@@ -107,26 +108,28 @@ public class BuildingCreationEditor : ObjectEditor {
 
 	public override void ValidateTransform() {
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		GameObject buildingNodeGroup = cityBuilder.BuildSingleBuildingNodeGroup(nodeGroup);
 
-		selectedBuilding.AddComponent<UiManager>();
-		selectedBuilding.transform.parent = cityBuilder.WallGroups.transform;
-		buildingNodeGroup.transform.parent = cityBuilder.BuildingNodes.transform;
+		// TODO
+		//GameObject buildingNodeGroup = cityBuilder.BuildSingleBuildingNodeGroup(nodeGroup);
 
-		Vector3 buildingPosition = selectedBuilding.transform.position;
-		buildingNodeGroup.transform.position = new Vector3(buildingPosition.x, buildingNodeGroup.transform.position.y, buildingPosition.z);
-		buildingNodeGroup.transform.rotation = selectedBuilding.transform.rotation;
-		buildingsTools.UpdateNodesPosition(selectedBuilding);
+		//selectedBuilding.AddComponent<UiManager>();
+		//selectedBuilding.transform.parent = cityBuilder.Buildings.transform;
+		//buildingNodeGroup.transform.parent = cityBuilder.BuildingNodes.transform;
 
-		Material defaultBuildingMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
-		buildingsTools.ReplaceMaterial(selectedBuilding, defaultBuildingMaterial);
+		//Vector3 buildingPosition = selectedBuilding.transform.position;
+		//buildingNodeGroup.transform.position = new Vector3(buildingPosition.x, buildingNodeGroup.transform.position.y, buildingPosition.z);
+		//buildingNodeGroup.transform.rotation = selectedBuilding.transform.rotation;
+		//buildingsTools.UpdateNodesPosition(selectedBuilding);
 
-		buildingsTools.AppendResumeBuilding(nodeGroup);
-		buildingsTools.AppendCustomBuilding(nodeGroup);
+		//Material defaultBuildingMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
+		//buildingsTools.ReplaceMaterial(selectedBuilding, defaultBuildingMaterial);
 
-		buildingsTools.UpdateLocation(selectedBuilding);
+		//buildingsTools.AppendResumeBuilding(nodeGroup);
+		//buildingsTools.AppendCustomBuilding(nodeGroup);
 
-		cameraController.SwitchToSemiLocalMode();
+		//buildingsTools.UpdateLocation(selectedBuilding);
+
+		//cameraController.SwitchToSemiLocalMode();
 	}
 
 	private void RemoveBuilding() {
