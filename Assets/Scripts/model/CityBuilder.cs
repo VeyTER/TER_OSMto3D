@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.IO;
+using UnityEngine.UI;
 
 /// <summary>
 /// 	Contient une suite d'outils permettant la construction des différents objets d'une ville.
@@ -310,16 +311,14 @@ public class CityBuilder {
 	public GameObject BuildSingleWallGroup(NodeGroup nodeGroup) {
 		GameObject wallGroup = new GameObject();
 
+		Vector2 buildingCenter = BuildingsTools.GetInstance().BuildingCenter(nodeGroup);
+		wallGroup.transform.position = new Vector3(buildingCenter.x, 0, buildingCenter.y);
+
 		// Création et paramétrage de l'objet 3D destiné à former un mur
 		GameObject walls = new GameObject(nodeGroup.Name, typeof(MeshFilter), typeof(MeshRenderer)) {
 			tag = GoTags.WALL_TAG
 		};
-		walls.transform.SetParent(wallGroup.transform);
-		walls.transform.localPosition = Vector3.zero;
-
-		// Récupération et configuration de la boite de collision du mur
-		BoxCollider wallBoxColliser = walls.AddComponent<BoxCollider>();
-		wallBoxColliser.isTrigger = true;
+		walls.transform.SetParent(wallGroup.transform, false);
 
 		// Ajout d'une instance du gestionnaire d'interface pour que cette dernière soit déclenchée lors
 		// d'un clic
@@ -338,11 +337,11 @@ public class CityBuilder {
 			Node node = nodeGroup.GetNode(i);
 
 			float wallHeight = Dimensions.FLOOR_HEIGHT * nodeGroup.NbFloor;
-			wallVertices.Add(new Vector3((float)node.Longitude, 0, (float)node.Latitude));
-			wallVertices.Add(new Vector3((float)node.Longitude, wallHeight, (float)node.Latitude));
+			wallVertices.Add(new Vector3((float)(node.Longitude - buildingCenter.x), 0, (float)(node.Latitude - buildingCenter.y)));
+			wallVertices.Add(new Vector3((float)(node.Longitude - buildingCenter.x), wallHeight, (float)(node.Latitude - buildingCenter.y)));
 
-			wallVertices.Add(new Vector3((float) node.Longitude, 0, (float) node.Latitude));
-			wallVertices.Add(new Vector3((float) node.Longitude, wallHeight, (float) node.Latitude));
+			wallVertices.Add(new Vector3((float)(node.Longitude - buildingCenter.x), 0, (float)(node.Latitude - buildingCenter.y)));
+			wallVertices.Add(new Vector3((float)(node.Longitude - buildingCenter.x), wallHeight, (float)(node.Latitude - buildingCenter.y)));
 		}
 
 		float cursorX = 0;
@@ -378,7 +377,7 @@ public class CityBuilder {
 			triangles.Add(index + 1);
 		}
 
-		if (BuildingsTools.GetInstance().BuildingArea(nodeGroup) >= 0)
+		if (BuildingsTools.GetInstance().BuildingArea(nodeGroup) < 0)
 			triangles.Reverse();
 
 		wallMeshFilter.mesh.vertices = wallVertices.ToArray();
@@ -386,6 +385,9 @@ public class CityBuilder {
 		wallMeshFilter.mesh.uv = uvVertices.ToArray();
 
 		wallMeshFilter.mesh.RecalculateNormals();
+		wallMeshFilter.mesh.RecalculateBounds();
+
+		MeshCollider wallBoxColliser = walls.AddComponent<MeshCollider>();
 
 		return wallGroup;
 	}
@@ -396,11 +398,11 @@ public class CityBuilder {
 		// Ajout d'une entrée dans la table de correspondances
 		buildingsTools.AddBuildingAndNodeGroupPair(wallGroup, nodeGroup);
 
-		// Déplacement des murs au sein du bâtiment pour qu'ils aient une position relative au centre
-		Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup);
-		wallGroup.transform.position = wallGroupCenter;
-		foreach (Transform wallTransform in wallGroup.transform)
-			wallTransform.transform.position -= wallGroup.transform.position;
+		//// Déplacement des murs au sein du bâtiment pour qu'ils aient une position relative au centre
+		//Vector3 wallGroupCenter = buildingsTools.BuildingCenter(wallGroup);
+		//wallGroup.transform.position = wallGroupCenter;
+		//foreach (Transform wallTransform in wallGroup.transform)
+		//	wallTransform.transform.position -= wallGroup.transform.position;
 
 		// Nommage du bâtiment avec son nom dans les fichiers de données s'il existe, sinon, utilisation de
 		// son ID

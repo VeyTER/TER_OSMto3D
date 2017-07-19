@@ -2260,6 +2260,14 @@
             <nd ref="4413933780" index="2" lat="43.5618166" lon="1.4686839" />
             <nd ref="4413933778" index="3" lat="43.561789" lon="1.4687101" />
           </highway>
+          <building>
+            <info id="+3098210399" name="Bâtiment n°+3098210399" nbfloor="3" roofangle="0" rooftype="unknown" />
+            <nd ref="+3098210399" index="0" lat="43.5619296875" lon="1.4688330078125" />
+            <nd ref="+3098210399" index="1" lat="43.5629296875" lon="1.4688330078125" />
+            <nd ref="+3098210399" index="2" lat="43.5629296875" lon="1.4698330078125" />
+            <nd ref="+3098210399" index="3" lat="43.5619296875" lon="1.4698330078125" />
+            <nd ref="+3098210399" index="4" lat="43.5619296875" lon="1.4688330078125" />
+          </building>
         </district>
         <district designation="Centre-Ville" />
       </town>

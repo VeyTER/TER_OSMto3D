@@ -4,7 +4,7 @@
 public class Materials {
 	///<summary>Chemin vers le matériau des murs.</summary>
 //	public const string WALL = FilePaths.MATERIALS_FOLDER + "Wall";
-	public const string WALL_DEFAULT = FilePaths.MATERIALS_FOLDER_LOCAL + "BricksBasic";
+	public const string WALL_DEFAULT = FilePaths.MATERIALS_FOLDER_LOCAL + "OfficeGlasses";
 
 	///<summary>Chemin vers le matériau des toits.</summary>
 	public const string ROOF = FilePaths.MATERIALS_FOLDER_LOCAL + "Roof";

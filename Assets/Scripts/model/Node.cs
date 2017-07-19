@@ -36,7 +36,7 @@ public class Node {
 	}
 
 	public Vector2 ToVector() {
-		return new Vector2((float)latitude, (float)longitude);
+		return new Vector2((float)longitude, (float)latitude);
 	}
 
 	public string Reference {
