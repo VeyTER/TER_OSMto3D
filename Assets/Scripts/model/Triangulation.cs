@@ -35,16 +35,16 @@ public class Triangulation {
 	private void BuildShapeEdges() {
 		float area = BuildingsTools.GetInstance().BuildingArea(nodeGroup);
 
-		List<Edge> edges = new List<Edge>();
+		List<Edge> newEdges = new List<Edge>();
 		for (int i = area >= 0 ? 0 : nodeGroup.NodeCount() - 1; (area >= 0 && i < nodeGroup.NodeCount() - 1) || (area < 0 && i >= 1); i = area >= 0 ? i + 1 : i - 1) {
 			Node currentNode = nodeGroup.GetNode(i);
 			Node nextNode = nodeGroup.GetNode(i + (area >= 0 ? 1 : -1));
 
 			Edge newEdge = new Edge(currentNode, nextNode, Edge.EdgeTypes.SHAPE);
-			edges.Add(newEdge);
+			newEdges.Add(newEdge);
 		}
 
-		edgeShape.ReplaceEdges(edges);
+		edgeShape.ReplaceEdges(newEdges);
 	}
 
 	private void BuildTriangulation() {
@@ -64,7 +64,7 @@ public class Triangulation {
 
 				Triangle triangle = new Triangle(previousNode, earTipNode, nextNode);
 
-				edgeShape.RemoveEdge(currentEdge, false);
+				edgeShape.RemoveEdge(currentEdge, true);
 
 				if (!currentEdge.Equals(nextEdge)) {
 					edgeShape.ReplaceEdge(nextEdge, newEdge, true);

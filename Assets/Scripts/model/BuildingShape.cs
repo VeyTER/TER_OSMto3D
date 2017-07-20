@@ -19,14 +19,14 @@ public class BuildingShape {
 	}
 
 	public void ReplaceEdges(List<Edge> newEdges) {
-		edgesShape.Clear();
+		this.Clear();
 		edgesShape.AddRange(newEdges);
 		this.LabelVertex();		
 	}
 
-	public Edge AddEdge(Edge newEdge, bool labelVertices) {
+	public Edge AddEdge(Edge newEdge, bool updateLabels) {
 		edgesShape.Add(newEdge);
-		if(labelVertices)
+		if(updateLabels)
 			this.LabelVertex();
 		return newEdge;
 	}
@@ -35,30 +35,30 @@ public class BuildingShape {
 		return edgesShape[index];
 	}
 
-	public void ReplaceEdge(int index, Edge newEdge, bool labelVertices) {
+	public void ReplaceEdge(int index, Edge newEdge, bool updateLabels) {
 		edgesShape[index] = newEdge;
-		if (labelVertices)
+		if (updateLabels)
 			this.LabelVertex();
 	}
 
-	public void ReplaceEdge(Edge oldEdge, Edge newEdge, bool labelVertices) {
+	public void ReplaceEdge(Edge oldEdge, Edge newEdge, bool updateLabels) {
 		int oldEdgeIndex = edgesShape.IndexOf(oldEdge);
-		if (labelVertices)
-			this.LabelVertex();
 		edgesShape[oldEdgeIndex] = newEdge;
+		if (updateLabels)
+			this.LabelVertex();
 	}
 
-	public Edge RemoveEdge(int index, bool labelVertices) {
+	public Edge RemoveEdge(int index, bool updateLabels) {
 		Edge oldEdge = edgesShape[index];
 		edgesShape.Remove(oldEdge);
-		if (labelVertices)
+		if (updateLabels)
 			this.LabelVertex();
 		return oldEdge;
 	}
 
-	public Edge RemoveEdge(Edge oldEdge, bool labelVertices) {
+	public Edge RemoveEdge(Edge oldEdge, bool updateLabels) {
 		edgesShape.Remove(oldEdge);
-		if (labelVertices)
+		if (updateLabels)
 			this.LabelVertex();
 		return oldEdge;
 	}
@@ -97,7 +97,11 @@ public class BuildingShape {
 		return edgesShape[nextEdgeIndex];
 	}
 
-	private void LabelVertex() {
+	public void LabelVertex() {
+		convexNodes.Clear();
+		earTipNodes.Clear();
+		reflexNodes.Clear();
+
 		for (int i = 0; i < this.EdgeCount(); i++) {
 			Edge currentEdge = this.GetEdge(i);
 			Edge nextEdge = this.NextEdge(currentEdge);

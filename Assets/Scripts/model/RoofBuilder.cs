@@ -42,7 +42,7 @@ public class RoofBuilder {
 
 		// Affectation du matériau à la route pour lui donner la texture voulue
 		MeshRenderer meshRenderer = roof.GetComponent<MeshRenderer>();
-		meshRenderer.material = Resources.Load (Materials.ROOF) as Material;
+		meshRenderer.material = Resources.Load(Materials.ROOF) as Material;
 
 		MeshCollider meshCollider = roof.AddComponent<MeshCollider>();
 		meshCollider.sharedMesh = mesh;
@@ -67,7 +67,7 @@ public class RoofBuilder {
 
 		float jitter = 0F;
 		int index = 0;
-		foreach(Triangle triangle in triangulation.Triangles) {
+		foreach (Triangle triangle in triangulation.Triangles) {
 			if (!nodesAndIndex.ContainsKey(triangle.NodeA)) {
 				float posX2 = (float) (triangle.NodeA.Longitude - buildingPosition.x);
 				float posZ2 = (float) (triangle.NodeA.Latitude - buildingPosition.y);
