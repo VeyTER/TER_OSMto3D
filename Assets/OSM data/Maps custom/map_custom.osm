@@ -47,7 +47,13 @@
     <info id="18628822" name="3 TP2" nbfloor="1" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" />
+    <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
+    <nd ref="176599804" index="0" lat="43.56409375" lon="1.46590344238281" />
+    <nd ref="176599805" index="1" lat="43.563375" lon="1.46662451171875" />
+    <nd ref="176599806" index="2" lat="43.56322265625" lon="1.46633068847656" />
+    <nd ref="2361869580" index="3" lat="43.56362109375" lon="1.46592822265625" />
+    <nd ref="176599807" index="4" lat="43.56394140625" lon="1.46560974121094" />
+    <nd ref="176599804" index="5" lat="43.56409375" lon="1.46590344238281" />
   </building>
   <building>
     <info id="+3098210399" name="Bâtiment n°+3098210399" nbfloor="3" roofangle="0" rooftype="unknown" />
@@ -68,6 +74,6 @@
     <nd ref="259096200" index="6" lat="43.5633359375" lon="1.46700524902344" />
   </building>
   <building>
-    <info id="26650675" name="1 CN - Emile Durand" nbfloor="35" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
+    <info id="26650675" name="1 CN - Emile Durand" nbfloor="6" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
   </building>
 </earth>

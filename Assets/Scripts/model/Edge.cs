@@ -59,11 +59,7 @@ public class Edge {
 		}
 	}
 
-	public Edge GetCopy() {
-		return new Edge(nodeA, nodeB);
-	}
-
-	public Edge GetInvertedCopy() {
+	public Edge InvertedCopy() {
 		return new Edge(nodeB, nodeA);
 	}
 

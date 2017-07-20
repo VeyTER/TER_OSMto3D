@@ -125,11 +125,10 @@
     <Compile Include="Assets\Scripts\model\CityBuilder.cs" />
     <Compile Include="Assets\Scripts\model\ComponentPropertiesLoader.cs" />
     <Compile Include="Assets\Scripts\model\Edge.cs" />
-    <Compile Include="Assets\Scripts\model\EdgeShape.cs" />
+    <Compile Include="Assets\Scripts\model\BuildingShape.cs" />
     <Compile Include="Assets\Scripts\model\WallsBuilder.cs" />
     <Compile Include="Assets\Scripts\model\Triangle.cs" />
     <Compile Include="Assets\Scripts\model\Triangulation.cs" />
-    <Compile Include="Assets\Scripts\model\DelauneyTriangulation.cs" />
     <Compile Include="Assets\Scripts\model\ExternalObject.cs" />
     <Compile Include="Assets\Scripts\model\GroundBuilder.cs" />
     <Compile Include="Assets\Scripts\model\HighwayBuilder.cs" />
@@ -145,7 +144,6 @@
     <Compile Include="Assets\Scripts\model\SensorDataLoader.cs" />
     <Compile Include="Assets\Scripts\model\SensorThreshold.cs" />
     <Compile Include="Assets\Scripts\model\ThresholdConditions.cs" />
-    <Compile Include="Assets\Scripts\model\TriangleOld.cs" />
     <Compile Include="Assets\Scripts\model\UiBuilder.cs" />
   </ItemGroup>
   <ItemGroup>

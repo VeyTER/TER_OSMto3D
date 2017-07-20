@@ -22,8 +22,8 @@ public class HeightChangingEditor : ObjectEditor {
 		Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 		Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
 
-		topFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor + 1, greenOverlay);
-		bottomFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor, redOverlay);
+		topFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor + 1, greenOverlay, true);
+		bottomFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor, redOverlay, false);
 
 		topFloor.AddComponent<StageColorController>();
 		bottomFloor.AddComponent<StageColorController>();
@@ -44,20 +44,12 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public int DesiredDirection(GameObject clickedBuildingPart) {
-		int i = 0;
-		for (; i < topFloor.transform.childCount && clickedBuildingPart != topFloor.transform.GetChild(i).gameObject; i++) ;
-
-		if (i < topFloor.transform.childCount) {
+		if (clickedBuildingPart == topFloor)
 			return 1;
-		} else {
-			int j = 0;
-			for (; j < bottomFloor.transform.childCount && clickedBuildingPart != bottomFloor.transform.GetChild(j).gameObject; j++) ;
-
-			if (j < bottomFloor.transform.childCount)
-				return -1;
-			else
-				return 0;
-		}
+		else if (clickedBuildingPart == bottomFloor)
+			return -1;
+		else
+			return 0;
 	}
 
 	public void IncrementObjectHeight() {
@@ -65,7 +57,7 @@ public class HeightChangingEditor : ObjectEditor {
 		buildingsTools.ChangeBuildingHeight(selectedBuilding, nodeGroup.NbFloor + 1);
 		nodeGroup.NbFloor++;
 
-		this.ShiftFloor(1);
+		this.ShiftVirtualFloors(1);
 		this.UpdateCameraPosition();
 	}
 
@@ -74,22 +66,18 @@ public class HeightChangingEditor : ObjectEditor {
 		buildingsTools.ChangeBuildingHeight(selectedBuilding, nodeGroup.NbFloor - 1);
 		nodeGroup.NbFloor--;
 
-		this.ShiftFloor(-1);
+		this.ShiftVirtualFloors(-1);
 		this.UpdateCameraPosition();
 	}
 
-	private void ShiftFloor(int direction) {
+	private void ShiftVirtualFloors(int direction) {
 		int expansionDirection = direction > 0 ? 1 : -1;
 
-		foreach (Transform wallTransform in topFloor.transform) {
-			Vector3 topWallPosition = wallTransform.transform.position;
-			wallTransform.position = new Vector3(topWallPosition.x, topWallPosition.y + (expansionDirection * Dimensions.FLOOR_HEIGHT), topWallPosition.z);
-		}
+		Vector3 topFloorPosition = topFloor.transform.position;
+		topFloor.transform.position = new Vector3(topFloorPosition.x, topFloorPosition.y + (expansionDirection * Dimensions.FLOOR_HEIGHT), topFloorPosition.z);
 
-		foreach (Transform wallTransform in bottomFloor.transform) {
-			Vector3 bottomWallPosition = wallTransform.transform.position;
-			wallTransform.position = new Vector3(bottomWallPosition.x, bottomWallPosition.y + (expansionDirection * Dimensions.FLOOR_HEIGHT), bottomWallPosition.z);
-		}
+		Vector3 bottomFloorPosition = bottomFloor.transform.position;
+		bottomFloor.transform.position = new Vector3(bottomFloorPosition.x, bottomFloorPosition.y + (expansionDirection * Dimensions.FLOOR_HEIGHT), bottomFloorPosition.z);
 	}
 
 	private void UpdateCameraPosition() {

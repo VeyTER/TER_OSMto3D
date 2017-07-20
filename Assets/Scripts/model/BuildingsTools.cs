@@ -139,7 +139,7 @@ public class BuildingsTools {
 	/// <param name="nbFloor">Nombre d'étages qui doivent former le bâtiment.</param>
 	public void ChangeBuildingHeight(GameObject building, int nbFloor) {
 		GameObject buildingWalls = building.transform.GetChild(CityBuilder.WALLS_INDEX).gameObject;
-		GameObject buildingRoof = building.transform.GetChild(CityBuilder.ROOFS_INDEX).gameObject;
+		GameObject buildingRoof = building.transform.GetChild(CityBuilder.ROOF_INDEX).gameObject;
 
 		this.ChangeWallsHeight(buildingWalls, nbFloor);
 

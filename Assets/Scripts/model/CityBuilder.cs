@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class CityBuilder {
 	public const int WALLS_INDEX = 0;
 	public const int BUILDING_NODES_INDEX = 1;
-	public const int ROOFS_INDEX = 2;
+	public const int ROOF_INDEX = 2;
 
 	private static CityBuilder instance;
 
@@ -227,15 +227,15 @@ public class CityBuilder {
 			return null;
 	}
 
-	public GameObject BuildVirtualFloor(GameObject building, int floorIndex, Material floorMaterial) {
+	public GameObject BuildVirtualFloor(GameObject building, int floorIndex, Material floorMaterial, bool buildRoof) {
 		GameObject buildingWalls = building.transform.GetChild(WALLS_INDEX).gameObject;
+		GameObject buildingRoof = building.transform.GetChild(ROOF_INDEX).gameObject;
 
 		Vector3 buildingPosition = building.transform.position;
 
 		GameObject virtualFloor = GameObject.Instantiate(buildingWalls);
 		virtualFloor.name = building.name + "virtual_stage_" + floorIndex;
-		virtualFloor.transform.localPosition = new Vector3(buildingPosition.x, floorIndex * Dimensions.FLOOR_HEIGHT, buildingPosition.z);
-		virtualFloor.transform.localScale = new Vector3(1.1F, 1, 1.1F);
+		virtualFloor.transform.localPosition = new Vector3(buildingPosition.x, (floorIndex - 1) * Dimensions.FLOOR_HEIGHT, buildingPosition.z);
 
 		buildingsTools.ChangeWallsHeight(virtualFloor, 1);
 
@@ -246,6 +246,17 @@ public class CityBuilder {
 		MeshFilter virtualFloorMeshFilter = virtualFloor.GetComponent<MeshFilter>();
 
 		virtualWallCollider.sharedMesh = virtualFloorMeshFilter.sharedMesh;
+
+		if (buildRoof) {
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
+			GameObject virtualRoof = roofBuilder.BuildRoof(building, nodeGroup, 1.1F);
+
+			virtualRoof.transform.SetParent(virtualFloor.transform, false);
+			virtualRoof.transform.localPosition = new Vector3(0, Dimensions.FLOOR_HEIGHT, 0);
+
+			MeshRenderer virtualRoofRenderer = virtualRoof.GetComponent<MeshRenderer>();
+			virtualRoofRenderer.material = floorMaterial;
+		}
 
 		return virtualFloor;
 	}
@@ -549,10 +560,10 @@ public class CityBuilder {
 	}
 
 	public void HideRoofs() {
-		this.ChangeBuildingComponentVisibility(false, ROOFS_INDEX);
+		this.ChangeBuildingComponentVisibility(false, ROOF_INDEX);
 	}
 	public void ShowRoofs() {
-		this.ChangeBuildingComponentVisibility(true, ROOFS_INDEX);
+		this.ChangeBuildingComponentVisibility(true, ROOF_INDEX);
 	}
 
 	private void ChangeBuildingComponentVisibility(bool visibility, int componentIndex) {

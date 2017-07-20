@@ -1016,7 +1016,7 @@
             <nd ref="287931738" index="1" lat="43.5604876" lon="1.4715011" />
           </highway>
           <building>
-            <info id="26650675" name="1 CN - Emile Durand" nbfloor="35" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
+            <info id="26650675" name="1 CN - Emile Durand" nbfloor="6" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
             <nd ref="286216221" index="0" lat="43.5611663" lon="1.4666943" />
             <nd ref="192187660" index="1" lat="43.5610062" lon="1.4668575" />
             <nd ref="192187662" index="2" lat="43.5611935" lon="1.4672123" />
@@ -1817,13 +1817,13 @@
             <nd ref="2361869580" index="2" lat="43.562857" lon="1.4659283" />
           </highway>
           <building>
-            <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" />
-            <nd ref="176599804" index="0" lat="43.5633293" lon="1.4659036" />
-            <nd ref="176599805" index="1" lat="43.56261" lon="1.4666246" />
-            <nd ref="176599806" index="2" lat="43.5624554" lon="1.4663308" />
-            <nd ref="2361869580" index="3" lat="43.562857" lon="1.4659283" />
-            <nd ref="176599807" index="4" lat="43.5631747" lon="1.4656099" />
-            <nd ref="176599804" index="5" lat="43.5633293" lon="1.4659036" />
+            <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
+            <nd ref="176599804" index="0" lat="43.56409375" lon="1.46590344238281" />
+            <nd ref="176599805" index="1" lat="43.563375" lon="1.46662451171875" />
+            <nd ref="176599806" index="2" lat="43.56322265625" lon="1.46633068847656" />
+            <nd ref="2361869580" index="3" lat="43.56362109375" lon="1.46592822265625" />
+            <nd ref="176599807" index="4" lat="43.56394140625" lon="1.46560974121094" />
+            <nd ref="176599804" index="5" lat="43.56409375" lon="1.46590344238281" />
           </building>
           <highway>
             <info id="333390902" name="unknown" roadtype="residential" nbway="1" maxspeed="50" />

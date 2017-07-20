@@ -219,15 +219,15 @@ public class CameraController : MonoBehaviour {
 	/// 	Déplace et oriente la caméra au-dessus d'un building en prenant en compte les dimensions de celui-ci.
 	/// </summary>
 	/// <returns>Temporisateur servant à générer une animation.</returns>
-	/// <param name="building">Bâtiment au-dessus duquel se positionner.</param>
+	/// <param name="targetBuilding">Bâtiment au-dessus duquel se positionner.</param>
 	/// <param name="finalAction">Action finale à effectuer à la fin du déplacement.</param>
-	public IEnumerator MoveToBuilding(GameObject building, bool champTo, Action finalAction, float orientation = 90) {
+	public IEnumerator MoveToBuilding(GameObject targetBuilding, bool champTo, Action finalAction, float orientation = 90) {
 		cameraState = CameraStates.FLYING;
 
 		Vector3 startPosition = transform.position;
 		Quaternion startRotation = transform.rotation;
 
-		Vector3 targetPosition = this.RelativePosition(building, 0, orientation);
+		Vector3 targetPosition = this.RelativePosition(targetBuilding, 0, orientation);
 		Quaternion targetRotation = Quaternion.Euler (new Vector3 (orientation, 90, 0));
 
 		// Génération de l'animation
@@ -248,7 +248,7 @@ public class CameraController : MonoBehaviour {
 		transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
 		transform.rotation = targetRotation;
 
-		targetObject = building;
+		targetObject = targetBuilding;
 
 		if (champTo)
 			cameraState = CameraStates.CIRCULARY_CONSTRAINED;
@@ -260,8 +260,8 @@ public class CameraController : MonoBehaviour {
 			finalAction ();
 	}
 
-	public void TeleportToBuilding(GameObject building, bool champTo, float horizontalOrientation, float verticalOrientation = 90) {
-		transform.position = this.RelativePosition(building, horizontalOrientation, verticalOrientation);
+	public void TeleportToBuilding(GameObject targetBuilding, bool champTo, float horizontalOrientation, float verticalOrientation = 90) {
+		transform.position = this.RelativePosition(targetBuilding, horizontalOrientation, verticalOrientation);
 		transform.rotation = Quaternion.Euler(new Vector3(verticalOrientation, transform.rotation.eulerAngles.y, 0));
 
 		if (champTo)
@@ -270,15 +270,15 @@ public class CameraController : MonoBehaviour {
 			cameraState = CameraStates.FIXED;
 	}
 
-	public IEnumerator TurnAroundBuilding(GameObject building, float verticalOrientation) {
+	public IEnumerator TurnAroundBuilding(GameObject targetBuilding, float verticalOrientation) {
 		stateBeforeTuringAround = cameraState;
 		cameraState = CameraStates.TURNING_AROUND;
 
-		float horizontalOrientation = this.RelativeOrientation(building);
+		float horizontalOrientation = this.RelativeOrientation(targetBuilding);
 		while (cameraState == CameraStates.TURNING_AROUND) {
 			horizontalOrientation += 1 * Mathf.Deg2Rad;
 
-			Vector3 cameraCurrentPosition = this.RelativePosition(building, horizontalOrientation, verticalOrientation);
+			Vector3 cameraCurrentPosition = this.RelativePosition(targetBuilding, horizontalOrientation, verticalOrientation);
 			Quaternion cameraCurrentRotation = Quaternion.Euler(new Vector3(verticalOrientation, -horizontalOrientation * Mathf.Rad2Deg + 90, 0));
 
 			transform.position = cameraCurrentPosition;
@@ -291,11 +291,9 @@ public class CameraController : MonoBehaviour {
 	private Vector3 RelativePosition(GameObject building, float horizontalOrientation, float verticalOrientation) {
 		Vector3 res = Vector3.zero;
 
-		GameObject firstWall = building.transform.GetChild(0).gameObject;
-
 		// Un peu de trigo pour pouvoir être à la bonne hauteur par rapport au à la taille du bâtiment
 		float cameraFOV = Camera.main.fieldOfView;
-		float buildingHeight = firstWall.transform.localScale.y;
+		float buildingHeight = buildingsTools.BuildingHeight(building);
 		double buildingRadius = buildingsTools.BuildingRadius(building);
 		float targetPosZ = (float) (buildingHeight + (buildingRadius / Math.Tan(cameraFOV)));
 
