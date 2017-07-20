@@ -12,7 +12,7 @@ public abstract class ObjectEditor {
 	protected List<GameObject> transformedObjects;
 
 	/// <summary>Témoin de transformation d'un bâtiment.</summary>
-	protected bool buildingTransformed;
+	protected bool isBuildingTransformed;
 
 	protected BuildingsTools buildingsTools;
 	protected CityBuilder cityBuilder;
@@ -22,7 +22,7 @@ public abstract class ObjectEditor {
 		this.selectedBuildingNodes = null;
 
 		this.transformedObjects = new List<GameObject>();
-		this.buildingTransformed = false;
+		this.isBuildingTransformed = false;
 
 		this.buildingsTools = BuildingsTools.GetInstance();
 		this.cityBuilder = CityBuilder.GetInstance();
@@ -42,7 +42,7 @@ public abstract class ObjectEditor {
 		selectedBuildingNodes = buildingsTools.BuildingToBuildingNodeGroup (selectedBuilding);
 
 		// Initialisation des témoins de transformation
-		buildingTransformed = false;
+		isBuildingTransformed = false;
 	}
 
 	public abstract void ValidateTransform();
@@ -62,8 +62,8 @@ public abstract class ObjectEditor {
 		set { selectedBuildingNodes = value; }
 	}
 
-	public bool BuildingTransformed {
-		get { return buildingTransformed; }
-		set { buildingTransformed = value; }
+	public bool IsBuildingTransformed {
+		get { return isBuildingTransformed; }
+		set { isBuildingTransformed = value; }
 	}
 }

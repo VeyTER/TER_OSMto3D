@@ -13,7 +13,12 @@ public class RoofBuilder {
 	/// <param name="triangulation">Triangulation de Delauney.</param>
 	/// <param name="nbFloor">Nombre d'étages du bâtiments sur lequel le toit va être ajouté.</param>
 	/// <param name="floorSize">Hauteur des étages du bâtiment sur lequel le toit va être ajouté.</param>
-	public GameObject BuildRoof(GameObject building, float buildingHeight, Triangulation triangulation, int nbFloor, float floorSize) {
+	public GameObject BuildRoof(GameObject building, NodeGroup nodeGroup) {
+		Triangulation triangulation = new Triangulation(nodeGroup);
+		triangulation.Triangulate(nodeGroup.Name);
+
+		float buildingHeight = nodeGroup.NbFloor * Dimensions.FLOOR_HEIGHT;
+
 		// Création et paramétrage de l'objet 3D destiné à former un toit
 		GameObject roof = new GameObject(building.name + "_roofs", typeof(MeshFilter), typeof(MeshRenderer)) {
 			tag = GoTags.ROOF_TAG

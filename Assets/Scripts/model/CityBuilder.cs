@@ -8,17 +8,14 @@ using UnityEngine.UI;
 /// 	Contient une suite d'outils permettant la construction des différents objets d'une ville.
 /// </summary>
 public class CityBuilder {
-	private const int WALLS_INDEX = 0;
-	private const int BUILDING_NODES_INDEX = 1;
-	private const int ROOFS_INDEX = 2;
+	public const int WALLS_INDEX = 0;
+	public const int BUILDING_NODES_INDEX = 1;
+	public const int ROOFS_INDEX = 2;
 
 	private static CityBuilder instance;
 
-	/// <summary>
-	/// 	Groupes de noeuds contenant toutes les informations sur les objets de la scène 3D.
-	/// </summary>
-	private Dictionary<string, NodeGroup> nodeGroups;
-
+	private BuildingsTools buildingsTools;
+	private NodeGroupBase nodeGroupBase;
 
 	/// <summary>Latitude minimale de la ville.</summary>
 	private double minLat;
@@ -84,7 +81,9 @@ public class CityBuilder {
 	private GameObject trees;
 
 	private CityBuilder() {
-		this.nodeGroups = new Dictionary<string, NodeGroup>();
+		this.buildingsTools = BuildingsTools.GetInstance();
+
+		this.nodeGroupBase = NodeGroupBase.GetInstance();
 
 		this.externalObjectBase = new ExternalObjectBase(FilePaths.EXTERNAL_OBJECTS_FILE);
 		this.mapBackgroundsBase = new MapBackgroundBase(FilePaths.MAP_BACKGROUNDS_FILE);
@@ -94,40 +93,12 @@ public class CityBuilder {
 		this.highwayBuilder = new HighwayBuilder();
 		this.roofBuilder = new RoofBuilder();
 		this.groundBuilder = new GroundBuilder();
-
-	}
-
-	public NodeGroup AddNodeGroup(NodeGroup newNodeGroup) {
-		nodeGroups[newNodeGroup.Id] = newNodeGroup;
-		return newNodeGroup;
-	}
-
-	public NodeGroup GetNodeGroup(string nodeGroupId) {
-		return nodeGroups[nodeGroupId];
-	}
-
-	public NodeGroup RemoveNodeGroup(NodeGroup oldNodeGroup) {
-		nodeGroups.Remove(oldNodeGroup.Id);
-		return oldNodeGroup;
 	}
 
 	public static CityBuilder GetInstance() {
 		if (instance == null)
 			instance = new CityBuilder();
 		return instance;
-	}
-
-	/// <summary>
-	/// 	Copie et change l'échelle des groupes de noeuds.
-	/// </summary>
-	/// <param name="scaleFactor">Facteur d'échelle.</param>
-	public void ScaleNodes(double scaleFactor) {
-		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
-			foreach (Node node in nodeGroupEntry.Value.Nodes) {
-				node.Latitude = node.Latitude * scaleFactor;
-				node.Longitude = node.Longitude * scaleFactor;
-			}
-		}
 	}
 
 
@@ -154,7 +125,7 @@ public class CityBuilder {
 		highwayNodes = new GameObject(CityObjectNames.HIGHWAY_NODES);
 		highwayNodes.transform.parent = cityComponents.transform;
 
-		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 			if (nodeGroup.IsHighway())
@@ -194,7 +165,7 @@ public class CityBuilder {
 		UiManager.editController = buildings.GetComponent<EditController>();
 
 		// Construction et ajout des bâtiments
-		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 			if (nodeGroup.IsBuilding()) {
@@ -204,8 +175,9 @@ public class CityBuilder {
 
 				GameObject building = new GameObject(nodeGroup.Name == "unknown" ? nodeGroup.Id : nodeGroup.Name);
 				building.transform.SetParent(buildings.transform, false);
+				buildingsTools.AddBuildingAndNodeGroupPair(building, nodeGroup);
 
-				Vector2 buildingCenter = BuildingsTools.GetInstance().BuildingCenter(nodeGroup);
+				Vector2 buildingCenter = buildingsTools.BuildingCenter(nodeGroup);
 				building.transform.position = new Vector3(buildingCenter.x, 0, buildingCenter.y);
 
 				// Création et paramétrage de l'objet 3D destiné à former un bâtiment. Pour cela, chaque mur est
@@ -213,7 +185,7 @@ public class CityBuilder {
 				// est ajouté au bâtiment
 				wallsBuilder.BuildWalls(building, nodeGroup);
 				this.BuildSingleBuildingNodeGroup(building, nodeGroup);
-				this.BuildRoofs(building, nodeGroup);
+				RoofBuilder.BuildRoof(building, nodeGroup);
 
 				this.LoadMatchingBuilding(building, nodeGroup);
 			}
@@ -221,13 +193,13 @@ public class CityBuilder {
 	}
 
 	public void LoadMatchingBuilding(GameObject building, NodeGroup nodeGroup) {
-		ExternalObject externalObject = this.ExternalBuildingAtPosition(building.transform.position);
+		ExternalObject externalObject = this.IsExternalBuildingAtPosition(building.transform.position);
 		if (externalObject != null) {
 			if (externalObject.NeverUsed) {
 				GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFileName));
 				importedObject.transform.position = externalObject.Position;
-				importedObject.transform.localScale = new Vector3((float) externalObject.Scale, (float) externalObject.Scale, (float) externalObject.Scale);
 				importedObject.transform.rotation = Quaternion.Euler(importedObject.transform.rotation.x, (float) externalObject.Orientation, importedObject.transform.rotation.z);
+				importedObject.transform.localScale = new Vector3((float) externalObject.Scale, (float) externalObject.Scale, (float) externalObject.Scale);
 				importedObject.transform.parent = buildings.transform;
 
 				externalObject.NeverUsed = false;
@@ -240,7 +212,7 @@ public class CityBuilder {
 			building.AddComponent<BuildingComponentsController>();
 	}
 
-	private ExternalObject ExternalBuildingAtPosition(Vector3 position) {
+	private ExternalObject IsExternalBuildingAtPosition(Vector3 position) {
 		const int PRECISION = 2;
 
 		int i = 0;
@@ -256,49 +228,34 @@ public class CityBuilder {
 	}
 
 	public GameObject BuildVirtualFloor(GameObject building, int floorIndex, Material floorMaterial) {
-		List<GameObject> virtualWalls = new List<GameObject>();
-		foreach (Transform childTransform in building.transform) {
-			GameObject virtualWall = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			virtualWall.tag = GoTags.WALL_TAG;
+		GameObject buildingWalls = building.transform.GetChild(WALLS_INDEX).gameObject;
 
-			virtualWall.transform.position = new Vector3(childTransform.position.x, (Dimensions.FLOOR_HEIGHT) * floorIndex - Dimensions.FLOOR_HEIGHT / 2F, childTransform.position.z);
-			virtualWall.transform.rotation = childTransform.rotation;
-			virtualWall.transform.localScale = new Vector3(childTransform.localScale.x, Dimensions.FLOOR_HEIGHT, childTransform.localScale.z * 1.5F);
+		Vector3 buildingPosition = building.transform.position;
 
-			BoxCollider wallBoxColliser = virtualWall.GetComponent<BoxCollider>();
-			wallBoxColliser.isTrigger = true;
+		GameObject virtualFloor = GameObject.Instantiate(buildingWalls);
+		virtualFloor.name = building.name + "virtual_stage_" + floorIndex;
+		virtualFloor.transform.localPosition = new Vector3(buildingPosition.x, floorIndex * Dimensions.FLOOR_HEIGHT, buildingPosition.z);
+		virtualFloor.transform.localScale = new Vector3(1.1F, 1, 1.1F);
 
-			virtualWall.AddComponent<UiManager>();
+		buildingsTools.ChangeWallsHeight(virtualFloor, 1);
 
-			MeshRenderer virtualWallRenderer = virtualWall.GetComponent<MeshRenderer>();
-			virtualWallRenderer.material = floorMaterial;
+		MeshRenderer virtualFloorRenderer = virtualFloor.GetComponent<MeshRenderer>();
+		virtualFloorRenderer.material = floorMaterial;
 
-			virtualWalls.Add(virtualWall);
-		}
+		MeshCollider virtualWallCollider = virtualFloor.GetComponent<MeshCollider>();
+		MeshFilter virtualFloorMeshFilter = virtualFloor.GetComponent<MeshFilter>();
 
-		GameObject virtualFloor = new GameObject(building.name + "virtual_stage_" + floorIndex);
-		virtualFloor.transform.position = building.transform.position;
-		virtualFloor.transform.rotation = building.transform.rotation;
-
-		foreach (GameObject virtualWall in virtualWalls)
-			virtualWall.transform.parent = virtualFloor.transform;
-
-		Vector3 buildingScale = building.transform.localScale;
-		virtualFloor.transform.localScale = new Vector3(buildingScale.x, virtualFloor.transform.localScale.y, buildingScale.z);
+		virtualWallCollider.sharedMesh = virtualFloorMeshFilter.sharedMesh;
 
 		return virtualFloor;
 	}
 
 	private GameObject BuildSingleBuildingNodeGroup(GameObject building, NodeGroup nodeGroup) {
-		BuildingsTools buildingsTools = BuildingsTools.GetInstance();
-
 		// Création et paramétrage de l'objet 3D destiné à former un groupe de noeuds de bâtiment
 		GameObject buildingNodeGroup = new GameObject() {
 			name = building.name + "_nodes"
 		};
 		buildingNodeGroup.transform.SetParent(building.transform, false);
-
-		buildingsTools.AddBuildingNodeGroupAndNodeGroupPair(buildingNodeGroup, nodeGroup);
 
 		// Construction des angles de noeuds de bâtiments
 		foreach (Node node in nodeGroup.Nodes) {
@@ -316,22 +273,6 @@ public class CityBuilder {
 
 		return buildingNodeGroup;
 	}
-
-	/// <summary>
-	/// 	Place les toits dans la scène.
-	/// </summary>
-	private void BuildRoofs(GameObject building, NodeGroup nodeGroup) {
-		if (nodeGroup.IsBuilding()) {
-			Triangulation triangulation = new Triangulation(nodeGroup);
-			triangulation.Triangulate(nodeGroup.Name);
-
-			float buildingHeight = nodeGroup.NbFloor * Dimensions.FLOOR_HEIGHT;
-
-			// Construction et paramétrage de l'objet 3D destiné à former un toit
-			GameObject roof = roofBuilder.BuildRoof(building, buildingHeight, triangulation, nodeGroup.NbFloor, Dimensions.FLOOR_HEIGHT);
-		}
-	}
-
 
 	/// <summary>
 	/// 	Place les routes dans la scène.
@@ -357,7 +298,7 @@ public class CityBuilder {
 		//		waterways = new GameObject(ObjectNames.WATERWAYS);
 		//		waterways.transform.parent = cityComponents.transform;
 
-		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 			if (nodeGroup.IsWay()) {
@@ -442,7 +383,7 @@ public class CityBuilder {
 		float heightJitter = Dimensions.TRUNC_HEIGHT * 0.4F;
 		float diameterJitter = Dimensions.TRUNC_DIAMTETER * 0.2F;
 
-		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 			float height = Dimensions.TRUNC_HEIGHT + UnityEngine.Random.Range(-heightJitter / 2F, heightJitter / 2F);
@@ -496,7 +437,7 @@ public class CityBuilder {
 		float height = 0.03F;
 		float diameter = 0.015F;
 
-		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 			if (nodeGroup.IsHighway() && nodeGroup.IsTrafficLight()) {
@@ -619,8 +560,8 @@ public class CityBuilder {
 			buildingTransform.GetChild(componentIndex).gameObject.SetActive(visibility);
 	}
 
-	public Dictionary<string, NodeGroup> NodeGroups {
-		get { return nodeGroups; }
+	public NodeGroupBase NodeGroupBase {
+		get { return nodeGroupBase; }
 	}
 
 	public GameObject CityComponents {

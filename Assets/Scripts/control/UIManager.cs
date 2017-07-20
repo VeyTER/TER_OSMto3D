@@ -253,12 +253,10 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 	/// 	Méthode appelée lorsque l'utilisateur relâche la pression d'un bouton de la souris sur l'objet sélectionné.
 	/// </summary>
 	public void OnMouseUp() {
-		Debug.Log("ok");
-
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
-		if (tag.Equals (GoTags.WALL_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
+		if (tag.Equals (GoTags.WALLS_TAG) && !EventSystem.current.IsPointerOverGameObject ()) {
 			if ((editController.EditState == EditController.EditStates.NONE_SELECTION || editController.EditState == EditController.EditStates.READY_TO_EDIT) && controlPanelManager.AllPanelsClosed()) {
-				editController.SwitchBuilding(gameObject);
+				editController.SwitchBuilding(transform.parent.gameObject);
 			} else if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE && controlPanelManager.AllPanelsClosed()) {
 				int expansionDirection = editController.HeightChangingEditor.DesiredDirection(gameObject);
 				if (expansionDirection > 0) {
@@ -316,8 +314,6 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 	/// </summary>
 	/// <param name="eventData">Données sur l'évènement.</param>
 	public void OnPointerUp(PointerEventData eventData) {
-		Debug.Log("ok");
-
 		if (controlPanelManager.AllPanelsClosed() && editController.IsInactive()) {
 			this.OnPointerUpControlPanel();
 			this.OnPointerUpEditControler();

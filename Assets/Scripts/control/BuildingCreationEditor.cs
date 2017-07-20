@@ -28,7 +28,7 @@ public class BuildingCreationEditor : ObjectEditor {
 
 	private void InitializeBuilding(Vector3 position, float orientation, Vector2 Dimensions) {
 		Material defaultWallMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
-		NodeGroup nodeGroup = buildingsTools.NewBasicNodeGroup(position, Dimensions, defaultWallMaterial);
+		NodeGroup nodeGroup = buildingsTools.NewMinimalNodeGroup(position, Dimensions, defaultWallMaterial);
 
 		// TODO
 		//GameObject building = cityBuilder.WallsBuilder.BuildWalls(building, nodeGroup);
@@ -134,7 +134,7 @@ public class BuildingCreationEditor : ObjectEditor {
 
 	private void RemoveBuilding() {
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		cityBuilder.RemoveNodeGroup(nodeGroup);
+		cityBuilder.NodeGroupBase.RemoveNodeGroup(nodeGroup);
 
 		GameObject.Destroy(selectedBuilding);
 

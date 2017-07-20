@@ -36,24 +36,12 @@ public class BuildingsTools {
 	private Dictionary<string, GameObject> nodeGroupToBuildingTable;
 
 	/// <summary>
-	/// 	Table faisant la correspondance entre les groupes de noeuds 3D et les groupes de noeuds correspondant.
-	/// </summary>
-	private Dictionary<GameObject, string> buildingNodeGroupToNodeGroupTable;
-
-	/// <summary>
-	/// 	Table faisant la correspondance entre les groupes de noeuds et les groupes de noeuds 3D correspondant.
-	/// </summary>
-	private Dictionary<string, GameObject> nodeGroupToBuildingNodeGroupTable;
-
-	/// <summary>
 	/// 	Table faisant la correspondance entre les noeuds 3D et les leurs noeuds 3D correspondant.
 	/// </summary>
 	private Dictionary<GameObject, string> buildingNodeToNodeTable;
 
 	private Dictionary<GameObject, GameObject> buildingToDataDisplayTable;
 	private Dictionary<GameObject, GameObject> dataDisplayToBuildingTable;
-
-	private CityBuilder cityBuilder;
 
 	private BuildingsTools () {
 		this.resumeFilePath = FilePaths.MAPS_RESUMED_FOLDER + "map_resumed.osm";
@@ -65,15 +53,10 @@ public class BuildingsTools {
 		this.buildingToNodeGroupTable = new Dictionary<GameObject, string> ();
 		this.nodeGroupToBuildingTable = new Dictionary<string, GameObject> ();
 
-		this.buildingNodeGroupToNodeGroupTable = new Dictionary<GameObject, string> ();
-		this.nodeGroupToBuildingNodeGroupTable = new Dictionary<string, GameObject> ();
-		
 		this.buildingNodeToNodeTable = new Dictionary<GameObject, string> ();
 
 		this.buildingToDataDisplayTable = new Dictionary<GameObject, GameObject>();
 		this.dataDisplayToBuildingTable = new Dictionary<GameObject, GameObject>();
-
-		this.cityBuilder = CityBuilder.GetInstance();
 	}
 
 	public static BuildingsTools GetInstance() {
@@ -83,8 +66,8 @@ public class BuildingsTools {
 	}
 
 	public void ReplaceMaterial(GameObject building, Material newMaterial) {
-		foreach (Transform wallTransform in building.transform) {
-			Renderer meshRenderer = wallTransform.GetComponent<Renderer>();
+		foreach (Transform builginPartTransform in building.transform) {
+			Renderer meshRenderer = builginPartTransform.GetComponent<Renderer>();
 
 			if (meshRenderer != null) {
 				meshRenderer.materials = new Material[] {
@@ -95,8 +78,8 @@ public class BuildingsTools {
 	}
 
 	public void ReplaceColor(GameObject building, Color newColor) {
-		foreach (Transform wallTransform in building.transform) {
-			Renderer meshRenderer = wallTransform.GetComponent<Renderer>();
+		foreach (Transform builginPartTransform in building.transform) {
+			Renderer meshRenderer = builginPartTransform.GetComponent<Renderer>();
 
 			if (meshRenderer != null) {
 				Material mainMaterial = meshRenderer.materials[0];
@@ -114,8 +97,8 @@ public class BuildingsTools {
 		Material selectedElementMaterial = Resources.Load (Materials.BLUE_OVERLAY) as Material;
 
 		// Supperposition du matériau de base avec celui de la couleur de sélection pour le bâtiment sélectionné
-		foreach (Transform wallTransform in building.transform) {
-			Renderer meshRenderer = wallTransform.GetComponent<Renderer> ();
+		foreach (Transform builginPartTransform in building.transform) {
+			Renderer meshRenderer = builginPartTransform.GetComponent<Renderer> ();
 			if (meshRenderer != null) {
 				// Ecrasement de stock de matériaux du mur avec un nouveau stock contenant son matériau de base et le
 				// matériau de sélection
@@ -136,8 +119,8 @@ public class BuildingsTools {
 		Material wallMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
 
 		// Supperposition du matériau de base avec celui de la couleur de sélection pour le bâtiment sélectionné
-		foreach (Transform wallTransform in building.transform) {
-			Renderer meshRenderer = wallTransform.GetComponent<Renderer>();
+		foreach (Transform builginPartTransform in building.transform) {
+			Renderer meshRenderer = builginPartTransform.GetComponent<Renderer>();
 			if (meshRenderer != null) {
 				// Ecrasement de stock de matériaux du mur avec un nouveau stock contenant son matériau de base et le
 				// matériau de sélection
@@ -155,9 +138,31 @@ public class BuildingsTools {
 	/// <param name="wallSetGo">Bâtiment à modifier.</param>
 	/// <param name="nbFloor">Nombre d'étages qui doivent former le bâtiment.</param>
 	public void ChangeBuildingHeight(GameObject building, int nbFloor) {
-		foreach (Transform wallTransform in building.transform) {
-			wallTransform.position = new Vector3(wallTransform.position.x, (Dimensions.FLOOR_HEIGHT / 2F) * (float) nbFloor, wallTransform.position.z);
-			wallTransform.localScale = new Vector3(wallTransform.localScale.x, Dimensions.FLOOR_HEIGHT * nbFloor, wallTransform.localScale.z);
+		GameObject buildingWalls = building.transform.GetChild(CityBuilder.WALLS_INDEX).gameObject;
+		GameObject buildingRoof = building.transform.GetChild(CityBuilder.ROOFS_INDEX).gameObject;
+
+		this.ChangeWallsHeight(buildingWalls, nbFloor);
+
+		float newBuildingHeight = nbFloor * Dimensions.FLOOR_HEIGHT;
+		Vector3 roofPosition = buildingRoof.transform.localPosition;
+		buildingRoof.transform.localPosition = new Vector3(roofPosition.x, newBuildingHeight, roofPosition.z);
+	}
+
+	public void ChangeWallsHeight(GameObject walls, int nbFloor) {
+		float newBuildingHeight = nbFloor * Dimensions.FLOOR_HEIGHT;
+
+		MeshFilter wallMeshFilter = walls.GetComponent<MeshFilter>();
+		List<Vector3> newVertices = new List<Vector3>();
+		wallMeshFilter.mesh.GetVertices(newVertices);
+		for (int i = 1; i < wallMeshFilter.mesh.vertexCount; i += 2) {
+			Vector3 vertexPosition = wallMeshFilter.mesh.vertices[i];
+			newVertices[i] = new Vector3(vertexPosition.x, newBuildingHeight, vertexPosition.z);
+		}
+		wallMeshFilter.mesh.SetVertices(newVertices);
+
+		for (int i = 1; i < wallMeshFilter.mesh.uv.Length; i += 2) {
+			Vector2 uvVertexPosition = wallMeshFilter.mesh.uv[i];
+			wallMeshFilter.mesh.uv[i] = new Vector2(uvVertexPosition.x, nbFloor);
 		}
 	}
 
@@ -636,8 +641,14 @@ public class BuildingsTools {
 		return area;
 	}
 
+	public float BuildingHeight(GameObject building) {
+		NodeGroup nodeGroup = this.BuildingToNodeGroup(building);
+		return this.BuildingHeight(nodeGroup);
+	}
 
-	// TODO : Enlever ces trucs
+	public float BuildingHeight(NodeGroup nodeGroup) {
+		return nodeGroup.NbFloor * Dimensions.FLOOR_HEIGHT;
+	}
 
 	/// <summary>
 	/// 	Ajout une entrée dans la table de correspondance entre les bâtiments 3D et leurs groupes de noeuds
@@ -648,17 +659,6 @@ public class BuildingsTools {
 	public void AddBuildingAndNodeGroupPair(GameObject building, NodeGroup nodeGroup) {
 		nodeGroupToBuildingTable [nodeGroup.Id] = building;
 		buildingToNodeGroupTable [building] = nodeGroup.Id;
-	}
-
-	/// <summary>
-	/// 	Ajout une entrée dans la table de correspondance entre les groupes de noeuds 3D et leurs groupes de noeuds
-	/// 	correspondant.
-	/// </summary>
-	/// <param name="buildingNodeGroup">Groupe de noeuds 3D en temps que clé.</param>
-	/// <param name="nodeGroup">Groupe de noeuds en temps que valeur.</param>
-	public void AddBuildingNodeGroupAndNodeGroupPair(GameObject buildingNodeGroup, NodeGroup nodeGroup) {
-		buildingNodeGroupToNodeGroupTable [buildingNodeGroup] = nodeGroup.Id;
-		nodeGroupToBuildingNodeGroupTable [nodeGroup.Id] = buildingNodeGroup;
 	}
 
 	/// <summary>
@@ -684,7 +684,7 @@ public class BuildingsTools {
 	/// </param>
 	public NodeGroup BuildingToNodeGroup(GameObject building) {
 		string nodeGroupId = buildingToNodeGroupTable[building];
-		return cityBuilder.GetNodeGroup(nodeGroupId);
+		return NodeGroupBase.GetInstance().GetNodeGroup(nodeGroupId);
 	}
 
 	/// <summary>
@@ -696,29 +696,6 @@ public class BuildingsTools {
 	/// </param>
 	public GameObject NodeGroupToBuilding(NodeGroup nodeGroup) {
 		return nodeGroupToBuildingTable [nodeGroup.Id];
-	}
-
-	/// <summary>
-	/// 	Renvoie le groupe de noeuds correspondant à un groupe de noeuds 3D grâce à une table de correspondance.
-	/// </summary>
-	/// <returns>Groupe de noeuds correspondant à un groupe de noeuds 3D.</returns>
-	/// <param name="buildingNodeGroup">
-	/// 	Groupe de noeuds 3D dont on veut récupérer le groupe de noeuds correspondant.
-	/// </param>
-	public NodeGroup BuildingNodeGroupToNodeGroup(GameObject buildingNodeGroup) {
-		string nodeGroupId = buildingNodeGroupToNodeGroupTable [buildingNodeGroup];
-		return cityBuilder.GetNodeGroup(nodeGroupId);
-	}
-
-	/// <summary>
-	/// 	Renvoie le groupe de noeuds 3D correspondant à un groupe de noeuds grâce à une table de correspondance.
-	/// </summary>
-	/// <returns>Groupe de noeuds 3D correspondant à un groupe de noeuds.</returns>
-	/// <param name="nodeGroup">
-	/// 	Groupe de noeuds dont on veut récupérer le groupe de noeuds 3D correspondant.
-	/// </param>
-	public GameObject NodeGroupToBuildingNodeGroup(NodeGroup nodeGroup) {
-		return nodeGroupToBuildingNodeGroupTable [nodeGroup.Id];
 	}
 
 	/// <summary>
@@ -748,7 +725,7 @@ public class BuildingsTools {
 	/// <param name="building">Bâtiment 3D dont on veut récupérer le groupe de noeuds 3D corresondant.</param>
 	public GameObject BuildingToBuildingNodeGroup(GameObject building) {
 		NodeGroup nodeGroup = this.BuildingToNodeGroup (building);
-		GameObject buildingNodeGroup = this.NodeGroupToBuildingNodeGroup(nodeGroup);
+		GameObject buildingNodeGroup = building.transform.GetChild(CityBuilder.BUILDING_NODES_INDEX).gameObject;
 		return buildingNodeGroup;
 	}
 
@@ -768,7 +745,7 @@ public class BuildingsTools {
 		}
 	}
 
-	public NodeGroup NewBasicNodeGroup(Vector3 centerPosition, Vector2 dimensions, Material material) {
+	public NodeGroup NewMinimalNodeGroup(Vector3 centerPosition, Vector2 dimensions, Material material) {
 		string newBuildingId = this.NewIdOrReference(10);
 
 		NodeGroup nodeGroup = new NodeGroup(newBuildingId) {

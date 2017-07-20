@@ -14,7 +14,7 @@ public class GoTags {
 	public const string HIGHWAY_NODE_TAG = "HighwayNode";
 
 	/// <summary>Tag des noeuds représentant un mur.</summary>
-	public const string WALL_TAG = "Wall";
+	public const string WALLS_TAG = "Walls";
 
 	/// <summary>Tag des noeuds représentant un toît.</summary>
 	public const string ROOF_TAG = "Roof";

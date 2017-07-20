@@ -50,7 +50,7 @@ public class Main : MonoBehaviour {
 			this.mapLoader.LoadResumedData();
 
 			// Réglage de l'échelle et des dimensions
-			this.cityBuilder.ScaleNodes(Dimensions.SCALE_FACTOR);
+			this.cityBuilder.NodeGroupBase.ScaleNodes(Dimensions.SCALE_FACTOR);
 			this.cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
 
 			// Construction de la ville

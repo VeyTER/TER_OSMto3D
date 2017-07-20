@@ -6,7 +6,7 @@ public class WallsBuilder {
 	public GameObject BuildWalls(GameObject building, NodeGroup nodeGroup) {
 		// Création et paramétrage de l'objet 3D destiné à former un mur
 		GameObject walls = new GameObject(building.name + "_walls", typeof(MeshFilter), typeof(MeshRenderer)) {
-			tag = GoTags.WALL_TAG,
+			tag = GoTags.WALLS_TAG,
 		};
 		walls.transform.SetParent(building.transform, false);
 		walls.transform.localPosition = Vector3.zero;
@@ -77,17 +77,16 @@ public class WallsBuilder {
 			Node currentNode = nodeGroup.GetNode(i);
 			Node nextNode = nodeGroup.GetNode((i + 1) % nodeGroup.NodeCount());
 
-			float scale = 1F;
 			float posU = cursorX / Dimensions.FLOOR_HEIGHT;
 			float posV = 0;
 
-			uvVertices.Add(new Vector2(posU, posV) * scale);
-			uvVertices.Add(new Vector2(posU, (posV + nodeGroup.NbFloor)) * scale);
+			uvVertices.Add(new Vector2(posU, posV));
+			uvVertices.Add(new Vector2(posU, posV + nodeGroup.NbFloor));
 
-			uvVertices.Add(new Vector2(posU, posV) * scale);
-			uvVertices.Add(new Vector2(posU, (posV + nodeGroup.NbFloor)) * scale);
+			uvVertices.Add(new Vector2(posU, posV));
+			uvVertices.Add(new Vector2(posU, posV + nodeGroup.NbFloor));
 
-			float wallLength = System.Math.Abs(Vector2.Distance(currentNode.ToVector(), nextNode.ToVector()));
+			float wallLength = Math.Abs(Vector2.Distance(currentNode.ToVector(), nextNode.ToVector()));
 			cursorX += wallLength;
 		}
 

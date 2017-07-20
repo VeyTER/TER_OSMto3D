@@ -10,8 +10,15 @@ public class StageColorController : MonoBehaviour {
 
 	private static float PRESSED_BRIGHTNESS = 0.85F;
 
-	public enum StageStates { INACTIVE, INACTIVE_TO_HOVERED, HOVERED, HOVERED_TO_INACTIVE,
-		HOVERED_TO_PRESSED, PRESSED, PRESSED_TO_HOVERED }
+	public enum StageStates {
+		INACTIVE,
+		INACTIVE_TO_HOVERED,
+		HOVERED,
+		HOVERED_TO_INACTIVE,
+		HOVERED_TO_PRESSED,
+		PRESSED,
+		PRESSED_TO_HOVERED
+	}
 
 	private StageStates stageState;
 
@@ -95,7 +102,6 @@ public class StageColorController : MonoBehaviour {
 		if (stageState == StageStates.HOVERED || stageState == StageStates.PRESSED_TO_HOVERED)
 			stageState = StageStates.HOVERED_TO_PRESSED;
 	}
-
 
 	public Material TargetMaterial {
 		get { return targetMaterial; }

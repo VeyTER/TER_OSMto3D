@@ -10,10 +10,7 @@ using System.Xml;
 public class MapLoader {
 	private static MapLoader instance;
 
-	/// <summary>
-	/// 	Unique instance du singleton CityBuilder, servant à construire la ville en 3D à partir des données OSM.
-	/// </summary>
-	private CityBuilder cityBuilder;
+	private NodeGroupBase nodeGroupBase;
 
 	/// <summary>Latitude minimale de la ville.</summary>
 	private double minLat;
@@ -31,7 +28,7 @@ public class MapLoader {
 	private string[] areasBuildingList;
 
 	private MapLoader() {
-		this.cityBuilder = CityBuilder.GetInstance ();
+		this.nodeGroupBase = NodeGroupBase.GetInstance ();
 
 		this.minLat = 0;
 		this.minLon = 0;
@@ -132,7 +129,7 @@ public class MapLoader {
 						// Ajout d'un noeud, correspondant à l'objet simple, au groupe de noeuds courant, et ajout de ce
 						// dernier à la liste des groupes de noeuds de l'application
 						nodeGroup.AddNode (new Node (id, latitude, longitude));
-						cityBuilder.AddNodeGroup(nodeGroup);
+						nodeGroupBase.AddNodeGroup(nodeGroup);
 					}
 				}
 			}
@@ -216,7 +213,7 @@ public class MapLoader {
 			// Ajout du groupe de noeuds à la liste globale s'il représente un bâtiment, une route ou une
 			// voie maritime
 			if ((nodeGroup.IsBuilding () || nodeGroup.IsHighway ()) || nodeGroup.IsWaterway ())
-				cityBuilder.AddNodeGroup(nodeGroup);
+				nodeGroupBase.AddNodeGroup(nodeGroup);
 		}
 	}
 
@@ -247,7 +244,7 @@ public class MapLoader {
 					// valeur des attributs correspondant dans les groupes de noeuds concernés
 					string[] earthBuildingInfo = this.BuildingInfo(earthInfoNode);
 
-					foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in cityBuilder.NodeGroups) {
+					foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 						NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 						this.SetupAreaNodeGroups(nodeGroup, null, new double[] { 0, 0, 0 }, earthBuildingInfo, XmlTags.EARTH);
@@ -447,7 +444,7 @@ public class MapLoader {
 				earthNode.InsertBefore (boundsNode, earthNode.FirstChild);
 
 				// Ajout d'un nouveau noeud XML pour chaque groupe de noeuds contenu dans l'application
-				foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in cityBuilder.NodeGroups) {
+				foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 					NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 					// Appel de la fonction récursive mettant à jour les attributs des groupes de noeuds pour le zones
@@ -791,7 +788,7 @@ public class MapLoader {
 		XmlDocument mapsSettingsDocument = new XmlDocument ();
 
 		// Suppression de tous les groupes de noeuds jusque là stockés
-		cityBuilder.NodeGroups.Clear ();
+		nodeGroupBase.NodeGroups.Clear ();
 
 		if (File.Exists (mapResumedFilePath)) {
 			mapsSettingsDocument.Load (mapResumedFilePath);
@@ -920,7 +917,7 @@ public class MapLoader {
 				}
 
 				// Ajout du groupe de noeuds courant à la liste de tous les groupes de noeuds
-				cityBuilder.AddNodeGroup(nodeGroup);
+				nodeGroupBase.AddNodeGroup(nodeGroup);
 			}
 		}
 	}

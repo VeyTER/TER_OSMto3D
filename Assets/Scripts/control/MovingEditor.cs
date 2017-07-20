@@ -69,7 +69,7 @@ public class MovingEditor : ObjectEditor {
 		moveHandlerStartOffset = mousePosition - moveHandlerStartPosition;
 
 		// Mise à jour des témoins de sélection
-		buildingTransformed = true;
+		isBuildingTransformed = true;
 
 		// Déplacement de l'objet à sa position initiale
 		this.MoveObject ();
@@ -145,7 +145,7 @@ public class MovingEditor : ObjectEditor {
 	}
 
 	public override void ValidateTransform() {
-		if(buildingTransformed) {
+		if(isBuildingTransformed) {
 			if (!transformedObjects.Contains(selectedBuilding))
 				transformedObjects.Add(selectedBuilding);
 			buildingsTools.UpdateNodesPosition(selectedBuilding);
@@ -153,7 +153,7 @@ public class MovingEditor : ObjectEditor {
 	}
 
 	public override void CancelTransform() {
-		if(buildingTransformed) {
+		if(isBuildingTransformed) {
 			selectedBuilding.transform.position = selectedBuildingStartPos;
 
 			Vector3 buildingPosition = selectedBuilding.transform.position;

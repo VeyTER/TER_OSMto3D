@@ -43,15 +43,15 @@ public class HeightChangingEditor : ObjectEditor {
 		selectedBuildingStartHeight = nodeGroup.NbFloor;
 	}
 
-	public int DesiredDirection(GameObject clickedWall) {
+	public int DesiredDirection(GameObject clickedBuildingPart) {
 		int i = 0;
-		for (; i < topFloor.transform.childCount && clickedWall != topFloor.transform.GetChild(i).gameObject; i++) ;
+		for (; i < topFloor.transform.childCount && clickedBuildingPart != topFloor.transform.GetChild(i).gameObject; i++) ;
 
 		if (i < topFloor.transform.childCount) {
 			return 1;
 		} else {
 			int j = 0;
-			for (; j < bottomFloor.transform.childCount && clickedWall != bottomFloor.transform.GetChild(j).gameObject; j++) ;
+			for (; j < bottomFloor.transform.childCount && clickedBuildingPart != bottomFloor.transform.GetChild(j).gameObject; j++) ;
 
 			if (j < bottomFloor.transform.childCount)
 				return -1;

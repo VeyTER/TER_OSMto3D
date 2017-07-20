@@ -148,11 +148,9 @@ public class EditController : MonoBehaviour {
 	/// 	sélectionné et remonte au bâtiment entier grâce aux liens de parenté.
 	/// </summary>
 	/// <param name="selectedWall">Mur sur lequel l'utilisateur a cliqué.</param>
-	public void SwitchBuilding(GameObject selectedWall) {
+	public void SwitchBuilding(GameObject newBuilding) {
 		if(selectedBuilding != null)
 			buildingsTools.DiscolorAsSelected(selectedBuilding);
-
-		GameObject newBuilding = selectedWall.transform.parent.gameObject;
 
 		// Changement de la couleur du bâtiment sélectionné
 		buildingsTools.ColorAsSelected(newBuilding);
@@ -184,17 +182,17 @@ public class EditController : MonoBehaviour {
 				buildingsInitAngle.Add(selectedBuilding, selectedBuilding.transform.rotation.eulerAngles.y);
 			}
 
-			if (!buildingsInitHeight.ContainsKey(SelectedBuilding))
+			if (!buildingsInitHeight.ContainsKey(selectedBuilding))
 				buildingsInitHeight.Add(selectedBuilding, nodeGroup.NbFloor);
 
-			GameObject firstWall = SelectedBuilding.transform.GetChild(0).gameObject;
-			MeshRenderer meshRenderer = firstWall.GetComponent<MeshRenderer>();
+			GameObject walls = selectedBuilding.transform.GetChild(CityBuilder.WALLS_INDEX).gameObject;
+			MeshRenderer meshRenderer = walls.GetComponent<MeshRenderer>();
 
-			if (!buildingsInitMaterial.ContainsKey(SelectedBuilding))
-				buildingsInitMaterial.Add(SelectedBuilding, meshRenderer.materials[0]);
+			if (!buildingsInitMaterial.ContainsKey(selectedBuilding))
+				buildingsInitMaterial.Add(selectedBuilding, meshRenderer.materials[0]);
 
-			if (!buildingsInitColor.ContainsKey(SelectedBuilding))
-				buildingsInitColor.Add(SelectedBuilding, meshRenderer.materials[0].color);
+			if (!buildingsInitColor.ContainsKey(selectedBuilding))
+				buildingsInitColor.Add(selectedBuilding, meshRenderer.materials[0].color);
 
 			// Enregistrement de la situation initiale de la caméra
 			if (editState == EditStates.NONE_SELECTION) {
@@ -269,8 +267,10 @@ public class EditController : MonoBehaviour {
 		building.name = newName;
 
 		// Changement du nom des murs apparentés au bâtiment
-		for (int i = 0; i < building.transform.childCount; i++)
-			building.transform.GetChild (i).name = newName + "_mur_" + i;
+		foreach (Transform buildingPartTransform in building.transform) {
+			string oldName = buildingPartTransform.name.Split('_')[0];
+			buildingPartTransform.name = buildingPartTransform.name.Replace(oldName, newName);
+		}
 	}
 
 
@@ -444,45 +444,50 @@ public class EditController : MonoBehaviour {
 	/// 	de BuildingTools pour mettre à jour les objets dans les différents fichiers.
 	/// </summary>
 	public void ValidateEdit() {
-		// Rennomage des bâtiments et de leurs murs dans les fichiers si ceux-ci ont bien changé le nom
-		foreach (KeyValuePair<GameObject, string> buildingEntry in renamedBuildings) {
-			GameObject renamedBuilding = (GameObject)buildingEntry.Key;
-			string oldName = buildingEntry.Value;
-
-			if(!renamedBuilding.name.Equals(oldName))
-				buildingsTools.UpdateName (renamedBuilding);
-		}
-
 		// Stockage des objets modifiés dans un ensemble pour éviter de mettre à jour deux fois les mêmes bâtiments
 		// (un HashSet supprimant les doublons)
-		HashSet<GameObject> movedOrTurnedObjects = new HashSet<GameObject> ();
+		HashSet<GameObject> movedOrTurnedObjects = new HashSet<GameObject>();
 
-		// Mise à jour des groupes de noeuds correspondant aux bâtiments déplacés
+		this.ValidateRenaming();
+
+		this.ValidateMoving(movedOrTurnedObjects);
+		this.ValidateTurning(movedOrTurnedObjects);
+		this.UpdateLinkedEntitiesPosition(movedOrTurnedObjects);
+
+		this.ValidateHeightChanging();
+		this.ValidateSkinChanging();
+
+		// Suppression des situations initiales des objets modifiés
+		this.ClearHistory ();
+	}
+
+	private void ValidateRenaming() {
+		foreach (KeyValuePair<GameObject, string> buildingEntry in renamedBuildings) {
+			GameObject renamedBuilding = (GameObject) buildingEntry.Key;
+			string oldName = buildingEntry.Value;
+
+			if (!renamedBuilding.name.Equals(oldName))
+				buildingsTools.UpdateName(renamedBuilding);
+		}
+	}
+
+	private void ValidateMoving(HashSet<GameObject> movedOrTurnedObjects) {
 		foreach (KeyValuePair<GameObject, Vector3> buildingPositionEntry in buildingsInitPos) {
 			GameObject building = buildingPositionEntry.Key;
-			buildingsTools.UpdateNodesPosition (building);
-			movedOrTurnedObjects.Add (building);
+			buildingsTools.UpdateNodesPosition(building);
+			movedOrTurnedObjects.Add(building);
 		}
+	}
 
-		// Mise à jour des groupes de noeuds correspondant aux bâtiments tournés
+	private void ValidateTurning(HashSet<GameObject> movedOrTurnedObjects) {
 		foreach (KeyValuePair<GameObject, float> buildingAngleEntry in buildingsInitAngle) {
 			GameObject building = buildingAngleEntry.Key;
-			buildingsTools.UpdateNodesPosition (building);
-			movedOrTurnedObjects.Add (building);
+			buildingsTools.UpdateNodesPosition(building);
+			movedOrTurnedObjects.Add(building);
 		}
+	}
 
-		// Mise à jour, dans les fichiers, des données conernant les bâtiments modifiés
-		foreach (GameObject building in movedOrTurnedObjects) {
-			Vector3 buildingInitPos = buildingsInitPos[building];
-			float buildingInitAngle = buildingsInitAngle[building];
-
-			if (!building.transform.position.Equals (buildingInitPos) || building.transform.rotation.eulerAngles.y != buildingInitAngle)
-				buildingsTools.UpdateLocation (building);
-
-			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
-				this.UpdateAttachedDisplayPosition(building);
-		}
-
+	private void ValidateHeightChanging() {
 		foreach (KeyValuePair<GameObject, int> buildingHeightEntry in buildingsInitHeight) {
 			GameObject building = buildingHeightEntry.Key;
 			int buildingInitHeight = buildingHeightEntry.Value;
@@ -492,9 +497,11 @@ public class EditController : MonoBehaviour {
 				buildingsTools.UpdateHeight(building, nodeGroup.NbFloor);
 
 			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
-				this.UpdateAttachedDisplayPosition(building);
+				this.UpdateDataDisplayPosition(building);
 		}
+	}
 
+	private void ValidateSkinChanging() {
 		foreach (KeyValuePair<GameObject, Material> buildingMaterialEntry in buildingsInitMaterial) {
 			GameObject building = buildingMaterialEntry.Key;
 			Material buildingInitMaterial = buildingMaterialEntry.Value;
@@ -512,59 +519,72 @@ public class EditController : MonoBehaviour {
 			if (!buildingInitColor.Equals(nodeGroup.OverlayColor))
 				buildingsTools.UpdateColor(building, nodeGroup.OverlayColor);
 		}
-
-		// Suppression des situations initiales des objets modifiés
-		this.ClearHistory ();
 	}
-
 
 	/// <summary>
 	/// 	Annule la modification de tous les bâtiments de la session courante en leur affectant leurs caractéristiques
 	/// 	de départ.
 	/// </summary>
+	/// 
 	public void CancelEdit() {
-		// Rennomage des bâtiments et de leurs murs avec leur nom initial
+		this.CancelRenaming();
+		this.CancelMoving();
+		this.CancelTurning();
+		this.CancelHeightChanging();
+		this.CancelSkinChanging();
+
+		// Suppression des situations initiales des objets modifiés
+		this.ClearHistory ();
+	}
+
+	private void CancelRenaming() {
 		foreach (KeyValuePair<GameObject, string> buildingEntry in renamedBuildings) {
-			GameObject renamedBuilding = (GameObject)buildingEntry.Key;
+			GameObject renamedBuilding = (GameObject) buildingEntry.Key;
 			string oldName = buildingEntry.Value;
 
 			renamedBuilding.name = oldName;
-			for (int i = 0; i < renamedBuilding.transform.childCount; i++)
-				renamedBuilding.transform.GetChild (i).name = oldName + "_mur_" + i;
+			foreach (Transform buildingPartTransform in renamedBuilding.transform) {
+				string currentName = buildingPartTransform.name.Split('_')[0];
+				buildingPartTransform.name = buildingPartTransform.name.Replace(currentName, oldName);
+			}
 		}
+	}
 
-		// Affectation à chaque batiment de la position qu'il avait lorsqu'il a été sélectionné par l'utilisateur
+	private void CancelMoving() {
 		foreach (KeyValuePair<GameObject, Vector3> buildingPositionEntry in buildingsInitPos) {
 			GameObject building = buildingPositionEntry.Key;
 			building.transform.position = buildingPositionEntry.Value;
 
-			GameObject buildingNodes = buildingsTools.BuildingToBuildingNodeGroup (building);
+			GameObject buildingNodes = buildingsTools.BuildingToBuildingNodeGroup(building);
 
 			Vector3 buildingPosition = building.transform.position;
 			Vector3 buildingNodesGroupPosition = buildingNodes.transform.position;
 
-			buildingNodes.transform.position = new Vector3 (buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
-			buildingsTools.UpdateNodesPosition (building);
+			buildingNodes.transform.position = new Vector3(buildingPosition.x, buildingNodesGroupPosition.y, buildingPosition.z);
+			buildingsTools.UpdateNodesPosition(building);
 
 			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
-				this.UpdateAttachedDisplayPosition(building);
+				this.UpdateDataDisplayPosition(building);
 		}
+	}
 
-		// Affectation à chaque batiment de l'angle qu'il avait lorsqu'il a été sélectionné par l'utilisateur
+	private void CancelTurning() {
 		foreach (KeyValuePair<GameObject, float> buildingAngleEntry in buildingsInitAngle) {
 			GameObject building = buildingAngleEntry.Key;
 			Quaternion buildingRotation = building.transform.rotation;
-			building.transform.rotation = building.transform.rotation = Quaternion.Euler (buildingRotation.x, buildingAngleEntry.Value, buildingRotation.z);
+			building.transform.rotation = building.transform.rotation = Quaternion.Euler(buildingRotation.x, buildingAngleEntry.Value, buildingRotation.z);
 
-			GameObject buildingNodes = buildingsTools.BuildingToBuildingNodeGroup (building);
+			GameObject buildingNodes = buildingsTools.BuildingToBuildingNodeGroup(building);
 
 			float buildingAngle = building.transform.rotation.eulerAngles.y;
 			Quaternion buildingNodesGroupRotation = buildingNodes.transform.rotation;
 
-			buildingNodes.transform.rotation = Quaternion.Euler (buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
-			buildingsTools.UpdateNodesPosition (building);
+			buildingNodes.transform.rotation = Quaternion.Euler(buildingNodesGroupRotation.x, buildingAngle, buildingNodesGroupRotation.z);
+			buildingsTools.UpdateNodesPosition(building);
 		}
+	}
 
+	private void CancelHeightChanging() {
 		foreach (KeyValuePair<GameObject, int> buildingHeightEntry in buildingsInitHeight) {
 			GameObject building = buildingHeightEntry.Key;
 			int buildingHeight = buildingHeightEntry.Value;
@@ -575,9 +595,11 @@ public class EditController : MonoBehaviour {
 			buildingsTools.ChangeBuildingHeight(building, buildingHeight);
 
 			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
-				this.UpdateAttachedDisplayPosition(building);
+				this.UpdateDataDisplayPosition(building);
 		}
+	}
 
+	private void CancelSkinChanging() {
 		foreach (KeyValuePair<GameObject, Material> buildingMaterialEntry in buildingsInitMaterial) {
 			GameObject building = buildingMaterialEntry.Key;
 			Material buildingInitMaterial = buildingMaterialEntry.Value;
@@ -589,17 +611,27 @@ public class EditController : MonoBehaviour {
 			Color buildingInitColor = buildingColorEntry.Value;
 			buildingsTools.ReplaceColor(building, buildingInitColor);
 		}
-
-		// Suppression des situations initiales des objets modifiés
-		this.ClearHistory ();
 	}
 
-	private void UpdateAttachedDisplayPosition(GameObject building) {
-		GameObject firstWall = building.transform.GetChild(0).gameObject;
+	private void UpdateLinkedEntitiesPosition(HashSet<GameObject> movedOrTurnedObjects) {
+		foreach (GameObject building in movedOrTurnedObjects) {
+			Vector3 buildingInitPos = buildingsInitPos[building];
+			float buildingInitAngle = buildingsInitAngle[building];
+
+			if (!building.transform.position.Equals(buildingInitPos) || building.transform.rotation.eulerAngles.y != buildingInitAngle)
+				buildingsTools.UpdateLocation(building);
+
+			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
+				this.UpdateDataDisplayPosition(building);
+		}
+	}
+
+	private void UpdateDataDisplayPosition(GameObject building) {
 		GameObject dataDisplay = buildingsTools.BuildingToDataDisplay(building);
 
 		Vector3 buildingPosition = building.transform.position;
-		dataDisplay.transform.position = new Vector3(buildingPosition.x, firstWall.transform.localScale.y, buildingPosition.z);
+		float buildingHeight = buildingsTools.BuildingHeight(building);
+		dataDisplay.transform.position = new Vector3(buildingPosition.x, buildingHeight, buildingPosition.z);
 	}
 
 	/// <summary>

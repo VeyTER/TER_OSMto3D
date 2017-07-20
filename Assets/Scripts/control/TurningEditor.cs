@@ -67,7 +67,7 @@ public class TurningEditor : ObjectEditor {
 		turnHandlerStartOffset = mouseAngle - turnHandlerStartAngle;
 
 		// Mise à jour des témoins de sélection
-		buildingTransformed = true;
+		isBuildingTransformed = true;
 
 		// Rotation de l'objet à sa position initiale
 		this.TurnObject ();
@@ -117,7 +117,7 @@ public class TurningEditor : ObjectEditor {
 	}
 
 	public override void ValidateTransform() {
-		if (buildingTransformed) {
+		if (isBuildingTransformed) {
 			if (!transformedObjects.Contains(selectedBuilding))
 				transformedObjects.Add(selectedBuilding);
 
@@ -126,7 +126,7 @@ public class TurningEditor : ObjectEditor {
 	}
 
 	public override void CancelTransform() {
-		if (buildingTransformed) {
+		if (isBuildingTransformed) {
 			Quaternion selectedBuildingRotation = selectedBuilding.transform.rotation;
 			selectedBuilding.transform.rotation = Quaternion.Euler(selectedBuildingRotation.x, selectedBuildingStartAngle, selectedBuildingRotation.z);
 
