@@ -15,7 +15,7 @@ public class RoofBuilder {
 	/// <param name="triangulation">Triangulation de Delauney.</param>
 	/// <param name="nbFloor">Nombre d'étages du bâtiments sur lequel le toit va être ajouté.</param>
 	/// <param name="floorSize">Hauteur des étages du bâtiment sur lequel le toit va être ajouté.</param>
-	public GameObject BuildRoof(GameObject building, NodeGroup nodeGroup, float expansionFactor = 1) {
+	public GameObject BuildRoof(GameObject building, NodeGroup nodeGroup, float expansionFactor = 0.035F) {
 		Triangulation triangulation = new Triangulation(nodeGroup);
 		triangulation.Triangulate(nodeGroup.Name);
 
@@ -65,50 +65,68 @@ public class RoofBuilder {
 
 		Vector2 buildingPosition = new Vector2(building.transform.position.x, building.transform.position.z);
 
+		if (building.name.Equals("U1")) {
+			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			cube.transform.position = new Vector3(triangulation.Triangles[0].NodeA.ToVector().x, 0, triangulation.Triangles[0].NodeA.ToVector().y);
+			cube.transform.localScale = new Vector3(0.05F, 0.05F, 0.05F);
+		}
+
 		float jitter = 0F;
 		int index = 0;
 		foreach (Triangle triangle in triangulation.Triangles) {
-			if (!nodesAndIndex.ContainsKey(triangle.NodeA)) {
-				float posX2 = (float) (triangle.NodeA.Longitude - buildingPosition.x);
-				float posZ2 = (float) (triangle.NodeA.Latitude - buildingPosition.y);
+			if (!nodesAndIndex.ContainsKey(triangle.NodeA))
+				this.AddTriangleVertices(triangulation, triangle.NodeA, buildingPosition, jitter, res, ref index, nodesAndIndex, expansionFactor, building.name);
 
-				res[index] = new Vector3(posX2, UnityEngine.Random.Range(-jitter / 2F, jitter / 2F), posZ2);
-				nodesAndIndex[triangle.NodeA] = index;
+			if (!nodesAndIndex.ContainsKey(triangle.NodeB))
+				this.AddTriangleVertices(triangulation, triangle.NodeB, buildingPosition, jitter, res, ref index, nodesAndIndex, expansionFactor, building.name);
 
-				index++;
-			}
-
-			if (!nodesAndIndex.ContainsKey(triangle.NodeB)) {
-				float posX2 = (float) (triangle.NodeB.Longitude - buildingPosition.x);
-				float posZ2 = (float) (triangle.NodeB.Latitude - buildingPosition.y);
-
-				res[index] = new Vector3(posX2, UnityEngine.Random.Range(-jitter / 2F, jitter / 2F), posZ2);
-				nodesAndIndex[triangle.NodeB] = index;
-
-				index++;
-			}
-
-			if (!nodesAndIndex.ContainsKey(triangle.NodeC)) {
-				float posX2 = (float) (triangle.NodeC.Longitude - buildingPosition.x);
-				float posZ2 = (float) (triangle.NodeC.Latitude - buildingPosition.y);
-
-				res[index] = new Vector3(posX2, UnityEngine.Random.Range(-jitter / 2F, jitter / 2F), posZ2);
-				nodesAndIndex[triangle.NodeC] = index;
-
-				//this.AddTriangleVertices(triangle, buildingPosition, jitter, res, index, nodesAndIndex);
-
-				index++;
-			}
+			if (!nodesAndIndex.ContainsKey(triangle.NodeC))
+				this.AddTriangleVertices(triangulation, triangle.NodeC, buildingPosition, jitter, res, ref index, nodesAndIndex, expansionFactor, building.name);
 		}
 		return res;
 	}
 
-	private void AddTriangleVertices(Triangle triangle, Vector2 buildingPosition, float jitter, Vector3[] res, int index, Dictionary<Node, int> nodesAndIndex) {
-		float posX2 = (float) (triangle.NodeC.Longitude - buildingPosition.x);
-		float posZ2 = (float) (triangle.NodeC.Latitude - buildingPosition.y);
+	private void AddTriangleVertices(Triangulation triangulation, Node node, Vector2 buildingPosition, float jitter, Vector3[] res, ref int index, Dictionary<Node, int> nodesAndIndex, float expansionFactor, string buildingName = "") {
+		float posX = (float) (node.Longitude - buildingPosition.x);
+		float posZ = (float) (node.Latitude - buildingPosition.y);
 
-		res[index] = new Vector3(posX2, UnityEngine.Random.Range(-jitter / 2F, jitter / 2F), posZ2);
-		nodesAndIndex[triangle.NodeC] = index;
+		BuildingShape buildingShape = triangulation.BuildingShape;
+
+		Edge currentEdge = buildingShape.GetEdge(node, 1);
+		Edge nextEdge = buildingShape.NextEdge(currentEdge);
+
+		float currentEdgeOrientation = currentEdge.InvertedCopy().Orientation();
+		float nextEdgeOrientation = nextEdge.Orientation();
+
+		float bisectrixOrientation = (float)(Math.PI - (currentEdgeOrientation + (nextEdgeOrientation - currentEdgeOrientation) / 2F) + (Math.PI / 2F));
+
+		GameObject aiguille = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		aiguille.transform.position = new Vector3((float)node.Longitude, 0, (float)node.Latitude);
+		aiguille.transform.localScale = new Vector3(0.01F, 0.01F, 0.1F);
+		aiguille.transform.rotation = Quaternion.Euler(0, bisectrixOrientation * Mathf.Rad2Deg, 0);
+
+		GameObject repere = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		repere.transform.SetParent(aiguille.transform, false);
+		repere.transform.localPosition = new Vector3(0, 0, 0.5F);
+		repere.transform.localScale = new Vector3(2, 2, 0.1F);
+
+		if (buildingName.Equals("U1")) {
+			Debug.Log(currentEdgeOrientation * Mathf.Rad2Deg + "  " + nextEdgeOrientation * Mathf.Rad2Deg);
+		}
+
+		float shiftedPosX = posX;
+		float shiftedPosZ = posZ;
+		if (currentEdgeOrientation < nextEdgeOrientation) {
+			shiftedPosX = (float) (posX + Math.Sin(bisectrixOrientation) * expansionFactor);
+			shiftedPosZ = (float) (posZ + Math.Cos(bisectrixOrientation) * expansionFactor);
+		} else {
+			shiftedPosX = (float) (posX - Math.Sin(bisectrixOrientation) * expansionFactor);
+			shiftedPosZ = (float) (posZ - Math.Cos(bisectrixOrientation) * expansionFactor);
+		}
+
+		res[index] = new Vector3(shiftedPosX, UnityEngine.Random.Range(-jitter / 2F, jitter / 2F), shiftedPosZ);
+		nodesAndIndex[node] = index;
+		index++;
 	}
 
 	/// <summary>

@@ -11,7 +11,7 @@ public class Triangulation {
 
 	private NodeGroup nodeGroup;
 
-	private BuildingShape edgeShape;
+	private BuildingShape buildingShape;
 	private List<Triangle> triangles;
 
 	private List<GameObject> testCubes;
@@ -19,7 +19,7 @@ public class Triangulation {
 	public Triangulation(NodeGroup nodeGroup) {
 		this.nodeGroup = nodeGroup;
 
-		this.edgeShape = new BuildingShape();
+		this.buildingShape = new BuildingShape();
 		this.triangles = new List<Triangle>();
 
 		this.testCubes = new List<GameObject>();
@@ -44,17 +44,19 @@ public class Triangulation {
 			newEdges.Add(newEdge);
 		}
 
-		edgeShape.ReplaceEdges(newEdges);
+		buildingShape.ReplaceEdges(newEdges);
 	}
 
 	private void BuildTriangulation() {
-		while (edgeShape.EdgeCount() > 3 && edgeShape.EarTipNodes.Count > 0) {
-			int i = 0;
-			for (; i < edgeShape.EdgeCount() && !edgeShape.EarTipNodes.Contains(edgeShape.GetEdge(i).NodeB); i++) ;
+		BuildingShape shapeClone = buildingShape.Clone();
 
-			if (i < edgeShape.EdgeCount()) {
-				Edge currentEdge = edgeShape.GetEdge(i);
-				Edge nextEdge = edgeShape.NextEdge(i);
+		while (shapeClone.EdgeCount() > 3 && shapeClone.EarTipNodes.Count > 0) {
+			int i = 0;
+			for (; i < shapeClone.EdgeCount() && !shapeClone.EarTipNodes.Contains(shapeClone.GetEdge(i).NodeB); i++) ;
+
+			if (i < shapeClone.EdgeCount()) {
+				Edge currentEdge = shapeClone.GetEdge(i);
+				Edge nextEdge = shapeClone.NextEdge(i);
 
 				Node previousNode = currentEdge.NodeA;
 				Node earTipNode = currentEdge.NodeB;
@@ -64,25 +66,25 @@ public class Triangulation {
 
 				Triangle triangle = new Triangle(previousNode, earTipNode, nextNode);
 
-				edgeShape.RemoveEdge(currentEdge, true);
+				shapeClone.RemoveEdge(currentEdge, true);
 
 				if (!currentEdge.Equals(nextEdge)) {
-					edgeShape.ReplaceEdge(nextEdge, newEdge, true);
+					shapeClone.ReplaceEdge(nextEdge, newEdge, true);
 					triangles.Add(triangle);
 				}
 			}
 		}
 
-		if (edgeShape.EdgeCount() == 3) {
-			Triangle triangle = new Triangle(edgeShape.GetEdge(0).NodeA, edgeShape.GetEdge(0).NodeB, edgeShape.GetEdge(1).NodeB);
+		if (shapeClone.EdgeCount() == 3) {
+			Triangle triangle = new Triangle(shapeClone.GetEdge(0).NodeA, shapeClone.GetEdge(0).NodeB, shapeClone.GetEdge(1).NodeB);
 			triangles.Add(triangle);
 		}
 
-		edgeShape.Clear();
+		shapeClone.Clear();
 	}
 
-	public BuildingShape EdgeShape {
-		get { return edgeShape; }
+	public BuildingShape BuildingShape {
+		get { return buildingShape; }
 	}
 
 	public List<Triangle> Triangles {

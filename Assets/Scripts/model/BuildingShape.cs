@@ -14,8 +14,19 @@ public class BuildingShape {
 		this.edgesShape = new List<Edge>();
 
 		this.convexNodes = new List<Node>();
-		this.reflexNodes = new List<Node>();
 		this.earTipNodes = new List<Node>();
+		this.reflexNodes = new List<Node>();
+	}
+
+	public BuildingShape Clone() {
+		BuildingShape shapeClone = new BuildingShape();
+		shapeClone.EdgesShape.AddRange(edgesShape);
+
+		shapeClone.ConvexNodes.AddRange(convexNodes);
+		shapeClone.EarTipNodes.AddRange(earTipNodes);
+		shapeClone.ReflexNodes.AddRange(reflexNodes);
+
+		return shapeClone;
 	}
 
 	public void ReplaceEdges(List<Edge> newEdges) {
@@ -33,6 +44,19 @@ public class BuildingShape {
 
 	public Edge GetEdge(int index) {
 		return edgesShape[index];
+	}
+
+	public Edge GetEdge(Node refNode, int positionInEdge) {
+		int index = 0;
+		if (positionInEdge < 0)
+			for (; index < edgesShape.Count && !edgesShape[index].NodeA.Equals(refNode); index++) ;
+		else if (positionInEdge > 0)
+			for (; index < edgesShape.Count && !edgesShape[index].NodeB.Equals(refNode); index++) ;
+
+		if (index < edgesShape.Count)
+			return edgesShape[index];
+		else
+			return null;
 	}
 
 	public void ReplaceEdge(int index, Edge newEdge, bool updateLabels) {
@@ -88,8 +112,12 @@ public class BuildingShape {
 
 	public Edge NextEdge(Edge flagEdge) {
 		int flagEdgeIndex = edgesShape.IndexOf(flagEdge);
-		int nextEdgeIndex = (flagEdgeIndex + 1) % edgesShape.Count;
-		return edgesShape[nextEdgeIndex];
+		if (flagEdgeIndex > -1) {
+			int nextEdgeIndex = (flagEdgeIndex + 1) % edgesShape.Count;
+			return edgesShape[nextEdgeIndex];
+		} else {
+			return null;
+		}
 	}
 
 	public Edge NextEdge(int index) {
@@ -165,7 +193,7 @@ public class BuildingShape {
 		return res;
 	}
 
-	public List<Edge> Edges {
+	public List<Edge> EdgesShape {
 		get { return edgesShape; }
 	}
 
