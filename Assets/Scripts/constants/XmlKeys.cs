@@ -14,12 +14,21 @@ public class XmlKeys {
 	///</summary>
 	public const string NAME = "name";
 
+	public const string BUILDING = "building";
 
 	/// <summary>
 	/// 	<para>Nom de la clé de la propriété donnant le type d'une route.</para>
 	/// 	<para>NE PAS MODIFIER</para>
 	///</summary>
 	public const string HIGHWAY = "highway";
+
+	/// <summary>
+	/// 	<para>Nom de la clé de la propriété donnant le type d'une route.</para>
+	/// 	<para>NE PAS MODIFIER</para>
+	///</summary>
+	public const string WATERWAY = "waterway";
+
+	public const string LANES = "lanes";
 
 	/// <summary>
 	/// 	<para>Nom de la clé de la propriété donnant la limitation de vitesse d'une route.</para>

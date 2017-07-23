@@ -17,13 +17,13 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public void InitializeHeightChangingMode() {
-		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 
 		Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 		Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
 
-		topFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor + 1, greenOverlay, true);
-		bottomFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, nodeGroup.NbFloor, redOverlay, false);
+		topFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, buildingNodeGroup.NbFloor + 1, greenOverlay, true);
+		bottomFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, buildingNodeGroup.NbFloor, redOverlay, false);
 
 		topFloor.AddComponent<StageColorController>();
 		bottomFloor.AddComponent<StageColorController>();
@@ -40,7 +40,7 @@ public class HeightChangingEditor : ObjectEditor {
 		topFloorColorController.StartCoroutine( topFloorColorController.Animate() );
 		bottomFloorColorController.StartCoroutine( bottomFloorColorController.Animate() );
 
-		selectedBuildingStartHeight = nodeGroup.NbFloor;
+		selectedBuildingStartHeight = buildingNodeGroup.NbFloor;
 	}
 
 	public int DesiredDirection(GameObject clickedBuildingPart) {
@@ -53,18 +53,18 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public void IncrementObjectHeight() {
-		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		buildingsTools.ChangeBuildingHeight(selectedBuilding, nodeGroup.NbFloor + 1);
-		nodeGroup.NbFloor++;
+		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		buildingsTools.ChangeBuildingHeight(selectedBuilding, buildingNodeGroup.NbFloor + 1);
+		buildingNodeGroup.NbFloor++;
 
 		this.ShiftVirtualFloors(1);
 		this.UpdateCameraPosition();
 	}
 
 	public void DecrementObjectHeight() {
-		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		buildingsTools.ChangeBuildingHeight(selectedBuilding, nodeGroup.NbFloor - 1);
-		nodeGroup.NbFloor--;
+		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		buildingsTools.ChangeBuildingHeight(selectedBuilding, buildingNodeGroup.NbFloor - 1);
+		buildingNodeGroup.NbFloor--;
 
 		this.ShiftVirtualFloors(-1);
 		this.UpdateCameraPosition();
@@ -94,8 +94,8 @@ public class HeightChangingEditor : ObjectEditor {
 	public override void CancelTransform() {
 		buildingsTools.ChangeBuildingHeight(selectedBuilding, selectedBuildingStartHeight);
 
-		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		nodeGroup.NbFloor = selectedBuildingStartHeight;
+		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		buildingNodeGroup.NbFloor = selectedBuildingStartHeight;
 	}
 
 	public int SelectedBuildingStartHeight {

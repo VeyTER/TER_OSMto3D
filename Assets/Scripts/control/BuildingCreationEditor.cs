@@ -110,15 +110,15 @@ public class BuildingCreationEditor : ObjectEditor {
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 
 		// TODO
-		//GameObject buildingNodeGroup = cityBuilder.BuildSingleBuildingNodeGroup(nodeGroup);
+		//GameObject buildingNodeGroupGo = cityBuilder.BuildSingleBuildingNodeGroup(nodeGroup);
 
 		//selectedBuilding.AddComponent<UiManager>();
 		//selectedBuilding.transform.parent = cityBuilder.Buildings.transform;
-		//buildingNodeGroup.transform.parent = cityBuilder.BuildingNodes.transform;
+		//buildingNodeGroupGo.transform.parent = cityBuilder.BuildingNodes.transform;
 
 		//Vector3 buildingPosition = selectedBuilding.transform.position;
-		//buildingNodeGroup.transform.position = new Vector3(buildingPosition.x, buildingNodeGroup.transform.position.y, buildingPosition.z);
-		//buildingNodeGroup.transform.rotation = selectedBuilding.transform.rotation;
+		//buildingNodeGroupGo.transform.position = new Vector3(buildingPosition.x, buildingNodeGroup.transform.position.y, buildingPosition.z);
+		//buildingNodeGroupGo.transform.rotation = selectedBuilding.transform.rotation;
 		//buildingsTools.UpdateNodesPosition(selectedBuilding);
 
 		//Material defaultBuildingMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;

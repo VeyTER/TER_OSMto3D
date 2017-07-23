@@ -99,9 +99,9 @@ public class SkinChangingEditor : ObjectEditor {
 		selectedBuildingStartMaterial = meshRenderer.materials[0];
 		selectedBuildingStartColor = selectedBuildingStartMaterial.color;
 
-		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		nodeGroup.CustomMaterial = meshRenderer.materials[0];
-		nodeGroup.OverlayColor = selectedBuildingStartMaterial.color;
+		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		buildingNodeGroup.CustomMaterial = meshRenderer.materials[0];
+		buildingNodeGroup.OverlayColor = selectedBuildingStartMaterial.color;
 
 		int i = 0;
 		for (; i < materialsGridPanel.transform.childCount; i++) {
@@ -112,7 +112,7 @@ public class SkinChangingEditor : ObjectEditor {
 			string selectedMaterialName = buttonIdToMaterialTable[materialItem.GetInstanceID()].name;
 
 			string textureName = itemBody.GetComponent<Image>().material.name;
-			string itemMaterialName = nodeGroup.CustomMaterial.name.Replace(" (Instance)", "");
+			string itemMaterialName = buildingNodeGroup.CustomMaterial.name.Replace(" (Instance)", "");
 
 			if (selectedMaterialName.Equals(itemMaterialName)) {
 				this.UpdateMaterialItems(itemButton);
@@ -126,7 +126,7 @@ public class SkinChangingEditor : ObjectEditor {
 			GameObject itemButton = colorItem.transform.Find(UiNames.COLOR_ITEM_BUTTON).gameObject;
 
 			string selectedColorName = buttonIdToColorTable[colorItem.GetInstanceID()].ToString();
-			string itemColorName = nodeGroup.OverlayColor.ToString();
+			string itemColorName = buildingNodeGroup.OverlayColor.ToString();
 			if (selectedColorName.Equals(itemColorName)) {
 				this.UpdateColorItems(itemButton);
 				break;
@@ -209,17 +209,17 @@ public class SkinChangingEditor : ObjectEditor {
 		Material newMaterial = buttonIdToMaterialTable[sourceButton.transform.parent.gameObject.GetInstanceID()];
 		buildingsTools.ReplaceMaterial(selectedBuilding, newMaterial);
 
-		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		buildingsTools.ReplaceColor(selectedBuilding, nodeGroup.OverlayColor);
-		nodeGroup.CustomMaterial = newMaterial;
+		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		buildingsTools.ReplaceColor(selectedBuilding, buildingNodeGroup.OverlayColor);
+		buildingNodeGroup.CustomMaterial = newMaterial;
 	}
 
 	public void ChangeBuildingColor(GameObject sourceButton) {
 		Color newColor = buttonIdToColorTable[sourceButton.transform.parent.gameObject.GetInstanceID()];
 		buildingsTools.ReplaceColor(selectedBuilding, newColor);
 
-		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		nodeGroup.OverlayColor = newColor;
+		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		buildingNodeGroup.OverlayColor = newColor;
 	}
 
 	public override void ValidateTransform() {
@@ -232,9 +232,9 @@ public class SkinChangingEditor : ObjectEditor {
 		buildingsTools.ReplaceMaterial(selectedBuilding, selectedBuildingStartMaterial);
 		buildingsTools.ReplaceColor(selectedBuilding, selectedBuildingStartColor);
 
-		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
-		nodeGroup.CustomMaterial = selectedBuildingStartMaterial;
-		nodeGroup.OverlayColor = selectedBuildingStartColor;
+		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+		buildingNodeGroup.CustomMaterial = selectedBuildingStartMaterial;
+		buildingNodeGroup.OverlayColor = selectedBuildingStartColor;
 	}
 
 	public GameObject SkinPanel {

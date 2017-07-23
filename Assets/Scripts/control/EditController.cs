@@ -158,7 +158,7 @@ public class EditController : MonoBehaviour {
 		if (newBuilding != selectedBuilding) {
 			selectedBuilding = newBuilding;
 
-			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
+			BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 
 			// Activation et ourverture du panneau latéral s'il est inactif
 			if (!editPanel.activeInHierarchy) {
@@ -174,7 +174,7 @@ public class EditController : MonoBehaviour {
 
 			GameObject IdValueLabel = GameObject.Find(UiNames.ID_INDICATOR_LABEL);
 			Text idText = IdValueLabel.GetComponent<Text>();
-			idText.text = nodeGroup.Id;
+			idText.text = buildingNodeGroup.Id;
 
 			// Enregistrement de la situation initiale du bâtiment courant
 			if (!buildingsInitPos.ContainsKey(selectedBuilding) && !buildingsInitAngle.ContainsKey(selectedBuilding)) {
@@ -183,7 +183,7 @@ public class EditController : MonoBehaviour {
 			}
 
 			if (!buildingsInitHeight.ContainsKey(selectedBuilding))
-				buildingsInitHeight.Add(selectedBuilding, nodeGroup.NbFloor);
+				buildingsInitHeight.Add(selectedBuilding, buildingNodeGroup.NbFloor);
 
 			GameObject walls = selectedBuilding.transform.GetChild(CityBuilder.WALLS_INDEX).gameObject;
 			MeshRenderer meshRenderer = walls.GetComponent<MeshRenderer>();
@@ -492,9 +492,9 @@ public class EditController : MonoBehaviour {
 			GameObject building = buildingHeightEntry.Key;
 			int buildingInitHeight = buildingHeightEntry.Value;
 
-			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
-			if (buildingInitHeight != nodeGroup.NbFloor)
-				buildingsTools.UpdateHeight(building, nodeGroup.NbFloor);
+			BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(building);
+			if (buildingInitHeight != buildingNodeGroup.NbFloor)
+				buildingsTools.UpdateHeight(building, buildingNodeGroup.NbFloor);
 
 			if (cityBuilder.SensorsEquippedBuildingBase.ContainsName(building.name))
 				this.UpdateDataDisplayPosition(building);
@@ -506,18 +506,18 @@ public class EditController : MonoBehaviour {
 			GameObject building = buildingMaterialEntry.Key;
 			Material buildingInitMaterial = buildingMaterialEntry.Value;
 
-			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
-			if (!buildingInitMaterial.Equals(nodeGroup.CustomMaterial))
-				buildingsTools.UpdateMaterial(building, nodeGroup.CustomMaterial);
+			BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(building);
+			if (!buildingInitMaterial.Equals(buildingNodeGroup.CustomMaterial))
+				buildingsTools.UpdateMaterial(building, buildingNodeGroup.CustomMaterial);
 		}
 
 		foreach (KeyValuePair<GameObject, Color> buildingColorEntry in buildingsInitColor) {
 			GameObject building = buildingColorEntry.Key;
 			Color buildingInitColor = buildingColorEntry.Value;
 
-			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
-			if (!buildingInitColor.Equals(nodeGroup.OverlayColor))
-				buildingsTools.UpdateColor(building, nodeGroup.OverlayColor);
+			BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(building);
+			if (!buildingInitColor.Equals(buildingNodeGroup.OverlayColor))
+				buildingsTools.UpdateColor(building, buildingNodeGroup.OverlayColor);
 		}
 	}
 
@@ -589,8 +589,8 @@ public class EditController : MonoBehaviour {
 			GameObject building = buildingHeightEntry.Key;
 			int buildingHeight = buildingHeightEntry.Value;
 
-			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(building);
-			nodeGroup.NbFloor = buildingHeight;
+			BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(building);
+			buildingNodeGroup.NbFloor = buildingHeight;
 
 			buildingsTools.ChangeBuildingHeight(building, buildingHeight);
 

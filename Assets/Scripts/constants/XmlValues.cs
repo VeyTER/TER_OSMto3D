@@ -8,12 +8,6 @@
 /// 	</para>
 ///</summary>
 public class XmlValues {
-	/// <summary>
-	/// 	<para>Valeur typant une route en tant que voie pour véhicule spécial.</para>
-	/// 	<para>NE PAS MODIFIER</para>
-	///</summary>
-	public const string LANES = "lanes";
-
 	public const string THRESHOLD_EQUALS_CONDITION = "equals";
 	public const string THRESHOLD_NOT_EQUALS_CONDITION = "not equals";
 
