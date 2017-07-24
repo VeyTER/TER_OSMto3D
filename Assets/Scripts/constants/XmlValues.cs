@@ -13,4 +13,7 @@ public class XmlValues {
 
 	public const string THRESHOLD_IN_CONDITION = "in";
 	public const string THRESHOLD_OUT_CONDITION = "out";
+
+	public const string TRAFFIC_SIGNALS = "traffic_signals";
+	public const string TREE = "tree";
 }

@@ -120,11 +120,11 @@ public class MapLoader {
 
 					switch (key) {
 					case XmlKeys.HIGHWAY:
-						newNode = new HighwayComponentNode(newNode);
+						newNode = NodeFactory.CreateHighwayComponentNode(newNode);
 						extractedNodes.Add(newNode);
 						break;
 					case XmlKeys.NATURAL:
-						newNode = new NaturalComponentNode(newNode);
+						newNode = NodeFactory.CreateNaturalComponentNode(newNode);
 						break;
 					}
 
@@ -150,15 +150,23 @@ public class MapLoader {
 	/// <param name="OSMDocument">Document OSM contenant la carte.</param>
 	/// <param name="extractedNodes">Sous-noeuds extraits du fichier OSM.</param>
 	private void FoldExtractedNodes(XmlDocument OSMDocument, List<Node> extractedNodes) {
+		List<Node> foldedNodes = this.FoldNodeGroups(OSMDocument, extractedNodes);
+		this.FoldSingleNodes(extractedNodes, foldedNodes);		
+	}
+
+
+	private List<Node> FoldNodeGroups(XmlDocument OSMDocument, List<Node> extractedNodes) {
+		List<Node> usedNodes = new List<Node>();
+
 		// Rangement dand des noeuds XML des sous-noeuds XML extraits précédemment. Dans un même temps, stockage des
 		// sous-noeuds XML extraits dans des groupes de noeuds
-		XmlNodeList wayNodes = OSMDocument.GetElementsByTagName (XmlTags.WAY);
+		XmlNodeList wayNodes = OSMDocument.GetElementsByTagName(XmlTags.WAY);
 		foreach (XmlNode wayNode in wayNodes) {
 			// Extraction de l'ID de l'objet complexe
-			string id = this.AttributeValue (wayNode, XmlAttributes.ID);
+			string id = this.AttributeValue(wayNode, XmlAttributes.ID);
 
 			// Création, paramétrage et remplissage d'un nouveau groupe de noeuds avec les noeuds associés
-			NodeGroup nodeGroup = new NodeGroup (id, "unknown");
+			NodeGroup nodeGroup = new NodeGroup(id, "unknown");
 
 			/////////
 			// TODO : plutot faire un premier parcours pour détecter le type de groupe de noeuds, puis faire le parcours total
@@ -181,30 +189,26 @@ public class MapLoader {
 					// Changement de du nombre de voies dans le groupe de noeuds courant si la propriété représente
 					// cette valeur
 					if (key.Equals(XmlKeys.BUILDING)) {
-						if (nodeGroup.GetType() != typeof(BuildingNodeGroup)) {
-							nodeGroup = new BuildingNodeGroup(nodeGroup);
-						}
+						if (nodeGroup.GetType() != typeof(BuildingNodeGroup))
+							nodeGroup = NodeGroupFactory.CreateBuildingNodeGroup(nodeGroup);
 					} else if (key.Equals(XmlKeys.ROOF_SHAPE)) {
 						if (nodeGroup.GetType() != typeof(BuildingNodeGroup))
-							nodeGroup = new BuildingNodeGroup(nodeGroup);
+							nodeGroup = NodeGroupFactory.CreateBuildingNodeGroup(nodeGroup);
 						((BuildingNodeGroup) nodeGroup).RoofType = value;
 					} else if (key.Equals(XmlKeys.HIGHWAY)) {
 						if (nodeGroup.GetType() != typeof(HighwayNodeGroup))
-							nodeGroup = new HighwayNodeGroup(nodeGroup);
-					} else if(key.Equals(XmlKeys.LANES)) {
+							nodeGroup = NodeGroupFactory.CreateHighwayNodeGroup(nodeGroup);
+					} else if (key.Equals(XmlKeys.LANES)) {
 						if (nodeGroup.GetType() != typeof(HighwayNodeGroup))
-							nodeGroup = new HighwayNodeGroup(nodeGroup);
+							nodeGroup = NodeGroupFactory.CreateHighwayNodeGroup(nodeGroup);
 						((HighwayNodeGroup) nodeGroup).NbWay = int.Parse(value);
 					} else if (key.Equals(XmlKeys.MAX_SPEED)) {
 						if (nodeGroup.GetType() != typeof(HighwayNodeGroup))
-							nodeGroup = new HighwayNodeGroup(nodeGroup);
+							nodeGroup = NodeGroupFactory.CreateHighwayNodeGroup(nodeGroup);
 						((HighwayNodeGroup) nodeGroup).MaxSpeed = int.Parse(value);
-					}else if (key.Equals(XmlKeys.NATURAL)) {
-						if (nodeGroup.GetType() != typeof(NaturalNodeGroup))
-							nodeGroup = new NaturalNodeGroup(nodeGroup);
 					} else if (key.Equals(XmlKeys.WATERWAY)) {
 						if (nodeGroup.GetType() != typeof(WaterwayNodeGroup))
-							nodeGroup = new WaterwayNodeGroup(nodeGroup);
+							nodeGroup = NodeGroupFactory.CreateWaterwayNodeGroup(nodeGroup);
 					}
 
 					// Ajout de la propriété et de sa valeur au groupe de noeuds courant
@@ -214,7 +218,7 @@ public class MapLoader {
 
 			// Parcours inversé pour avoir le type de groupe noeud au plus vite
 			for (int i = 0; i < wayNode.ChildNodes.Count; i++) {
-				XmlNode childNode = wayNode.ChildNodes [i];
+				XmlNode childNode = wayNode.ChildNodes[i];
 
 				// Ajout du noeud après avoir trouvé sa correspondance avec un noeud déjà extrait si le noeuds XML
 				// contient un sous-noeud XML, sinon, si la balise est un noeud contenant des propriétés sur l'objet,
@@ -229,27 +233,44 @@ public class MapLoader {
 
 					if (j < extractedNodes.Count) {
 						Node extractedNode = extractedNodes[j];
+						usedNodes.Add(extractedNode);
 
-						if (nodeGroup.GetType() == typeof(BuildingNodeGroup))
-							nodeGroup.AddNode(new BuildingStepNode(extractedNode));
-						else if (nodeGroup.GetType() == typeof(HighwayNodeGroup))
-							nodeGroup.AddNode(new HighwayStepNode(extractedNode));
-						else if (nodeGroup.GetType() == typeof(WaterwayNodeGroup))
-							nodeGroup.AddNode(new WaterwayNode(extractedNode));
-						else if (nodeGroup.GetType() == typeof(NaturalNodeGroup))
-							nodeGroup.AddNode(new NaturalComponentNode(extractedNode));
+						if (nodeGroup.GetType() == typeof(BuildingNodeGroup)) {
+							nodeGroup.AddNode(NodeFactory.CreateBuildingStepNode(extractedNode));
+						} else if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
+							if (extractedNode.GetType() == typeof(HighwayComponentNode))
+								nodeGroup.AddNode(NodeFactory.CreateHighwayComponentNode(extractedNode));
+							else
+								nodeGroup.AddNode(NodeFactory.CreateHighwayStepNode(extractedNode));
+						} else if (nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
+							nodeGroup.AddNode(NodeFactory.CreateWaterwayStepNode(extractedNode));
+						} else if (nodeGroup.GetType() == typeof(NaturalNodeGroup)) {
+							nodeGroup.AddNode(NodeFactory.CreateNaturalComponentNode(extractedNode));
+						}
 					}
 				}
 			}
 
-			//if (nodeGroup.Type == "unknown") {
-			//	Debug.Log("==================================");
-			//	foreach(KeyValuePair<string, string> tag in nodeGroup.Tags)
-			//		Debug.Log(tag);
-			//}
-
-			if(!nodeGroup.Type.Equals("unknown"))
+			if (!nodeGroup.Type.Equals("unknown"))
 				nodeGroupBase.AddNodeGroup(nodeGroup);
+		}
+
+		return usedNodes;
+	}
+
+	private void FoldSingleNodes(List<Node> extractedNodes, List<Node> foldedNodes) {
+		for (int i = 0; i < extractedNodes.Count; i++) {
+			Node extractedNode = extractedNodes[i];
+			NodeGroup newNodeGroup = new NodeGroup(Node.GenerateId(extractedNode), "unknown");
+			if (!foldedNodes.Contains(extractedNode)) {
+				if (extractedNode.GetType() == typeof(NaturalComponentNode)) {
+					newNodeGroup = NodeGroupFactory.CreateNaturalNodeGroup(newNodeGroup);
+					newNodeGroup.AddNode(extractedNode);
+				}
+			}
+
+			if (!newNodeGroup.Type.Equals("unknown"))
+				nodeGroupBase.AddNodeGroup(newNodeGroup);
 		}
 	}
 
@@ -282,8 +303,6 @@ public class MapLoader {
 
 					foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 						NodeGroup nodeGroup = nodeGroupEntry.Value;
-
-						Debug.Log(nodeGroupEntry.Value.Type + "  " + nodeGroup.NodeCount());
 
 						this.SetupAreaNodeGroups(nodeGroup, null, new double[] { 0, 0, 0 }, earthBuildingInfo, XmlTags.EARTH);
 
@@ -517,14 +536,18 @@ public class MapLoader {
 						this.AppendAttribute (mapResumedDocument, objectInfoNode, XmlAttributes.ID, nodeGroup.Id.ToString ());
 
 						// Ajout des sous-noeuds XM au noeud XML correspondnant au groupe de noeuds courant
-						this.AddInternalNodes (mapResumedDocument, nodeGroup, objectNode);
+						this.AddInternalStepNodes (mapResumedDocument, nodeGroup, objectNode);
+
+						// Ajout des sous-noeuds XM au noeud XML correspondnant au groupe de noeuds courant
+						this.AddComponentNodes(mapResumedDocument, nodeGroup, locationNode);
 
 						// Ajout d'attributs propres à l'objet courant en fonction de son type, contenu dans le groupe
 						// de noeuds courant
-						if (nodeGroup.GetType() == typeof(BuildingNodeGroup))
+						if (nodeGroup.GetType() == typeof(BuildingNodeGroup)) {
 							this.AddBuildingNodeAttribute(mapResumedDocument, nodeGroup, objectInfoNode);
-						else if (nodeGroup.GetType() == typeof(HighwayNodeGroup))
+						} else if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
 							this.AddHighwayNodeAttribute(mapResumedDocument, nodeGroup, objectInfoNode);
+						}
 
 						// Ajout du nouveau noeud XML créé, représentant l'objet, au neud XML correspondant à la zone à
 						// laquelle il appartient
@@ -646,28 +669,75 @@ public class MapLoader {
 	/// <param name="mapResumedDocument">Document dans lequel ajouter les sous-noeuds.</param>
 	/// <param name="nodeGroup">Groupe de noeuds contenant les noeuds à retranscrire dans le document.</param>
 	/// <param name="objectNode">Groupe de noeuds contenant les noeuds à retranscrire en sous-noeuds XML.</param>
-	private void AddInternalNodes(XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectNode) {
+	private void AddInternalStepNodes(XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectNode) {
 		// Parcours de tous les noeuds du groupe de noeuds pour les retranscrire en sous-noeuds XML
 		for (int i = 0; i < nodeGroup.Nodes.Count; i++) {
-			Node node = (Node)nodeGroup.Nodes [i];
+			Node node = nodeGroup.Nodes [i];
 
-			// Affectation à l'index du nouveau noeud de la valeur de l'index servant à parcourir les noeuds du groupe
-			// de noeuds
-			node.Index = i;
+			if (node is IStepNode) {
+				// Affectation à l'index du nouveau noeud de la valeur de l'index servant à parcourir les noeuds du groupe
+				// de noeuds
+				node.Index = i;
 
-			// Création d'un sous-noeud XML destiné à retranscrire le noeud courant
-			XmlNode objectNd = mapResumedDocument.CreateElement (XmlTags.ND);
-			objectNode.AppendChild (objectNd);
+				// Création d'un sous-noeud XML destiné à retranscrire le noeud courant
+				XmlNode objectNd = mapResumedDocument.CreateElement(XmlTags.ND);
+				objectNode.AppendChild(objectNd);
 
-			// Ajout d'informations au nouveau sous-noeud XML
-
-			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.REFERENCE, node.Reference);
-			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.INDEX, node.Index.ToString ());
-			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LATITUDE, node.Latitude.ToString());
-			this.AppendAttribute (mapResumedDocument, objectNd, XmlAttributes.LONGIUDE, node.Longitude.ToString());
+				// Ajout d'informations au nouveau sous-noeud XML
+				this.AppendAttribute(mapResumedDocument, objectNd, XmlAttributes.REFERENCE, node.Reference);
+				this.AppendAttribute(mapResumedDocument, objectNd, XmlAttributes.INDEX, node.Index.ToString());
+				this.AppendAttribute(mapResumedDocument, objectNd, XmlAttributes.LATITUDE, node.Latitude.ToString());
+				this.AppendAttribute(mapResumedDocument, objectNd, XmlAttributes.LONGIUDE, node.Longitude.ToString());
+			}
 		}
 	}
 
+	// PAS LA BONNE SOLUTION
+	private void AddComponentNodes(XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode locationNode) {
+		// Parcours de tous les noeuds du groupe de noeuds pour les retranscrire en sous-noeuds XML
+		for (int i = 0; i < nodeGroup.Nodes.Count; i++) {
+			Node node = nodeGroup.Nodes[i];
+
+			if (node is IComponentNode) {
+				// Affectation à l'index du nouveau noeud de la valeur de l'index servant à parcourir les noeuds du groupe
+				// de noeuds
+				node.Index = i;
+
+				XmlNode objectNode = null;
+				if (node.GetType() == typeof(HighwayComponentNode)) {
+					if (((HighwayComponentNode) node).IsTrafficSignal())
+						objectNode = mapResumedDocument.CreateElement(XmlTags.TRAFFIC_SIGNALS);
+				} else if (node.GetType() == typeof(NaturalComponentNode)) {
+					if (((NaturalComponentNode) node).IsTree())
+						objectNode = mapResumedDocument.CreateElement(XmlTags.TREE);
+				}
+
+				if (objectNode != null) {
+					XmlNode objectInfoNode = mapResumedDocument.CreateElement(XmlTags.INFO);
+					this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.ID, Node.GenerateId(node));
+					this.AddCommonNodeAttribute(mapResumedDocument, nodeGroup, objectInfoNode);
+
+					objectNode.AppendChild(objectInfoNode);
+
+					XmlNode objectNd = mapResumedDocument.CreateElement(XmlTags.ND);
+					objectNode.AppendChild(objectNd);
+
+					// Création d'un sous-noeud XML destiné à retranscrire le noeud courant
+					locationNode.AppendChild(objectNode);
+
+					// Ajout d'informations au nouveau sous-noeud XML
+					this.AppendAttribute(mapResumedDocument, objectNd, XmlAttributes.REFERENCE, node.Reference);
+					this.AppendAttribute(mapResumedDocument, objectNd, XmlAttributes.INDEX, node.Index.ToString());
+					this.AppendAttribute(mapResumedDocument, objectNd, XmlAttributes.LATITUDE, node.Latitude.ToString());
+					this.AppendAttribute(mapResumedDocument, objectNd, XmlAttributes.LONGIUDE, node.Longitude.ToString());
+				}
+			}
+		}
+	}
+
+	private void AddCommonNodeAttribute(XmlDocument mapResumedDocument, NodeGroup nodeGroup, XmlNode objectInfoNode) {
+		this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.NAME, nodeGroup.Name);
+	}
 
 	/// <summary>
 	/// 	Ajoute une série d'attributs contenant des information relatives aux bâtiments dans un noeud XML
@@ -885,50 +955,46 @@ public class MapLoader {
 		foreach (XmlNode childNode in parentAreaNode.ChildNodes) {
 			if (areaTypeIndex < areaTypes.Length && areaTypes[areaTypeIndex].Contains(childNode.Name)) {
 				// Extraction du nom de la zone courante et ajout de celle-ci au chemin emprunté
-				areaDesignations [areaTypeIndex] = this.AttributeValue (childNode, XmlAttributes.DESIGNATION);
+				areaDesignations[areaTypeIndex] = this.AttributeValue(childNode, XmlAttributes.DESIGNATION);
 
 				// Appel récusrsif pour traiter les noeuds XML fils
-				this.ExtractResumedNodes (childNode, areaDesignations, areaTypes, areaTypeIndex + 1);
-			} else if(!childNode.Name.Equals(XmlTags.BOUNDS)) {
+				this.ExtractResumedNodes(childNode, areaDesignations, areaTypes, areaTypeIndex + 1);
+			} else if (!childNode.Name.Equals(XmlTags.BOUNDS)) {
 				// Récupération du noeud XML contenant les informations sur l'objet courant et récupération de l'ID de
 				// cet objet
 				XmlNode objectInfoNode = childNode.FirstChild;
-				string id = this.AttributeValue (objectInfoNode, XmlAttributes.ID);
+				string id = this.AttributeValue(objectInfoNode, XmlAttributes.ID);
 
 				// Création et remplissage d'un nouveau noeud avec les identifiants et coordonnées extraits de chacun
 				// des sous-noeuds XML du noeud XML courant
-				NodeGroup nodeGroup = new NodeGroup (id, "unknown");
+				NodeGroup nodeGroup = new NodeGroup(id, "unknown");
 				for (int i = 1; i < childNode.ChildNodes.Count; i++) {
 					XmlNode ndNode = childNode.ChildNodes[i];
 
 					// Extraction des données du sous-noeud courant
 					string reference = this.AttributeValue(ndNode, XmlAttributes.REFERENCE);
-					int index = int.Parse (this.AttributeValue(ndNode, XmlAttributes.INDEX));
-					double latitude = double.Parse (this.AttributeValue(ndNode, XmlAttributes.LATITUDE));
-					double longitude = double.Parse (this.AttributeValue(ndNode, XmlAttributes.LONGIUDE));
+					int index = int.Parse(this.AttributeValue(ndNode, XmlAttributes.INDEX));
+					double latitude = double.Parse(this.AttributeValue(ndNode, XmlAttributes.LATITUDE));
+					double longitude = double.Parse(this.AttributeValue(ndNode, XmlAttributes.LONGIUDE));
 
 					// Création d'un nouveau noeud et ajout de clui-ci au groupe de noeuds correspondant à l'objet
-					Node node = new Node (reference, index, latitude, longitude);
-					nodeGroup.AddNode (node);
+					Node node = new Node(reference, index, latitude, longitude);
+					nodeGroup.AddNode(node);
 				}
 
 				// Stockage du zoning dans le groupe de noeuds correspondant à l'objet courant
-				nodeGroup.Country = areaDesignations [0];
-				nodeGroup.Region = areaDesignations [1];
-				nodeGroup.Town = areaDesignations [2];
-				nodeGroup.District = areaDesignations [3];
+				nodeGroup.Country = areaDesignations[0];
+				nodeGroup.Region = areaDesignations[1];
+				nodeGroup.Town = areaDesignations[2];
+				nodeGroup.District = areaDesignations[3];
 
 				// Ajout des caractéristiques et des tags aux groupes de noeuds en fonction du type d'objet extrait
-				if (childNode.Name.Equals (XmlTags.BUILDING)) {
-					BuildingNodeGroup buildingNodeGroup = new BuildingNodeGroup(nodeGroup) {
-						Name = this.AttributeValue(objectInfoNode, XmlAttributes.NAME)
-					};
-					string[] areaBuildingInfo = this.BuildingInfo(objectInfoNode);
+				switch (childNode.Name) {
+				case XmlTags.BUILDING:
+					BuildingNodeGroup buildingNodeGroup = this.TranstypeNodes<BuildingNodeGroup, BuildingStepNode>(nodeGroup, NodeGroupFactory.CreateBuildingNodeGroup, NodeFactory.CreateBuildingStepNode);
+					buildingNodeGroup.Name = this.AttributeValue(objectInfoNode, XmlAttributes.NAME);
 
-					// Ajout des caractéristiques aux groupes de noeuds
-					buildingNodeGroup.NbFloor = int.Parse(areaBuildingInfo [0]);
-					buildingNodeGroup.RoofAngle = int.Parse(areaBuildingInfo [1]);
-					buildingNodeGroup.RoofType = areaBuildingInfo [2];
+					string[] areaBuildingInfo = this.BuildingInfo(objectInfoNode);
 
 					if (areaBuildingInfo[3] != null) {
 						Material customMaterial = Resources.Load(FilePaths.MATERIALS_FOLDER_LOCAL + areaBuildingInfo[3]) as Material;
@@ -945,36 +1011,56 @@ public class MapLoader {
 						buildingNodeGroup.OverlayColor = new Color(1, 1, 1);
 					}
 
-					buildingNodeGroup.AddTag("building", "yes");
+					// Ajout des caractéristiques aux groupes de noeuds
+					buildingNodeGroup.NbFloor = int.Parse(areaBuildingInfo[0]);
+					buildingNodeGroup.RoofAngle = int.Parse(areaBuildingInfo[1]);
+					buildingNodeGroup.RoofType = areaBuildingInfo[2];
 
+					buildingNodeGroup.AddTag("building", "yes");
 					nodeGroupBase.AddNodeGroup(buildingNodeGroup);
-				} else if (childNode.Name.Equals (XmlTags.HIGHWAY)) {
-					HighwayNodeGroup highwayNodeGroup = new HighwayNodeGroup(nodeGroup) {
-						Name = this.AttributeValue(objectInfoNode, XmlAttributes.NAME)
-					};
+					break;
+				case XmlTags.HIGHWAY:
+					HighwayNodeGroup highwayNodeGroup = this.TranstypeNodes<HighwayNodeGroup, HighwayStepNode>(nodeGroup, NodeGroupFactory.CreateHighwayNodeGroup, NodeFactory.CreateHighwayStepNode);
+					highwayNodeGroup.Name = this.AttributeValue(objectInfoNode, XmlAttributes.NAME);
 
 					// Ajout des caractéristiques aux groupes de noeuds
-					string[] areaHighwayInfo = this.HighwayInfo (objectInfoNode);
-					highwayNodeGroup.NbWay = int.Parse (areaHighwayInfo[1]);
-					highwayNodeGroup.MaxSpeed = int.Parse (areaHighwayInfo[2]);
+					string[] areaHighwayInfo = this.HighwayInfo(objectInfoNode);
+					highwayNodeGroup.NbWay = int.Parse(areaHighwayInfo[1]);
+					highwayNodeGroup.MaxSpeed = int.Parse(areaHighwayInfo[2]);
+
 					highwayNodeGroup.AddTag("highway", areaHighwayInfo[0]);
-
 					nodeGroupBase.AddNodeGroup(highwayNodeGroup);
-				} else if (childNode.Name.Equals (XmlTags.WATERWAY)) {
+					break;
+				case XmlTags.WATERWAY:
 
-				} else if (childNode.Name.Equals (XmlTags.TREE)) {
-					NaturalNodeGroup naturalNodeGroup = new NaturalNodeGroup(nodeGroup);
-					naturalNodeGroup.GetNode(0).AddTag("natural", XmlTags.TREE);
-					nodeGroupBase.AddNodeGroup(naturalNodeGroup);
-				} else if (childNode.Name.Equals (XmlTags.TRAFFIC_LIGHT)) {
-					HighwayNodeGroup highwayNodeGroup = new HighwayNodeGroup(nodeGroup);
-					highwayNodeGroup.GetNode(0).AddTag("highway", XmlTags.TRAFFIC_LIGHT);
-					nodeGroupBase.AddNodeGroup(highwayNodeGroup);
+					break;
+				case XmlTags.TREE:
+					NaturalNodeGroup treeNodeGroup = this.TranstypeNodes<NaturalNodeGroup, NaturalComponentNode>(nodeGroup, NodeGroupFactory.CreateNaturalNodeGroup, NodeFactory.CreateNaturalComponentNode);
+					treeNodeGroup.GetNode(0).AddTag("natural", XmlValues.TREE);
+					nodeGroupBase.AddNodeGroup(treeNodeGroup);
+					break;
+				case XmlTags.TRAFFIC_SIGNALS:
+					HighwayNodeGroup trafficSignalNodeGroup = this.TranstypeNodes<HighwayNodeGroup, HighwayComponentNode>(nodeGroup, NodeGroupFactory.CreateHighwayNodeGroup, NodeFactory.CreateHighwayComponentNode);
+					trafficSignalNodeGroup.GetNode(0).AddTag("highway", XmlValues.TRAFFIC_SIGNALS);
+					nodeGroupBase.AddNodeGroup(trafficSignalNodeGroup);
+					break;
 				}
 			}
 		}
 	}
 
+	private NodeGroupType TranstypeNodes<NodeGroupType, NodeType>(NodeGroup nodeGroup, Func<NodeGroup, NodeGroup> nodeGroupCreator, Func<Node, Node> nodeCreator)
+		where NodeGroupType : NodeGroup
+		where NodeType : Node {
+
+		NodeGroupType newNodeGroup = (NodeGroupType) nodeGroupCreator(nodeGroup);
+		foreach (Node node in newNodeGroup.Nodes) {
+			NodeType newNode = (NodeType) nodeCreator(node);
+			newNodeGroup.ReplaceNode(node, newNode);
+		}
+
+		return newNodeGroup;
+	}
 
 	public double Minlat {
 		get { return minLat; }

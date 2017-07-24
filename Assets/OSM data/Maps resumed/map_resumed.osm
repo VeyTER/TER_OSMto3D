@@ -40,7 +40,6 @@
           <highway>
             <info id="18627944" name="unknown" roadtype="service" nbway="1" maxspeed="30" />
             <nd ref="191941840" index="0" lat="43.5628542" lon="1.4673985" />
-            <nd ref="1279090777" index="1" lat="43.5628382" lon="1.4674145" />
             <nd ref="287691544" index="2" lat="43.5627908" lon="1.4674616" />
             <nd ref="4413934522" index="3" lat="43.5627316" lon="1.4675208" />
             <nd ref="286216288" index="4" lat="43.5625126" lon="1.4677284" />
@@ -62,7 +61,6 @@
             <nd ref="192183494" index="3" lat="43.5592917" lon="1.4703306" />
             <nd ref="192177210" index="4" lat="43.5590399" lon="1.4705833" />
             <nd ref="192177211" index="5" lat="43.5590981" lon="1.4707084" />
-            <nd ref="192177213" index="6" lat="43.5594158" lon="1.4713519" />
           </highway>
           <highway>
             <info id="18628534" name="Boulevard Périphérique" roadtype="residential" nbway="1" maxspeed="30" />
@@ -276,7 +274,6 @@
           <highway>
             <info id="24574580" name="unknown" roadtype="footway" nbway="1" maxspeed="50" />
             <nd ref="267177580" index="0" lat="43.562503" lon="1.4667167" />
-            <nd ref="1279090792" index="1" lat="43.5624786" lon="1.4667495" />
             <nd ref="360289236" index="2" lat="43.5623525" lon="1.4668662" />
             <nd ref="267178471" index="3" lat="43.5621744" lon="1.4670506" />
           </highway>
@@ -292,7 +289,6 @@
           <highway>
             <info id="24574876" name="unknown" roadtype="steps" nbway="1" maxspeed="50" />
             <nd ref="267179846" index="0" lat="43.5614147" lon="1.4677699" />
-            <nd ref="267177581" index="1" lat="43.5613363" lon="1.4678461" />
             <nd ref="267179847" index="2" lat="43.5612238" lon="1.4679856" />
           </highway>
           <highway>
@@ -331,8 +327,6 @@
             <nd ref="4407431870" index="2" lat="43.56093" lon="1.4708583" />
             <nd ref="4407431869" index="3" lat="43.5608571" lon="1.4709938" />
             <nd ref="267218226" index="4" lat="43.5607789" lon="1.4714093" />
-            <nd ref="2084667042" index="5" lat="43.5608286" lon="1.4715159" />
-            <nd ref="267218228" index="6" lat="43.5608724" lon="1.4716015" />
           </highway>
           <highway>
             <info id="24580147" name="unknown" roadtype="residential" nbway="1" maxspeed="30" />
@@ -351,10 +345,7 @@
           <highway>
             <info id="24580039" name="unknown" roadtype="residential" nbway="1" maxspeed="30" />
             <nd ref="192183155" index="0" lat="43.5582939" lon="1.4684076" />
-            <nd ref="286216159" index="1" lat="43.5582432" lon="1.4683137" />
             <nd ref="286216165" index="2" lat="43.5581776" lon="1.4682028" />
-            <nd ref="1305579114" index="3" lat="43.5575749" lon="1.4670422" />
-            <nd ref="286216150" index="4" lat="43.5572786" lon="1.4664628" />
             <nd ref="2194847836" index="5" lat="43.5571167" lon="1.466125" />
             <nd ref="267221398" index="6" lat="43.5571027" lon="1.4660503" />
           </highway>
@@ -366,7 +357,6 @@
           <highway>
             <info id="24594815" name="unknown" roadtype="footway" nbway="1" maxspeed="50" />
             <nd ref="267366926" index="0" lat="43.5622808" lon="1.4662729" />
-            <nd ref="1279090788" index="1" lat="43.5622527" lon="1.4663015" />
             <nd ref="267366996" index="2" lat="43.5619308" lon="1.4666126" />
             <nd ref="286216200" index="3" lat="43.561508" lon="1.4670392" />
             <nd ref="363895264" index="4" lat="43.5614791" lon="1.4670649" />
@@ -429,12 +419,6 @@
             <info id="26138204" name="unknown" roadtype="path" nbway="1" maxspeed="50" />
             <nd ref="1279090786" index="0" lat="43.5635173" lon="1.4687475" />
             <nd ref="1279090790" index="1" lat="43.5630244" lon="1.4678076" />
-            <nd ref="1279090777" index="2" lat="43.5628382" lon="1.4674145" />
-            <nd ref="1279090792" index="3" lat="43.5624786" lon="1.4667495" />
-            <nd ref="1279090765" index="4" lat="43.5623708" lon="1.46653" />
-            <nd ref="1279090788" index="5" lat="43.5622527" lon="1.4663015" />
-            <nd ref="192182576" index="6" lat="43.5618332" lon="1.4654942" />
-            <nd ref="192182381" index="7" lat="43.5616444" lon="1.465135" />
           </highway>
           <highway>
             <info id="26138213" name="unknown" roadtype="footway" nbway="1" maxspeed="50" />
@@ -487,7 +471,6 @@
             <nd ref="267367148" index="0" lat="43.5615335" lon="1.4676473" />
             <nd ref="286216239" index="1" lat="43.5613971" lon="1.467659" />
             <nd ref="286216242" index="2" lat="43.5613519" lon="1.4676649" />
-            <nd ref="286216246" index="3" lat="43.5612605" lon="1.4676905" />
             <nd ref="286216250" index="4" lat="43.561213" lon="1.4678046" />
             <nd ref="286216255" index="5" lat="43.5612463" lon="1.4678641" />
             <nd ref="286216258" index="6" lat="43.5610982" lon="1.4680126" />
@@ -537,7 +520,6 @@
           </highway>
           <highway>
             <info id="26138234" name="unknown" roadtype="residential" nbway="1" maxspeed="30" />
-            <nd ref="286216421" index="0" lat="43.5589886" lon="1.4707037" />
             <nd ref="286216419" index="1" lat="43.559337" lon="1.4714296" />
             <nd ref="192177214" index="2" lat="43.5593203" lon="1.4715523" />
             <nd ref="363895023" index="3" lat="43.5592574" lon="1.471613" />
@@ -581,7 +563,6 @@
             <nd ref="4413144210" index="3" lat="43.5604027" lon="1.4730913" />
             <nd ref="4413144209" index="4" lat="43.5603702" lon="1.4731242" />
             <nd ref="287691379" index="5" lat="43.5602773" lon="1.4732184" />
-            <nd ref="287691381" index="6" lat="43.5599617" lon="1.4726134" />
             <nd ref="287691382" index="7" lat="43.5599117" lon="1.4725187" />
           </highway>
           <highway>
@@ -609,20 +590,14 @@
             <nd ref="4407432893" index="1" lat="43.5634441" lon="1.4690911" />
             <nd ref="287691329" index="2" lat="43.5631579" lon="1.4693729" />
             <nd ref="4407431886" index="3" lat="43.5625331" lon="1.4699803" />
-            <nd ref="191960467" index="4" lat="43.5624677" lon="1.4700458" />
             <nd ref="4407431879" index="5" lat="43.5619801" lon="1.4705277" />
             <nd ref="4407431878" index="6" lat="43.5617355" lon="1.4707679" />
-            <nd ref="4407431877" index="7" lat="43.561601" lon="1.4709222" />
-            <nd ref="287691362" index="8" lat="43.5613659" lon="1.4711517" />
             <nd ref="287691358" index="9" lat="43.5610575" lon="1.4714322" />
-            <nd ref="267218228" index="10" lat="43.5608724" lon="1.4716015" />
             <nd ref="287931713" index="11" lat="43.5605182" lon="1.4719451" />
             <nd ref="287691375" index="12" lat="43.5604771" lon="1.4719858" />
             <nd ref="287691382" index="13" lat="43.5599117" lon="1.4725187" />
             <nd ref="287931756" index="14" lat="43.55987" lon="1.4725601" />
-            <nd ref="4407431866" index="15" lat="43.5598442" lon="1.4725862" />
             <nd ref="287931759" index="16" lat="43.5591163" lon="1.4733228" />
-            <nd ref="287931740" index="17" lat="43.559052" lon="1.473386" />
             <nd ref="191913169" index="18" lat="43.5587607" lon="1.4736767" />
             <nd ref="191913170" index="19" lat="43.5586916" lon="1.4737357" />
             <nd ref="4407431856" index="20" lat="43.5586508" lon="1.4737394" />
@@ -632,9 +607,7 @@
             <nd ref="286216468" index="24" lat="43.5584659" lon="1.4736078" />
             <nd ref="2205001371" index="25" lat="43.558399" lon="1.4734658" />
             <nd ref="2205001369" index="26" lat="43.5582334" lon="1.4731264" />
-            <nd ref="286271561" index="27" lat="43.5580777" lon="1.4728442" />
             <nd ref="286216463" index="28" lat="43.5580498" lon="1.4727965" />
-            <nd ref="286271562" index="29" lat="43.558028" lon="1.472759" />
             <nd ref="4413297059" index="30" lat="43.5579846" lon="1.4726772" />
             <nd ref="286271534" index="31" lat="43.5578637" lon="1.4724497" />
             <nd ref="746680809" index="32" lat="43.5573637" lon="1.4714935" />
@@ -654,9 +627,7 @@
             <nd ref="192183155" index="46" lat="43.5582939" lon="1.4684076" />
             <nd ref="4413094878" index="47" lat="43.5583262" lon="1.4683806" />
             <nd ref="286216166" index="48" lat="43.5590682" lon="1.4676472" />
-            <nd ref="191961124" index="49" lat="43.5605005" lon="1.4662304" />
             <nd ref="4413127725" index="50" lat="43.5605427" lon="1.4661901" />
-            <nd ref="192182381" index="51" lat="43.5616444" lon="1.465135" />
             <nd ref="191913177" index="52" lat="43.5619884" lon="1.4647871" />
           </highway>
           <highway>
@@ -722,7 +693,6 @@
           <highway>
             <info id="26285676" name="unknown" roadtype="service" nbway="1" maxspeed="30" />
             <nd ref="287931713" index="0" lat="43.5605182" lon="1.4719451" />
-            <nd ref="287931715" index="1" lat="43.5605605" lon="1.4720302" />
           </highway>
           <highway>
             <info id="26285634" name="unknown" roadtype="service" nbway="1" maxspeed="30" />
@@ -824,7 +794,6 @@
           </highway>
           <highway>
             <info id="32322246" name="unknown" roadtype="footway" nbway="1" maxspeed="50" />
-            <nd ref="192177213" index="0" lat="43.5594158" lon="1.4713519" />
             <nd ref="363895002" index="1" lat="43.5594396" lon="1.4714302" />
           </highway>
           <highway>
@@ -1048,7 +1017,6 @@
           </building>
           <highway>
             <info id="75483899" name="unknown" roadtype="service" nbway="1" maxspeed="50" />
-            <nd ref="191961124" index="0" lat="43.5605005" lon="1.4662304" />
             <nd ref="286216167" index="1" lat="43.5604379" lon="1.4661464" />
             <nd ref="286216168" index="2" lat="43.5604242" lon="1.4661287" />
             <nd ref="891064501" index="3" lat="43.5603813" lon="1.4660415" />
@@ -1066,7 +1034,6 @@
           <highway>
             <info id="26138203" name="unknown" roadtype="residential" nbway="1" maxspeed="50" />
             <nd ref="271156697" index="0" lat="43.5605686" lon="1.4663853" />
-            <nd ref="191961124" index="1" lat="43.5605005" lon="1.4662304" />
           </highway>
           <highway>
             <info id="26138200" name="unknown" roadtype="service" nbway="1" maxspeed="30" />
@@ -1231,20 +1198,17 @@
           </building>
           <highway>
             <info id="112562578" name="unknown" roadtype="residential" nbway="1" maxspeed="30" />
-            <nd ref="192182576" index="0" lat="43.5618332" lon="1.4654942" />
             <nd ref="1279090797" index="1" lat="43.5618581" lon="1.4654611" />
             <nd ref="191945575" index="2" lat="43.5622044" lon="1.4661246" />
           </highway>
           <highway>
             <info id="24574588" name="unknown" roadtype="footway" nbway="1" maxspeed="50" />
             <nd ref="267177672" index="0" lat="43.5623972" lon="1.4665015" />
-            <nd ref="1279090765" index="1" lat="43.5623708" lon="1.46653" />
             <nd ref="360289238" index="2" lat="43.5622435" lon="1.4666611" />
           </highway>
           <highway>
             <info id="26138199" name="unknown" roadtype="path" nbway="1" maxspeed="50" />
             <nd ref="286216543" index="0" lat="43.5571133" lon="1.4694119" />
-            <nd ref="286216159" index="1" lat="43.5582432" lon="1.4683137" />
             <nd ref="558860069" index="2" lat="43.5582693" lon="1.4682771" />
             <nd ref="2051027451" index="3" lat="43.5586415" lon="1.4679051" />
             <nd ref="286216160" index="4" lat="43.5590218" lon="1.46755" />
@@ -1289,14 +1253,17 @@
             <nd ref="1779578661" index="16" lat="43.5556505" lon="1.480404" />
             <nd ref="392074218" index="17" lat="43.5552892" lon="1.4805004" />
           </highway>
+          <traffic_signals>
+            <info id="1379446987/0" name="Liaison Multimodale Sud-Est" />
+            <nd ref="1379446987" index="0" lat="43.5650886" lon="1.4699421" />
+          </traffic_signals>
+          <traffic_signals>
+            <info id="191910070/1" name="Liaison Multimodale Sud-Est" />
+            <nd ref="191910070" index="1" lat="43.564904" lon="1.4694318" />
+          </traffic_signals>
           <highway>
             <info id="221966543" name="Liaison Multimodale Sud-Est" roadtype="service" nbway="1" maxspeed="50" />
-            <nd ref="1379446987" index="0" lat="43.5650886" lon="1.4699421" />
-            <nd ref="191910070" index="1" lat="43.564904" lon="1.4694318" />
             <nd ref="3717347846" index="2" lat="43.5648127" lon="1.4691869" />
-            <nd ref="4407432919" index="3" lat="43.564698" lon="1.4689057" />
-            <nd ref="2205001355" index="4" lat="43.5646108" lon="1.468741" />
-            <nd ref="4407432913" index="5" lat="43.56453" lon="1.4685883" />
             <nd ref="4407432911" index="6" lat="43.5644275" lon="1.4683903" />
             <nd ref="2084700988" index="7" lat="43.5643551" lon="1.4683156" />
             <nd ref="4407432910" index="8" lat="43.5642881" lon="1.4682827" />
@@ -1304,22 +1271,13 @@
             <nd ref="4407432908" index="10" lat="43.5641569" lon="1.4682914" />
             <nd ref="2084700985" index="11" lat="43.564104" lon="1.4683192" />
             <nd ref="2084667047" index="12" lat="43.5639119" lon="1.4685042" />
-            <nd ref="4407432900" index="13" lat="43.5636314" lon="1.468783" />
             <nd ref="2084667046" index="14" lat="43.5635756" lon="1.468833" />
             <nd ref="2084667045" index="15" lat="43.5632189" lon="1.4691763" />
-            <nd ref="622639018" index="16" lat="43.5624229" lon="1.4699627" />
             <nd ref="2084667044" index="17" lat="43.5619169" lon="1.4704615" />
-            <nd ref="2084667043" index="18" lat="43.5615427" lon="1.4708209" />
-            <nd ref="2205001395" index="19" lat="43.5614489" lon="1.4709148" />
-            <nd ref="4407431874" index="20" lat="43.5613117" lon="1.4710507" />
             <nd ref="4407431872" index="21" lat="43.5610748" lon="1.4712855" />
-            <nd ref="2084667042" index="22" lat="43.5608286" lon="1.4715159" />
             <nd ref="2084650221" index="23" lat="43.5598677" lon="1.4724318" />
-            <nd ref="4407431865" index="24" lat="43.5598016" lon="1.4724972" />
             <nd ref="4407431863" index="25" lat="43.5592779" lon="1.473043" />
             <nd ref="4407431862" index="26" lat="43.5591166" lon="1.4731771" />
-            <nd ref="2084650219" index="27" lat="43.5590024" lon="1.473287" />
-            <nd ref="2205001361" index="28" lat="43.5589258" lon="1.4733627" />
             <nd ref="2084650217" index="29" lat="43.5587066" lon="1.4735956" />
             <nd ref="286216466" index="30" lat="43.5585977" lon="1.4737245" />
           </highway>
@@ -1334,8 +1292,6 @@
             <nd ref="287691540" index="1" lat="43.5616462" lon="1.4684368" />
             <nd ref="286216298" index="2" lat="43.5616343" lon="1.4684126" />
             <nd ref="286216266" index="3" lat="43.5614546" lon="1.468072" />
-            <nd ref="267177581" index="4" lat="43.5613363" lon="1.4678461" />
-            <nd ref="286216246" index="5" lat="43.5612605" lon="1.4676905" />
             <nd ref="267177879" index="6" lat="43.5612272" lon="1.4676308" />
             <nd ref="267366953" index="7" lat="43.5611127" lon="1.4674254" />
             <nd ref="363895304" index="8" lat="43.5608803" lon="1.4669618" />
@@ -1348,7 +1304,6 @@
           </highway>
           <highway>
             <info id="18628506" name="unknown" roadtype="residential" nbway="1" maxspeed="30" />
-            <nd ref="192182576" index="0" lat="43.5618332" lon="1.4654942" />
             <nd ref="287931497" index="1" lat="43.5615883" lon="1.4657344" />
             <nd ref="287931495" index="2" lat="43.5609006" lon="1.4664056" />
             <nd ref="192183077" index="3" lat="43.5606808" lon="1.466615" />
@@ -1378,7 +1333,6 @@
           </highway>
           <highway>
             <info id="26285677" name="unknown" roadtype="service" nbway="1" maxspeed="30" />
-            <nd ref="287931715" index="0" lat="43.5605605" lon="1.4720302" />
             <nd ref="287931716" index="1" lat="43.5608234" lon="1.4725362" />
             <nd ref="287931714" index="2" lat="43.5608691" lon="1.4726244" />
           </highway>
@@ -1390,7 +1344,6 @@
           </highway>
           <highway>
             <info id="198314843" name="unknown" roadtype="cycleway" nbway="1" maxspeed="50" />
-            <nd ref="287931741" index="0" lat="43.5589607" lon="1.4731958" />
             <nd ref="287931753" index="1" lat="43.5590209" lon="1.4731363" />
             <nd ref="4407431864" index="2" lat="43.5597589" lon="1.4724122" />
             <nd ref="287931736" index="3" lat="43.5598272" lon="1.4723453" />
@@ -1399,12 +1352,8 @@
           </highway>
           <highway>
             <info id="198325059" name="Allée du Campus de Rangueil" roadtype="cycleway" nbway="1" maxspeed="50" />
-            <nd ref="2084700987" index="0" lat="43.5642035" lon="1.4680292" />
-            <nd ref="4407432898" index="1" lat="43.5635793" lon="1.4686822" />
             <nd ref="1279090786" index="2" lat="43.5635173" lon="1.4687475" />
             <nd ref="267219167" index="3" lat="43.5623749" lon="1.4698614" />
-            <nd ref="4407431875" index="4" lat="43.5614969" lon="1.4707217" />
-            <nd ref="4407431873" index="5" lat="43.5612563" lon="1.4709461" />
             <nd ref="267218226" index="6" lat="43.5607789" lon="1.4714093" />
             <nd ref="267219168" index="7" lat="43.5605306" lon="1.4716528" />
           </highway>
@@ -1586,31 +1535,14 @@
             <nd ref="3405055412" index="3" lat="43.5583357" lon="1.4686541" />
           </highway>
           <highway>
-            <info id="443106554" name="unknown" roadtype="footway" nbway="1" maxspeed="50" />
-            <nd ref="4407431875" index="0" lat="43.5614969" lon="1.4707217" />
-            <nd ref="2084667043" index="1" lat="43.5615427" lon="1.4708209" />
-            <nd ref="4407431877" index="2" lat="43.561601" lon="1.4709222" />
-          </highway>
-          <highway>
-            <info id="443106556" name="unknown" roadtype="footway" nbway="1" maxspeed="50" />
-            <nd ref="287691362" index="0" lat="43.5613659" lon="1.4711517" />
-            <nd ref="4407431874" index="1" lat="43.5613117" lon="1.4710507" />
-            <nd ref="4407431873" index="2" lat="43.5612563" lon="1.4709461" />
-          </highway>
-          <highway>
             <info id="443106564" name="unknown" roadtype="footway" nbway="1" maxspeed="50" />
             <nd ref="4407431864" index="0" lat="43.5597589" lon="1.4724122" />
-            <nd ref="4407431865" index="1" lat="43.5598016" lon="1.4724972" />
-            <nd ref="4407431866" index="2" lat="43.5598442" lon="1.4725862" />
             <nd ref="4407431867" index="3" lat="43.5598807" lon="1.4726557" />
             <nd ref="4407431868" index="4" lat="43.5599211" lon="1.4726524" />
-            <nd ref="287691381" index="5" lat="43.5599617" lon="1.4726134" />
           </highway>
           <highway>
             <info id="443106563" name="unknown" roadtype="service" nbway="1" maxspeed="50" />
             <nd ref="4407431886" index="0" lat="43.5625331" lon="1.4699803" />
-            <nd ref="4407431887" index="1" lat="43.5625502" lon="1.4700148" />
-            <nd ref="4407431888" index="2" lat="43.5625777" lon="1.4700703" />
           </highway>
           <highway>
             <info id="443106568" name="unknown" roadtype="service" nbway="1" maxspeed="50" />
@@ -1634,7 +1566,6 @@
           </highway>
           <highway>
             <info id="443773986" name="unknown" roadtype="service" nbway="1" maxspeed="50" />
-            <nd ref="4407431888" index="0" lat="43.5625777" lon="1.4700703" />
             <nd ref="4407432891" index="1" lat="43.5629713" lon="1.4708305" />
             <nd ref="4407432892" index="2" lat="43.5629786" lon="1.4708875" />
             <nd ref="4407432889" index="3" lat="43.5627549" lon="1.4711012" />
@@ -2013,6 +1944,154 @@
             <nd ref="4413933780" index="2" lat="43.5618166" lon="1.4686839" />
             <nd ref="4413933778" index="3" lat="43.561789" lon="1.4687101" />
           </highway>
+          <tree>
+            <info id="2493650556/0" name="unknown" />
+            <nd ref="2493650556" index="0" lat="43.5624086" lon="1.4653946" />
+          </tree>
+          <tree>
+            <info id="2493650558/0" name="unknown" />
+            <nd ref="2493650558" index="0" lat="43.5624481" lon="1.4654757" />
+          </tree>
+          <tree>
+            <info id="2493650560/0" name="unknown" />
+            <nd ref="2493650560" index="0" lat="43.5624876" lon="1.4655499" />
+          </tree>
+          <tree>
+            <info id="2493650567/0" name="unknown" />
+            <nd ref="2493650567" index="0" lat="43.562669" lon="1.4653834" />
+          </tree>
+          <tree>
+            <info id="2493710208/0" name="unknown" />
+            <nd ref="2493710208" index="0" lat="43.5626131" lon="1.4658693" />
+          </tree>
+          <tree>
+            <info id="2493710209/0" name="unknown" />
+            <nd ref="2493710209" index="0" lat="43.5626581" lon="1.4659457" />
+          </tree>
+          <tree>
+            <info id="4413094875/0" name="unknown" />
+            <nd ref="4413094875" index="0" lat="43.5600842" lon="1.47095" />
+          </tree>
+          <tree>
+            <info id="4413127711/0" name="unknown" />
+            <nd ref="4413127711" index="0" lat="43.5610057" lon="1.4653603" />
+          </tree>
+          <tree>
+            <info id="4413127712/0" name="unknown" />
+            <nd ref="4413127712" index="0" lat="43.560884" lon="1.4654663" />
+          </tree>
+          <tree>
+            <info id="4413127713/0" name="unknown" />
+            <nd ref="4413127713" index="0" lat="43.5607848" lon="1.4655635" />
+          </tree>
+          <tree>
+            <info id="4413127714/0" name="unknown" />
+            <nd ref="4413127714" index="0" lat="43.5606823" lon="1.4656651" />
+          </tree>
+          <tree>
+            <info id="4413127715/0" name="unknown" />
+            <nd ref="4413127715" index="0" lat="43.5605607" lon="1.4657844" />
+          </tree>
+          <tree>
+            <info id="4413127716/0" name="unknown" />
+            <nd ref="4413127716" index="0" lat="43.5601915" lon="1.4661204" />
+          </tree>
+          <tree>
+            <info id="4413127717/0" name="unknown" />
+            <nd ref="4413127717" index="0" lat="43.5600808" lon="1.4662518" />
+          </tree>
+          <tree>
+            <info id="4413127718/0" name="unknown" />
+            <nd ref="4413127718" index="0" lat="43.5599739" lon="1.4663376" />
+          </tree>
+          <tree>
+            <info id="4413127719/0" name="unknown" />
+            <nd ref="4413127719" index="0" lat="43.5598786" lon="1.4664423" />
+          </tree>
+          <tree>
+            <info id="4413127720/0" name="unknown" />
+            <nd ref="4413127720" index="0" lat="43.5597562" lon="1.4665603" />
+          </tree>
+          <tree>
+            <info id="4413127721/0" name="unknown" />
+            <nd ref="4413127721" index="0" lat="43.5596512" lon="1.4666595" />
+          </tree>
+          <tree>
+            <info id="4413127722/0" name="unknown" />
+            <nd ref="4413127722" index="0" lat="43.5595385" lon="1.4667614" />
+          </tree>
+          <tree>
+            <info id="4413127723/0" name="unknown" />
+            <nd ref="4413127723" index="0" lat="43.5593908" lon="1.4668768" />
+          </tree>
+          <tree>
+            <info id="4413201578/0" name="unknown" />
+            <nd ref="4413201578" index="0" lat="43.5617513" lon="1.4653484" />
+          </tree>
+          <tree>
+            <info id="4413201579/0" name="unknown" />
+            <nd ref="4413201579" index="0" lat="43.5617901" lon="1.4654255" />
+          </tree>
+          <tree>
+            <info id="4413201580/0" name="unknown" />
+            <nd ref="4413201580" index="0" lat="43.5618689" lon="1.4655757" />
+          </tree>
+          <tree>
+            <info id="4413201581/0" name="unknown" />
+            <nd ref="4413201581" index="0" lat="43.5619102" lon="1.4656529" />
+          </tree>
+          <tree>
+            <info id="4413201582/0" name="unknown" />
+            <nd ref="4413201582" index="0" lat="43.5619456" lon="1.4657266" />
+          </tree>
+          <tree>
+            <info id="4413201583/0" name="unknown" />
+            <nd ref="4413201583" index="0" lat="43.5619855" lon="1.4658037" />
+          </tree>
+          <tree>
+            <info id="4413201584/0" name="unknown" />
+            <nd ref="4413201584" index="0" lat="43.5620258" lon="1.4658869" />
+          </tree>
+          <tree>
+            <info id="4413201585/0" name="unknown" />
+            <nd ref="4413201585" index="0" lat="43.5620656" lon="1.465962" />
+          </tree>
+          <tree>
+            <info id="4413201586/0" name="unknown" />
+            <nd ref="4413201586" index="0" lat="43.562268" lon="1.4663476" />
+          </tree>
+          <tree>
+            <info id="4413201587/0" name="unknown" />
+            <nd ref="4413201587" index="0" lat="43.5622957" lon="1.4664005" />
+          </tree>
+          <tree>
+            <info id="4413201588/0" name="unknown" />
+            <nd ref="4413201588" index="0" lat="43.5624165" lon="1.4666342" />
+          </tree>
+          <tree>
+            <info id="4413201889/0" name="unknown" />
+            <nd ref="4413201889" index="0" lat="43.5624536" lon="1.4667046" />
+          </tree>
+          <tree>
+            <info id="4413201890/0" name="unknown" />
+            <nd ref="4413201890" index="0" lat="43.5624818" lon="1.4667593" />
+          </tree>
+          <tree>
+            <info id="4413201891/0" name="unknown" />
+            <nd ref="4413201891" index="0" lat="43.5625675" lon="1.4669224" />
+          </tree>
+          <tree>
+            <info id="4413201892/0" name="unknown" />
+            <nd ref="4413201892" index="0" lat="43.5626037" lon="1.4669891" />
+          </tree>
+          <tree>
+            <info id="4413201893/0" name="unknown" />
+            <nd ref="4413201893" index="0" lat="43.5626422" lon="1.4670652" />
+          </tree>
+          <tree>
+            <info id="4413201894/0" name="unknown" />
+            <nd ref="4413201894" index="0" lat="43.5626826" lon="1.46714" />
+          </tree>
           <building>
             <info id="+3098210399" name="Bâtiment n°+3098210399" nbfloor="3" roofangle="0" rooftype="unknown" />
             <nd ref="+3098210399" index="0" lat="43.5619296875" lon="1.4688330078125" />

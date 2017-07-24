@@ -692,7 +692,7 @@ public class BuildingsTools {
 	/// <param name="buildingNode">Noeuds 3D en temps que clé.</param>
 	/// <param name="node">Noeud en temps que valeur.</param>
 	public void AddBuildingNodeAndNodeEntryPair(GameObject buildingNode, Node node) {
-		buildingNodeToNodeTable[buildingNode] = node.GeneratedId();
+		buildingNodeToNodeTable[buildingNode] = Node.GenerateId(node);
 	}
 
 	public void AddBuildingAndDataDisplayEntryPair(GameObject building, GameObject dataDisplay) {

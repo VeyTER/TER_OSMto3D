@@ -91,11 +91,17 @@ public class NodeGroup {
 
 	public Node GetNode(string nodeId) {
 		int i = 0;
-		for (; i < nodes.Count && !nodes[i].GeneratedId().Equals(nodeId); i++);
+		for (; i < nodes.Count && !Node.GenerateId(nodes[i]).Equals(nodeId); i++);
 		if (i < nodes.Count)
 			return nodes[i];
 		else
 			return null;
+	}
+
+	public void ReplaceNode(Node oldNode, Node newNode) {
+		int oldNodeIndex = nodes.IndexOf(oldNode);
+		if(oldNodeIndex > -1)
+			nodes[oldNodeIndex] = newNode;
 	}
 
 	public void RemoveNode(int nodeOrder) {

@@ -2,7 +2,7 @@
 using UnityEditor;
 
 public class BuildingNodeGroup : NodeGroup {
-	private int nbFloors;
+	private int nbFloor;
 
 	private string roofType;
 	private int roofAngle;
@@ -11,7 +11,7 @@ public class BuildingNodeGroup : NodeGroup {
 	private Color overlayColor;
 
 	public BuildingNodeGroup(string id) : base(id, "building") {
-		this.nbFloors = 1;
+		this.nbFloor = 1;
 
 		this.roofType = "unknown";
 		this.roofAngle = 0;
@@ -21,20 +21,12 @@ public class BuildingNodeGroup : NodeGroup {
 	}
 
 	public BuildingNodeGroup(NodeGroup nodeGroup) : base(nodeGroup) {
-		this.type = "building";
-
-		this.nbFloors = 1;
-
-		this.roofType = "unknown";
-		this.roofAngle = 0;
-
-		this.customMaterial = null;
-		this.overlayColor = Color.white;
+		type = "building";
 	}
 
 	public BuildingNodeGroup(string id, string name, string country, string region, string town, string district, string roofType, int roofAngle, Material customMaterial, Color overlayColor) :
 		base(id, "building", name, country, region, town, district) {
-		this.nbFloors = 1;
+		this.nbFloor = 1;
 
 		this.roofAngle = roofAngle;
 		this.roofType = roofType;
@@ -67,8 +59,8 @@ public class BuildingNodeGroup : NodeGroup {
 	}
 
 	public int NbFloor {
-		get { return nbFloors; }
-		set { nbFloors = value; }
+		get { return nbFloor; }
+		set { nbFloor = value; }
 	}
 
 	public string RoofType {

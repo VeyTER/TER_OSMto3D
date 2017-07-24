@@ -124,10 +124,14 @@
     <Compile Include="Assets\Scripts\model\nodes_storage\HighwayStepNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\NaturalComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\NaturalNodeGroup.cs" />
+    <Compile Include="Assets\Scripts\model\tools\NodeFactory.cs" />
+    <Compile Include="Assets\Scripts\model\tools\NodeGroupFactory.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\NodeGroupBase.cs" />
     <Compile Include="Assets\Scripts\model\building_components_managing\SensorEquippedBuildingsBase.cs" />
     <Compile Include="Assets\Scripts\model\building_components_managing\ActuatorController.cs" />
     <Compile Include="Assets\Scripts\model\building_components_managing\BuildingRoom.cs" />
+    <Compile Include="Assets\Scripts\model\nodes_storage\ComponentNode.cs" />
+    <Compile Include="Assets\Scripts\model\nodes_storage\StepNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayStepNode.cs" />
     <Compile Include="Assets\Scripts\model\tools\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\city_building\CityBuilder.cs" />

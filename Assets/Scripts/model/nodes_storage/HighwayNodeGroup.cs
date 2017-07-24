@@ -12,9 +12,6 @@ public class HighwayNodeGroup : NodeGroup {
 
 	public HighwayNodeGroup(NodeGroup nodeGroup) : base(nodeGroup) {
 		this.type = "highway";
-
-		this.nbWay = 1;
-		this.maxSpeed = 50;
 	}
 
 	public HighwayNodeGroup(string id, string name, string country, string region, string town, string district, int nbWay, int maxSpeed) :

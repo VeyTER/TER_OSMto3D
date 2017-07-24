@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public class BuildingStepNode : Node {
+public class BuildingStepNode : Node, IStepNode {
 	public BuildingStepNode(double latitude, double longitude) : base(latitude, longitude) { }
 
 	public BuildingStepNode(string reference, double latitude, double longitude) : base(reference, latitude, longitude) { }

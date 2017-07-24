@@ -50,7 +50,11 @@ public class Node {
 		this.tags = node.tags;
 	}
 
-	public string GeneratedId() {
+	public static string GenerateId(Node node) {
+		return node.Reference + "/" + node.Index;
+	}
+
+	public static string GenerateId(string reference, int index) {
 		return reference + "/" + index;
 	}
 

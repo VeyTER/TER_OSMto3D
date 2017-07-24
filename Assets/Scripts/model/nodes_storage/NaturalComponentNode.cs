@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public class NaturalComponentNode : Node {
+public class NaturalComponentNode : Node, IComponentNode {
 	public NaturalComponentNode(double latitude, double longitude) : base(latitude, longitude) { }
 
 	public NaturalComponentNode(string reference, double latitude, double longitude) : base(reference, latitude, longitude) { }

@@ -446,7 +446,7 @@ public class CityBuilder {
 	/// <summary>
 	/// 	Place les feux tricolores dans la scène.
 	/// </summary>
-	public void BuildTrafficLights() {
+	public void BuildTraffiSignals() {
 		double posX, posZ;
 		float height = 0.03F;
 		float diameter = 0.015F;
@@ -460,6 +460,7 @@ public class CityBuilder {
 						HighwayComponentNode highwayComponentNode = (HighwayComponentNode) highwayNodeGroup.GetNode(i);
 
 						if (highwayComponentNode.IsTrafficSignal()) {
+
 							posZ = highwayComponentNode.Latitude;
 							posX = highwayComponentNode.Longitude;
 

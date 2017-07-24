@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public class HighwayStepNode : Node {
+public class HighwayStepNode : Node, IStepNode {
 	public HighwayStepNode(double latitude, double longitude) : base(latitude, longitude) { }
 
 	public HighwayStepNode(string reference, double latitude, double longitude) : base(reference, latitude, longitude) { }

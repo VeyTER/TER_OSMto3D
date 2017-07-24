@@ -68,10 +68,10 @@ public class XmlTags {
 	public const string BUILDING = "building";
 
 	/// <summary>Nom de la balise symbolisant l'arbre courant.</summary>
-	public const string TREE = "tree";
+	public const string TREE = XmlValues.TREE;
 
 	/// <summary>Nom de la balise symbolisant le feux de croisement courant.</summary>
-	public const string TRAFFIC_LIGHT = "trafficlight";
+	public const string TRAFFIC_SIGNALS = XmlValues.TRAFFIC_SIGNALS;
 
 	/// <summary>Nom de la balise symbolisant la route courante.</summary>
 	public const string HIGHWAY = "highway";

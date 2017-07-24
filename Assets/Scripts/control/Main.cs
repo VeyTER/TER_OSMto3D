@@ -59,7 +59,7 @@ public class Main : MonoBehaviour {
 			this.cityBuilder.BuildBuildings();
 			this.cityBuilder.BuildRoads();
 			this.cityBuilder.BuildTrees();
-			this.cityBuilder.BuildTrafficLights();
+			this.cityBuilder.BuildTraffiSignals();
 			this.cityBuilder.BuildMainCamera();
 			this.cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
 
