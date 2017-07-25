@@ -7,7 +7,7 @@ public abstract class NodeGroupFactory {
 		BuildingNodeGroup buildingNodeGroup = new BuildingNodeGroup(nodeGroup) {
 			NbFloor = 1,
 
-			RoofType = "unknown",
+			RoofShape = "unknown",
 			RoofAngle = 0,
 
 			CustomMaterial = null,

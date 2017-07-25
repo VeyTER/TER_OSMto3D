@@ -180,7 +180,20 @@ public class CityBuilder {
 				// est ajouté au bâtiment
 				wallsBuilder.BuildWalls(building, buildingNodeGroup);
 				this.BuildSingleBuildingNodeGroup(building, buildingNodeGroup);
-				RoofBuilder.BuildRoof(building, buildingNodeGroup, 0);
+
+				switch (buildingNodeGroup.RoofShape) {
+				case "pitched":
+					roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
+					break;
+				case "flat":
+					roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
+					break;
+				case "hipped":
+					roofBuilder.BuildHippedRoof(building, buildingNodeGroup, -0.035F);
+					break;
+				default:
+					break;
+				}
 
 				this.LoadMatchingBuilding(building, buildingNodeGroup);
 			}
@@ -244,7 +257,7 @@ public class CityBuilder {
 
 		if (buildRoof) {
 			BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(building);
-			GameObject virtualRoof = roofBuilder.BuildRoof(building, buildingNodeGroup, 1.1F);
+			GameObject virtualRoof = roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
 
 			virtualRoof.transform.SetParent(virtualFloor.transform, false);
 			virtualRoof.transform.localPosition = new Vector3(0, Dimensions.FLOOR_HEIGHT, 0);

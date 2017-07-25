@@ -106,7 +106,7 @@ public class XmlAttributes {
 	public const string ROOF_ANGLE = "roofangle";
 
 	/// <summary>Nom de l'attribut donnant le type du toît d'un bâtiment.</summary>
-	public const string ROOF_TYPE = "rooftype";
+	public const string ROOF_SHAPE = "rooftype";
 
 
 	/// <summary>Nom de l'attribut donnant le type d'une route.</summary>

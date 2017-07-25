@@ -384,7 +384,7 @@ public class BuildingsTools {
 			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.NAME, buildingNodeGroup.Name);
 			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, buildingNodeGroup.NbFloor.ToString());
 			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, buildingNodeGroup.RoofAngle.ToString());
-			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ROOF_TYPE, buildingNodeGroup.RoofType);
+			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ROOF_SHAPE, buildingNodeGroup.RoofShape);
 
 			foreach (Node node in buildingNodeGroup.Nodes) {
 				XmlNode newNd = mapResumeDocument.CreateElement(XmlTags.ND);
@@ -429,7 +429,7 @@ public class BuildingsTools {
 			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.NAME, buildingNodeGroup.Name);
 			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, buildingNodeGroup.NbFloor.ToString());
 			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, buildingNodeGroup.RoofAngle.ToString());
-			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_TYPE, buildingNodeGroup.RoofType);
+			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_SHAPE, buildingNodeGroup.RoofShape);
 
 			mapCustomDocument.Save(customFilePath);
 		}

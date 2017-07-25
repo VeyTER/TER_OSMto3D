@@ -4,7 +4,7 @@ using UnityEditor;
 public class BuildingNodeGroup : NodeGroup {
 	private int nbFloor;
 
-	private string roofType;
+	private string roofShape;
 	private int roofAngle;
 
 	private Material customMaterial;
@@ -13,7 +13,7 @@ public class BuildingNodeGroup : NodeGroup {
 	public BuildingNodeGroup(string id) : base(id, "building") {
 		this.nbFloor = 1;
 
-		this.roofType = "unknown";
+		this.roofShape = "unknown";
 		this.roofAngle = 0;
 
 		this.customMaterial = null;
@@ -24,12 +24,12 @@ public class BuildingNodeGroup : NodeGroup {
 		type = "building";
 	}
 
-	public BuildingNodeGroup(string id, string name, string country, string region, string town, string district, string roofType, int roofAngle, Material customMaterial, Color overlayColor) :
+	public BuildingNodeGroup(string id, string name, string country, string region, string town, string district, string roofShape, int roofAngle, Material customMaterial, Color overlayColor) :
 		base(id, "building", name, country, region, town, district) {
 		this.nbFloor = 1;
 
 		this.roofAngle = roofAngle;
-		this.roofType = roofType;
+		this.roofShape = roofShape;
 
 		this.customMaterial = customMaterial;
 		this.overlayColor = overlayColor;
@@ -63,9 +63,9 @@ public class BuildingNodeGroup : NodeGroup {
 		set { nbFloor = value; }
 	}
 
-	public string RoofType {
-		get { return roofType; }
-		set { roofType = value; }
+	public string RoofShape {
+		get { return roofShape; }
+		set { roofShape = value; }
 	}
 
 	public int RoofAngle {

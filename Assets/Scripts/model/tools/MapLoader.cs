@@ -194,7 +194,7 @@ public class MapLoader {
 					} else if (key.Equals(XmlKeys.ROOF_SHAPE)) {
 						if (nodeGroup.GetType() != typeof(BuildingNodeGroup))
 							nodeGroup = NodeGroupFactory.CreateBuildingNodeGroup(nodeGroup);
-						((BuildingNodeGroup) nodeGroup).RoofType = value;
+						((BuildingNodeGroup) nodeGroup).RoofShape = value;
 					} else if (key.Equals(XmlKeys.HIGHWAY)) {
 						if (nodeGroup.GetType() != typeof(HighwayNodeGroup))
 							nodeGroup = NodeGroupFactory.CreateHighwayNodeGroup(nodeGroup);
@@ -240,8 +240,7 @@ public class MapLoader {
 						} else if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
 							if (extractedNode.GetType() == typeof(HighwayComponentNode))
 								nodeGroup.AddNode(NodeFactory.CreateHighwayComponentNode(extractedNode));
-							else
-								nodeGroup.AddNode(NodeFactory.CreateHighwayStepNode(extractedNode));
+							nodeGroup.AddNode(NodeFactory.CreateHighwayStepNode(extractedNode));
 						} else if (nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
 							nodeGroup.AddNode(NodeFactory.CreateWaterwayStepNode(extractedNode));
 						} else if (nodeGroup.GetType() == typeof(NaturalNodeGroup)) {
@@ -394,7 +393,9 @@ public class MapLoader {
 
 				buildingNodeGroup.NbFloor = int.Parse (buildingData [0]);
 				buildingNodeGroup.RoofAngle = int.Parse (buildingData [1]);
-				buildingNodeGroup.RoofType = buildingData [2];
+
+				if(buildingNodeGroup.RoofShape.Equals("unknown"))
+					buildingNodeGroup.RoofShape = buildingData [2];
 			}
 		}
 	}
@@ -411,8 +412,8 @@ public class MapLoader {
 		res [0] = this.AttributeValue(infoNode, XmlAttributes.NB_FLOOR);
 		res [1] = this.AttributeValue (infoNode, XmlAttributes.ROOF_ANGLE);
 
-		string roofType = this.AttributeValue (infoNode, XmlAttributes.ROOF_TYPE);
-		res [2] = roofType.Equals("unknown") ? "" : roofType;
+		string roofShape = this.AttributeValue (infoNode, XmlAttributes.ROOF_SHAPE);
+		res [2] = roofShape.Equals("unknown") ? "" : roofShape;
 
 		res[3] = this.AttributeValue(infoNode, XmlAttributes.CUSTOM_MATERIAL);
 		res[4] = this.AttributeValue(infoNode, XmlAttributes.OVERLAY_COLOR);
@@ -754,7 +755,7 @@ public class MapLoader {
 			this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.NAME, nodeGroup.Name);
 			this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.NB_FLOOR, buildingNodeGroup.NbFloor.ToString());
 			this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.ROOF_ANGLE, buildingNodeGroup.RoofAngle.ToString());
-			this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.ROOF_TYPE, buildingNodeGroup.RoofType);
+			this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.ROOF_SHAPE, buildingNodeGroup.RoofShape);
 		}
 	}
 
@@ -1014,7 +1015,7 @@ public class MapLoader {
 					// Ajout des caractéristiques aux groupes de noeuds
 					buildingNodeGroup.NbFloor = int.Parse(areaBuildingInfo[0]);
 					buildingNodeGroup.RoofAngle = int.Parse(areaBuildingInfo[1]);
-					buildingNodeGroup.RoofType = areaBuildingInfo[2];
+					buildingNodeGroup.RoofShape = areaBuildingInfo[2];
 
 					buildingNodeGroup.AddTag("building", "yes");
 					nodeGroupBase.AddNodeGroup(buildingNodeGroup);

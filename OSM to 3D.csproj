@@ -127,15 +127,15 @@
     <Compile Include="Assets\Scripts\model\tools\NodeFactory.cs" />
     <Compile Include="Assets\Scripts\model\tools\NodeGroupFactory.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\NodeGroupBase.cs" />
-    <Compile Include="Assets\Scripts\model\building_components_managing\SensorEquippedBuildingsBase.cs" />
-    <Compile Include="Assets\Scripts\model\building_components_managing\ActuatorController.cs" />
-    <Compile Include="Assets\Scripts\model\building_components_managing\BuildingRoom.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\SensorEquippedBuildingsBase.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\ActuatorController.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\BuildingRoom.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\ComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\StepNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayStepNode.cs" />
     <Compile Include="Assets\Scripts\model\tools\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\city_building\CityBuilder.cs" />
-    <Compile Include="Assets\Scripts\model\building_components_managing\ComponentPropertiesLoader.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\ComponentPropertiesLoader.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\Edge.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\BuildingShape.cs" />
     <Compile Include="Assets\Scripts\model\city_building\WallsBuilder.cs" />
@@ -150,11 +150,11 @@
     <Compile Include="Assets\Scripts\model\nodes_storage\Node.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\NodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\city_building\RoofBuilder.cs" />
-    <Compile Include="Assets\Scripts\model\building_components_managing\RoomComponent.cs" />
-    <Compile Include="Assets\Scripts\model\building_components_managing\SensorData.cs" />
-    <Compile Include="Assets\Scripts\model\building_components_managing\SensorDataLoader.cs" />
-    <Compile Include="Assets\Scripts\model\building_components_managing\SensorThreshold.cs" />
-    <Compile Include="Assets\Scripts\model\building_components_managing\ThresholdConditions.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\RoomComponent.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\SensorData.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\SensorDataLoader.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\SensorThreshold.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\ThresholdConditions.cs" />
     <Compile Include="Assets\Scripts\model\tools\UiBuilder.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayNodeGroup.cs" />
   </ItemGroup>

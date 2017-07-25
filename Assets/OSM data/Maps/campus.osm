@@ -2598,7 +2598,7 @@
   <nd ref="193559211"/>
   <tag k="building" v="yes"/>
   <tag k="name" v="IBCG"/>
-  <tag k="roof:shape" v="flat"/>
+  <tag k="roof:shape" v="hipped"/>
  </way>
  <way id="18753277" visible="true" version="6" changeset="14763690" timestamp="2013-01-23T23:34:21Z" user="don-vip" uid="297482">
   <nd ref="193560126"/>
