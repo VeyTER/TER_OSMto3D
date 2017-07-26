@@ -16,7 +16,7 @@ public class HeightChangingEditor : ObjectEditor {
 		this.bottomFloor = null;
 	}
 
-	public void InitializeHeightChangingMode() {
+	public override void InitializeMode() {
 		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 
 		Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: f12c498f8c20a5d4f90732b71948f494
+timeCreated: 1501026804
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Blockletter
+  fontNames:
+  - Blockletter
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

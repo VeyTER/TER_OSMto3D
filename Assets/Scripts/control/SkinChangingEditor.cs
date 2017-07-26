@@ -90,7 +90,7 @@ public class SkinChangingEditor : ObjectEditor {
 		return materialsData;
 	}
 
-	public void InitializeSkinChangingMode() {
+	public override void InitializeMode() {
 		skinPanel.SetActive(true);
 		skinPanelController.OpenPanel(null);
 

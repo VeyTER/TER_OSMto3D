@@ -167,37 +167,40 @@ public class CityBuilder {
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			if (nodeGroupEntry.Value.GetType() == typeof(BuildingNodeGroup)) {
 				BuildingNodeGroup buildingNodeGroup = (BuildingNodeGroup) nodeGroupEntry.Value;
-
-				GameObject building = new GameObject(buildingNodeGroup.Name == "unknown" ? buildingNodeGroup.Id : buildingNodeGroup.Name);
-				building.transform.SetParent(buildings.transform, false);
-				buildingsTools.AddBuildingAndNodeGroupPair(building, buildingNodeGroup);
-
-				Vector2 buildingCenter = buildingsTools.BuildingCenter(buildingNodeGroup);
-				building.transform.position = new Vector3(buildingCenter.x, 0, buildingCenter.y);
-
-				// Création et paramétrage de l'objet 3D destiné à former un bâtiment. Pour cela, chaque mur est
-				// construit à partir du noeud courant et du noeud suivant dans le groupe de noeuds courant, puis, il
-				// est ajouté au bâtiment
-				wallsBuilder.BuildWalls(building, buildingNodeGroup);
-				this.BuildSingleBuildingNodeGroup(building, buildingNodeGroup);
-
-				switch (buildingNodeGroup.RoofShape) {
-				case "pitched":
-					roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
-					break;
-				case "flat":
-					roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
-					break;
-				case "hipped":
-					roofBuilder.BuildHippedRoof(building, buildingNodeGroup, -0.035F);
-					break;
-				default:
-					break;
-				}
-
-				this.LoadMatchingBuilding(building, buildingNodeGroup);
+				this.BuildSingleBuilding(buildingNodeGroup);
 			}
 		}
+	}
+
+	public GameObject BuildSingleBuilding(BuildingNodeGroup buildingNodeGroup) {
+		GameObject building = new GameObject(buildingNodeGroup.Name == "unknown" ? buildingNodeGroup.Id : buildingNodeGroup.Name);
+		building.transform.SetParent(buildings.transform, false);
+		buildingsTools.AddBuildingAndNodeGroupPair(building, buildingNodeGroup);
+
+		Vector2 buildingCenter = buildingsTools.BuildingCenter(buildingNodeGroup);
+		building.transform.position = new Vector3(buildingCenter.x, 0, buildingCenter.y);
+
+		// Création et paramétrage de l'objet 3D destiné à former un bâtiment. Pour cela, chaque mur est
+		// construit à partir du noeud courant et du noeud suivant dans le groupe de noeuds courant, puis, il
+		// est ajouté au bâtiment
+		wallsBuilder.BuildWalls(building, buildingNodeGroup);
+		this.BuildSingleBuildingNodeGroup(building, buildingNodeGroup);
+
+		switch (buildingNodeGroup.RoofShape) {
+		case "flat":
+			roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
+			break;
+		case "hipped":
+			roofBuilder.BuildHippedRoof(building, buildingNodeGroup, -0.035F);
+			break;
+		default:
+			roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
+			break;
+		}
+
+		this.LoadMatchingBuilding(building, buildingNodeGroup);
+
+		return building;
 	}
 
 	public void LoadMatchingBuilding(GameObject building, NodeGroup nodeGroup) {
@@ -460,9 +463,8 @@ public class CityBuilder {
 	/// 	Place les feux tricolores dans la scène.
 	/// </summary>
 	public void BuildTraffiSignals() {
-		double posX, posZ;
-		float height = 0.03F;
-		float diameter = 0.015F;
+		float posX;
+		float posZ;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			if (nodeGroupEntry.Value.GetType() == typeof(HighwayNodeGroup)) {
@@ -473,36 +475,12 @@ public class CityBuilder {
 						HighwayComponentNode highwayComponentNode = (HighwayComponentNode) highwayNodeGroup.GetNode(i);
 
 						if (highwayComponentNode.IsTrafficSignal()) {
+							posZ = (float)highwayComponentNode.Latitude;
+							posX = (float)highwayComponentNode.Longitude;
 
-							posZ = highwayComponentNode.Latitude;
-							posX = highwayComponentNode.Longitude;
-
-							// Création et paramétrage de l'objet 3D (cylindre) destiné à former un support du feu tricolore 
-							GameObject mount = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-							mount.name = "Support de feu tricolore";
-							mount.transform.position = new Vector3((float) posX, height / 2f, (float) posZ);
-							mount.transform.localScale = new Vector3(0.005F, 0.015F, 0.005F);
-
-							// Création et paramétrage de l'objet 3D (cube) destiné à former un lumières du feu tricolore 
-							GameObject lights = GameObject.CreatePrimitive(PrimitiveType.Cube);
-							lights.name = "Lumière de feu tricolore";
-							lights.transform.position = new Vector3((float) posX, height, (float) posZ);
-							lights.transform.localScale = new Vector3(diameter, diameter * 2F, diameter);
-
-							// Affectation du matériau au support pour lui donner la texture voulue
-							MeshRenderer mountMeshRenderer = mount.GetComponent<MeshRenderer>();
-							mountMeshRenderer.material = Resources.Load(Materials.METAL) as Material;
-
-							// Affectation du matériau aux lumières pour lui donner la texture voulue
-							MeshRenderer lightsMeshRenderer = lights.GetComponent<MeshRenderer>();
-							lightsMeshRenderer.material = Resources.Load(Materials.TRAFFIC_LIGHT) as Material;
-
-							// Création de l'objet 3D destiné à former un feu tricolore
-							GameObject trafficLight = new GameObject(highwayNodeGroup.Id);
-
-							// Ajout du support et des feux au feu tricolore
-							mount.transform.parent = trafficLight.transform;
-							lights.transform.parent = trafficLight.transform;
+							GameObject trafficSignal = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.TRAFFIC_SIGNAL));
+							trafficSignal.transform.position = new Vector3(posX, 0, posZ);
+							trafficSignal.transform.localScale = new Vector3(0.001F * Dimensions.SCALE_FACTOR, 0.001F * Dimensions.SCALE_FACTOR, 0.001F * Dimensions.SCALE_FACTOR);
 						}
 					}
 				}
@@ -566,32 +544,6 @@ public class CityBuilder {
 
 		// Construction de l'objet 3D (cube) destiné à former un sol 
 		groundBuilder.BuildGround((float) length, (float) width, (float) minLat, (float) minLon, groundMaterial, textureExpansion);
-	}
-
-	public void HideWalls() {
-		this.ChangeBuildingComponentVisibility(false, WALLS_INDEX);
-	}
-	public void ShowWalls() {
-		this.ChangeBuildingComponentVisibility(true, WALLS_INDEX);
-	}
-
-	public void HideBuildingNodes() {
-		this.ChangeBuildingComponentVisibility(false, BUILDING_NODES_INDEX);
-	}
-	public void ShowBuildingNodes() {
-		this.ChangeBuildingComponentVisibility(true, BUILDING_NODES_INDEX);
-	}
-
-	public void HideRoofs() {
-		this.ChangeBuildingComponentVisibility(false, ROOF_INDEX);
-	}
-	public void ShowRoofs() {
-		this.ChangeBuildingComponentVisibility(true, ROOF_INDEX);
-	}
-
-	private void ChangeBuildingComponentVisibility(bool visibility, int componentIndex) {
-		foreach (Transform buildingTransform in buildings.transform)
-			buildingTransform.GetChild(componentIndex).gameObject.SetActive(visibility);
 	}
 
 	public NodeGroupBase NodeGroupBase {

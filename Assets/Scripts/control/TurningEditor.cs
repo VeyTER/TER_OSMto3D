@@ -41,7 +41,7 @@ public class TurningEditor : ObjectEditor {
 	/// 	rotation courante.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void InitializeTurningMode() {
+	public override void InitializeMode() {
 		Quaternion turnHandlerRotation = turnHandler.transform.rotation;
 
 		// Affectation de l'orientation courante de l'objet à l'orientation initiale

@@ -782,10 +782,10 @@ public class BuildingsTools {
 		}
 	}
 
-	public NodeGroup NewMinimalNodeGroup(Vector3 centerPosition, Vector2 dimensions, Material material) {
+	public BuildingNodeGroup NewMinimalNodeGroup(Vector3 centerPosition, Vector2 dimensions, Material material) {
 		string newBuildingId = this.NewIdOrReference(10);
 
-		NodeGroup nodeGroup = new BuildingNodeGroup(newBuildingId) {
+		BuildingNodeGroup buildingNodeGroup = new BuildingNodeGroup(newBuildingId) {
 			Name = "Bâtiment n°" + newBuildingId,
 			NbFloor = 3,
 			CustomMaterial = material
@@ -800,13 +800,13 @@ public class BuildingsTools {
 		Node bottomLeftWallNode = this.NewWallNode(3, centerPosition, new Vector2(-halfLength, halfWidth));
 		Node topLeftDupliWallNode = this.NewWallNode(4, centerPosition, new Vector2(-halfLength, -halfWidth));
 
-		nodeGroup.AddNode(topLeftWallNode);
-		nodeGroup.AddNode(topRightWallNode);
-		nodeGroup.AddNode(bottomRightWallNode);
-		nodeGroup.AddNode(bottomLeftWallNode);
-		nodeGroup.AddNode(topLeftDupliWallNode);
+		buildingNodeGroup.AddNode(topLeftWallNode);
+		buildingNodeGroup.AddNode(topRightWallNode);
+		buildingNodeGroup.AddNode(bottomRightWallNode);
+		buildingNodeGroup.AddNode(bottomLeftWallNode);
+		buildingNodeGroup.AddNode(topLeftDupliWallNode);
 
-		return nodeGroup;
+		return buildingNodeGroup;
 	}
 
 	private Node NewWallNode(int index, Vector3 buildingCenter, Vector2 localPosition) {

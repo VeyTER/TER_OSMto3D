@@ -1,0 +1,161 @@
+fileFormatVersion: 2
+guid: e69c96de699c8934ca02a54e7f6c8549
+timeCreated: 1500989105
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Corps
+    100002: Cylinder_002
+    100004: Cylinder_003
+    100006: Pare-soleil_-_Orange
+    100008: Pare-soleil_-_Rouge
+    100010: Pare-soleil_-_Vert
+    100012: Pillier
+    100014: Sphere_006
+    100016: Sphere_007
+    100018: Sphere_008
+    100020: Sphere_009
+    100022: Sphere_010
+    100024: Sphere_011
+    100026: //RootNode
+    100028: Vitre_-_Orange
+    100030: Vitre_-_Rouge
+    100032: Vitre_-_Vert
+    400000: Corps
+    400002: Cylinder_002
+    400004: Cylinder_003
+    400006: Pare-soleil_-_Orange
+    400008: Pare-soleil_-_Rouge
+    400010: Pare-soleil_-_Vert
+    400012: Pillier
+    400014: Sphere_006
+    400016: Sphere_007
+    400018: Sphere_008
+    400020: Sphere_009
+    400022: Sphere_010
+    400024: Sphere_011
+    400026: //RootNode
+    400028: Vitre_-_Orange
+    400030: Vitre_-_Rouge
+    400032: Vitre_-_Vert
+    2300000: Corps
+    2300002: Cylinder_002
+    2300004: Cylinder_003
+    2300006: Pare-soleil_-_Orange
+    2300008: Pare-soleil_-_Rouge
+    2300010: Pare-soleil_-_Vert
+    2300012: Pillier
+    2300014: Sphere_006
+    2300016: Sphere_007
+    2300018: Sphere_008
+    2300020: Sphere_009
+    2300022: Sphere_010
+    2300024: Sphere_011
+    2300026: Vitre_-_Orange
+    2300028: Vitre_-_Rouge
+    2300030: Vitre_-_Vert
+    3300000: Corps
+    3300002: Cylinder_002
+    3300004: Cylinder_003
+    3300006: Pare-soleil_-_Orange
+    3300008: Pare-soleil_-_Rouge
+    3300010: Pare-soleil_-_Vert
+    3300012: Pillier
+    3300014: Sphere_006
+    3300016: Sphere_007
+    3300018: Sphere_008
+    3300020: Sphere_009
+    3300022: Sphere_010
+    3300024: Sphere_011
+    3300026: Vitre_-_Orange
+    3300028: Vitre_-_Rouge
+    3300030: Vitre_-_Vert
+    4300000: Cylinder_003
+    4300002: Cylinder_002
+    4300004: Sphere_011
+    4300006: Sphere_010
+    4300008: Sphere_009
+    4300010: Sphere_008
+    4300012: Sphere_007
+    4300014: Sphere_006
+    4300016: Pillier
+    4300018: Corps
+    4300020: Pare-soleil_-_Vert
+    4300022: Pare-soleil_-_Orange
+    4300024: Pare-soleil_-_Rouge
+    4300026: Vitre_-_Vert
+    4300028: Vitre_-_Orange
+    4300030: Vitre_-_Rouge
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.001
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

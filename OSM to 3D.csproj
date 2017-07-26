@@ -115,6 +115,7 @@
     <Compile Include="Assets\Scripts\control\TurningEditor.cs" />
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
+    <Compile Include="Assets\Scripts\model\city_building\VisibilityController.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingStepNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\HighwayComponentNode.cs" />
@@ -155,7 +156,7 @@
     <Compile Include="Assets\Scripts\model\components_managing\SensorDataLoader.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\SensorThreshold.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\ThresholdConditions.cs" />
-    <Compile Include="Assets\Scripts\model\tools\UiBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\city_building\UiBuilder.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayNodeGroup.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -282,10 +282,10 @@ public class EditController : MonoBehaviour {
 		Action initializationSequence = () => {
 			movingEditor.InitializeBasics(selectedBuilding);
 			movingEditor.MoveHandler.SetActive(true);
-			movingEditor.InitializeMovingMode();
+			movingEditor.InitializeMode();
 			editState = EditStates.MOVING_MODE;
 		};
-		this.EnterTransformMode (initializationSequence);
+		this.EnterTransformMode(initializationSequence);
 	}
 
 	/// <summary>
@@ -296,7 +296,7 @@ public class EditController : MonoBehaviour {
 		Action initializationSequence = () => {
 			turningEditor.InitializeBasics(selectedBuilding);
 			turningEditor.TurnHandler.SetActive(true);
-			turningEditor.InitializeTurningMode();
+			turningEditor.InitializeMode();
 			editState = EditStates.TURNING_MODE;
 		};
 		this.EnterTransformMode (initializationSequence);
@@ -305,7 +305,7 @@ public class EditController : MonoBehaviour {
 	public void EnterHeightChangingMode() {
 		Action initializationSequence = () => {
 			heightChangingEditor.InitializeBasics(selectedBuilding);
-			heightChangingEditor.InitializeHeightChangingMode();
+			heightChangingEditor.InitializeMode();
 			cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, null, 15));
 			editState = EditStates.HEIGHT_CHANGING_MODE;
 		};
@@ -316,7 +316,7 @@ public class EditController : MonoBehaviour {
 	public void EnterSkinChangingMode() {
 		Action initializationSequence = () => {
 			skinChangingEditor.InitializeBasics(selectedBuilding);
-			skinChangingEditor.InitializeSkinChangingMode();
+			skinChangingEditor.InitializeMode();
 
 			cameraController.StartCoroutine(cameraController.MoveToBuilding(selectedBuilding, true, () => {
 				cameraController.StartCoroutine(cameraController.TurnAroundBuilding(selectedBuilding, 15));

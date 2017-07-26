@@ -13,7 +13,7 @@ public class BuildingCreationEditor : ObjectEditor {
 		this.cameraController = Camera.main.GetComponent<CameraController>();
 	}
 
-	public void InitializeBuildingCreation() {
+	public override void InitializeMode() {
 		float cameraAngle = (180 - (Camera.main.transform.rotation.eulerAngles.y + 90)) * Mathf.Deg2Rad;
 
 		float REMOTNESS = 2;
@@ -21,30 +21,26 @@ public class BuildingCreationEditor : ObjectEditor {
 		float sinOffset = (float)(Math.Sin(cameraAngle) * REMOTNESS);
 
 		Vector3 buildingPosition = Camera.main.transform.position + new Vector3(cosOffset, 0, sinOffset);
-		Vector2 buildingDimensions = Vector2.one;
-
-		this.InitializeBuilding(buildingPosition, 0, buildingDimensions);
+		this.InitializeBuilding(buildingPosition, 0, Vector2.one);
 	}
 
 	private void InitializeBuilding(Vector3 position, float orientation, Vector2 Dimensions) {
 		Material defaultWallMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
-		NodeGroup nodeGroup = buildingsTools.NewMinimalNodeGroup(position, Dimensions, defaultWallMaterial);
+		BuildingNodeGroup buildingNodeGroup = buildingsTools.NewMinimalNodeGroup(position, Dimensions, defaultWallMaterial);
 
-		// TODO
-		//GameObject building = cityBuilder.WallsBuilder.BuildWalls(building, nodeGroup);
-		//buildingsTools.ReplaceColor(building, new Color(1, 1, 1, 0.5F));
+		GameObject building = cityBuilder.BuildSingleBuilding(buildingNodeGroup);
+		buildingsTools.ReplaceColor(building, new Color(1, 1, 1, 0.5F));
 
-		//cityBuilder.AddNodeGroup(nodeGroup);
-		//cityBuilder.WallsBuilder.SetupWalls(cityBuilder.Buildings, building, nodeGroup);
+		cityBuilder.NodeGroupBase.AddNodeGroup(buildingNodeGroup);
 
-		//building.transform.rotation = Quaternion.Euler(0, orientation, 0);
+		building.transform.rotation = Quaternion.Euler(0, orientation, 0);
 
-		//building.transform.parent = Camera.main.transform;
-		//GameObject.Destroy(building.GetComponent<UiManager>());
+		building.transform.parent = Camera.main.transform;
+		GameObject.Destroy(building.GetComponent<UiManager>());
 
-		//buildingsTools.AddBuildingAndNodeGroupPair(building, nodeGroup);
+		buildingsTools.AddBuildingAndNodeGroupPair(building, buildingNodeGroup);
 
-		//selectedBuilding = building;
+		selectedBuilding = building;
 	}
 
 	public void CompensateCameraMoves() {
@@ -54,13 +50,15 @@ public class BuildingCreationEditor : ObjectEditor {
 		InputField orientationInputTextInput = buildingCreationOrientationInput.GetComponent<InputField>();
 
 		float buildingOrientation = 0;
-		float.TryParse(orientationInputTextInput.text, out buildingOrientation);
+		bool parsingOutcome = float.TryParse(orientationInputTextInput.text, out buildingOrientation);
 
-		GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
-		float buildingHeight = firstWall.transform.localScale.y;
+		if (parsingOutcome) {
+			GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
+			float buildingHeight = firstWall.transform.localScale.y;
 
-		selectedBuilding.transform.position = new Vector3(buildingPosition.x, buildingHeight / 2F, buildingPosition.z);
-		selectedBuilding.transform.rotation = Quaternion.Euler(0, (float)Math.Round(buildingOrientation, 2), 0);
+			selectedBuilding.transform.position = new Vector3(buildingPosition.x, 0, buildingPosition.z);
+			selectedBuilding.transform.rotation = Quaternion.Euler(0, (float) Math.Round(buildingOrientation, 2), 0);
+		}
 	}
 
 	public void UpdatePosition(Vector3 newPosition) {
@@ -109,27 +107,42 @@ public class BuildingCreationEditor : ObjectEditor {
 	public override void ValidateTransform() {
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 
-		// TODO
-		//GameObject buildingNodeGroupGo = cityBuilder.BuildSingleBuildingNodeGroup(nodeGroup);
+		selectedBuilding.AddComponent<UiManager>();
+		selectedBuilding.transform.parent = cityBuilder.Buildings.transform;
 
-		//selectedBuilding.AddComponent<UiManager>();
-		//selectedBuilding.transform.parent = cityBuilder.Buildings.transform;
-		//buildingNodeGroupGo.transform.parent = cityBuilder.BuildingNodes.transform;
+		Vector3 buildingPosition = selectedBuilding.transform.position;
+		buildingsTools.UpdateNodesPosition(selectedBuilding);
 
-		//Vector3 buildingPosition = selectedBuilding.transform.position;
-		//buildingNodeGroupGo.transform.position = new Vector3(buildingPosition.x, buildingNodeGroup.transform.position.y, buildingPosition.z);
-		//buildingNodeGroupGo.transform.rotation = selectedBuilding.transform.rotation;
-		//buildingsTools.UpdateNodesPosition(selectedBuilding);
+		Material defaultBuildingMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
+		buildingsTools.ReplaceMaterial(selectedBuilding, defaultBuildingMaterial);
 
-		//Material defaultBuildingMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
-		//buildingsTools.ReplaceMaterial(selectedBuilding, defaultBuildingMaterial);
+		this.UpdateBuildingVisibility();
 
-		//buildingsTools.AppendResumeBuilding(nodeGroup);
-		//buildingsTools.AppendCustomBuilding(nodeGroup);
+		buildingsTools.AppendResumeBuilding(nodeGroup);
+		buildingsTools.AppendCustomBuilding(nodeGroup);
 
-		//buildingsTools.UpdateLocation(selectedBuilding);
+		buildingsTools.UpdateLocation(selectedBuilding);
 
-		//cameraController.SwitchToSemiLocalMode();
+		cameraController.SwitchToSemiLocalMode();
+	}
+
+	private void UpdateBuildingVisibility() {
+		VisibilityController visiblityController = VisibilityController.GetInstance();
+
+		if (visiblityController.WallsVisibility)
+			visiblityController.ShowWalls();
+		else
+			visiblityController.HideWalls();
+
+		if (visiblityController.BuildingNodesVisibility)
+			visiblityController.ShowBuildingNodes();
+		else
+			visiblityController.HideBuildingNodes();
+
+		if (visiblityController.RoofsVisibility)
+			visiblityController.ShowRoofs();
+		else
+			visiblityController.HideRoofs();
 	}
 
 	private void RemoveBuilding() {

@@ -45,6 +45,8 @@ public abstract class ObjectEditor {
 		isBuildingTransformed = false;
 	}
 
+	public abstract void InitializeMode();
+
 	public abstract void ValidateTransform();
 	public abstract void CancelTransform();
 

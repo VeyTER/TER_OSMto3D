@@ -19,49 +19,40 @@ public class Main : MonoBehaviour {
 
 	private GameObject editPanel;
 
-	/// <summary>
-	/// 	Undique instance du singleton MapLoader servant à charger une carte OSM.
-	/// </summary>
-	private MapLoader mapLoader;
-
-	/// <summary>
-	/// 	Unique instance du singleton CityBuilder servant construire la ville en 3D à partir des données OSM.
-	/// </summary>
-	private CityBuilder cityBuilder;
-
-
 	public void Start() {
-		this.cityBuilder = CityBuilder.GetInstance();
-		this.mapLoader = MapLoader.GetInstance ();
+		CityBuilder cityBuilder = CityBuilder.GetInstance();
+		MapLoader mapLoader = MapLoader.GetInstance ();
+
+		VisibilityController visibilityController = VisibilityController.GetInstance();
 
 		// Paramétrage de la qualité graphique
 		QualitySettings.antiAliasing = 8;
 		QualitySettings.shadows = ShadowQuality.All;
 
-		this.InstantiateMainElements ();
+		this.InstantiateMainObjects ();
 
 		// Si le fichier contennant la carte OSM existe bien, le traitement est effectué
 		if (File.Exists(OSM_FILE_NAME)) {
 			// Chargement des données OSM
-			this.mapLoader.LoadOsmData(OSM_FILE_NAME);
-			this.mapLoader.LoadSettingsData();
-			this.mapLoader.GenerateResumeFile();
-			this.mapLoader.LoadCustomData();
-			this.mapLoader.LoadResumedData();
+			mapLoader.LoadOsmData(OSM_FILE_NAME);
+			mapLoader.LoadSettingsData();
+			mapLoader.GenerateResumeFile();
+			mapLoader.LoadCustomData();
+			mapLoader.LoadResumedData();
 
 			// Réglage de l'échelle et des dimensions
-			this.cityBuilder.NodeGroupBase.ScaleNodes(Dimensions.SCALE_FACTOR);
-			this.cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
+			cityBuilder.NodeGroupBase.ScaleNodes(Dimensions.SCALE_FACTOR);
+			cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
 
 			// Construction de la ville
-			this.cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
-			this.cityBuilder.BuildNodes();
-			this.cityBuilder.BuildBuildings();
-			this.cityBuilder.BuildRoads();
-			this.cityBuilder.BuildTrees();
-			this.cityBuilder.BuildTraffiSignals();
-			this.cityBuilder.BuildMainCamera();
-			this.cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
+			cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
+			cityBuilder.BuildNodes();
+			cityBuilder.BuildBuildings();
+			cityBuilder.BuildRoads();
+			cityBuilder.BuildTrees();
+			cityBuilder.BuildTraffiSignals();
+			cityBuilder.BuildMainCamera();
+			cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
 
 			GameObject visibilityWheelPanel = GameObject.Find(UiNames.VISIBILITY_WHEEL_PANEL);
 			WheelPanelController visibilityPanelContoller = visibilityWheelPanel.GetComponent<WheelPanelController>();
@@ -79,10 +70,10 @@ public class Main : MonoBehaviour {
 			controlPanelManager.AddPanel(buildingCreationBoxPanel);
 
 			// Désactivation des certains groupes d'objets
-			this.cityBuilder.HideBuildingNodes();
+			visibilityController.HideBuildingNodes();
 			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.BUILDING_NODES_SWITCH));
 
-			this.cityBuilder.HighwayNodes.SetActive(false);
+			visibilityController.HideHighwayNodes();
 			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.HIGHWAY_NODES_SWITCH));
 
 			// Récupération de la référence du panneau et ajout d'un controlleur
@@ -105,7 +96,7 @@ public class Main : MonoBehaviour {
 	/// <summary>
 	/// 	Mise en place de l'interface
 	/// </summary>
-	public void InstantiateMainElements() {
+	public void InstantiateMainObjects() {
 		GameObject mainCamera = (GameObject) GameObject.Instantiate(Resources.Load("Game objects/CampusCamera"));
 		mainCamera.name = "Camera";
 

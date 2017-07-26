@@ -41,7 +41,7 @@ public class MovingEditor : ObjectEditor {
 	/// 	déplacement courant.
 	/// </summary>
 	/// <param name="selectionRange">Etendue de la sélection (mur ou bâtiment).</param>
-	public void InitializeMovingMode() {
+	public override void InitializeMode() {
 		Vector3 objectPosition = Vector3.zero;
 		Vector3 objectScale = Vector3.zero;
 

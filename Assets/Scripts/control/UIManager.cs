@@ -343,12 +343,14 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 		if (panelController2.GetType() == typeof(BoxPanelController))
 			buildingCreationPanelController = (BoxPanelController) panelController2;
 
+		VisibilityController visibilityController = VisibilityController.GetInstance();
+
 		switch (name.Split('_')[0]) {
 		case UiNames.CREATE_BUILDING_BUTTON:
 			if (controlPanelManager.AllPanelsClosed()) {
 				buildingCreationPanelController.transform.gameObject.SetActive(true);
 				buildingCreationPanelController.OpenPanel(null);
-				buildingCreationEditor.InitializeBuildingCreation();
+				buildingCreationEditor.InitializeMode();
 				buildingCreationEditor.UpdateDisplayedSituation();
 				controlPanelManager.ControlState = ControlPanelManager.ControlStates.BUILDING_CREATION;
 			}
@@ -392,7 +394,7 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 			break;
 		case UiNames.DISABLED_BUILDING_NODES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.ShowBuildingNodes();
+				visibilityController.ShowBuildingNodes();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
@@ -404,13 +406,13 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 			break;
 		case UiNames.DISABLED_WALLS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.ShowWalls();
+				visibilityController.ShowWalls();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
 		case UiNames.DISABLED_ROOFS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.ShowRoofs();
+				visibilityController.ShowRoofs();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
@@ -441,7 +443,7 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 
 		case UiNames.ENABLED_BUILDING_NODES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.HideBuildingNodes();
+				visibilityController.HideBuildingNodes();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
@@ -453,13 +455,13 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 			break;
 		case UiNames.ENABLED_WALLS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.HideWalls();
+				visibilityController.HideWalls();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
 		case UiNames.ENABLED_ROOFS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.HideRoofs();
+				visibilityController.HideRoofs();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;

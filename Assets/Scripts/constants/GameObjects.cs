@@ -16,4 +16,6 @@ public class GameObjects {
 
 	public const string MATERIAL_ITEM = GAME_OBJECT_LOCAL_FOLER + "MaterialItem";
 	public const string COLOR_ITEM = GAME_OBJECT_LOCAL_FOLER + "ColorItem";
+
+	public const string TRAFFIC_SIGNAL = GAME_OBJECT_LOCAL_FOLER + "TrafficSignal";
 }

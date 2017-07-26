@@ -14,15 +14,11 @@ public class Triangulation {
 	private BuildingShape buildingShape;
 	private List<Triangle> triangles;
 
-	private List<GameObject> testCubes;
-
 	public Triangulation(NodeGroup nodeGroup) {
 		this.nodeGroup = nodeGroup;
 
 		this.buildingShape = new BuildingShape();
 		this.triangles = new List<Triangle>();
-
-		this.testCubes = new List<GameObject>();
 	}
 
 	public void Triangulate(string name) {
