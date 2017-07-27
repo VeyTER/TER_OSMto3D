@@ -329,7 +329,7 @@ public class CityBuilder {
 	}
 
 	public GameObject BuildSingleWayNodeGroup(GameObject way, NodeGroup nodeGroup) {
-		GameObject roadNodeGroupGo = new GameObject("WaysNodes_"/* + way.name.Split('_')[1]*/);
+		GameObject roadNodeGroupGo = new GameObject("WaysNodes_" + way.name.Split('_')[1]);
 		roadNodeGroupGo.transform.SetParent(way.transform, false);
 
 		// Construction des angles de noeuds de routes
@@ -373,14 +373,14 @@ public class CityBuilder {
 
 				// Création et paramétrage de l'objet 3D (cylindre) destiné à former un tronc d'arbre 
 				GameObject trunk = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-				trunk.name = "Trunk";
+				trunk.name = "Trunk_" + nodeGroup.Id;
 				trunk.tag = GoTags.TREE_TAG;
 				trunk.transform.position = new Vector3((float) posX, height / 2F, (float) posZ);
 				trunk.transform.localScale = new Vector3(height / 6F, height / 2F, height / 6F);
 
 				// Création et paramétrage de l'objet 3D (sphere) destiné à former un feuillage 
 				GameObject foliage = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-				foliage.name = "Foliage";
+				foliage.name = "Foliage" + nodeGroup.Id;
 				foliage.tag = GoTags.TREE_TAG;
 				foliage.transform.position = new Vector3((float) posX, height, (float) posZ);
 				foliage.transform.localScale = new Vector3(diameter, diameter, diameter);
@@ -393,7 +393,8 @@ public class CityBuilder {
 				MeshRenderer foliageMeshRenderer = foliage.GetComponent<MeshRenderer>();
 				foliageMeshRenderer.material = Resources.Load(Materials.TREE_LEAF) as Material;
 
-				GameObject tree = new GameObject(nodeGroup.Id);
+				GameObject tree = new GameObject("Tree_" + nodeGroup.Id);
+				nodeGroup.Name = tree.name;
 
 				// Ajout du tronc et du feuillage à l'arbre
 				trunk.transform.parent = tree.transform;

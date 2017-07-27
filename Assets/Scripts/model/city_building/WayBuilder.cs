@@ -29,6 +29,7 @@ public class WayBuilder {
 		if (nodeGroup.NodeCount() >= 2) {
 			string nameComplement = nodeGroup.GetNode(0).Reference + "-" + nodeGroup.GetNode(nodeGroup.NodeCount() - 1).Reference;
 
+			nodeGroup.Name = wayIdentifier + "_" + nameComplement;
 			GameObject way = new GameObject(wayIdentifier + "_" + nameComplement);
 			way.transform.position = new Vector3((float) nodeGroup.GetNode(0).Longitude, Dimensions.WAY, (float) nodeGroup.GetNode(0).Latitude);
 
