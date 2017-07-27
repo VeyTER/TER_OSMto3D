@@ -57,4 +57,6 @@ public class FilePaths {
 	public const string TEXTURES_FOLDER_LOCAL = "Textures/";
 
 	public const string MAP_BACKGROUNDS_FILE = TEXTURES_FOLDER + "maps_background_details.txt";
+
+	public const string GAME_OBJECT_LOCAL_FOLER = "Game objects/";
 }

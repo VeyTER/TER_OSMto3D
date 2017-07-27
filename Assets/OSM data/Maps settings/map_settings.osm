@@ -8,7 +8,7 @@
 			<town designation="Toulouse">
 				<info lat="43.600000" lon="1.433333" dist="0.8" nbfloor="3" roofangle="15" rooftype="flat" custmat="BricksBasic" color="1;1;1"/>
 				<district designation="UPS">
-					<info lat="43.560397" lon="1.468820" dist="0.03" nbfloor="4" roofangle="0" rooftype="flat" custmat="OfficeGlasses" color="1;1;1"/>
+					<info lat="43.560397" lon="1.468820" dist="0.03" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1"/>
 				</district>
 				<district designation="Centre-Ville">
 					<info lat="43.603236" lon="1.444659" dist="0.03" nbfloor="3" roofangle="15" rooftype="hipped" custmat="BricksBasic" color="1;1;1"/>

@@ -167,10 +167,10 @@ public class CityBuilder {
 		this.BuildSingleBuildingNodeGroup(building, buildingNodeGroup);
 
 		switch (buildingNodeGroup.RoofShape) {
-		case "flat":
+		case RoofShapes.FLAT:
 			roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
 			break;
-		case "hipped":
+		case RoofShapes.HIPPED:
 			roofBuilder.BuildHippedRoof(building, buildingNodeGroup, -0.035F);
 			break;
 		default:

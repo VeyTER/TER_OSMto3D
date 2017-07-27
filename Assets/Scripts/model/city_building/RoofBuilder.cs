@@ -6,46 +6,20 @@ using UnityEngine;
 /// 	Gère la génération des toits à partir des triangles créés avec la triangulation de Delauney.
 /// </summary>
 public class RoofBuilder {
-	/// <summary>
-	/// 	Créé un toit en appelant toutes les autres fonctions privées de la classe.
-	/// </summary>
-	/// <returns>Nouveau toit.</returns>
-	/// <param name="posX">Position en X du toit.</param>
-	/// <param name="posZ">Position en Z du toit.</param>
-	/// <param name="triangulation">Triangulation de Delauney.</param>
-	/// <param name="nbFloor">Nombre d'étages du bâtiments sur lequel le toit va être ajouté.</param>
-	/// <param name="floorSize">Hauteur des étages du bâtiment sur lequel le toit va être ajouté.</param>
 	public GameObject BuildFlatRoof(GameObject building, BuildingNodeGroup buildingNodeGroup) {
 		Triangulation triangulation = new Triangulation(buildingNodeGroup);
 		triangulation.Triangulate(buildingNodeGroup.Name);
 
-		float buildingHeight = buildingNodeGroup.NbFloor * Dimensions.FLOOR_HEIGHT;
-
-		// Création et paramétrage de l'objet 3D destiné à former un toit
-		GameObject roof = new GameObject(building.name + "_roof", typeof(MeshFilter), typeof(MeshRenderer), typeof(UiManager)) {
-			tag = GoTags.ROOF_TAG
-		};
-		roof.transform.SetParent(building.transform, false);
-		roof.transform.localPosition = new Vector3(0, buildingHeight, 0);
-
 		// Création, construction et texturing du maillage formant un toit
 		Dictionary<Node, int> nodesAndIndex = new Dictionary<Node, int>();
 		Mesh mesh = new Mesh() {
-			vertices = this.RoofVertices(triangulation, building, nodesAndIndex)
+			vertices = this.FlatRoofVertices(triangulation, building, nodesAndIndex)
 		};
-		mesh.triangles = this.RoofTriangles(triangulation, mesh.vertices, building, nodesAndIndex);
+		mesh.triangles = this.FlatRoofTriangles(triangulation, mesh.vertices, building, nodesAndIndex);
 		mesh.normals = this.FlatRoofNormals(triangulation);
 
-		// Affectation du maillage au toit pour lui donner la forme voulue
-		MeshFilter meshFilter = roof.GetComponent<MeshFilter>();
-		meshFilter.mesh = mesh;
-
-		// Affectation du matériau à la route pour lui donner la texture voulue
-		MeshRenderer meshRenderer = roof.GetComponent<MeshRenderer>();
-		meshRenderer.material = Resources.Load(Materials.ROOF) as Material;
-
-		MeshCollider meshCollider = roof.AddComponent<MeshCollider>();
-		meshCollider.sharedMesh = mesh;
+		// Création et paramétrage de l'objet 3D destiné à former un toit
+		GameObject roof = this.BuildRoof(building, buildingNodeGroup, mesh);
 
 		return roof;
 	}
@@ -54,6 +28,31 @@ public class RoofBuilder {
 		Triangulation triangulation = new Triangulation(buildingNodeGroup);
 		triangulation.Triangulate(buildingNodeGroup.Name);
 
+		Vector3[] bottomVertices = new Vector3[0];
+		Vector3[] topVertices = new Vector3[0];
+
+		Dictionary<Node, int> topNodesAndIndex = new Dictionary<Node, int>();
+		Dictionary<Node, int> bottomNodesAndIndex = new Dictionary<Node, int>();
+
+		Vector3[] roofVertices = this.HippedRoofVertices(triangulation, building, out bottomVertices, out topVertices, bottomNodesAndIndex, topNodesAndIndex, expansionFactor);
+		int[] roofTriangles = this.HippedRoofTriangles(triangulation, bottomVertices, topVertices, roofVertices, building, bottomNodesAndIndex, topNodesAndIndex);
+
+		Mesh mesh = new Mesh() {
+			vertices = roofVertices,
+			triangles = roofTriangles
+		};
+
+		// Création et paramétrage de l'objet 3D destiné à former un toit
+		GameObject roof = this.BuildRoof(building, buildingNodeGroup, mesh);
+
+		MeshFilter roofMeshFilter = roof.GetComponent<MeshFilter>();
+		roofMeshFilter.mesh.RecalculateNormals();
+		roofMeshFilter.mesh.RecalculateBounds();
+
+		return roof;
+	}
+
+	private GameObject BuildRoof(GameObject building, BuildingNodeGroup buildingNodeGroup, Mesh mesh) {
 		float buildingHeight = buildingNodeGroup.NbFloor * Dimensions.FLOOR_HEIGHT;
 
 		// Création et paramétrage de l'objet 3D destiné à former un toit
@@ -63,33 +62,15 @@ public class RoofBuilder {
 		roof.transform.SetParent(building.transform, false);
 		roof.transform.localPosition = new Vector3(0, buildingHeight, 0);
 
-		Vector3[] bottomVertices = new Vector3[0];
-		Vector3[] topVertices = new Vector3[0];
-
-		Dictionary<Node, int> topNodesAndIndex = new Dictionary<Node, int>();
-		Dictionary<Node, int> bottomNodesAndIndex = new Dictionary<Node, int>();
-
-		Vector3[] roofVertices = this.RoofHippedVertices(triangulation, building, out bottomVertices, out topVertices, bottomNodesAndIndex, topNodesAndIndex, expansionFactor);
-		int[] roofTriangles = this.HippedRoofTriangles(triangulation, bottomVertices, topVertices, roofVertices, building, bottomNodesAndIndex, topNodesAndIndex);
-
-		Mesh mesh = new Mesh() {
-			vertices = roofVertices,
-			triangles = roofTriangles
-		};
-
-		// Affectation du maillage au toit pour lui donner la forme voulue
 		MeshFilter roofMeshFilter = roof.GetComponent<MeshFilter>();
 		roofMeshFilter.mesh = mesh;
-
-		roofMeshFilter.mesh.RecalculateNormals();
-		roofMeshFilter.mesh.RecalculateBounds();
 
 		// Affectation du matériau à la route pour lui donner la texture voulue
 		MeshRenderer meshRenderer = roof.GetComponent<MeshRenderer>();
 		meshRenderer.material = Resources.Load(Materials.ROOF) as Material;
 
 		MeshCollider meshCollider = roof.AddComponent<MeshCollider>();
-		meshCollider.sharedMesh = mesh;
+		meshCollider.sharedMesh = roofMeshFilter.mesh;
 
 		return roof;
 	}
@@ -102,7 +83,7 @@ public class RoofBuilder {
 	/// <param name="triangulation">Triangulation de Dealauney.</param>
 	/// <param name="posX">Position en X du toit.</param>
 	/// <param name="posZ">Position en Z du toit.</param>
-	private Vector3[] RoofVertices(Triangulation triangulation, GameObject building, Dictionary<Node, int> nodesAndIndex, float expansionFactor = 0) {
+	private Vector3[] FlatRoofVertices(Triangulation triangulation, GameObject building, Dictionary<Node, int> nodesAndIndex, float expansionFactor = 0) {
 		int nbVertex = triangulation.Triangles.Count * 3;
 		Vector3[] res = new Vector3[nbVertex];
 
@@ -123,17 +104,17 @@ public class RoofBuilder {
 		return res;
 	}
 
-	private Vector3[] RoofHippedVertices(Triangulation triangulation, GameObject building, out Vector3[] bottomVertices, out Vector3[] topVertices, Dictionary<Node, int> bottomNodesAndIndex, Dictionary<Node, int> topNodesAndIndex, float expansionFactor) {
+	private Vector3[] HippedRoofVertices(Triangulation triangulation, GameObject building, out Vector3[] bottomVertices, out Vector3[] topVertices, Dictionary<Node, int> bottomNodesAndIndex, Dictionary<Node, int> topNodesAndIndex, float expansionFactor) {
 		List<Vector3> allVertices = new List<Vector3>();
 
 		// Création, construction et texturing du maillage formant un toit
-		topVertices = this.RoofVertices(triangulation, building, topNodesAndIndex, expansionFactor);
+		topVertices = this.FlatRoofVertices(triangulation, building, topNodesAndIndex, expansionFactor);
 		for (int i = 0; i < topVertices.Length; i++) {
 			Vector3 topVertex = topVertices[i];
 			topVertices[i] = new Vector3(topVertex.x, topVertex.y + Dimensions.ROOF_HEIGHT, topVertex.z);
 		}
 
-		bottomVertices = this.RoofVertices(triangulation, building, bottomNodesAndIndex);
+		bottomVertices = this.FlatRoofVertices(triangulation, building, bottomNodesAndIndex);
 		for (int i = 0; i < 3; i++)
 			allVertices.AddRange(bottomVertices);
 		for (int i = 0; i < 3; i++)
@@ -175,7 +156,7 @@ public class RoofBuilder {
 	/// 	Créé de 2 triangles qui vont former à eux deux une portion de toit.
 	/// </summary>
 	/// <returns>Triangles sur le toit.</returns>
-	private int[] RoofTriangles(Triangulation triangulation, Vector3[] meshVertices, GameObject building, Dictionary<Node, int> nodesAndIndex) {
+	private int[] FlatRoofTriangles(Triangulation triangulation, Vector3[] meshVertices, GameObject building, Dictionary<Node, int> nodesAndIndex) {
 		Vector2 buildingPosition = new Vector2(building.transform.position.x, building.transform.position.z);
 
 		List<int> verticesIndex = new List<int>();
@@ -193,8 +174,8 @@ public class RoofBuilder {
 	}
 
 	private int[] HippedRoofTriangles(Triangulation triangulation, Vector3[] bottomVertices, Vector3[] topVertices, Vector3[] allVertices, GameObject building, Dictionary<Node, int> bottomNodesAndIndex, Dictionary<Node, int> topNodesAndIndex) {
-		int[] bottomTriangles = this.RoofTriangles(triangulation, bottomVertices, building, bottomNodesAndIndex);
-		int[] topTriangles = this.RoofTriangles(triangulation, topVertices, building, topNodesAndIndex);
+		int[] bottomTriangles = this.FlatRoofTriangles(triangulation, bottomVertices, building, bottomNodesAndIndex);
+		int[] topTriangles = this.FlatRoofTriangles(triangulation, topVertices, building, topNodesAndIndex);
 		for (int i = 0; i < topTriangles.Length; i++)
 			topTriangles[i] += allVertices.Length / 2;
 
