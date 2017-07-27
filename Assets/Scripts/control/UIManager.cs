@@ -398,9 +398,9 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
-		case UiNames.DISABLED_HIGHWAY_NODES_BUTTON:
+		case UiNames.DISABLED_ROADS_NODES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.HighwayNodes.SetActive(true);
+				visibilityController.ShowRoadsNodes();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
@@ -416,27 +416,27 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
-		case UiNames.DISABLED_HIGHWAYS_BUTTON:
+		case UiNames.DISABLED_ROADS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Highways.SetActive(true);
+				visibilityController.ShowRoads();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}	
 			break;
 		case UiNames.DISABLED_FOOTWAYS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Footways.SetActive(true);
+				visibilityController.ShowFootways();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
 		case UiNames.DISABLED_CYCLEWAYS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Cycleways.SetActive(true);
+				visibilityController.ShowCycleways();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
 		case UiNames.DISABLED_TREES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Trees.SetActive(true);
+				visibilityController.ShowTrees();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
@@ -447,9 +447,9 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
-		case UiNames.ENABLED_HIGHWAY_NODES_BUTTON:
+		case UiNames.ENABLED_ROADS_NODES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.HighwayNodes.SetActive(false);
+				visibilityController.HideRoads();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
@@ -465,27 +465,27 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
-		case UiNames.ENABLED_HIGHWAYS_BUTTON:
+		case UiNames.ENABLED_ROADS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Highways.SetActive(false);
+				visibilityController.HideRoads();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
 		case UiNames.ENABLED_FOOTWAYS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Footways.SetActive(false);
+				visibilityController.HideFootways();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
 		case UiNames.ENABLED_CYCLEWAYS_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Cycleways.SetActive(false);
+				visibilityController.HideCycleways();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
 		case UiNames.ENABLED_TREES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				cityBuilder.Trees.SetActive(false);
+				visibilityController.HideTrees();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;

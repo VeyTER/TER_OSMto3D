@@ -544,11 +544,10 @@ public class MapLoader {
 
 						// Ajout d'attributs propres à l'objet courant en fonction de son type, contenu dans le groupe
 						// de noeuds courant
-						if (nodeGroup.GetType() == typeof(BuildingNodeGroup)) {
+						if (nodeGroup.GetType() == typeof(BuildingNodeGroup))
 							this.AddBuildingNodeAttribute(mapResumedDocument, nodeGroup, objectInfoNode);
-						} else if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
+						else if (nodeGroup.GetType() == typeof(HighwayNodeGroup))
 							this.AddHighwayNodeAttribute(mapResumedDocument, nodeGroup, objectInfoNode);
-						}
 
 						// Ajout du nouveau noeud XML créé, représentant l'objet, au neud XML correspondant à la zone à
 						// laquelle il appartient

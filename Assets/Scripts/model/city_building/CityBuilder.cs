@@ -12,6 +12,9 @@ public class CityBuilder {
 	public const int BUILDING_NODES_INDEX = 1;
 	public const int ROOF_INDEX = 2;
 
+	public const int ROAD_SECTIONS_INDEX = 0;
+	public const int ROAD_NODES_INDEX = 1;
+
 	private static CityBuilder instance;
 
 	private BuildingsTools buildingsTools;
@@ -51,11 +54,6 @@ public class CityBuilder {
 	private GameObject cityComponents;
 
 	/// <summary>
-	/// 	Object 3D contenant tous les noeuds de routes.
-	/// summary>
-	private GameObject highwayNodes;
-
-	/// <summary>
 	/// 	Object 3D contenant tous les groupes de murs, vus par l'application comme des bâtiments.
 	/// </summary>
 	private GameObject buildings;
@@ -63,7 +61,7 @@ public class CityBuilder {
 	/// <summary>
 	/// 	Object 3D contenant tous les groupes de portions de routes.
 	/// </summary>
-	private GameObject highways;
+	private GameObject roads;
 
 	/// <summary>
 	/// 	Object 3D contenant toutes les portions de pistes cyclables.
@@ -116,39 +114,6 @@ public class CityBuilder {
 		this.maxLon = maxLon;
 	}
 
-
-	/// <summary>
-	/// 	Place les noeuds 3D dans la scène.
-	/// </summary>
-	public void BuildNodes() {
-		// Récupération de l'objet contenant les groupes de noeuds de routes et ajout de celui-ci à la ville
-		highwayNodes = new GameObject(CityObjectNames.HIGHWAY_NODES);
-		highwayNodes.transform.parent = cityComponents.transform;
-
-		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
-			NodeGroup nodeGroup = nodeGroupEntry.Value;
-
-			if (nodeGroup.GetType() == typeof(BuildingNodeGroup))
-				this.BuildSingleHighwayNodeGroup(nodeGroup);
-		}
-	}
-
-	public void BuildSingleHighwayNodeGroup(NodeGroup nodeGroup) {
-		if (nodeGroup.GetType() == typeof(HighwayNodeGroup) || nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
-			// Construction des angles de noeuds de routes
-			foreach (Node n in nodeGroup.Nodes) {
-				// Création et paramétrage de l'objet 3D destiné à former un noeud de route
-				GameObject highwayNode = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				highwayNode.name = n.Reference;
-				highwayNode.tag = GoTags.HIGHWAY_NODE_TAG;
-				highwayNode.transform.position = new Vector3((float) n.Longitude, 0, (float) n.Latitude);
-				highwayNode.transform.localScale = new Vector3(0.02F, 0.02F, 0.02F);
-
-				// Ajout du noeud dans le groupe de noeuds 
-				highwayNode.transform.parent = highwayNodes.transform;
-			}
-		}
-	}
 
 	/// <summary>
 	/// 	Place les murs dans la scène.
@@ -238,23 +203,23 @@ public class CityBuilder {
 			return null;
 	}
 
-	public GameObject BuildVirtualFloor(GameObject building, int floorIndex, Material floorMaterial, bool buildRoof) {
+	public GameObject BuildVirtualLevel(GameObject building, int floorIndex, Material floorMaterial, bool buildRoof) {
 		GameObject buildingWalls = building.transform.GetChild(WALLS_INDEX).gameObject;
 		GameObject buildingRoof = building.transform.GetChild(ROOF_INDEX).gameObject;
 
 		Vector3 buildingPosition = building.transform.position;
 
-		GameObject virtualFloor = GameObject.Instantiate(buildingWalls);
-		virtualFloor.name = building.name + "virtual_stage_" + floorIndex;
-		virtualFloor.transform.localPosition = new Vector3(buildingPosition.x, (floorIndex - 1) * Dimensions.FLOOR_HEIGHT, buildingPosition.z);
+		GameObject virtualLevel = GameObject.Instantiate(buildingWalls);
+		virtualLevel.name = building.name + "virtual_stage_" + floorIndex;
+		virtualLevel.transform.localPosition = new Vector3(buildingPosition.x, (floorIndex - 1) * Dimensions.FLOOR_HEIGHT, buildingPosition.z);
 
-		buildingsTools.ChangeWallsHeight(virtualFloor, 1);
+		buildingsTools.ChangeWallsHeight(virtualLevel, 1);
 
-		MeshRenderer virtualFloorRenderer = virtualFloor.GetComponent<MeshRenderer>();
-		virtualFloorRenderer.material = floorMaterial;
+		MeshRenderer virtualLevelRenderer = virtualLevel.GetComponent<MeshRenderer>();
+		virtualLevelRenderer.material = floorMaterial;
 
-		MeshCollider virtualWallCollider = virtualFloor.GetComponent<MeshCollider>();
-		MeshFilter virtualFloorMeshFilter = virtualFloor.GetComponent<MeshFilter>();
+		MeshCollider virtualWallCollider = virtualLevel.GetComponent<MeshCollider>();
+		MeshFilter virtualFloorMeshFilter = virtualLevel.GetComponent<MeshFilter>();
 
 		virtualWallCollider.sharedMesh = virtualFloorMeshFilter.sharedMesh;
 
@@ -262,21 +227,19 @@ public class CityBuilder {
 			BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(building);
 			GameObject virtualRoof = roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
 
-			virtualRoof.transform.SetParent(virtualFloor.transform, false);
+			virtualRoof.transform.SetParent(virtualLevel.transform, false);
 			virtualRoof.transform.localPosition = new Vector3(0, Dimensions.FLOOR_HEIGHT, 0);
 
 			MeshRenderer virtualRoofRenderer = virtualRoof.GetComponent<MeshRenderer>();
 			virtualRoofRenderer.material = floorMaterial;
 		}
 
-		return virtualFloor;
+		return virtualLevel;
 	}
 
 	private GameObject BuildSingleBuildingNodeGroup(GameObject building, NodeGroup nodeGroup) {
 		// Création et paramétrage de l'objet 3D destiné à former un groupe de noeuds de bâtiment
-		GameObject buildingNodeGroupGo = new GameObject() {
-			name = building.name + "_nodes"
-		};
+		GameObject buildingNodeGroupGo = new GameObject(building.name + "_nodes");
 		buildingNodeGroupGo.transform.SetParent(building.transform, false);
 
 		// Construction des angles de noeuds de bâtiments
@@ -296,17 +259,13 @@ public class CityBuilder {
 		return buildingNodeGroupGo;
 	}
 
-	private void BuildRoof(GameObject building, NodeGroup nodeGroup) {
-
-	}
-
 	/// <summary>
 	/// 	Place les routes dans la scène.
 	/// </summary>
-	public void BuildRoads() {
+	public void BuildHighways() {
 		// Récupération de l'objet contenant les routes classiques et ajout de celui-ci à la ville
-		highways = new GameObject(CityObjectNames.HIGHWAYS);
-		highways.transform.parent = cityComponents.transform;
+		roads = new GameObject(CityObjectNames.ROADS);
+		roads.transform.parent = cityComponents.transform;
 
 		// Récupération de l'objet contenant les pistes cyclables et ajout de celui-ci à la ville
 		cycleways = new GameObject(CityObjectNames.CYCLEWAYS);
@@ -328,78 +287,112 @@ public class CityBuilder {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
 
 			if (nodeGroup.GetType() == typeof(HighwayNodeGroup) || nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
-				for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
-					Node currentNode = nodeGroup.GetNode(i);
-					Node nextNode = nodeGroup.GetNode(i + 1);
-
-					// Calcul des coordonnées du milieu du vectuer formé par les 2 noeuds consécutifs
-					Vector3 node1 = new Vector3((float) currentNode.Longitude, 0, (float) currentNode.Latitude);
-					Vector3 node2 = new Vector3((float) nextNode.Longitude, 0, (float) nextNode.Latitude);
-					Vector3 delta = node2 - node1;
-
-					double posX = 0;
-					double posY = 0;
-
-					double length = 0.06;
-					double width = Dimensions.ROAD_WIDTH;
-
-					double angle = 0;
-
-					// Calcul de la position de la route, dépendant du signe du delta entre les deux noeuds
-					if (delta.z <= 0) {
-						posX = nodeGroup.GetNode(i + 1).Longitude;
-						posY = nodeGroup.GetNode(i + 1).Latitude;
-						length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
-						angle = (double) Vector3.Angle(Vector3.right, delta) + 180;
-					} else {
-						posX = nodeGroup.GetNode(i).Longitude;
-						posY = nodeGroup.GetNode(i).Latitude;
-						length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
-						angle = (double) Vector3.Angle(Vector3.right, -delta) + 180;
-					}
-
-					if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
-						HighwayNodeGroup highwayNodeGroup = (HighwayNodeGroup) nodeGroup;
-
-						if (highwayNodeGroup.IsWay()) {
-							// Construction et paramétrage de l'objet 3D destiné à former une route classique
-							GameObject newClassicHighway = highwayBuilder.BuildClassicHighway((float) posX, (float) posY, (float) length, (float) width, (float) angle);
-							newClassicHighway.name = currentNode.Reference + " to " + nextNode.Reference;
-
-							// Ajout de la route au groupe de routes
-							newClassicHighway.transform.parent = highways.transform;
-						} else if (highwayNodeGroup.IsCycleWay()) {
-							// Construction et paramétrage de l'objet 3D destiné à former une piste cyclable
-							GameObject newCycleway = highwayBuilder.BuildCycleway((float) posX, (float) posY, (float) length, (float) width / 2F, (float) angle);
-							newCycleway.name = currentNode.Reference + " to " + nextNode.Reference;
-
-							// Ajout de la piste cyclable au groupe de pistes cyclables
-							newCycleway.transform.parent = cycleways.transform;
-						} else if (highwayNodeGroup.IsFootway()) {
-							// Construction et paramétrage de l'objet 3D destiné à former un chemin piéton
-							GameObject newFootway = highwayBuilder.BuildFootway((float) posX, (float) posY, (float) length, (float) width / 1.5F, (float) angle);
-							newFootway.name = currentNode.Reference + " to " + nextNode.Reference;
-
-							// Ajout du chemin piéton au groupe de chemins piétons
-							newFootway.transform.parent = footways.transform;
-							// 	 } else if (ngp.isBusWayLane ()) {
-							// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
-							//  newHighWay = roadBuilder.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
-
-							// Ajout de la voie maritime au groupe de voies de bus
-							// newBusways.transform.parent = busways.transform;
-						}
-					} else if (nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
-						// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
-						GameObject newWaterway = highwayBuilder.BuildWaterway((float) posX, (float) posY, (float) length, (float) width / 1.5F, (float) angle);
-						newWaterway.name = currentNode.Reference + " to " + nextNode.Reference;
-
-						// Ajout de la voie maritime au groupe de voies maritimes
-						// newWaterway.transform.parent = waterways.transform;
+				if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
+					HighwayNodeGroup highwayNodeGroup = (HighwayNodeGroup) nodeGroup;
+					if (highwayNodeGroup.IsPrimary() || highwayNodeGroup.IsSecondary() || highwayNodeGroup.IsTertiary() || highwayNodeGroup.IsService()) {
+						GameObject road = new GameObject("Road");
+						highwayBuilder.BuildRoad(road, highwayNodeGroup);
+						road.transform.parent = roads.transform;
 					}
 				}
 			}
+
+			//if(true) {
+			//	if (nodeGroup.NodeCount() >= 2) {
+			//		road.name += "_" + nodeGroup.GetNode(0).Reference + "-" + nodeGroup.GetNode(nodeGroup.NodeCount() - 1).Reference;
+			//		road.transform.position = new Vector3((float)nodeGroup.GetNode(0).Longitude, 0, (float)nodeGroup.GetNode(0).Latitude);
+
+			//		for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
+			//			Node currentNode = nodeGroup.GetNode(i);
+			//			Node nextNode = nodeGroup.GetNode(i + 1);
+
+			//			// Calcul des coordonnées du milieu du vectuer formé par les 2 noeuds consécutifs
+			//			Vector3 node1 = new Vector3((float) currentNode.Longitude, 0, (float) currentNode.Latitude);
+			//			Vector3 node2 = new Vector3((float) nextNode.Longitude, 0, (float) nextNode.Latitude);
+			//			Vector3 delta = node2 - node1;
+
+			//			double posX = 0;
+			//			double posY = 0;
+
+			//			double length = 0.06;
+			//			double width = Dimensions.ROAD_WIDTH;
+
+			//			double angle = 0;
+
+			//			// Calcul de la position de la route, dépendant du signe du delta entre les deux noeuds
+			//			if (delta.z <= 0) {
+			//				posX = nodeGroup.GetNode(i + 1).Longitude;
+			//				posY = nodeGroup.GetNode(i + 1).Latitude;
+			//				length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
+			//				angle = (double) Vector3.Angle(Vector3.right, delta) + 180;
+			//			} else {
+			//				posX = nodeGroup.GetNode(i).Longitude;
+			//				posY = nodeGroup.GetNode(i).Latitude;
+			//				length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
+			//				angle = (double) Vector3.Angle(Vector3.right, -delta) + 180;
+			//			}
+
+			//			if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
+			//				HighwayNodeGroup highwayNodeGroup = (HighwayNodeGroup) nodeGroup;
+
+			//				if (highwayNodeGroup.IsPrimary() || highwayNodeGroup.IsSecondary() || highwayNodeGroup.IsTertiary() || highwayNodeGroup.IsService()) {
+			//					// Construction et paramétrage de l'objet 3D destiné à former une route classique
+			//					GameObject roadSection = highwayBuilder.BuildRoad(road, (float) posX, (float) posY, (float) length, (float) width, (float) angle);
+			//					GameObject roadNode = this.BuildSingleRoadNodeGroup(road, highwayNodeGroup);
+			//				} else if (highwayNodeGroup.IsCycleWay()) {
+			//					// Construction et paramétrage de l'objet 3D destiné à former une piste cyclable
+			//					GameObject cycleway = highwayBuilder.BuildCycleway((float) posX, (float) posY, (float) length, (float) width / 2F, (float) angle);
+			//					cycleway.name = currentNode.Reference + "-" + nextNode.Reference;
+
+			//					// Ajout de la piste cyclable au groupe de pistes cyclables
+			//					cycleway.transform.parent = cycleways.transform;
+			//				} else if (highwayNodeGroup.IsFootway()) {
+			//					// Construction et paramétrage de l'objet 3D destiné à former un chemin piéton
+			//					GameObject footway = highwayBuilder.BuildFootway((float) posX, (float) posY, (float) length, (float) width / 1.5F, (float) angle);
+			//					footway.name = currentNode.Reference + "-" + nextNode.Reference;
+
+			//					// Ajout du chemin piéton au groupe de chemins piétons
+			//					footway.transform.parent = footways.transform;
+			//					// 	 } else if (ngp.isBusWayLane ()) {
+			//					// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
+			//					//  newHighWay = roadBuilder.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
+
+			//					// Ajout de la voie maritime au groupe de voies de bus
+			//					// newBusways.transform.parent = busways.transform;
+			//				}
+			//			} else if (nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
+			//				// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
+			//				GameObject waterway = highwayBuilder.BuildWaterway((float) posX, (float) posY, (float) length, (float) width / 1.5F, (float) angle);
+			//				waterway.name = currentNode.Reference + "-" + nextNode.Reference;
+
+			//				// Ajout de la voie maritime au groupe de voies maritimes
+			//				// newWaterway.transform.parent = waterways.transform;
+			//			}
+			//		}
+			//	}
+			//}
 		}
+	}
+
+	public GameObject BuildSingleRoadNodeGroup(GameObject road, HighwayNodeGroup roadNodeGroup) {
+		GameObject roadNodeGroupGo = new GameObject("RoadNodes_" + road.name.Split('_')[1]);
+		roadNodeGroupGo.transform.SetParent(road.transform, false);
+
+		// Construction des angles de noeuds de routes
+		foreach (Node node in roadNodeGroup.Nodes) {
+			// Création et paramétrage de l'objet 3D destiné à former un noeud de route
+			GameObject roadNodeGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			roadNodeGo.name = node.Reference;
+			roadNodeGo.tag = GoTags.ROAD_NODE_TAG;
+
+			roadNodeGo.transform.position = new Vector3((float) node.Longitude, 0, (float) node.Latitude);
+			roadNodeGo.transform.localScale = new Vector3(0.02F, 0.02F, 0.02F);
+
+			// Ajout du noeud dans le groupe de noeuds 
+			roadNodeGo.transform.parent = roadNodeGroupGo.transform;
+		}
+
+		return roadNodeGroupGo;
 	}
 
 	/// <summary>
@@ -462,9 +455,9 @@ public class CityBuilder {
 	/// <summary>
 	/// 	Place les feux tricolores dans la scène.
 	/// </summary>
-	public void BuildTraffiSignals() {
-		float posX;
-		float posZ;
+	public void BuildTrafficSignals() {
+		float posX = 0;
+		float posZ = 0;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			if (nodeGroupEntry.Value.GetType() == typeof(HighwayNodeGroup)) {
@@ -498,7 +491,7 @@ public class CityBuilder {
 		double camLon = (minLon * Dimensions.SCALE_FACTOR + maxLon * Dimensions.SCALE_FACTOR) / 2F;
 
 		// Création de l'objet 3D représenant la caméra
-		GameObject mainCameraGo = Camera.main.gameObject;
+		GameObject mainCamera = Camera.main.gameObject;
 	}
 
 
@@ -558,8 +551,8 @@ public class CityBuilder {
 		get { return buildings; }
 	}
 
-	public GameObject Highways {
-		get { return highways; }
+	public GameObject Roads {
+		get { return roads; }
 	}
 
 	public GameObject Trees {
@@ -572,10 +565,6 @@ public class CityBuilder {
 
 	public GameObject Footways {
 		get { return footways; }
-	}
-
-	public GameObject HighwayNodes {
-		get { return highwayNodes; }
 	}
 
 	public WallsBuilder WallsBuilder {

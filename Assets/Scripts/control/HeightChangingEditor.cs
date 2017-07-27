@@ -22,8 +22,8 @@ public class HeightChangingEditor : ObjectEditor {
 		Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 		Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
 
-		topFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, buildingNodeGroup.NbFloor + 1, greenOverlay, true);
-		bottomFloor = cityBuilder.BuildVirtualFloor(selectedBuilding, buildingNodeGroup.NbFloor, redOverlay, false);
+		topFloor = cityBuilder.BuildVirtualLevel(selectedBuilding, buildingNodeGroup.NbFloor + 1, greenOverlay, true);
+		bottomFloor = cityBuilder.BuildVirtualLevel(selectedBuilding, buildingNodeGroup.NbFloor, redOverlay, false);
 
 		topFloor.AddComponent<StageColorController>();
 		bottomFloor.AddComponent<StageColorController>();

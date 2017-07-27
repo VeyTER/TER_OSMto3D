@@ -17,8 +17,6 @@ public class Main : MonoBehaviour {
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
 	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAMPUS + ".osm";
 
-	private GameObject editPanel;
-
 	public void Start() {
 		CityBuilder cityBuilder = CityBuilder.GetInstance();
 		MapLoader mapLoader = MapLoader.GetInstance ();
@@ -46,11 +44,10 @@ public class Main : MonoBehaviour {
 
 			// Construction de la ville
 			cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
-			cityBuilder.BuildNodes();
 			cityBuilder.BuildBuildings();
-			cityBuilder.BuildRoads();
+			cityBuilder.BuildHighways();
 			cityBuilder.BuildTrees();
-			cityBuilder.BuildTraffiSignals();
+			cityBuilder.BuildTrafficSignals();
 			cityBuilder.BuildMainCamera();
 			cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
 
@@ -73,17 +70,17 @@ public class Main : MonoBehaviour {
 			visibilityController.HideBuildingNodes();
 			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.BUILDING_NODES_SWITCH));
 
-			visibilityController.HideHighwayNodes();
-			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.HIGHWAY_NODES_SWITCH));
+			visibilityController.HideRoadsNodes();
+			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.ROADS_NODES_SWITCH));
 
 			// Récupération de la référence du panneau et ajout d'un controlleur
-			this.editPanel = GameObject.Find(UiNames.EDIT_PANEL);
-			this.editPanel.AddComponent<EditPanelController>();
+			GameObject editPanel = GameObject.Find(UiNames.EDIT_PANEL);
+			editPanel.AddComponent<EditPanelController>();
 
 			// Paramétrage du panneau latéral
 			Vector3 panelPosition = editPanel.transform.localPosition;
 			RectTransform panelRect = (RectTransform) editPanel.transform;
-			this.editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRect.rect.width, panelPosition.y, panelPosition.z);
+			editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRect.rect.width, panelPosition.y, panelPosition.z);
 
 			Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 			Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;

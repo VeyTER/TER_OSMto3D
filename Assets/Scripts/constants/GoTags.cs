@@ -11,7 +11,7 @@ public class GoTags {
 	public const string BUILDING_NODE_TAG = "BuildingNode";
 
 	/// <summary>Tag des noeuds représentant un noeud de route.</summary>
-	public const string HIGHWAY_NODE_TAG = "HighwayNode";
+	public const string ROAD_NODE_TAG = "RoadNode";
 
 	/// <summary>Tag des noeuds représentant un mur.</summary>
 	public const string WALLS_TAG = "Walls";
@@ -20,7 +20,7 @@ public class GoTags {
 	public const string ROOF_TAG = "Roof";
 
 	/// <summary>Tag des noeuds représentant une route.</summary>
-	public const string HIGHWAY_TAG = "Highway";
+	public const string ROAD_TAG = "Roads";
 
 	/// <summary>Tag des noeuds représentant un chemin piéton.</summary>
 	public const string FOOTWAY_TAG = "Footway";

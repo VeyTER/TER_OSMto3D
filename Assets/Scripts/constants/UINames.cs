@@ -32,13 +32,13 @@ public class UiNames {
 
 	public const string BUILDING_NODES_SWITCH = "WallsNodesSwitch";
 
-	public const string HIGHWAY_NODES_SWITCH = "HighwaysNodesSwitch";
+	public const string ROADS_NODES_SWITCH = "RoadsNodesSwitch";
 
 	public const string WALLS_SWITCH = "WallsSwitch";
 
 	public const string ROOFS_SWITCH = "RoofsSwitch";
 
-	public const string HIGHWAYS_SWITCH = "HighwaysSwitch";
+	public const string ROADS_SWITCH = "RoadsSwitch";
 
 	public const string FOOTWAYS_SWITCH = "FootwaysSwitch";
 
@@ -53,7 +53,7 @@ public class UiNames {
 	public const string DISABLED_BUILDING_NODES_BUTTON = "DisabledWallsNodesButton";
 
 	/// <summary>Nom du bouton cachant les noeuds de routes.</summary>
-	public const string DISABLED_HIGHWAY_NODES_BUTTON = "DisabledHighwaysNodesButton"; 
+	public const string DISABLED_ROADS_NODES_BUTTON = "DisabledRoadsNodesButton"; 
 
 	/// <summary>Nom du bouton cachant les murs.</summary>
 	public const string DISABLED_WALLS_BUTTON = "DisabledWallsButton";
@@ -62,7 +62,7 @@ public class UiNames {
 	public const string DISABLED_ROOFS_BUTTON = "DisabledRoofsButton";
 
 	/// <summary>Nom du bouton cachant les routes.</summary>
-	public const string DISABLED_HIGHWAYS_BUTTON = "DisabledHighwaysButton";
+	public const string DISABLED_ROADS_BUTTON = "DisabledRoadsButton";
 
 	/// <summary>Nom du bouton cachant les chemins piétons.</summary>
 	public const string DISABLED_FOOTWAYS_BUTTON = "DisabledFootwaysButton";
@@ -78,7 +78,7 @@ public class UiNames {
 	public const string ENABLED_BUILDING_NODES_BUTTON = "EnabledWallsNodesButton";
 
 	/// <summary>Nom du bouton affichant les noeuds de routes.</summary>
-	public const string ENABLED_HIGHWAY_NODES_BUTTON = "EnabledHighwaysNodesButton";
+	public const string ENABLED_ROADS_NODES_BUTTON = "EnabledRoadsNodesButton";
 
 	/// <summary>Nom du bouton affichant les murs.</summary>
 	public const string ENABLED_WALLS_BUTTON = "EnabledWallsButton";
@@ -87,7 +87,7 @@ public class UiNames {
 	public const string ENABLED_ROOFS_BUTTON = "EnabledRoofsButton";
 
 	/// <summary>Nom du bouton affichant les routes.</summary>
-	public const string ENABLED_HIGHWAYS_BUTTON = "EnabledHighwaysButton";
+	public const string ENABLED_ROADS_BUTTON = "EnabledRoadsButton";
 
 	/// <summary>Nom du bouton affichant les chemins piétons.</summary>
 	public const string ENABLED_FOOTWAYS_BUTTON = "EnabledFootwaysButton";

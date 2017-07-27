@@ -150,42 +150,42 @@
             <nd ref="193560731" index="7" lat="43.558763" lon="1.4727992" />
           </building>
           <building>
-            <info id="23905090" name="1 A" nbfloor="4" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
-            <nd ref="259096200" index="0" lat="43.5633359375" lon="1.46700524902344" />
-            <nd ref="286216292" index="1" lat="43.563109375" lon="1.46723193359375" />
-            <nd ref="259096201" index="2" lat="43.5628515625" lon="1.46748620605469" />
-            <nd ref="259096202" index="3" lat="43.5627734375" lon="1.46733850097656" />
-            <nd ref="363895245" index="4" lat="43.56301953125" lon="1.46709509277344" />
-            <nd ref="259096203" index="5" lat="43.56326171875" lon="1.466857421875" />
-            <nd ref="259096200" index="6" lat="43.5633359375" lon="1.46700524902344" />
+            <info id="23905090" name="1 A" nbfloor="4" roofangle="0" rooftype="flat" />
+            <nd ref="259096200" index="0" lat="43.5625207" lon="1.4670142" />
+            <nd ref="286216292" index="1" lat="43.5622945" lon="1.4672408" />
+            <nd ref="259096201" index="2" lat="43.5620346" lon="1.4674951" />
+            <nd ref="259096202" index="3" lat="43.5619587" lon="1.4673474" />
+            <nd ref="363895245" index="4" lat="43.562202" lon="1.467104" />
+            <nd ref="259096203" index="5" lat="43.562446" lon="1.4668663" />
+            <nd ref="259096200" index="6" lat="43.5625207" lon="1.4670142" />
           </building>
           <building>
-            <info id="23905163" name="IRIT" nbfloor="4" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
-            <nd ref="259096615" index="0" lat="43.5622421875" lon="1.46773620605469" />
-            <nd ref="4413157464" index="1" lat="43.5618046875" lon="1.4681650390625" />
-            <nd ref="259096616" index="2" lat="43.56166796875" lon="1.4683017578125" />
-            <nd ref="259096617" index="3" lat="43.5614921875" lon="1.46796496582031" />
-            <nd ref="4413414719" index="4" lat="43.56153125" lon="1.4679287109375" />
-            <nd ref="4413414720" index="5" lat="43.56155078125" lon="1.4679306640625" />
-            <nd ref="4413213418" index="6" lat="43.5615625" lon="1.46791687011719" />
-            <nd ref="4413414721" index="7" lat="43.56169140625" lon="1.4677939453125" />
-            <nd ref="4413414722" index="8" lat="43.56169140625" lon="1.46776733398438" />
-            <nd ref="259096618" index="9" lat="43.56173046875" lon="1.46773083496094" />
-            <nd ref="286216278" index="10" lat="43.56183203125" lon="1.46792822265625" />
-            <nd ref="286216283" index="11" lat="43.56193359375" lon="1.46782861328125" />
-            <nd ref="286216275" index="12" lat="43.56190625" lon="1.46777758789063" />
-            <nd ref="363895190" index="13" lat="43.56194921875" lon="1.46773364257813" />
-            <nd ref="4413414723" index="14" lat="43.562015625" lon="1.46768908691406" />
-            <nd ref="363895201" index="15" lat="43.56205078125" lon="1.46766931152344" />
-            <nd ref="4413414724" index="16" lat="43.56208203125" lon="1.46764221191406" />
-            <nd ref="4413414725" index="17" lat="43.56209765625" lon="1.46763708496094" />
-            <nd ref="363895220" index="18" lat="43.56211328125" lon="1.46763818359375" />
-            <nd ref="4413414726" index="19" lat="43.56212109375" lon="1.46764489746094" />
-            <nd ref="4413414727" index="20" lat="43.56212890625" lon="1.46765686035156" />
-            <nd ref="4413414728" index="21" lat="43.5621328125" lon="1.46767492675781" />
-            <nd ref="363895228" index="22" lat="43.56216015625" lon="1.46765087890625" />
-            <nd ref="363895238" index="23" lat="43.56218359375" lon="1.46762634277344" />
-            <nd ref="259096615" index="24" lat="43.5622421875" lon="1.46773620605469" />
+            <info id="23905163" name="IRIT" nbfloor="4" roofangle="0" rooftype="flat" />
+            <nd ref="259096615" index="0" lat="43.5623036" lon="1.4676494" />
+            <nd ref="4413157464" index="1" lat="43.5618683" lon="1.4680782" />
+            <nd ref="259096616" index="2" lat="43.5617293" lon="1.468215" />
+            <nd ref="259096617" index="3" lat="43.5615538" lon="1.4678782" />
+            <nd ref="4413414719" index="4" lat="43.561592" lon="1.4678419" />
+            <nd ref="4413414720" index="5" lat="43.5616128" lon="1.4678439" />
+            <nd ref="4413213418" index="6" lat="43.5616268" lon="1.4678301" />
+            <nd ref="4413414721" index="7" lat="43.5617521" lon="1.4677071" />
+            <nd ref="4413414722" index="8" lat="43.5617555" lon="1.4676806" />
+            <nd ref="259096618" index="9" lat="43.5617931" lon="1.4676441" />
+            <nd ref="286216278" index="10" lat="43.561896" lon="1.4678414" />
+            <nd ref="286216283" index="11" lat="43.5619948" lon="1.4677418" />
+            <nd ref="286216275" index="12" lat="43.5619677" lon="1.4676908" />
+            <nd ref="363895190" index="13" lat="43.5620116" lon="1.4676469" />
+            <nd ref="4413414723" index="14" lat="43.5620768" lon="1.4676023" />
+            <nd ref="363895201" index="15" lat="43.5621124" lon="1.4675825" />
+            <nd ref="4413414724" index="16" lat="43.5621451" lon="1.4675554" />
+            <nd ref="4413414725" index="17" lat="43.5621599" lon="1.4675503" />
+            <nd ref="363895220" index="18" lat="43.562176" lon="1.4675514" />
+            <nd ref="4413414726" index="19" lat="43.5621848" lon="1.4675581" />
+            <nd ref="4413414727" index="20" lat="43.5621917" lon="1.4675701" />
+            <nd ref="4413414728" index="21" lat="43.5621969" lon="1.4675881" />
+            <nd ref="363895228" index="22" lat="43.5622214" lon="1.4675641" />
+            <nd ref="363895238" index="23" lat="43.5622459" lon="1.4675396" />
+            <nd ref="259096615" index="24" lat="43.5623036" lon="1.4676494" />
           </building>
           <building>
             <info id="23905315" name="Laplace (3R2)" nbfloor="4" roofangle="0" rooftype="pitched" />
@@ -745,7 +745,7 @@
             <nd ref="287931738" index="1" lat="43.5604876" lon="1.4715011" />
           </highway>
           <building>
-            <info id="26650675" name="1 CN - Emile Durand" nbfloor="6" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
+            <info id="26650675" name="1 CN - Emile Durand" nbfloor="6" roofangle="0" rooftype="flat" />
             <nd ref="286216221" index="0" lat="43.5611663" lon="1.4666943" />
             <nd ref="192187660" index="1" lat="43.5610062" lon="1.4668575" />
             <nd ref="192187662" index="2" lat="43.5611935" lon="1.4672123" />
@@ -1578,13 +1578,13 @@
             <nd ref="2361869580" index="2" lat="43.562857" lon="1.4659283" />
           </highway>
           <building>
-            <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
-            <nd ref="176599804" index="0" lat="43.56409375" lon="1.46590344238281" />
-            <nd ref="176599805" index="1" lat="43.563375" lon="1.46662451171875" />
-            <nd ref="176599806" index="2" lat="43.56322265625" lon="1.46633068847656" />
-            <nd ref="2361869580" index="3" lat="43.56362109375" lon="1.46592822265625" />
-            <nd ref="176599807" index="4" lat="43.56394140625" lon="1.46560974121094" />
-            <nd ref="176599804" index="5" lat="43.56409375" lon="1.46590344238281" />
+            <info id="17027867" name="Administration" nbfloor="3" roofangle="0" rooftype="flat" />
+            <nd ref="176599804" index="0" lat="43.5633293" lon="1.4659036" />
+            <nd ref="176599805" index="1" lat="43.56261" lon="1.4666246" />
+            <nd ref="176599806" index="2" lat="43.5624554" lon="1.4663308" />
+            <nd ref="2361869580" index="3" lat="43.562857" lon="1.4659283" />
+            <nd ref="176599807" index="4" lat="43.5631747" lon="1.4656099" />
+            <nd ref="176599804" index="5" lat="43.5633293" lon="1.4659036" />
           </building>
           <highway>
             <info id="333390902" name="unknown" roadtype="residential" nbway="1" maxspeed="50" />
@@ -2169,49 +2169,9 @@
             <info id="4413201894/0" name="unknown" />
             <nd ref="4413201894" index="0" lat="43.5626826" lon="1.46714" />
           </tree>
-          <building>
-            <info id="+3098210399" name="Bâtiment n°+3098210399" nbfloor="3" roofangle="0" rooftype="unknown" />
-            <nd ref="+3098210399" index="0" lat="43.5619296875" lon="1.4688330078125" />
-            <nd ref="+3098210399" index="1" lat="43.5629296875" lon="1.4688330078125" />
-            <nd ref="+3098210399" index="2" lat="43.5629296875" lon="1.4698330078125" />
-            <nd ref="+3098210399" index="3" lat="43.5619296875" lon="1.4698330078125" />
-            <nd ref="+3098210399" index="4" lat="43.5619296875" lon="1.4688330078125" />
-          </building>
-          <building>
-            <info id="+3627489322" name="Bâtiment n°+3627489322" nbfloor="3" roofangle="0" rooftype="unknown" />
-            <nd ref="+3627489322" index="0" lat="43.5636484375" lon="1.46796801757812" />
-            <nd ref="+3627489322" index="1" lat="43.5646484375" lon="1.46796801757812" />
-            <nd ref="+3627489322" index="2" lat="43.5646484375" lon="1.46896801757813" />
-            <nd ref="+3627489322" index="3" lat="43.5636484375" lon="1.46896801757813" />
-            <nd ref="+3627489322" index="4" lat="43.5636484375" lon="1.46796801757812" />
-          </building>
-          <building>
-            <info id="+7734305477" name="Bâtiment n°+7734305477" nbfloor="3" roofangle="0" rooftype="unknown" />
-            <nd ref="+7734305477" index="0" lat="43.56246875" lon="1.46465295410156" />
-            <nd ref="+7734305477" index="1" lat="43.56346875" lon="1.46465295410156" />
-            <nd ref="+7734305477" index="2" lat="43.56346875" lon="1.46565295410156" />
-            <nd ref="+7734305477" index="3" lat="43.56246875" lon="1.46565295410156" />
-            <nd ref="+7734305477" index="4" lat="43.56246875" lon="1.46465295410156" />
-          </building>
-          <building>
-            <info id="+0578160592" name="Bâtiment n°+0578160592" nbfloor="3" roofangle="0" rooftype="unknown" />
-            <nd ref="+0578160592" index="0" lat="43.5583125" lon="1.46592297363281" />
-            <nd ref="+0578160592" index="1" lat="43.559296875" lon="1.46609655761719" />
-            <nd ref="+0578160592" index="2" lat="43.5592109375" lon="1.46658898925781" />
-            <nd ref="+0578160592" index="3" lat="43.5582265625" lon="1.46641540527344" />
-            <nd ref="+0578160592" index="4" lat="43.5583125" lon="1.46592297363281" />
-          </building>
         </district>
         <district designation="Centre-Ville" />
       </town>
     </region>
   </country>
-  <building>
-    <info id="+1773652111" name="Bâtiment n°+1773652111" nbfloor="3" roofangle="0" rooftype="unknown" />
-    <nd ref="+1773652111" index="0" lat="43.564578125" lon="1.47177001953125" />
-    <nd ref="+1773652111" index="1" lat="43.564578125" lon="1.47177001953125" />
-    <nd ref="+1773652111" index="2" lat="43.564578125" lon="1.47277001953125" />
-    <nd ref="+1773652111" index="3" lat="43.564578125" lon="1.47277001953125" />
-    <nd ref="+1773652111" index="4" lat="43.564578125" lon="1.47177001953125" />
-  </building>
 </earth>

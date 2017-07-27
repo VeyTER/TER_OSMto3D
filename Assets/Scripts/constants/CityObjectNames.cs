@@ -9,7 +9,7 @@ public class CityObjectNames {
 	public const string BUILDING_NODES = "Buildings nodes";
 
 	/// <summary>Nom des noeuds de routes.</summary>
-	public const string HIGHWAY_NODES = "Highway nodes";
+	public const string ROADS_NODES = "Roads nodes";
 
 	/// <summary>Nom des bâtiments.</summary>
 	public const string WALLS = "Buildings";
@@ -18,7 +18,7 @@ public class CityObjectNames {
 	public const string ROOFS = "Roofs";
 
 	/// <summary>Nom des routes.</summary>
-	public const string HIGHWAYS = "Highways";
+	public const string ROADS = "Roads";
 
 	/// <summary>Nom des chemins piétons.</summary>
 	public const string FOOTWAYS = "Footways";

@@ -294,22 +294,22 @@ public class CameraController : MonoBehaviour {
 		// Un peu de trigo pour pouvoir être à la bonne hauteur par rapport au à la taille du bâtiment
 		float cameraFOV = Camera.main.fieldOfView;
 		float buildingHeight = buildingsTools.BuildingHeight(building);
-		double buildingRadius = buildingsTools.BuildingRadius(building);
-		float targetPosZ = (float) (buildingHeight + (buildingRadius / Math.Tan(cameraFOV)));
+		float buildingRadius = (float)buildingsTools.BuildingRadius(building);
+		float targetPosZ = (float)(buildingHeight + (buildingRadius / Math.Tan(cameraFOV)));
 
 		// Calcul de la position à adopter par rapport à l'orientation de la caméra
-		double horizontalShift = (targetPosZ - buildingHeight) * Math.Cos(verticalOrientation * Mathf.Deg2Rad);
-		double verticalShift = (targetPosZ - buildingHeight) * Math.Sin(verticalOrientation * Mathf.Deg2Rad);
+		float horizontalOffset = (float)((targetPosZ - buildingHeight) * Math.Cos(verticalOrientation * Mathf.Deg2Rad));
+		float verticalOffset = (float)((targetPosZ - buildingHeight) * Math.Sin(verticalOrientation * Mathf.Deg2Rad));
 
 		Vector3 buildingPosition = building.transform.position;
 		Vector3 localPosition = transform.position;
 
-		float cosOffset = (float) (Math.Cos(horizontalOrientation) * horizontalShift);
-		float sinOffset = (float) (Math.Sin(horizontalOrientation) * horizontalShift);
+		float cosOffset = (float)(Math.Cos(horizontalOrientation) * horizontalOffset);
+		float sinOffset = (float)(Math.Sin(horizontalOrientation) * horizontalOffset);
 
 		// Enregistrement de la situation à atteindre
 		Vector3 buildingCenterPosition = buildingsTools.BuildingCenter(building);
-		res = new Vector3(buildingCenterPosition.x - cosOffset, buildingHeight + (float) verticalShift, buildingCenterPosition.z - sinOffset);
+		res = new Vector3(buildingCenterPosition.x - cosOffset, buildingHeight + verticalOffset, buildingCenterPosition.z - sinOffset);
 
 		return res;
 	}
