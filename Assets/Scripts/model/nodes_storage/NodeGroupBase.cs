@@ -41,8 +41,8 @@ public class NodeGroupBase {
 	public void ScaleNodes(double scaleFactor) {
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
 			foreach (Node node in nodeGroupEntry.Value.Nodes) {
-				node.Latitude = node.Latitude * scaleFactor;
-				node.Longitude = node.Longitude * scaleFactor;
+				node.Latitude = node.Latitude * Dimensions.SCALE_FACTOR * scaleFactor;
+				node.Longitude = node.Longitude * Dimensions.SCALE_FACTOR * scaleFactor;
 			}
 		}
 	}

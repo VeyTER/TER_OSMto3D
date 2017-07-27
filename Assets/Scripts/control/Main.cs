@@ -39,8 +39,8 @@ public class Main : MonoBehaviour {
 			mapLoader.LoadResumedData();
 
 			// Réglage de l'échelle et des dimensions
-			cityBuilder.NodeGroupBase.ScaleNodes(Dimensions.SCALE_FACTOR);
-			cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon);
+			cityBuilder.NodeGroupBase.ScaleNodes(Dimensions.NODE_SCALE);
+			cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon, Dimensions.NODE_SCALE);
 
 			// Construction de la ville
 			cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
@@ -87,6 +87,9 @@ public class Main : MonoBehaviour {
 
 			greenOverlay.SetColor("_EmissionColor", ThemeColors.GREEN);
 			redOverlay.SetColor("_EmissionColor", ThemeColors.RED);
+
+			GameObject scaler = new GameObject("scaler");
+
 		}
 	}
 

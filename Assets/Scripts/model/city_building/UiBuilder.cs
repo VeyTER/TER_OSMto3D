@@ -35,7 +35,7 @@ public class UiBuilder {
 	private GameObject BuildBuildingDataCanvas(GameObject building) {
 		GameObject buildingFirstWall = building.transform.GetChild(0).gameObject;
 		float buildingHeight = buildingFirstWall.transform.localScale.y;
-		float scale = 0.00001F * Dimensions.SCALE_FACTOR;
+		float scale = 0.01F * Dimensions.SCALE_FACTOR;
 
 		GameObject buildingDataCanvas = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_CANVAS));
 		buildingDataCanvas.name = buildingDataCanvas.name.Replace("(Clone)", "") + "_" + building.name;

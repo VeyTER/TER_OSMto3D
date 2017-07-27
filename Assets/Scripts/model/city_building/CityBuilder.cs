@@ -122,11 +122,11 @@ public class CityBuilder {
 	/// <param name="minlon">Longitude minimale de la ville.</param>
 	/// <param name="maxlat">Latitude maximale de la ville.</param>
 	/// <param name="maxlon">Longitude maximale de la ville.</param>
-	public void SetBounds(double minlat, double minLon, double maxLat, double maxLon) {
-		this.minLat = minlat;
-		this.minLon = minLon;
-		this.maxLat = maxLat;
-		this.maxLon = maxLon;
+	public void SetBounds(double minlat, double minLon, double maxLat, double maxLon, float scale = 1) {
+		this.minLat = minlat * scale;
+		this.minLon = minLon * scale;
+		this.maxLat = maxLat * scale;
+		this.maxLon = maxLon * scale;
 	}
 
 
@@ -433,7 +433,7 @@ public class CityBuilder {
 							GameObject trafficSignal = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.TRAFFIC_SIGNAL));
 							trafficSignal.transform.SetParent(trafficSignals.transform, false);
 							trafficSignal.transform.position = new Vector3(posX, 0, posZ);
-							trafficSignal.transform.localScale = new Vector3(0.001F * Dimensions.SCALE_FACTOR, 0.001F * Dimensions.SCALE_FACTOR, 0.001F * Dimensions.SCALE_FACTOR);
+							trafficSignal.transform.localScale = new Vector3(Dimensions.SCALE_FACTOR, Dimensions.SCALE_FACTOR, Dimensions.SCALE_FACTOR);
 						}
 					}
 				}

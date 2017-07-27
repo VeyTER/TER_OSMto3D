@@ -31,7 +31,7 @@ public class WayBuilder {
 
 			nodeGroup.Name = wayIdentifier + "_" + nameComplement;
 			GameObject way = new GameObject(wayIdentifier + "_" + nameComplement);
-			way.transform.position = new Vector3((float) nodeGroup.GetNode(0).Longitude, Dimensions.WAY, (float) nodeGroup.GetNode(0).Latitude);
+			way.transform.position = new Vector3((float) nodeGroup.GetNode(0).Longitude, Dimensions.WAY_ELEVATION, (float) nodeGroup.GetNode(0).Latitude);
 
 			GameObject sections = new GameObject(wayIdentifier + "Sections_" + nameComplement, typeof(MeshFilter), typeof(MeshRenderer)) {
 				tag = tag

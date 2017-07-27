@@ -130,7 +130,7 @@ public class RoofBuilder {
 		topVertices = this.RoofVertices(triangulation, building, topNodesAndIndex, expansionFactor);
 		for (int i = 0; i < topVertices.Length; i++) {
 			Vector3 topVertex = topVertices[i];
-			topVertices[i] = new Vector3(topVertex.x, topVertex.y + 0.05F, topVertex.z);
+			topVertices[i] = new Vector3(topVertex.x, topVertex.y + Dimensions.ROOF_HEIGHT, topVertex.z);
 		}
 
 		bottomVertices = this.RoofVertices(triangulation, building, bottomNodesAndIndex);
