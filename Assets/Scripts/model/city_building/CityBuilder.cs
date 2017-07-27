@@ -527,7 +527,7 @@ public class CityBuilder {
 
 		Vector2 textureExpansion = Vector2.one;
 		if (backgroundName == null)
-			textureExpansion = new Vector2((float) length * 4F, (float) width * 4F);
+			textureExpansion = new Vector2((float) length * 40F, (float) width * 40F);
 
 		// Calcul des coordonnées du milieu du vecteur formé par les 2 noeuds des extrémités
 		Vector3 node1 = new Vector3((float) maxLon, 0, (float) maxLat);
