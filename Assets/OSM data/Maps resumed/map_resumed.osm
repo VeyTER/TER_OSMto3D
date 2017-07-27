@@ -71,7 +71,7 @@
             <nd ref="267217323" index="2" lat="43.5583677" lon="1.4685666" />
           </highway>
           <building>
-            <info id="18628626" name="3 R1" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="18628626" name="3 R1" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="192184672" index="0" lat="43.5607706" lon="1.4672538" />
             <nd ref="192184674" index="1" lat="43.5594241" lon="1.4685792" />
             <nd ref="4414813579" index="2" lat="43.5594548" lon="1.4686392" />
@@ -86,7 +86,7 @@
             <nd ref="192184672" index="11" lat="43.5607706" lon="1.4672538" />
           </building>
           <building>
-            <info id="18753222" name="IBCG" nbfloor="4" roofangle="0" rooftype="hipped" />
+            <info id="18753222" name="IBCG" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="193559211" index="0" lat="43.5589866" lon="1.4712579" />
             <nd ref="193559212" index="1" lat="43.5590605" lon="1.4713998" />
             <nd ref="429849239" index="2" lat="43.5588313" lon="1.4716252" />
@@ -118,7 +118,7 @@
             <nd ref="193559211" index="28" lat="43.5589866" lon="1.4712579" />
           </building>
           <building>
-            <info id="18753277" name="4 TP4" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="18753277" name="4 TP4" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="193560126" index="0" lat="43.560039" lon="1.4709887" />
             <nd ref="363894964" index="1" lat="43.5600275" lon="1.4710015" />
             <nd ref="363895008" index="2" lat="43.5594869" lon="1.4715311" />
@@ -139,7 +139,7 @@
             <nd ref="193560126" index="17" lat="43.560039" lon="1.4709887" />
           </building>
           <building>
-            <info id="18753309" name="4 R3" nbfloor="4" roofangle="0" rooftype="flat" />
+            <info id="18753309" name="4 R3" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="193560731" index="0" lat="43.558763" lon="1.4727992" />
             <nd ref="193560733" index="1" lat="43.5588465" lon="1.4729548" />
             <nd ref="193560735" index="2" lat="43.5599877" lon="1.4718189" />
@@ -188,7 +188,7 @@
             <nd ref="259096615" index="24" lat="43.5623036" lon="1.4676494" />
           </building>
           <building>
-            <info id="23905315" name="Laplace (3R2)" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="23905315" name="Laplace (3R2)" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="259098010" index="0" lat="43.5609274" lon="1.468799" />
             <nd ref="4413414715" index="1" lat="43.5609107" lon="1.4688153" />
             <nd ref="259098011" index="2" lat="43.560989" lon="1.4689673" />
@@ -199,7 +199,7 @@
             <nd ref="259098010" index="7" lat="43.5609274" lon="1.468799" />
           </building>
           <building>
-            <info id="23905283" name="3 PN" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="23905283" name="3 PN" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="259097774" index="0" lat="43.5607762" lon="1.4684722" />
             <nd ref="259097775" index="1" lat="43.560853" lon="1.4686164" />
             <nd ref="259097776" index="2" lat="43.5612148" lon="1.468264" />
@@ -207,7 +207,7 @@
             <nd ref="259097774" index="4" lat="43.5607762" lon="1.4684722" />
           </building>
           <building>
-            <info id="23905487" name="4 A" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="23905487" name="4 A" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="259099284" index="0" lat="43.5581472" lon="1.4698327" />
             <nd ref="4413414699" index="1" lat="43.5582965" lon="1.4701188" />
             <nd ref="4413414698" index="2" lat="43.5582786" lon="1.4701352" />
@@ -229,7 +229,7 @@
             <nd ref="259099284" index="18" lat="43.5581472" lon="1.4698327" />
           </building>
           <building>
-            <info id="23905335" name="4 R1" nbfloor="4" roofangle="0" rooftype="flat" />
+            <info id="23905335" name="4 R1" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="259098385" index="0" lat="43.5584666" lon="1.4689823" />
             <nd ref="259098386" index="1" lat="43.5585453" lon="1.4691329" />
             <nd ref="558860071" index="2" lat="43.558376" lon="1.4692995" />
@@ -238,7 +238,7 @@
             <nd ref="259098385" index="5" lat="43.5584666" lon="1.4689823" />
           </building>
           <building>
-            <info id="23905477" name="4 TP2" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="23905477" name="4 TP2" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="259098907" index="0" lat="43.5584195" lon="1.4693096" />
             <nd ref="558860075" index="1" lat="43.5587025" lon="1.4698557" />
             <nd ref="259098908" index="2" lat="43.558881" lon="1.4702001" />
@@ -394,7 +394,7 @@
             <nd ref="192183494" index="4" lat="43.5592917" lon="1.4703306" />
           </highway>
           <building>
-            <info id="26138226" name="Laplace (3R3)" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="26138226" name="Laplace (3R3)" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="286216333" index="0" lat="43.5613299" lon="1.469054" />
             <nd ref="286216343" index="1" lat="43.5614553" lon="1.4692947" />
             <nd ref="1566445134" index="2" lat="43.5614184" lon="1.4693311" />
@@ -466,7 +466,7 @@
             <nd ref="259098010" index="1" lat="43.5609274" lon="1.468799" />
           </highway>
           <building>
-            <info id="26138230" name="AL 1 à 6" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="26138230" name="AL 1 à 6" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="286216378" index="0" lat="43.5607179" lon="1.4690348" />
             <nd ref="286216380" index="1" lat="43.5604942" lon="1.4692537" />
             <nd ref="286216382" index="2" lat="43.560559" lon="1.4693805" />
@@ -596,7 +596,7 @@
             <nd ref="191940398" index="7" lat="43.5618939" lon="1.4688529" />
           </highway>
           <building>
-            <info id="26265919" name="UFR STAPS" nbfloor="4" roofangle="0" rooftype="flat" />
+            <info id="26265919" name="UFR STAPS" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="287691365" index="0" lat="43.5617884" lon="1.4715995" />
             <nd ref="287691366" index="1" lat="43.5614976" lon="1.4718885" />
             <nd ref="287691367" index="2" lat="43.5615887" lon="1.4720645" />
@@ -683,7 +683,7 @@
             <nd ref="271156697" index="1" lat="43.5605686" lon="1.4663853" />
           </highway>
           <building>
-            <info id="26285670" name="unknown" nbfloor="4" roofangle="0" rooftype="flat" />
+            <info id="26285670" name="unknown" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="287931695" index="0" lat="43.5618147" lon="1.4719372" />
             <nd ref="287931696" index="1" lat="43.5618882" lon="1.472077" />
             <nd ref="287931697" index="2" lat="43.561787" lon="1.4721681" />
@@ -915,7 +915,7 @@
             <nd ref="192180799" index="34" lat="43.5626961" lon="1.468748" />
           </building>
           <building>
-            <info id="36967627" name="unknown" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="36967627" name="unknown" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="429849269" index="0" lat="43.5589499" lon="1.4711503" />
             <nd ref="429849270" index="1" lat="43.558911" lon="1.4711888" />
             <nd ref="429849271" index="2" lat="43.5588878" lon="1.4711456" />
@@ -923,7 +923,7 @@
             <nd ref="429849269" index="4" lat="43.5589499" lon="1.4711503" />
           </building>
           <building>
-            <info id="36967628" name="unknown" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="36967628" name="unknown" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="429849273" index="0" lat="43.5591115" lon="1.4712116" />
             <nd ref="429849274" index="1" lat="43.5590717" lon="1.4712511" />
             <nd ref="429849275" index="2" lat="43.5590452" lon="1.4712009" />
@@ -931,7 +931,7 @@
             <nd ref="429849273" index="4" lat="43.5591115" lon="1.4712116" />
           </building>
           <building>
-            <info id="36967626" name="unknown" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="36967626" name="unknown" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="429849265" index="0" lat="43.5588699" lon="1.4712326" />
             <nd ref="429849266" index="1" lat="43.5588185" lon="1.4712837" />
             <nd ref="429849267" index="2" lat="43.5588051" lon="1.4712577" />
@@ -1034,7 +1034,7 @@
             <nd ref="363894977" index="8" lat="43.5596834" lon="1.4719033" />
           </highway>
           <building>
-            <info id="18629054" name="1 TP1" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="18629054" name="1 TP1" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="192189493" index="0" lat="43.5622" lon="1.466384" />
             <nd ref="363895292" index="1" lat="43.5619403" lon="1.4666287" />
             <nd ref="363895280" index="2" lat="43.5614889" lon="1.4670826" />
@@ -1164,7 +1164,7 @@
             <nd ref="192180106" index="36" lat="43.5616274" lon="1.4698086" />
           </building>
           <building>
-            <info id="18752346" name="RU 2" nbfloor="4" roofangle="0" rooftype="flat" />
+            <info id="18752346" name="RU 2" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="193544427" index="0" lat="43.5610974" lon="1.4716041" />
             <nd ref="1566445082" index="1" lat="43.5610591" lon="1.4716414" />
             <nd ref="1566445088" index="2" lat="43.5610681" lon="1.4716588" />
@@ -1254,7 +1254,7 @@
             <nd ref="286216162" index="9" lat="43.561724" lon="1.4648884" />
           </highway>
           <building>
-            <info id="18628900" name="1 R1" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="18628900" name="1 R1" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="286216215" index="0" lat="43.5613479" lon="1.4663203" />
             <nd ref="192188018" index="1" lat="43.5615135" lon="1.4661561" />
             <nd ref="192188021" index="2" lat="43.5614362" lon="1.4660076" />
@@ -1509,7 +1509,7 @@
             <nd ref="2098899189" index="88" lat="43.5740262" lon="1.4693275" />
           </waterway>
           <building>
-            <info id="18628958" name="Institut de Mathématiques de Toulouse (1R3)" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="18628958" name="Institut de Mathématiques de Toulouse (1R3)" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="192188608" index="0" lat="43.5617917" lon="1.46568" />
             <nd ref="192188609" index="1" lat="43.5618535" lon="1.4657982" />
             <nd ref="363895331" index="2" lat="43.5617392" lon="1.4659109" />
@@ -1527,7 +1527,7 @@
             <nd ref="192188608" index="14" lat="43.5617917" lon="1.46568" />
           </building>
           <building>
-            <info id="18629011" name="1 R2" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="18629011" name="1 R2" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="192189097" index="0" lat="43.5619981" lon="1.4660373" />
             <nd ref="192189099" index="1" lat="43.5620744" lon="1.4661842" />
             <nd ref="267367071" index="2" lat="43.5618305" lon="1.4664229" />
@@ -1537,7 +1537,7 @@
             <nd ref="192189097" index="6" lat="43.5619981" lon="1.4660373" />
           </building>
           <building>
-            <info id="18628793" name="Espace reprographie" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="18628793" name="Espace reprographie" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="192186573" index="0" lat="43.5602584" lon="1.4675494" />
             <nd ref="192186574" index="1" lat="43.5598435" lon="1.4679603" />
             <nd ref="192186575" index="2" lat="43.5597874" lon="1.4678513" />
@@ -1549,7 +1549,7 @@
             <nd ref="192186573" index="8" lat="43.5602584" lon="1.4675494" />
           </building>
           <building>
-            <info id="18628652" name="3 TP1" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="18628652" name="3 TP1" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="192184932" index="0" lat="43.5605128" lon="1.4680425" />
             <nd ref="192184934" index="1" lat="43.5606041" lon="1.4682179" />
             <nd ref="4413146787" index="2" lat="43.5597156" lon="1.469118" />
@@ -1838,7 +1838,7 @@
             <nd ref="4413201871" index="1" lat="43.5611822" lon="1.4687777" />
           </highway>
           <building>
-            <info id="18628710" name="3 A" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="18628710" name="3 A" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="192185538" index="0" lat="43.560598" lon="1.4686997" />
             <nd ref="192185540" index="1" lat="43.5596618" lon="1.4696376" />
             <nd ref="192185542" index="2" lat="43.5597459" lon="1.4697974" />
@@ -1994,7 +1994,7 @@
             <nd ref="4413377656" index="2" lat="43.5621365" lon="1.466898" />
           </highway>
           <building>
-            <info id="443797585" name="unknown" nbfloor="4" roofangle="0" rooftype="pitched" />
+            <info id="443797585" name="unknown" nbfloor="4" roofangle="0" rooftype="hipped" custmat="OfficeGlasses" color="1;1;1" />
             <nd ref="4413414714" index="0" lat="43.5608005" lon="1.469619" />
             <nd ref="4413414716" index="1" lat="43.5609279" lon="1.4698617" />
             <nd ref="4413414718" index="2" lat="43.5610931" lon="1.4696974" />
@@ -2169,6 +2169,14 @@
             <info id="4413201894/0" name="unknown" />
             <nd ref="4413201894" index="0" lat="43.5626826" lon="1.46714" />
           </tree>
+          <building>
+            <info id="+4860195619" name="TEST" nbfloor="3" roofangle="0" rooftype="unknown" custmat="OfficeGlasses" color="1;0.75;1" />
+            <nd ref="+4860195619" index="0" lat="43.56375" lon="1.4711650390625" />
+            <nd ref="+4860195619" index="1" lat="43.56475" lon="1.4711650390625" />
+            <nd ref="+4860195619" index="2" lat="43.56475" lon="1.4721650390625" />
+            <nd ref="+4860195619" index="3" lat="43.56375" lon="1.4721650390625" />
+            <nd ref="+4860195619" index="4" lat="43.56375" lon="1.4711650390625" />
+          </building>
         </district>
         <district designation="Centre-Ville" />
       </town>

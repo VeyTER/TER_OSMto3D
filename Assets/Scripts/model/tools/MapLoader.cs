@@ -168,10 +168,6 @@ public class MapLoader {
 			// Création, paramétrage et remplissage d'un nouveau groupe de noeuds avec les noeuds associés
 			NodeGroup nodeGroup = new NodeGroup(id, "unknown");
 
-			/////////
-			// TODO : plutot faire un premier parcours pour détecter le type de groupe de noeuds, puis faire le parcours total
-			/////////
-
 			for (int i = 0; i < wayNode.ChildNodes.Count; i++) {
 				XmlNode childNode = wayNode.ChildNodes[i];
 
@@ -393,9 +389,14 @@ public class MapLoader {
 
 				buildingNodeGroup.NbFloor = int.Parse (buildingData [0]);
 				buildingNodeGroup.RoofAngle = int.Parse (buildingData [1]);
+				buildingNodeGroup.RoofShape = buildingData [2];
 
-				if(buildingNodeGroup.RoofShape.Equals("unknown"))
-					buildingNodeGroup.RoofShape = buildingData [2];
+				Material customMaterial = Resources.Load<Material>(FilePaths.MATERIALS_FOLDER_LOCAL + buildingData[3]);
+				if(customMaterial != null)
+					buildingNodeGroup.CustomMaterial = customMaterial;
+
+				string[] colorFactors = buildingData[4].Split(';');
+				buildingNodeGroup.OverlayColor = new Color(float.Parse(colorFactors[0]), float.Parse(colorFactors[1]), float.Parse(colorFactors[2]));
 			}
 		}
 	}
@@ -755,6 +756,12 @@ public class MapLoader {
 			this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.NB_FLOOR, buildingNodeGroup.NbFloor.ToString());
 			this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.ROOF_ANGLE, buildingNodeGroup.RoofAngle.ToString());
 			this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.ROOF_SHAPE, buildingNodeGroup.RoofShape);
+
+			if(buildingNodeGroup.CustomMaterial != null)
+				this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.CUSTOM_MATERIAL, buildingNodeGroup.CustomMaterial.name);
+
+			Color overlayColor = buildingNodeGroup.OverlayColor;
+			this.AppendAttribute(mapResumedDocument, objectInfoNode, XmlAttributes.OVERLAY_COLOR, overlayColor.r + ";" + overlayColor.g + ";" + overlayColor.b);
 		}
 	}
 
@@ -996,11 +1003,16 @@ public class MapLoader {
 
 					string[] areaBuildingInfo = this.BuildingInfo(objectInfoNode);
 
+					// Ajout des caractéristiques aux groupes de noeuds
+					buildingNodeGroup.NbFloor = int.Parse(areaBuildingInfo[0]);
+					buildingNodeGroup.RoofAngle = int.Parse(areaBuildingInfo[1]);
+					buildingNodeGroup.RoofShape = areaBuildingInfo[2];
+
 					if (areaBuildingInfo[3] != null) {
-						Material customMaterial = Resources.Load(FilePaths.MATERIALS_FOLDER_LOCAL + areaBuildingInfo[3]) as Material;
+						Material customMaterial = Resources.Load<Material>(FilePaths.MATERIALS_FOLDER_LOCAL + areaBuildingInfo[3]);
 						buildingNodeGroup.CustomMaterial = customMaterial;
 					} else {
-						buildingNodeGroup.CustomMaterial = Resources.Load(Materials.WALL_DEFAULT) as Material;
+						buildingNodeGroup.CustomMaterial = Resources.Load<Material>(Materials.WALL_DEFAULT);
 					}
 
 					if (areaBuildingInfo[4] != null) {
@@ -1010,11 +1022,6 @@ public class MapLoader {
 					} else {
 						buildingNodeGroup.OverlayColor = new Color(1, 1, 1);
 					}
-
-					// Ajout des caractéristiques aux groupes de noeuds
-					buildingNodeGroup.NbFloor = int.Parse(areaBuildingInfo[0]);
-					buildingNodeGroup.RoofAngle = int.Parse(areaBuildingInfo[1]);
-					buildingNodeGroup.RoofShape = areaBuildingInfo[2];
 
 					buildingNodeGroup.AddTag("building", "yes");
 					nodeGroupBase.AddNodeGroup(buildingNodeGroup);
@@ -1032,7 +1039,8 @@ public class MapLoader {
 					nodeGroupBase.AddNodeGroup(highwayNodeGroup);
 					break;
 				case XmlTags.WATERWAY:
-
+					WaterwayNodeGroup waterwayNodeGroup = this.TranstypeNodes<WaterwayNodeGroup, WaterwayStepNode>(nodeGroup, NodeGroupFactory.CreateWaterwayNodeGroup, NodeFactory.CreateWaterwayStepNode);
+					nodeGroupBase.AddNodeGroup(waterwayNodeGroup);
 					break;
 				case XmlTags.TREE:
 					NaturalNodeGroup treeNodeGroup = this.TranstypeNodes<NaturalNodeGroup, NaturalComponentNode>(nodeGroup, NodeGroupFactory.CreateNaturalNodeGroup, NodeFactory.CreateNaturalComponentNode);

@@ -249,8 +249,8 @@ public class BuildingsTools {
 				// Mise à jour de la position du nd s'il a été trouvé
 				if (i < resumedBuildingNd.Count) {
 					// Mise à jour de la position
-					resumedBuildingNd [i].Attributes [XmlAttributes.LATITUDE].Value = (node.Latitude / Dimensions.SCALE_FACTOR).ToString();
-					resumedBuildingNd [i].Attributes [XmlAttributes.LONGIUDE].Value = (node.Longitude / Dimensions.SCALE_FACTOR).ToString();
+					resumedBuildingNd [i].Attributes [XmlAttributes.LATITUDE].Value = (node.Latitude / Dimensions.NODE_SCALE).ToString();
+					resumedBuildingNd [i].Attributes [XmlAttributes.LONGIUDE].Value = (node.Longitude / Dimensions.NODE_SCALE).ToString();
 
 					// Importation du nd dans le fichier map_resumedd
 					XmlNode customBuildingNd = mapCustomDocument.ImportNode (resumedBuildingNd [i], true);

@@ -224,7 +224,6 @@ public class RoofBuilder {
 			middleTriangles.Add(topNextNodeIndex);
 			middleTriangles.Add(topCurrentNodeIndex);
 		}
-		middleTriangles.Reverse();
 
 		List<int> roofTriangles = new List<int>();
 		roofTriangles.AddRange(topTriangles);
