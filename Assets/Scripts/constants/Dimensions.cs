@@ -7,7 +7,13 @@ public class Dimensions {
 
 	public const float FLOOR_HEIGHT = 0.00006F * SCALE_FACTOR;
 
+	public const float WAY = 0.000002F * SCALE_FACTOR;
+
 	public const float ROAD_WIDTH = 0.00006F * SCALE_FACTOR;
+	public const float BUS_LANE_WIDTH = ROAD_WIDTH;
+	public const float CYCLEWAYS_WIDTH = ROAD_WIDTH * 0.5F;
+	public const float FOOTWAY_WIDTH = ROAD_WIDTH * 0.5F;
+	public const float WTERWAY_WIDTH = ROAD_WIDTH * 3;
 
 	public const float TRUNC_HEIGHT = 0.00012F * SCALE_FACTOR;
 	public const float TRUNC_DIAMTETER = 0.00008F * SCALE_FACTOR;

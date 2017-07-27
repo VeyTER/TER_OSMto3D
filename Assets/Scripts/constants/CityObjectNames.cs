@@ -26,6 +26,12 @@ public class CityObjectNames {
 	/// <summary>Nom des pistes cyclables.</summary>
 	public const string CYCLEWAYS = "Cycleways";
 
+	/// <summary>Nom des voies de bus.</summary>
+	public const string BUS_LANES = "BusLanes";
+
+	/// <summary>Nom des cours d'eau.</summary>
+	public const string WATERWAYS = "Waterways";
+
 	/// <summary>Nom des villes.</summary>
 	public const string TREES = "Trees";
 }

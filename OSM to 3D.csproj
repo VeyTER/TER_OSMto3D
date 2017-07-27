@@ -144,7 +144,7 @@
     <Compile Include="Assets\Scripts\model\triangulation_computing\Triangulation.cs" />
     <Compile Include="Assets\Scripts\model\city_building\ExternalObject.cs" />
     <Compile Include="Assets\Scripts\model\city_building\GroundBuilder.cs" />
-    <Compile Include="Assets\Scripts\model\city_building\HighwayBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\city_building\WayBuilder.cs" />
     <Compile Include="Assets\Scripts\model\city_building\MapBackground.cs" />
     <Compile Include="Assets\Scripts\model\tools\MapLoader.cs" />
     <Compile Include="Assets\Scripts\model\city_building\MaterialData.cs" />

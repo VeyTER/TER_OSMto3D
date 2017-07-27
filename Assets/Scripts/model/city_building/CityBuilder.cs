@@ -39,7 +39,7 @@ public class CityBuilder {
 	private WallsBuilder wallsBuilder;
 
 	/// <summary>Constructeur de routes.</summary>
-	private HighwayBuilder highwayBuilder;
+	private WayBuilder wayBuilder;
 
 	/// <summary>Constructeur de toits.</summary>
 	private RoofBuilder roofBuilder;
@@ -74,6 +74,16 @@ public class CityBuilder {
 	private GameObject footways;
 
 	/// <summary>
+	/// 	Object 3D contenant toutes les portions de voies de bus.
+	/// summary>
+	private GameObject busLanes;
+
+	/// <summary>
+	/// 	Object 3D contenant toutes les portions de cours d'eau.
+	/// summary>
+	private GameObject waterways;
+
+	/// <summary>
 	/// 	Object 3D contenant tous les groupes composants les arbres (tronc + feuille), formant chacun un arbre.
 	/// summary>
 	private GameObject trees;
@@ -88,7 +98,7 @@ public class CityBuilder {
 		this.sensorsEquippedBuildingBase = new SensorEquippedBuildingBase(FilePaths.SENSOR_EQUIPPED_BUILDINGS_FILE);
 
 		this.wallsBuilder = new WallsBuilder();
-		this.highwayBuilder = new HighwayBuilder();
+		this.wayBuilder = new WayBuilder();
 		this.roofBuilder = new RoofBuilder();
 		this.groundBuilder = new GroundBuilder();
 	}
@@ -275,102 +285,38 @@ public class CityBuilder {
 		footways = new GameObject(CityObjectNames.FOOTWAYS);
 		footways.transform.parent = cityComponents.transform;
 
-		// Récupération de l'objet contenant les chemins voies de bus et ajout de celui-ci à la ville
-		//		busways = new GameObject(ObjectNames.BUSWAYS);
-		//		busways.transform.parent = cityComponents.transform;
+		// Récupération de l'objet contenant les chemins piétons et ajout de celui-ci à la ville
+		busLanes = new GameObject(CityObjectNames.BUS_LANES);
+		busLanes.transform.parent = cityComponents.transform;
 
-		// Récupération de l'objet contenant les chemins voies maritimes et ajout de celui-ci à la ville
-		//		waterways = new GameObject(ObjectNames.WATERWAYS);
-		//		waterways.transform.parent = cityComponents.transform;
+		// Récupération de l'objet contenant les chemins piétons et ajout de celui-ci à la ville
+		waterways = new GameObject(CityObjectNames.WATERWAYS);
+		waterways.transform.parent = cityComponents.transform;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
-
 			if (nodeGroup.GetType() == typeof(HighwayNodeGroup) || nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
 				if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
 					HighwayNodeGroup highwayNodeGroup = (HighwayNodeGroup) nodeGroup;
 					if (highwayNodeGroup.IsPrimary() || highwayNodeGroup.IsSecondary() || highwayNodeGroup.IsTertiary() || highwayNodeGroup.IsService()) {
-						GameObject road = new GameObject("Road");
-						highwayBuilder.BuildRoad(road, highwayNodeGroup);
+						GameObject road = wayBuilder.BuildRoad(highwayNodeGroup);
 						road.transform.parent = roads.transform;
+					} else if (highwayNodeGroup.IsCycleWay()) {
+						GameObject cycleway = wayBuilder.BuildCycleway(highwayNodeGroup);
+						cycleway.transform.parent = cycleways.transform;
+					} else if (highwayNodeGroup.IsFootway()) {
+						GameObject footway = wayBuilder.BuildFootway(highwayNodeGroup);
+						footway.transform.parent = footways.transform;
+					} else if (highwayNodeGroup.IsBusWayLane()) {
+						GameObject busLane = wayBuilder.BuildBusLane(highwayNodeGroup);
+						busLane.transform.parent = busLanes.transform;
 					}
+				} else if (nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
+					WaterwayNodeGroup waterwayNodeGroup = (WaterwayNodeGroup) nodeGroup;
+					GameObject waterway = wayBuilder.BuildWaterway(waterwayNodeGroup);
+					waterway.transform.parent = waterways.transform;
 				}
 			}
-
-			//if(true) {
-			//	if (nodeGroup.NodeCount() >= 2) {
-			//		road.name += "_" + nodeGroup.GetNode(0).Reference + "-" + nodeGroup.GetNode(nodeGroup.NodeCount() - 1).Reference;
-			//		road.transform.position = new Vector3((float)nodeGroup.GetNode(0).Longitude, 0, (float)nodeGroup.GetNode(0).Latitude);
-
-			//		for (int i = 0; i < nodeGroup.NodeCount() - 1; i++) {
-			//			Node currentNode = nodeGroup.GetNode(i);
-			//			Node nextNode = nodeGroup.GetNode(i + 1);
-
-			//			// Calcul des coordonnées du milieu du vectuer formé par les 2 noeuds consécutifs
-			//			Vector3 node1 = new Vector3((float) currentNode.Longitude, 0, (float) currentNode.Latitude);
-			//			Vector3 node2 = new Vector3((float) nextNode.Longitude, 0, (float) nextNode.Latitude);
-			//			Vector3 delta = node2 - node1;
-
-			//			double posX = 0;
-			//			double posY = 0;
-
-			//			double length = 0.06;
-			//			double width = Dimensions.ROAD_WIDTH;
-
-			//			double angle = 0;
-
-			//			// Calcul de la position de la route, dépendant du signe du delta entre les deux noeuds
-			//			if (delta.z <= 0) {
-			//				posX = nodeGroup.GetNode(i + 1).Longitude;
-			//				posY = nodeGroup.GetNode(i + 1).Latitude;
-			//				length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
-			//				angle = (double) Vector3.Angle(Vector3.right, delta) + 180;
-			//			} else {
-			//				posX = nodeGroup.GetNode(i).Longitude;
-			//				posY = nodeGroup.GetNode(i).Latitude;
-			//				length = Math.Sqrt(Math.Pow(nextNode.Latitude - currentNode.Latitude, 2) + Math.Pow(nextNode.Longitude - currentNode.Longitude, 2));
-			//				angle = (double) Vector3.Angle(Vector3.right, -delta) + 180;
-			//			}
-
-			//			if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
-			//				HighwayNodeGroup highwayNodeGroup = (HighwayNodeGroup) nodeGroup;
-
-			//				if (highwayNodeGroup.IsPrimary() || highwayNodeGroup.IsSecondary() || highwayNodeGroup.IsTertiary() || highwayNodeGroup.IsService()) {
-			//					// Construction et paramétrage de l'objet 3D destiné à former une route classique
-			//					GameObject roadSection = highwayBuilder.BuildRoad(road, (float) posX, (float) posY, (float) length, (float) width, (float) angle);
-			//					GameObject roadNode = this.BuildSingleRoadNodeGroup(road, highwayNodeGroup);
-			//				} else if (highwayNodeGroup.IsCycleWay()) {
-			//					// Construction et paramétrage de l'objet 3D destiné à former une piste cyclable
-			//					GameObject cycleway = highwayBuilder.BuildCycleway((float) posX, (float) posY, (float) length, (float) width / 2F, (float) angle);
-			//					cycleway.name = currentNode.Reference + "-" + nextNode.Reference;
-
-			//					// Ajout de la piste cyclable au groupe de pistes cyclables
-			//					cycleway.transform.parent = cycleways.transform;
-			//				} else if (highwayNodeGroup.IsFootway()) {
-			//					// Construction et paramétrage de l'objet 3D destiné à former un chemin piéton
-			//					GameObject footway = highwayBuilder.BuildFootway((float) posX, (float) posY, (float) length, (float) width / 1.5F, (float) angle);
-			//					footway.name = currentNode.Reference + "-" + nextNode.Reference;
-
-			//					// Ajout du chemin piéton au groupe de chemins piétons
-			//					footway.transform.parent = footways.transform;
-			//					// 	 } else if (ngp.isBusWayLane ()) {
-			//					// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
-			//					//  newHighWay = roadBuilder.createBusLane ((float)x, (float)y, (float)length, (float)width, (float)angle);
-
-			//					// Ajout de la voie maritime au groupe de voies de bus
-			//					// newBusways.transform.parent = busways.transform;
-			//				}
-			//			} else if (nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
-			//				// Construction et paramétrage de l'objet 3D destiné à former une voie de bus
-			//				GameObject waterway = highwayBuilder.BuildWaterway((float) posX, (float) posY, (float) length, (float) width / 1.5F, (float) angle);
-			//				waterway.name = currentNode.Reference + "-" + nextNode.Reference;
-
-			//				// Ajout de la voie maritime au groupe de voies maritimes
-			//				// newWaterway.transform.parent = waterways.transform;
-			//			}
-			//		}
-			//	}
-			//}
 		}
 	}
 
@@ -567,12 +513,20 @@ public class CityBuilder {
 		get { return footways; }
 	}
 
+	public GameObject BusLanes {
+		get { return busLanes; }
+	}
+
+	public GameObject Waterways {
+		get { return waterways; }
+	}
+
 	public WallsBuilder WallsBuilder {
 		get { return wallsBuilder; }
 	}
 
-	public HighwayBuilder HighwayBuilder {
-		get { return highwayBuilder; }
+	public WayBuilder HighwayBuilder {
+		get { return wayBuilder; }
 	}
 
 	public RoofBuilder RoofBuilder {
