@@ -398,7 +398,7 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
 			}
 			break;
-		case UiNames.DISABLED_ROADS_NODES_BUTTON:
+		case UiNames.DISABLED_ROAD_NODES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
 				visibilityController.ShowRoadsNodes();
 				visibilityPanelController.EnableButton(transform.parent.gameObject);
@@ -447,9 +447,9 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;
-		case UiNames.ENABLED_ROADS_NODES_BUTTON:
+		case UiNames.ENABLED_ROAD_NODES_BUTTON:
 			if (controlPanelManager.ControlState == ControlPanelManager.ControlStates.VISIBILITY_TOGGLELING) {
-				visibilityController.HideRoads();
+				visibilityController.HideRoadsNodes();
 				visibilityPanelController.DisableButton(transform.parent.gameObject);
 			}
 			break;

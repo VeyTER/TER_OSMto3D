@@ -6,10 +6,10 @@ public class CityObjectNames {
 	public const string CITY = "City";
 
 	/// <summary>Nom des noeuds de bâtiments.</summary>
-	public const string BUILDING_NODES = "Buildings nodes";
+	public const string BUILDING_NODES = "BuildingsNodes";
 
 	/// <summary>Nom des noeuds de routes.</summary>
-	public const string ROADS_NODES = "Roads nodes";
+	public const string ROADS_NODES = "RoadsNodes";
 
 	/// <summary>Nom des bâtiments.</summary>
 	public const string WALLS = "Buildings";
@@ -34,4 +34,7 @@ public class CityObjectNames {
 
 	/// <summary>Nom des villes.</summary>
 	public const string TREES = "Trees";
+
+	/// <summary>Nom des villes.</summary>
+	public const string TRAFFIC_SIGNALS = "TrafficSignals";
 }

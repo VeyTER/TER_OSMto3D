@@ -88,6 +88,11 @@ public class CityBuilder {
 	/// summary>
 	private GameObject trees;
 
+	/// <summary>
+	/// 	Object 3D contenant toutes les feux tricolores.
+	/// summary>
+	private GameObject trafficSignals;
+
 	private CityBuilder() {
 		this.buildingsTools = BuildingsTools.GetInstance();
 
@@ -272,7 +277,7 @@ public class CityBuilder {
 	/// <summary>
 	/// 	Place les routes dans la scène.
 	/// </summary>
-	public void BuildHighways() {
+	public void BuildWays() {
 		// Récupération de l'objet contenant les routes classiques et ajout de celui-ci à la ville
 		roads = new GameObject(CityObjectNames.ROADS);
 		roads.transform.parent = cityComponents.transform;
@@ -298,9 +303,12 @@ public class CityBuilder {
 			if (nodeGroup.GetType() == typeof(HighwayNodeGroup) || nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
 				if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
 					HighwayNodeGroup highwayNodeGroup = (HighwayNodeGroup) nodeGroup;
-					if (highwayNodeGroup.IsPrimary() || highwayNodeGroup.IsSecondary() || highwayNodeGroup.IsTertiary() || highwayNodeGroup.IsService()) {
+					if (highwayNodeGroup.IsRoad()) {
 						GameObject road = wayBuilder.BuildRoad(highwayNodeGroup);
 						road.transform.parent = roads.transform;
+
+						GameObject newWayNodeGroup = this.BuildSingleWayNodeGroup(road, nodeGroup);
+						newWayNodeGroup.transform.SetParent(road.transform, false);
 					} else if (highwayNodeGroup.IsCycleWay()) {
 						GameObject cycleway = wayBuilder.BuildCycleway(highwayNodeGroup);
 						cycleway.transform.parent = cycleways.transform;
@@ -320,15 +328,15 @@ public class CityBuilder {
 		}
 	}
 
-	public GameObject BuildSingleRoadNodeGroup(GameObject road, HighwayNodeGroup roadNodeGroup) {
-		GameObject roadNodeGroupGo = new GameObject("RoadNodes_" + road.name.Split('_')[1]);
-		roadNodeGroupGo.transform.SetParent(road.transform, false);
+	public GameObject BuildSingleWayNodeGroup(GameObject way, NodeGroup nodeGroup) {
+		GameObject roadNodeGroupGo = new GameObject("WaysNodes_"/* + way.name.Split('_')[1]*/);
+		roadNodeGroupGo.transform.SetParent(way.transform, false);
 
 		// Construction des angles de noeuds de routes
-		foreach (Node node in roadNodeGroup.Nodes) {
+		foreach (Node node in nodeGroup.Nodes) {
 			// Création et paramétrage de l'objet 3D destiné à former un noeud de route
 			GameObject roadNodeGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			roadNodeGo.name = node.Reference;
+			roadNodeGo.name = "Node_" + Node.GenerateId(node);
 			roadNodeGo.tag = GoTags.ROAD_NODE_TAG;
 
 			roadNodeGo.transform.position = new Vector3((float) node.Longitude, 0, (float) node.Latitude);
@@ -405,6 +413,10 @@ public class CityBuilder {
 		float posX = 0;
 		float posZ = 0;
 
+		// Récupération de l'objet contenant les feux de signalisation et ajout de celui-ci à la ville
+		trafficSignals = new GameObject(CityObjectNames.TRAFFIC_SIGNALS);
+		trafficSignals.transform.parent = cityComponents.transform;
+
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			if (nodeGroupEntry.Value.GetType() == typeof(HighwayNodeGroup)) {
 				HighwayNodeGroup highwayNodeGroup = (HighwayNodeGroup) nodeGroupEntry.Value;
@@ -418,6 +430,7 @@ public class CityBuilder {
 							posX = (float)highwayComponentNode.Longitude;
 
 							GameObject trafficSignal = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.TRAFFIC_SIGNAL));
+							trafficSignal.transform.SetParent(trafficSignals.transform, false);
 							trafficSignal.transform.position = new Vector3(posX, 0, posZ);
 							trafficSignal.transform.localScale = new Vector3(0.001F * Dimensions.SCALE_FACTOR, 0.001F * Dimensions.SCALE_FACTOR, 0.001F * Dimensions.SCALE_FACTOR);
 						}
@@ -501,10 +514,6 @@ public class CityBuilder {
 		get { return roads; }
 	}
 
-	public GameObject Trees {
-		get { return trees; }
-	}
-
 	public GameObject Cycleways {
 		get { return cycleways; }
 	}
@@ -519,6 +528,14 @@ public class CityBuilder {
 
 	public GameObject Waterways {
 		get { return waterways; }
+	}
+
+	public GameObject Trees {
+		get { return trees; }
+	}
+
+	public GameObject TrafficSignals {
+		get { return trafficSignals; }
 	}
 
 	public WallsBuilder WallsBuilder {

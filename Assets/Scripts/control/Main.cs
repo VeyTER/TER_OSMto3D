@@ -45,7 +45,7 @@ public class Main : MonoBehaviour {
 			// Construction de la ville
 			cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
 			cityBuilder.BuildBuildings();
-			cityBuilder.BuildHighways();
+			cityBuilder.BuildWays();
 			cityBuilder.BuildTrees();
 			cityBuilder.BuildTrafficSignals();
 			cityBuilder.BuildMainCamera();
@@ -71,7 +71,7 @@ public class Main : MonoBehaviour {
 			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.BUILDING_NODES_SWITCH));
 
 			visibilityController.HideRoadsNodes();
-			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.ROADS_NODES_SWITCH));
+			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.ROAD_NODES_SWITCH));
 
 			// Récupération de la référence du panneau et ajout d'un controlleur
 			GameObject editPanel = GameObject.Find(UiNames.EDIT_PANEL);

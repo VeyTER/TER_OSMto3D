@@ -32,7 +32,7 @@ public class UiNames {
 
 	public const string BUILDING_NODES_SWITCH = "WallsNodesSwitch";
 
-	public const string ROADS_NODES_SWITCH = "RoadsNodesSwitch";
+	public const string ROAD_NODES_SWITCH = "RoadNodesSwitch";
 
 	public const string WALLS_SWITCH = "WallsSwitch";
 
@@ -53,7 +53,7 @@ public class UiNames {
 	public const string DISABLED_BUILDING_NODES_BUTTON = "DisabledWallsNodesButton";
 
 	/// <summary>Nom du bouton cachant les noeuds de routes.</summary>
-	public const string DISABLED_ROADS_NODES_BUTTON = "DisabledRoadsNodesButton"; 
+	public const string DISABLED_ROAD_NODES_BUTTON = "DisabledRoadNodesButton"; 
 
 	/// <summary>Nom du bouton cachant les murs.</summary>
 	public const string DISABLED_WALLS_BUTTON = "DisabledWallsButton";
@@ -78,7 +78,7 @@ public class UiNames {
 	public const string ENABLED_BUILDING_NODES_BUTTON = "EnabledWallsNodesButton";
 
 	/// <summary>Nom du bouton affichant les noeuds de routes.</summary>
-	public const string ENABLED_ROADS_NODES_BUTTON = "EnabledRoadsNodesButton";
+	public const string ENABLED_ROAD_NODES_BUTTON = "EnabledRoadNodesButton";
 
 	/// <summary>Nom du bouton affichant les murs.</summary>
 	public const string ENABLED_WALLS_BUTTON = "EnabledWallsButton";

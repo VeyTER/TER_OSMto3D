@@ -7,27 +7,27 @@ using UnityEngine;
 /// </summary>
 public class WayBuilder {
 	public GameObject BuildRoad(HighwayNodeGroup highwayNodeGroup) {
-		return this.BuildWay(highwayNodeGroup, "RoadSections", GoTags.ROAD_TAG, Materials.ROAD, Dimensions.ROAD_WIDTH);
+		return this.BuildWay(highwayNodeGroup, "Road", GoTags.ROAD_TAG, Materials.ROAD, Dimensions.ROAD_WIDTH);
 	}
 	public GameObject BuildCycleway(HighwayNodeGroup highwayNodeGroup) {
-		return this.BuildWay(highwayNodeGroup, "CyclewaySections", GoTags.CYCLEWAY_TAG, Materials.CYCLEWAY, Dimensions.CYCLEWAYS_WIDTH);
+		return this.BuildWay(highwayNodeGroup, "Cycleway", GoTags.CYCLEWAY_TAG, Materials.CYCLEWAY, Dimensions.CYCLEWAYS_WIDTH);
 	}
 
 	public GameObject BuildFootway(HighwayNodeGroup highwayNodeGroup) {
-		return this.BuildWay(highwayNodeGroup, "FootwaySections", GoTags.FOOTWAY_TAG, Materials.FOOTWAY, Dimensions.FOOTWAY_WIDTH);
+		return this.BuildWay(highwayNodeGroup, "Footway", GoTags.FOOTWAY_TAG, Materials.FOOTWAY, Dimensions.FOOTWAY_WIDTH);
 	}
 
 	public GameObject BuildBusLane(HighwayNodeGroup highwayNodeGroup) {
-		return this.BuildWay(highwayNodeGroup, "BusLaneSections", GoTags.BUS_LANE_TAG, Materials.BUSWAY, Dimensions.BUS_LANE_WIDTH);
+		return this.BuildWay(highwayNodeGroup, "BusLane", GoTags.BUS_LANE_TAG, Materials.BUSWAY, Dimensions.BUS_LANE_WIDTH);
 	}
 
 	public GameObject BuildWaterway(WaterwayNodeGroup waterwayNodeGroup) {
-		return this.BuildWay(waterwayNodeGroup, "WaterwaySections", GoTags.WALLS_TAG, Materials.WATERWAY, Dimensions.WTERWAY_WIDTH);
+		return this.BuildWay(waterwayNodeGroup, "Waterway", GoTags.WALLS_TAG, Materials.WATERWAY, Dimensions.WTERWAY_WIDTH);
 	}
 
 	private GameObject BuildWay(NodeGroup nodeGroup, string wayIdentifier, string tag, string materialName, float width) {
 		if (nodeGroup.NodeCount() >= 2) {
-			string nameComplement = wayIdentifier + "_" + nodeGroup.GetNode(0).Reference + "-" + nodeGroup.GetNode(nodeGroup.NodeCount() - 1).Reference;
+			string nameComplement = nodeGroup.GetNode(0).Reference + "-" + nodeGroup.GetNode(nodeGroup.NodeCount() - 1).Reference;
 
 			GameObject way = new GameObject(wayIdentifier + "_" + nameComplement);
 			way.transform.position = new Vector3((float) nodeGroup.GetNode(0).Longitude, Dimensions.WAY, (float) nodeGroup.GetNode(0).Latitude);
@@ -59,7 +59,7 @@ public class WayBuilder {
 			MeshRenderer meshRenderer = sections.GetComponent<MeshRenderer>();
 			meshRenderer.material = Resources.Load(materialName) as Material;
 
-			return sections;
+			return way;
 		} else {
 			return null;
 		}

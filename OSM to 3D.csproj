@@ -115,7 +115,7 @@
     <Compile Include="Assets\Scripts\control\TurningEditor.cs" />
     <Compile Include="Assets\Scripts\control\UiManager.cs" />
     <Compile Include="Assets\Scripts\control\WheelPanelController.cs" />
-    <Compile Include="Assets\Scripts\model\city_building\VisibilityController.cs" />
+    <Compile Include="Assets\Scripts\control\VisibilityController.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingStepNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\HighwayComponentNode.cs" />

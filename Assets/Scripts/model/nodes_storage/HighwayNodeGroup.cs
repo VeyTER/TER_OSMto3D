@@ -57,16 +57,13 @@ public class HighwayNodeGroup : NodeGroup {
 		return tags.ContainsValue("cycleway");
 	}
 
-	public bool IsWay() {
+	public bool IsRoad() {
 		return (this.IsResidential()
-				|| this.IsPrimary()
-				|| this.IsSecondary()
-				|| this.IsTertiary()
-				|| this.IsService()
-				|| this.IsCycleWay()
-				|| this.IsFootway()
-			/*  || this.isBusWayLane()*/
-			);
+			 || this.IsPrimary()
+			 || this.IsSecondary()
+			 || this.IsTertiary()
+			 || this.IsService()
+		);
 	}
 
 	public int NbWay {
