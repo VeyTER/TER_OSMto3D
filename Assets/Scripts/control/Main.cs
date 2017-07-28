@@ -17,79 +17,20 @@ public class Main : MonoBehaviour {
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
 	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAPITOLE + ".osm";
 
+	private MapLoader mapLoader;
+	private CityBuilder cityBuilder;
+
 	public void Start() {
-		CityBuilder cityBuilder = CityBuilder.GetInstance();
-		MapLoader mapLoader = MapLoader.GetInstance ();
-
-		VisibilityController visibilityController = VisibilityController.GetInstance();
-
-		// Paramétrage de la qualité graphique
-		QualitySettings.antiAliasing = 8;
-		QualitySettings.shadows = ShadowQuality.All;
+		this.mapLoader = MapLoader.GetInstance();
+		this.cityBuilder = CityBuilder.GetInstance();
 
 		this.InstantiateMainObjects ();
 
 		// Si le fichier contennant la carte OSM existe bien, le traitement est effectué
 		if (File.Exists(OSM_FILE_NAME)) {
-			// Chargement des données OSM
-			mapLoader.LoadOsmData(OSM_FILE_NAME);
-			mapLoader.LoadSettingsData();
-			mapLoader.GenerateResumeFile();
-			mapLoader.LoadCustomData();
-			mapLoader.LoadResumedData();
-
-			// Réglage de l'échelle et des dimensions
-			cityBuilder.NodeGroupBase.ScaleNodes(Dimensions.NODE_SCALE);
-			cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon, Dimensions.NODE_SCALE);
-
-			// Construction de la ville
-			cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
-			cityBuilder.BuildBuildings();
-			cityBuilder.BuildWays();
-			cityBuilder.BuildTrees();
-			cityBuilder.BuildTrafficSignals();
-			cityBuilder.BuildMainCamera();
-			cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
-
-			GameObject visibilityWheelPanel = GameObject.Find(UiNames.VISIBILITY_WHEEL_PANEL);
-			WheelPanelController visibilityPanelContoller = visibilityWheelPanel.GetComponent<WheelPanelController>();
-			visibilityPanelContoller.StartPosition = visibilityWheelPanel.transform.parent.localPosition;
-			visibilityPanelContoller.EndPosition = new Vector3(110, visibilityWheelPanel.transform.parent.localPosition.y, 0);
-
-			GameObject buildingCreationBoxPanel = GameObject.Find(UiNames.BUILDING_CREATION_BOX_PANEL);
-			GameObject buildingCreationButtonIcon = buildingCreationBoxPanel.transform.parent.Find(UiNames.CREATE_BUILDING_ICON).gameObject;
-			BoxPanelController buildingCreationPanelContoller = buildingCreationBoxPanel.GetComponent<BoxPanelController>();
-			buildingCreationPanelContoller.StartPosition = buildingCreationButtonIcon.transform.localPosition;
-			buildingCreationPanelContoller.EndPosition = new Vector3(58.7F, buildingCreationButtonIcon.transform.localPosition.y, 0);
-
-			ControlPanelManager controlPanelManager = ControlPanelManager.GetInstance();
-			controlPanelManager.AddPanel(visibilityWheelPanel);
-			controlPanelManager.AddPanel(buildingCreationBoxPanel);
-
-			// Désactivation des certains groupes d'objets
-			visibilityController.HideBuildingNodes();
-			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.BUILDING_NODES_SWITCH));
-
-			visibilityController.HideRoadsNodes();
-			visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.ROAD_NODES_SWITCH));
-
-			// Récupération de la référence du panneau et ajout d'un controlleur
-			GameObject editPanel = GameObject.Find(UiNames.EDIT_PANEL);
-			editPanel.AddComponent<EditPanelController>();
-
-			// Paramétrage du panneau latéral
-			Vector3 panelPosition = editPanel.transform.localPosition;
-			RectTransform panelRect = (RectTransform) editPanel.transform;
-			editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRect.rect.width, panelPosition.y, panelPosition.z);
-
-			Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
-			Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
-
-			greenOverlay.SetColor("_EmissionColor", ThemeColors.GREEN);
-			redOverlay.SetColor("_EmissionColor", ThemeColors.RED);
-
-			GameObject scaler = new GameObject("scaler");
-
+			this.LoadMap();
+			this.BuildCity();
+			this.SetupPanels();
 		}
 	}
 
@@ -100,10 +41,68 @@ public class Main : MonoBehaviour {
 		GameObject mainCamera = (GameObject) GameObject.Instantiate(Resources.Load(Cameras.CAPITOLE_CAMERA));
 		mainCamera.name = "Camera";
 
-		GameObject.Instantiate (Resources.Load(GameObjects.EDIT_CANVAS));
-		GameObject.Instantiate (Resources.Load(GameObjects.UI_MANAGER_SCRIPT));
-		GameObject.Instantiate (Resources.Load(GameObjects.EVENT_SYSTEM));
+		GameObject.Instantiate(Resources.Load(GameObjects.EDIT_CANVAS));
+		GameObject.Instantiate(Resources.Load(GameObjects.UI_MANAGER_SCRIPT));
+		GameObject.Instantiate(Resources.Load(GameObjects.EVENT_SYSTEM));
 
 		GameObject.Instantiate(Resources.Load("Game objects/Sun"));
+	}
+
+	private void LoadMap() {
+		mapLoader.LoadOsmData(OSM_FILE_NAME);
+		mapLoader.LoadSettingsData();
+		mapLoader.GenerateResumeFile();
+		mapLoader.LoadCustomData();
+		mapLoader.LoadResumedData();
+	}
+
+	private void BuildCity() {
+		// Réglage de l'échelle et des dimensions
+		cityBuilder.NodeGroupBase.ScaleNodes(Dimensions.NODE_SCALE);
+		cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon, Dimensions.NODE_SCALE);
+
+		// Construction de la ville
+		cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
+		cityBuilder.BuildBuildings();
+		cityBuilder.BuildWays();
+		cityBuilder.BuildTrees();
+		cityBuilder.BuildTrafficSignals();
+		cityBuilder.BuildMainCamera();
+		cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
+	}
+
+	private void SetupPanels() {
+		GameObject visibilityWheelPanel = GameObject.Find(UiNames.VISIBILITY_WHEEL_PANEL);
+		WheelPanelController visibilityPanelContoller = visibilityWheelPanel.GetComponent<WheelPanelController>();
+		visibilityPanelContoller.StartPosition = visibilityWheelPanel.transform.parent.localPosition;
+		visibilityPanelContoller.EndPosition = new Vector3(110, visibilityWheelPanel.transform.parent.localPosition.y, 0);
+
+		GameObject buildingCreationBoxPanel = GameObject.Find(UiNames.BUILDING_CREATION_BOX_PANEL);
+		GameObject buildingCreationButtonIcon = buildingCreationBoxPanel.transform.parent.Find(UiNames.CREATE_BUILDING_ICON).gameObject;
+		BoxPanelController buildingCreationPanelContoller = buildingCreationBoxPanel.GetComponent<BoxPanelController>();
+		buildingCreationPanelContoller.StartPosition = buildingCreationButtonIcon.transform.localPosition;
+		buildingCreationPanelContoller.EndPosition = new Vector3(58.7F, buildingCreationButtonIcon.transform.localPosition.y, 0);
+
+		ControlPanelManager controlPanelManager = ControlPanelManager.GetInstance();
+		controlPanelManager.AddPanel(visibilityWheelPanel);
+		controlPanelManager.AddPanel(buildingCreationBoxPanel);
+
+		// Désactivation des certains groupes d'objets
+		VisibilityController visibilityController = VisibilityController.GetInstance();
+
+		visibilityController.HideBuildingNodes();
+		visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.BUILDING_NODES_SWITCH));
+
+		visibilityController.HideRoadsNodes();
+		visibilityPanelContoller.DisableButton(GameObject.Find(UiNames.ROAD_NODES_SWITCH));
+
+		// Récupération de la référence du panneau et ajout d'un controlleur
+		GameObject editPanel = GameObject.Find(UiNames.EDIT_PANEL);
+		editPanel.AddComponent<EditPanelController>();
+
+		// Paramétrage du panneau latéral
+		Vector3 panelPosition = editPanel.transform.localPosition;
+		RectTransform panelRect = (RectTransform) editPanel.transform;
+		editPanel.transform.localPosition = new Vector3(panelPosition.x + panelRect.rect.width, panelPosition.y, panelPosition.z);
 	}
 }

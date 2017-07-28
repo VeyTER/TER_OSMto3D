@@ -220,7 +220,7 @@ public class RoofBuilder {
 	/// <returns>Coordonnées pour le mapping.</returns>
 	/// <param name="length">Longueur du toit.</param>
 	/// <param name="width">Largeur du toit.</param>
-	private Vector2[] RoofUV(float length, float width) {
+	private Vector2[] FlatRoofUV(float length, float width) {
 		Vector2[] res = new Vector2[] {
 			new Vector2 (0, 0),			// (x, y)
 			new Vector2 (length * 20, 0),

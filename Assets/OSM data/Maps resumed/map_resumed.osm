@@ -7112,7 +7112,7 @@
             <nd ref="426609905" index="28" lat="43.6042973" lon="1.4460358" />
           </building>
           <building>
-            <info id="36706965" name="Massimo Dutti" nbfloor="3" roofangle="15" rooftype="hipped" custmat="BricksBasic" color="1;1;1" />
+            <info id="36706965" name="Massimo Dutti" nbfloor="20" roofangle="15" rooftype="hipped" custmat="BricksBasic" color="1;1;1" />
             <nd ref="426690923" index="0" lat="43.6049603" lon="1.4453812" />
             <nd ref="1429268312" index="1" lat="43.6049549" lon="1.4454645" />
             <nd ref="426690926" index="2" lat="43.604951" lon="1.4455251" />

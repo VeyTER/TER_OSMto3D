@@ -41,4 +41,7 @@
   <building>
     <info id="46185441" name="unknown" nbfloor="3" roofangle="15" rooftype="pitched" custmat="BricksBasic" />
   </building>
+  <building>
+    <info id="36706965" name="Massimo Dutti" nbfloor="20" roofangle="15" rooftype="hipped" custmat="BricksBasic" />
+  </building>
 </earth>
