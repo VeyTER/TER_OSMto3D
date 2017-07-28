@@ -44,4 +44,28 @@
   <building>
     <info id="36706965" name="Massimo Dutti" nbfloor="20" roofangle="15" rooftype="hipped" custmat="BricksBasic" />
   </building>
+  <building>
+    <info id="+3938425906" name="Bâtiment n°+3938425906" nbfloor="3" roofangle="0" rooftype="unknown" />
+    <nd ref="+3938425906" index="0" lat="43.60780859375" lon="1.44192712402344" />
+    <nd ref="+3938425906" index="1" lat="43.60865625" lon="1.44277783203125" />
+    <nd ref="+3938425906" index="2" lat="43.60794921875" lon="1.44348498535156" />
+    <nd ref="+3938425906" index="3" lat="43.6071015625" lon="1.44263427734375" />
+    <nd ref="+3938425906" index="4" lat="43.60780859375" lon="1.44192712402344" />
+  </building>
+  <building>
+    <info id="+7529438962" name="Bâtiment n°+7529438962" nbfloor="3" roofangle="0" rooftype="unknown" custmat="ConcreteMonochromatic" />
+    <nd ref="+7529438962" index="0" lat="43.607734375" lon="1.44328527832031" />
+    <nd ref="+7529438962" index="1" lat="43.60915234375" lon="1.44469946289062" />
+    <nd ref="+7529438962" index="2" lat="43.6084453125" lon="1.44540661621094" />
+    <nd ref="+7529438962" index="3" lat="43.60702734375" lon="1.44399243164063" />
+    <nd ref="+7529438962" index="4" lat="43.607734375" lon="1.44328527832031" />
+  </building>
+  <building>
+    <info id="+5215009153" name="Bâtiment n°+5215009153" nbfloor="3" roofangle="0" rooftype="unknown" />
+    <nd ref="+5215009153" index="0" lat="43.6008203125" lon="1.44297692871094" />
+    <nd ref="+5215009153" index="1" lat="43.60134375" lon="1.44593139648438" />
+    <nd ref="+5215009153" index="2" lat="43.600359375" lon="1.44610510253906" />
+    <nd ref="+5215009153" index="3" lat="43.5998359375" lon="1.44315063476563" />
+    <nd ref="+5215009153" index="4" lat="43.6008203125" lon="1.44297692871094" />
+  </building>
 </earth>

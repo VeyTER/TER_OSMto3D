@@ -66,25 +66,23 @@ public class BuildingsTools {
 	}
 
 	public void ReplaceMaterial(GameObject building, Material newMaterial) {
-		foreach (Transform builginPartTransform in building.transform) {
-			Renderer meshRenderer = builginPartTransform.GetComponent<Renderer>();
+		GameObject walls = building.transform.GetChild(CityBuilder.WALLS_INDEX).gameObject;
+		Renderer meshRenderer = walls.GetComponent<Renderer>();
 
-			if (meshRenderer != null) {
-				meshRenderer.materials = new Material[] {
-					newMaterial,
-				};
-			}
+		if (meshRenderer != null) {
+			meshRenderer.materials = new Material[] {
+				newMaterial,
+			};
 		}
 	}
 
 	public void ReplaceColor(GameObject building, Color newColor) {
-		foreach (Transform builginPartTransform in building.transform) {
-			Renderer meshRenderer = builginPartTransform.GetComponent<Renderer>();
+		GameObject walls = building.transform.GetChild(CityBuilder.WALLS_INDEX).gameObject;
+		Renderer meshRenderer = walls.GetComponent<Renderer>();
 
-			if (meshRenderer != null) {
-				Material mainMaterial = meshRenderer.materials[0];
-				mainMaterial.color = newColor;
-			}
+		if (meshRenderer != null) {
+			Material mainMaterial = meshRenderer.materials[0];
+			mainMaterial.color = newColor;
 		}
 	}
 
@@ -578,10 +576,9 @@ public class BuildingsTools {
 		// Somme des coordonnées des murs de bâtiments
 		if (buildingNodeGroup != null) {
 			Vector3 positionSum = Vector3.zero;
-			GameObject firstWall = building.transform.GetChild (0).gameObject;
 			for(int i = 0; i < buildingNodeGroup.Nodes.Count - 1; i++) {
-				Node buildingNode = (Node) buildingNodeGroup.Nodes [i];
-				Vector3 nodePosition = new Vector3 ((float)buildingNode.Longitude, (float)firstWall.transform.position.y, (float)buildingNode.Latitude);
+				Node buildingNode = buildingNodeGroup.Nodes [i];
+				Vector3 nodePosition = new Vector3((float) buildingNode.Longitude, this.BuildingHeight(building), (float)buildingNode.Latitude);
 				positionSum += nodePosition;
 			}
 
@@ -607,7 +604,7 @@ public class BuildingsTools {
 		if (nodeGroup.GetType() == typeof(BuildingNodeGroup)) {
 			// Somme des coordonnées des noeuds 3D de bâtiments
 			for (int i = 0; i < nodeGroup.Nodes.Count - 1; i++) {
-				Node buildingNode = (Node) nodeGroup.Nodes[i];
+				Node buildingNode = nodeGroup.Nodes[i];
 				Vector3 nodePosition = new Vector3((float) buildingNode.Longitude, (float) buildingNodeGroupGo.transform.position.y, (float) buildingNode.Latitude);
 				positionSum += nodePosition;
 			}
@@ -635,7 +632,7 @@ public class BuildingsTools {
 			// Somme des distances de chaque sommet par rapport au centre avec mise à jour du maximum
 			double maxDistance = 0;
 			for (int i = 0; i < nodeGroup.Nodes.Count - 1; i++) {
-				Node buildingNode = (Node) nodeGroup.Nodes[i];
+				Node buildingNode = nodeGroup.Nodes[i];
 				Vector2 nodePosition = new Vector2((float) buildingNode.Longitude, (float) buildingNode.Latitude);
 				Vector2 buildingCenter2D = new Vector2(buildingCenter.x, buildingCenter.z);
 

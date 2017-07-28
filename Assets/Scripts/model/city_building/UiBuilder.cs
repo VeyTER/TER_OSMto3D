@@ -5,9 +5,12 @@ using UnityEngine.UI;
 public class UiBuilder {
 	private static UiBuilder instance;
 
+	private BuildingsTools buildingsTools;
+
 	private GameObject sensorsDisplays;
 
 	private UiBuilder() {
+		this.buildingsTools = BuildingsTools.GetInstance();
 		this.sensorsDisplays = new GameObject("SensorsData");
 	}
 
@@ -20,8 +23,7 @@ public class UiBuilder {
 	public GameObject BuildBuildingDataPanel(GameObject building) {
 		GameObject buildBuildingDataCanvas = this.BuildBuildingDataCanvas(building);
 
-		BuildingsTools buildingTools = BuildingsTools.GetInstance();
-		buildingTools.AddBuildingAndDataDisplayEntryPair(building, buildBuildingDataCanvas);
+		buildingsTools.AddBuildingAndDataDisplayEntryPair(building, buildBuildingDataCanvas);
 
 		GameObject decorationPanel = buildBuildingDataCanvas.transform.Find(UiNames.BUILDING_DATA_DECORATIONS).gameObject;
 		decorationPanel.name = decorationPanel.name;
@@ -33,8 +35,7 @@ public class UiBuilder {
 	}
 
 	private GameObject BuildBuildingDataCanvas(GameObject building) {
-		GameObject buildingFirstWall = building.transform.GetChild(0).gameObject;
-		float buildingHeight = buildingFirstWall.transform.localScale.y;
+		float buildingHeight = buildingsTools.BuildingHeight(building);
 		float scale = 0.01F * Dimensions.SCALE_FACTOR;
 
 		GameObject buildingDataCanvas = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.BUILDING_DATA_CANVAS));

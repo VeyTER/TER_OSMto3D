@@ -53,9 +53,7 @@ public class BuildingCreationEditor : ObjectEditor {
 		bool parsingOutcome = float.TryParse(orientationInputTextInput.text, out buildingOrientation);
 
 		if (parsingOutcome) {
-			GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
-			float buildingHeight = firstWall.transform.localScale.y;
-
+			float buildingHeight = buildingsTools.BuildingHeight(selectedBuilding);
 			selectedBuilding.transform.position = new Vector3(buildingPosition.x, 0, buildingPosition.z);
 			selectedBuilding.transform.rotation = Quaternion.Euler(0, (float) Math.Round(buildingOrientation, 2), 0);
 		}

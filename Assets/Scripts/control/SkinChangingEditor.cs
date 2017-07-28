@@ -94,8 +94,8 @@ public class SkinChangingEditor : ObjectEditor {
 		skinPanel.SetActive(true);
 		skinPanelController.OpenPanel(null);
 
-		GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
-		MeshRenderer meshRenderer = firstWall.GetComponent<MeshRenderer>();
+		GameObject walls = selectedBuilding.transform.GetChild(CityBuilder.WALLS_INDEX).gameObject;
+		MeshRenderer meshRenderer = walls.GetComponent<MeshRenderer>();
 		selectedBuildingStartMaterial = meshRenderer.materials[0];
 		selectedBuildingStartColor = selectedBuildingStartMaterial.color;
 
@@ -228,7 +228,6 @@ public class SkinChangingEditor : ObjectEditor {
 	}
 
 	public override void CancelTransform() {
-		GameObject firstWall = selectedBuilding.transform.GetChild(0).gameObject;
 		buildingsTools.ReplaceMaterial(selectedBuilding, selectedBuildingStartMaterial);
 		buildingsTools.ReplaceColor(selectedBuilding, selectedBuildingStartColor);
 

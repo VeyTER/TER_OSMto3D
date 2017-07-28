@@ -441,7 +441,7 @@ public class EditController : MonoBehaviour {
 
 	/// <summary>
 	/// 	Valide l'modification courante en mettant à jour les groupes de noeuds concernés et en faisant appel à l'instance
-	/// 	de BuildingTools pour mettre à jour les objets dans les différents fichiers.
+	/// 	de buildingsTools pour mettre à jour les objets dans les différents fichiers.
 	/// </summary>
 	public void ValidateEdit() {
 		// Stockage des objets modifiés dans un ensemble pour éviter de mettre à jour deux fois les mêmes bâtiments
