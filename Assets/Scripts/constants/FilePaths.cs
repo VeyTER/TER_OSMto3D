@@ -40,23 +40,19 @@ public class FilePaths {
 
 	public const string MATERIALS_FOLDER = RESOURCES_FOLDER + "Materials/";
 
-	public const string MATERIAL_DETAILS_FILE = MATERIALS_FOLDER + "materials_details.txt";
-
-
 	public const string ICONS_FOLDER_LOCAL = "Icons/";
 
 	public const string EXTERNAL_OBJECTS_FOLDER_LOCAL = "External objects/";
 
-	public const string EXTERNAL_OBJECTS_FILE = EXTERNAL_OBJECTS_FOLDER + "objects_properties.txt";
-
-
 	public const string STATIC_SPRITES_FOLDER_LOCAL = "Static sprites/";
 	public const string ANIMATED_SPRITES_FOLDER_LOCAL = "Animated sprites/";
 
-
 	public const string TEXTURES_FOLDER_LOCAL = "Textures/";
 
-	public const string MAP_BACKGROUNDS_FILE = TEXTURES_FOLDER + "maps_background_details.txt";
-
 	public const string GAME_OBJECT_LOCAL_FOLER = "Game objects/";
+
+	public const string METADATA_FOLDER = RESOURCES_FOLDER + "Meta data/";
+	public const string EXTERNAL_OBJECTS_FILE = METADATA_FOLDER + "objects_properties.txt";
+	public const string MATERIAL_DETAILS_FILE = METADATA_FOLDER + "materials_details.txt";
+	public const string MAP_BACKGROUNDS_FILE = METADATA_FOLDER + "maps_background_details.txt";
 }

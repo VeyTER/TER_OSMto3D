@@ -94,9 +94,12 @@ public class UiBuilder {
 		GameObject materialButton = materialItem.transform.Find(UiNames.MATERIAL_ITEM_BUTTON).gameObject;
 		GameObject itemBody = materialButton.transform.Find(UiNames.MATERIAL_ITEM_BODY).gameObject;
 
+
 		Image bodyImage = itemBody.GetComponent<Image>();
 		Sprite textureSprite = Resources.Load<Sprite>(materialData.SourceTexturePath);
 		bodyImage.sprite = textureSprite;
+
+		Debug.Log(materialData.SourceTexturePath + "  " + (textureSprite != null));
 
 		Material targetMaterial = Resources.Load(materialData.TargetMaterialPath) as Material;
 		buttonIdToMaterialTable.Add(materialItem.GetInstanceID(), targetMaterial);

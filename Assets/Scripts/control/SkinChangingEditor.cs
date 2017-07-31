@@ -76,7 +76,7 @@ public class SkinChangingEditor : ObjectEditor {
 		List<MaterialData> materialsData = new List<MaterialData>();
 
 		if (File.Exists(FilePaths.MATERIAL_DETAILS_FILE)) {
-			String detailsFileContent = System.IO.File.ReadAllText(FilePaths.MATERIAL_DETAILS_FILE);
+			String detailsFileContent = File.ReadAllText(FilePaths.MATERIAL_DETAILS_FILE);
 			String[] lines = detailsFileContent.Split('\n');
 
 			foreach (String line in lines) {

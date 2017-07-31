@@ -1,0 +1,5 @@
+﻿Textures/BricksWall/Bricks01_COL_VAR1_1K	Materials/BricksBasic	Brique de base
+Textures/BricksWall/Bricks01_COL_VAR2_1K	Materials/BricksOrange	Brique rouges
+Textures/ConcreteWall/ConcreteWall001_COL_VAR1_1K	Materials/ConcreteMonochromatic	Béton monochrome
+Textures/ConcreteWall/ConcreteWall001_COL_VAR2_1K	Materials/ConcreteColored	Béton coloré
+Textures/BuildingHighRise/TexturesCom_BuildingsHighRise0620_2_seamless_S_cropped	Materials/OfficeGlasses	Vitres
