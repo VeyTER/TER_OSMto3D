@@ -6,14 +6,11 @@ using UnityEngine;
 /// 	Gère la génération des toits à partir des triangles créés avec la triangulation de Delauney.
 /// </summary>
 public class RoofBuilder {
-	public GameObject BuildFlatRoof(GameObject building, BuildingNodeGroup buildingNodeGroup) {
-		Triangulation triangulation = new Triangulation(buildingNodeGroup);
-		triangulation.Triangulate(buildingNodeGroup.Name);
-
+	public GameObject BuildFlatRoof(GameObject building, BuildingNodeGroup buildingNodeGroup, Triangulation triangulation, float expansionFactor = 0) {
 		// Création, construction et texturing du maillage formant un toit
 		Dictionary<Node, int> nodesAndIndex = new Dictionary<Node, int>();
 		Mesh mesh = new Mesh() {
-			vertices = this.FlatRoofVertices(triangulation, building, nodesAndIndex)
+			vertices = this.FlatRoofVertices(triangulation, building, nodesAndIndex, expansionFactor)
 		};
 		mesh.triangles = this.FlatRoofTriangles(triangulation, mesh.vertices, building, nodesAndIndex);
 		mesh.normals = this.FlatRoofNormals(triangulation);
@@ -24,10 +21,7 @@ public class RoofBuilder {
 		return roof;
 	}
 
-	public GameObject BuildHippedRoof(GameObject building, BuildingNodeGroup buildingNodeGroup, float expansionFactor) {
-		Triangulation triangulation = new Triangulation(buildingNodeGroup);
-		triangulation.Triangulate(buildingNodeGroup.Name);
-
+	public GameObject BuildHippedRoof(GameObject building, BuildingNodeGroup buildingNodeGroup, Triangulation triangulation, float expansionFactor) {
 		Vector3[] bottomVertices = new Vector3[0];
 		Vector3[] topVertices = new Vector3[0];
 
@@ -75,35 +69,6 @@ public class RoofBuilder {
 		return roof;
 	}
 
-	/// <summary>
-	/// 	Définit les points qui constitueront, à plusieurs, les sommets d'au moins un triangle (triangles définis
-	/// 	dans la méthode RoofTriangles()).
-	/// </summary>
-	/// <returns>Points formant le toit.</returns>
-	/// <param name="triangulation">Triangulation de Dealauney.</param>
-	/// <param name="posX">Position en X du toit.</param>
-	/// <param name="posZ">Position en Z du toit.</param>
-	private Vector3[] FlatRoofVertices(Triangulation triangulation, GameObject building, Dictionary<Node, int> nodesAndIndex, float expansionFactor = 0) {
-		int nbVertex = triangulation.Triangles.Count * 3;
-		Vector3[] res = new Vector3[nbVertex];
-
-		Vector2 buildingPosition = new Vector2(building.transform.position.x, building.transform.position.z);
-
-		float jitter = 0F;
-		int index = 0;
-		foreach (Triangle triangle in triangulation.Triangles) {
-			if (!nodesAndIndex.ContainsKey(triangle.NodeA))
-				this.AddTriangleVertices(triangulation, triangle.NodeA, buildingPosition, jitter, res, ref index, nodesAndIndex, expansionFactor);
-
-			if (!nodesAndIndex.ContainsKey(triangle.NodeB))
-				this.AddTriangleVertices(triangulation, triangle.NodeB, buildingPosition, jitter, res, ref index, nodesAndIndex, expansionFactor);
-
-			if (!nodesAndIndex.ContainsKey(triangle.NodeC))
-				this.AddTriangleVertices(triangulation, triangle.NodeC, buildingPosition, jitter, res, ref index, nodesAndIndex, expansionFactor);
-		}
-		return res;
-	}
-
 	private Vector3[] HippedRoofVertices(Triangulation triangulation, GameObject building, out Vector3[] bottomVertices, out Vector3[] topVertices, Dictionary<Node, int> bottomNodesAndIndex, Dictionary<Node, int> topNodesAndIndex, float expansionFactor) {
 		List<Vector3> allVertices = new List<Vector3>();
 
@@ -114,7 +79,7 @@ public class RoofBuilder {
 			topVertices[i] = new Vector3(topVertex.x, topVertex.y + Dimensions.ROOF_HEIGHT, topVertex.z);
 		}
 
-		bottomVertices = this.FlatRoofVertices(triangulation, building, bottomNodesAndIndex);
+		bottomVertices = this.FlatRoofVertices(triangulation, building, bottomNodesAndIndex, 0);
 		for (int i = 0; i < 3; i++)
 			allVertices.AddRange(bottomVertices);
 		for (int i = 0; i < 3; i++)
@@ -123,22 +88,51 @@ public class RoofBuilder {
 		return allVertices.ToArray();
 	}
 
-	private void AddTriangleVertices(Triangulation triangulation, Node node, Vector2 buildingPosition, float jitter, Vector3[] res, ref int index, Dictionary<Node, int> nodesAndIndex, float expansionFactor) {
-		float posX = (float) (node.Longitude - buildingPosition.x);
-		float posZ = (float) (node.Latitude - buildingPosition.y);
+	/// <summary>
+	/// 	Définit les points qui constitueront, à plusieurs, les sommets d'au moins un triangle (triangles définis
+	/// 	dans la méthode RoofTriangles()).
+	/// </summary>
+	/// <returns>Points formant le toit.</returns>
+	/// <param name="triangulation">Triangulation de Dealauney.</param>
+	/// <param name="posX">Position en X du toit.</param>
+	/// <param name="posZ">Position en Z du toit.</param>
+	private Vector3[] FlatRoofVertices(Triangulation triangulation, GameObject building, Dictionary<Node, int> nodesAndIndex, float expansionFactor) {
+		int nbVertex = triangulation.Triangles.Count * 3;
+		Vector3[] res = new Vector3[nbVertex];
+
+		int index = 0;
+		foreach (Triangle triangle in triangulation.Triangles) {
+			if (!nodesAndIndex.ContainsKey(triangle.NodeA))
+				this.AddTriangleVertices(triangulation, triangle.NodeA, building.transform.position, res, ref index, nodesAndIndex, expansionFactor);
+
+			if (!nodesAndIndex.ContainsKey(triangle.NodeB))
+				this.AddTriangleVertices(triangulation, triangle.NodeB, building.transform.position, res, ref index, nodesAndIndex, expansionFactor);
+
+			if (!nodesAndIndex.ContainsKey(triangle.NodeC))
+				this.AddTriangleVertices(triangulation, triangle.NodeC, building.transform.position, res, ref index, nodesAndIndex, expansionFactor);
+		}
+		return res;
+	}
+
+	private void AddTriangleVertices(Triangulation triangulation, Node node, Vector3 buildingPosition, Vector3[] res, ref int index, Dictionary<Node, int> nodesAndIndex, float expansionFactor) {
+		const float JITTER = 0F;
+
+		double posX = node.Longitude - buildingPosition.x;
+		double posY = UnityEngine.Random.Range(-JITTER / 2F, JITTER / 2F);
+		double posZ = node.Latitude - buildingPosition.z;
 
 		BuildingShape buildingShape = triangulation.BuildingShape;
 
 		Edge currentEdge = buildingShape.GetEdge(node, 1);
 		Edge nextEdge = buildingShape.NextEdge(currentEdge);
 
-		float currentEdgeOrientation = currentEdge.InvertedCopy().Orientation();
-		float nextEdgeOrientation = nextEdge.Orientation();
+		double currentEdgeOrientation = currentEdge.InvertedCopy().Orientation();
+		double nextEdgeOrientation = nextEdge.Orientation();
 
-		float bissectrixOrientation = (float)(Math.PI - (currentEdgeOrientation + (nextEdgeOrientation - currentEdgeOrientation) / 2F) + (Math.PI / 2F));
+		double bissectrixOrientation = Math.PI - (currentEdgeOrientation + (nextEdgeOrientation - currentEdgeOrientation) / 2F) + (Math.PI / 2F);
 
-		float shiftedPosX = posX;
-		float shiftedPosZ = posZ;
+		float shiftedPosX = 0;
+		float shiftedPosZ = 0;
 		if (currentEdgeOrientation < nextEdgeOrientation) {
 			shiftedPosX = (float) (posX + Math.Sin(bissectrixOrientation) * expansionFactor);
 			shiftedPosZ = (float) (posZ + Math.Cos(bissectrixOrientation) * expansionFactor);
@@ -147,7 +141,7 @@ public class RoofBuilder {
 			shiftedPosZ = (float) (posZ - Math.Cos(bissectrixOrientation) * expansionFactor);
 		}
 
-		res[index] = new Vector3(shiftedPosX, UnityEngine.Random.Range(-jitter / 2F, jitter / 2F), shiftedPosZ);
+		res[index] = new Vector3(shiftedPosX, (float)posY, shiftedPosZ);
 		nodesAndIndex[node] = index;
 		index++;
 	}

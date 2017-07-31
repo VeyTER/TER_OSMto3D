@@ -34,16 +34,16 @@ public class Edge {
 		return Vector2.Distance(nodeALocation, nodeBLocation);
 	}
 
-	public float Slope() {
-		float deltaX = (float) (nodeB.Longitude - nodeA.Longitude);
-		float deltaY = (float) (nodeB.Latitude - nodeA.Latitude);
+	public double Slope() {
+		double deltaX = nodeB.Longitude - nodeA.Longitude;
+		double deltaY = nodeB.Latitude - nodeA.Latitude;
 		return deltaY / deltaX;
 	}
 
-	public float Orientation() {
-		float deltaX = (float) (nodeB.Longitude - nodeA.Longitude);
-		float deltaY = (float) (nodeB.Latitude - nodeA.Latitude);
-		return (float)Math.Atan2(deltaY, deltaX);
+	public double Orientation() {
+		double deltaX = nodeB.Longitude - nodeA.Longitude;
+		double deltaY = nodeB.Latitude - nodeA.Latitude;
+		return Math.Atan2(deltaY, deltaX);
 	}
 
 	public Vector2 MedianPoint() {

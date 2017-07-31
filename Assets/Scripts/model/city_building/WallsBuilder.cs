@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WallsBuilder {
-	public GameObject BuildWalls(GameObject building, BuildingNodeGroup buildingNodeGroup) {
+	public GameObject BuildWalls(GameObject building, BuildingNodeGroup buildingNodeGroup, Triangulation triangulation, float expansionFactor = 0) {
 		// Création et paramétrage de l'objet 3D destiné à former un mur
 		GameObject walls = new GameObject(building.name + "_walls", typeof(MeshFilter), typeof(MeshRenderer)) {
 			tag = GoTags.WALLS_TAG,
@@ -23,7 +23,7 @@ public class WallsBuilder {
 
 		MeshFilter wallMeshFilter = walls.GetComponent<MeshFilter>();
 
-		wallMeshFilter.mesh.vertices = this.WallsVertices(buildingNodeGroup, building.transform.position);
+		wallMeshFilter.mesh.vertices = this.WallsVertices(buildingNodeGroup, building.transform.position, triangulation, expansionFactor);
 		wallMeshFilter.mesh.triangles = this.WallsTriangles(buildingNodeGroup, building.transform.position, wallMeshFilter.mesh.vertices);
 		wallMeshFilter.mesh.uv = this.WallsUv(buildingNodeGroup);
 
@@ -35,17 +35,38 @@ public class WallsBuilder {
 		return walls;
 	}
 
-	private Vector3[] WallsVertices(BuildingNodeGroup buildingNodeGroup, Vector3 buildingPosition) {
+	private Vector3[] WallsVertices(BuildingNodeGroup buildingNodeGroup, Vector3 buildingPosition, Triangulation triangulation, float expansionFactor) {
 		List<Vector3> wallVertices = new List<Vector3>();
-		for (int i = 0; i < buildingNodeGroup.NodeCount(); i++) {
-			Node node = buildingNodeGroup.GetNode(i);
+
+		BuildingShape buildingShape = triangulation.BuildingShape;
+		foreach (Node node in buildingNodeGroup.Nodes) {
+			Edge currentEdge = buildingShape.GetEdge(node, 1);
+			Edge nextEdge = buildingShape.NextEdge(currentEdge);
+
+			double posX = node.Longitude - buildingPosition.x;
+			double posZ = node.Latitude - buildingPosition.z;
+
+			double currentEdgeOrientation = currentEdge.InvertedCopy().Orientation();
+			double nextEdgeOrientation = nextEdge.Orientation();
+
+			double bissectrixOrientation = Math.PI - (currentEdgeOrientation + (nextEdgeOrientation - currentEdgeOrientation) / 2F) + (Math.PI / 2F);
+
+			float shiftedPosX = 0;
+			float shiftedPosZ = 0;
+			if (currentEdgeOrientation < nextEdgeOrientation) {
+				shiftedPosX = (float) (posX + Math.Sin(bissectrixOrientation) * expansionFactor);
+				shiftedPosZ = (float) (posZ + Math.Cos(bissectrixOrientation) * expansionFactor);
+			} else {
+				shiftedPosX = (float) (posX - Math.Sin(bissectrixOrientation) * expansionFactor);
+				shiftedPosZ = (float) (posZ - Math.Cos(bissectrixOrientation) * expansionFactor);
+			}
 
 			float wallHeight = Dimensions.FLOOR_HEIGHT * buildingNodeGroup.NbFloor;
-			wallVertices.Add(new Vector3((float) (node.Longitude - buildingPosition.x), 0, (float) (node.Latitude - buildingPosition.z)));
-			wallVertices.Add(new Vector3((float) (node.Longitude - buildingPosition.x), wallHeight, (float) (node.Latitude - buildingPosition.z)));
+			wallVertices.Add(new Vector3(shiftedPosX, 0, shiftedPosZ));
+			wallVertices.Add(new Vector3(shiftedPosX, wallHeight, shiftedPosZ));
 
-			wallVertices.Add(new Vector3((float) (node.Longitude - buildingPosition.x), 0, (float) (node.Latitude - buildingPosition.z)));
-			wallVertices.Add(new Vector3((float) (node.Longitude - buildingPosition.x), wallHeight, (float) (node.Latitude - buildingPosition.z)));
+			wallVertices.Add(new Vector3(shiftedPosX, 0, shiftedPosZ));
+			wallVertices.Add(new Vector3(shiftedPosX, wallHeight, shiftedPosZ));
 		}
 		return wallVertices.ToArray();
 	}

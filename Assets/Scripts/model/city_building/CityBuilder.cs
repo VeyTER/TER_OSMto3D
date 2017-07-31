@@ -160,21 +160,24 @@ public class CityBuilder {
 		Vector2 buildingCenter = buildingsTools.BuildingCenter(buildingNodeGroup);
 		building.transform.position = new Vector3(buildingCenter.x, 0, buildingCenter.y);
 
+		Triangulation triangulation = new Triangulation(buildingNodeGroup);
+		triangulation.Triangulate();
+
 		// Création et paramétrage de l'objet 3D destiné à former un bâtiment. Pour cela, chaque mur est
 		// construit à partir du noeud courant et du noeud suivant dans le groupe de noeuds courant, puis, il
 		// est ajouté au bâtiment
-		wallsBuilder.BuildWalls(building, buildingNodeGroup);
-		this.BuildSingleBuildingNodeGroup(building, buildingNodeGroup);
+		wallsBuilder.BuildWalls(building, buildingNodeGroup, triangulation);
+		this.BuildSingleBuildingNodeGroup(building, buildingNodeGroup, triangulation);
 
 		switch (buildingNodeGroup.RoofShape) {
 		case RoofShapes.FLAT:
-			roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
+			roofBuilder.BuildFlatRoof(building, buildingNodeGroup, triangulation);
 			break;
 		case RoofShapes.HIPPED:
-			roofBuilder.BuildHippedRoof(building, buildingNodeGroup, -0.035F);
+			roofBuilder.BuildHippedRoof(building, buildingNodeGroup, triangulation, -0.035F);
 			break;
 		default:
-			roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
+			roofBuilder.BuildFlatRoof(building, buildingNodeGroup, triangulation);
 			break;
 		}
 
@@ -218,15 +221,15 @@ public class CityBuilder {
 			return null;
 	}
 
-	public GameObject BuildVirtualLevel(GameObject building, int floorIndex, Material floorMaterial, bool buildRoof) {
+	public GameObject BuildVirtualLevel(GameObject building, BuildingNodeGroup buildingNodeGroup, Triangulation triangulation, int floorIndex, Material floorMaterial, bool buildRoof) {
+		const float EXPANSION_FACTOR = 0.0075F;
+
 		GameObject buildingWalls = building.transform.GetChild(WALLS_INDEX).gameObject;
 		GameObject buildingRoof = building.transform.GetChild(ROOF_INDEX).gameObject;
 
-		Vector3 buildingPosition = building.transform.position;
-
-		GameObject virtualLevel = GameObject.Instantiate(buildingWalls);
+		GameObject virtualLevel = wallsBuilder.BuildWalls(building, buildingNodeGroup, triangulation, EXPANSION_FACTOR);
 		virtualLevel.name = building.name + "virtual_stage_" + floorIndex;
-		virtualLevel.transform.localPosition = new Vector3(buildingPosition.x, (floorIndex - 1) * Dimensions.FLOOR_HEIGHT, buildingPosition.z);
+		virtualLevel.transform.localPosition = new Vector3(0, (floorIndex - 1) * Dimensions.FLOOR_HEIGHT, 0);
 
 		buildingsTools.ChangeWallsHeight(virtualLevel, 1);
 
@@ -239,8 +242,7 @@ public class CityBuilder {
 		virtualWallCollider.sharedMesh = virtualFloorMeshFilter.sharedMesh;
 
 		if (buildRoof) {
-			BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(building);
-			GameObject virtualRoof = roofBuilder.BuildFlatRoof(building, buildingNodeGroup);
+			GameObject virtualRoof = roofBuilder.BuildFlatRoof(building, buildingNodeGroup, triangulation, EXPANSION_FACTOR);
 
 			virtualRoof.transform.SetParent(virtualLevel.transform, false);
 			virtualRoof.transform.localPosition = new Vector3(0, Dimensions.FLOOR_HEIGHT, 0);
@@ -252,7 +254,7 @@ public class CityBuilder {
 		return virtualLevel;
 	}
 
-	private GameObject BuildSingleBuildingNodeGroup(GameObject building, NodeGroup nodeGroup) {
+	private GameObject BuildSingleBuildingNodeGroup(GameObject building, NodeGroup nodeGroup, Triangulation triangulation) {
 		// Création et paramétrage de l'objet 3D destiné à former un groupe de noeuds de bâtiment
 		GameObject buildingNodeGroupGo = new GameObject(building.name + "_nodes");
 		buildingNodeGroupGo.transform.SetParent(building.transform, false);

@@ -21,7 +21,7 @@ public class Triangulation {
 		this.triangles = new List<Triangle>();
 	}
 
-	public void Triangulate(string name) {
+	public void Triangulate() {
 		if (nodeGroup.NodeCount() >= 3) {
 			this.BuildShapeEdges();
 			this.BuildTriangulation();
