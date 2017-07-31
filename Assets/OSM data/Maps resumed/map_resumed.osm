@@ -160,7 +160,7 @@
             <nd ref="259096200" index="6" lat="43.5625207" lon="1.4670142" />
           </building>
           <building>
-            <info id="23905163" name="IRIT" nbfloor="4" roofangle="0" rooftype="flat" />
+            <info id="23905163" name="IRIT" nbfloor="18" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
             <nd ref="259096615" index="0" lat="43.5623036" lon="1.4676494" />
             <nd ref="4413157464" index="1" lat="43.5618683" lon="1.4680782" />
             <nd ref="259096616" index="2" lat="43.5617293" lon="1.468215" />
@@ -2170,7 +2170,7 @@
             <nd ref="4413201894" index="0" lat="43.5626826" lon="1.46714" />
           </tree>
           <building>
-            <info id="+4860195619" name="TEST" nbfloor="3" roofangle="0" rooftype="unknown" custmat="OfficeGlasses" color="1;0.75;1" />
+            <info id="+4860195619" name="TEST" nbfloor="37" roofangle="0" rooftype="unknown" custmat="BricksBasic" color="1;0.75;1" />
             <nd ref="+4860195619" index="0" lat="43.56375" lon="1.4711650390625" />
             <nd ref="+4860195619" index="1" lat="43.56475" lon="1.4711650390625" />
             <nd ref="+4860195619" index="2" lat="43.56475" lon="1.4721650390625" />

@@ -241,11 +241,10 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 		// Préparation de la modification si l'objet sur lequel a cliqué l'utilisateur est un mur
 		if (editController.EditState == EditController.EditStates.HEIGHT_CHANGING_MODE) {
 			int expansionDirection = editController.HeightChangingEditor.DesiredDirection(gameObject);
-			if (expansionDirection > 0) {
+			if (expansionDirection > 0)
 				editController.HeightChangingEditor.TopFloorColorController.SetPressed();
-			} else if (expansionDirection < 0) {
+			else if (expansionDirection < 0)
 				editController.HeightChangingEditor.BottomFloorColorController.SetPressed();
-			}
 		}
 	}
 

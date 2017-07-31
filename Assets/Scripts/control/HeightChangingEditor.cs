@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class HeightChangingEditor : ObjectEditor {
+	public const int ROOF_INDEX = 0;
+
 	private int selectedBuildingStartHeight;
 
 	private GameObject topFloor;
@@ -22,8 +25,11 @@ public class HeightChangingEditor : ObjectEditor {
 		Material greenOverlay = Resources.Load(Materials.GREEN_OVERLAY) as Material;
 		Material redOverlay = Resources.Load(Materials.RED_OVERLAY) as Material;
 
-		topFloor = cityBuilder.BuildVirtualLevel(selectedBuilding, buildingNodeGroup.NbFloor + 1, greenOverlay, true);
-		bottomFloor = cityBuilder.BuildVirtualLevel(selectedBuilding, buildingNodeGroup.NbFloor, redOverlay, false);
+		Triangulation triangulation = new Triangulation(buildingNodeGroup);
+		triangulation.Triangulate();
+
+		topFloor = cityBuilder.BuildVirtualLevel(selectedBuilding, buildingNodeGroup, triangulation, buildingNodeGroup.NbFloor + 1, greenOverlay, true);
+		bottomFloor = cityBuilder.BuildVirtualLevel(selectedBuilding, buildingNodeGroup, triangulation, buildingNodeGroup.NbFloor, redOverlay, false);
 
 		topFloor.AddComponent<StageColorController>();
 		bottomFloor.AddComponent<StageColorController>();
@@ -44,7 +50,7 @@ public class HeightChangingEditor : ObjectEditor {
 	}
 
 	public int DesiredDirection(GameObject clickedBuildingPart) {
-		if (clickedBuildingPart == topFloor)
+		if (clickedBuildingPart == topFloor || clickedBuildingPart == topFloor.transform.GetChild(ROOF_INDEX).gameObject)
 			return 1;
 		else if (clickedBuildingPart == bottomFloor)
 			return -1;
@@ -57,7 +63,8 @@ public class HeightChangingEditor : ObjectEditor {
 		buildingsTools.ChangeBuildingHeight(selectedBuilding, buildingNodeGroup.NbFloor + 1);
 		buildingNodeGroup.NbFloor++;
 
-		this.ShiftVirtualFloors(1);
+		this.ShiftVirtualFloors(1, buildingNodeGroup);
+		this.UpdateBuildingWallsTexture(buildingNodeGroup);
 		this.UpdateCameraPosition();
 	}
 
@@ -66,11 +73,12 @@ public class HeightChangingEditor : ObjectEditor {
 		buildingsTools.ChangeBuildingHeight(selectedBuilding, buildingNodeGroup.NbFloor - 1);
 		buildingNodeGroup.NbFloor--;
 
-		this.ShiftVirtualFloors(-1);
+		this.ShiftVirtualFloors(-1, buildingNodeGroup);
+		this.UpdateBuildingWallsTexture(buildingNodeGroup);
 		this.UpdateCameraPosition();
 	}
 
-	private void ShiftVirtualFloors(int direction) {
+	private void ShiftVirtualFloors(int direction, BuildingNodeGroup buildingNodeGroup) {
 		int expansionDirection = direction > 0 ? 1 : -1;
 
 		Vector3 topFloorPosition = topFloor.transform.position;
@@ -78,6 +86,18 @@ public class HeightChangingEditor : ObjectEditor {
 
 		Vector3 bottomFloorPosition = bottomFloor.transform.position;
 		bottomFloor.transform.position = new Vector3(bottomFloorPosition.x, bottomFloorPosition.y + (expansionDirection * Dimensions.FLOOR_HEIGHT), bottomFloorPosition.z);
+	}
+
+	private void UpdateBuildingWallsTexture(BuildingNodeGroup buildingNodeGroup) {
+		GameObject building = buildingsTools.NodeGroupToBuilding(buildingNodeGroup);
+		GameObject buildingWalls = building.transform.GetChild(CityBuilder.WALLS_INDEX).gameObject;
+
+		MeshFilter wallsMeshFilter = buildingWalls.GetComponent<MeshFilter>();
+		List<Vector2> wallsUvs = new List<Vector2>();
+		wallsMeshFilter.mesh.GetUVs(0, wallsUvs);
+		for (int i = 0; i < wallsUvs.Count; i++)
+			wallsUvs[i] = new Vector2(wallsUvs[i].x, (i % 2) * buildingNodeGroup.NbFloor);
+		wallsMeshFilter.mesh.SetUVs(0, wallsUvs);
 	}
 
 	private void UpdateCameraPosition() {
