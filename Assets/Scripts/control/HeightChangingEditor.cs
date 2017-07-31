@@ -93,6 +93,7 @@ public class HeightChangingEditor : ObjectEditor {
 		GameObject buildingWalls = building.transform.GetChild(CityBuilder.WALLS_INDEX).gameObject;
 
 		MeshFilter wallsMeshFilter = buildingWalls.GetComponent<MeshFilter>();
+
 		List<Vector2> wallsUvs = new List<Vector2>();
 		wallsMeshFilter.mesh.GetUVs(0, wallsUvs);
 		for (int i = 0; i < wallsUvs.Count; i++)

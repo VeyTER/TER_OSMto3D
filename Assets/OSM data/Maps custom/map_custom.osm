@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <earth>
   <building>
-    <info id="23905163" name="IRIT" nbfloor="18" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
+    <info id="23905163" name="IRIT" nbfloor="18" roofangle="0" rooftype="flat" custmat="ConcreteColored" />
   </building>
   <building>
     <info id="18628158" name="U1" nbfloor="1" roofangle="0" rooftype="flat" />

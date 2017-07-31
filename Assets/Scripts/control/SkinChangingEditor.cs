@@ -62,7 +62,6 @@ public class SkinChangingEditor : ObjectEditor {
 
 	private void BuildColorsItems() {
 		int nbLevels = 4;
-
 		for (int r = nbLevels; r >= 0; r--) {
 			for (int g = nbLevels; g >= 0; g--) {
 				for (int b = nbLevels; b >= 0; b--) {
@@ -207,6 +206,7 @@ public class SkinChangingEditor : ObjectEditor {
 
 	public void ChangeBuildingMaterial(GameObject sourceButton) {
 		Material newMaterial = buttonIdToMaterialTable[sourceButton.transform.parent.gameObject.GetInstanceID()];
+		newMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
 		buildingsTools.ReplaceMaterial(selectedBuilding, newMaterial);
 
 		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
