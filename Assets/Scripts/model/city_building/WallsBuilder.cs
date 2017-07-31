@@ -21,21 +21,28 @@ public class WallsBuilder {
 		meshRenderer.materials[0].color = buildingNodeGroup.OverlayColor;
 		meshRenderer.material.mainTexture.wrapMode = TextureWrapMode.Repeat;
 
-		MeshFilter wallMeshFilter = walls.GetComponent<MeshFilter>();
+		List<Vector3> vertices = this.WallsVertices(buildingNodeGroup, building.transform.position, triangulation, expansionFactor);
+		List<int> triangles = this.WallsTriangles(buildingNodeGroup, building.transform.position, vertices);
+		List<Vector2> uvs = this.WallsUv(buildingNodeGroup);
 
-		wallMeshFilter.mesh.vertices = this.WallsVertices(buildingNodeGroup, building.transform.position, triangulation, expansionFactor);
-		wallMeshFilter.mesh.triangles = this.WallsTriangles(buildingNodeGroup, building.transform.position, wallMeshFilter.mesh.vertices);
-		wallMeshFilter.mesh.uv = this.WallsUv(buildingNodeGroup);
+		Mesh newMesh = new Mesh() {
+			vertices = vertices.ToArray(),
+			triangles = triangles.ToArray(),
+			uv = uvs.ToArray()
+		};
 
-		wallMeshFilter.mesh.RecalculateNormals();
-		wallMeshFilter.mesh.RecalculateBounds();
+		newMesh.RecalculateNormals();
+		newMesh.RecalculateBounds();
+
+		MeshFilter meshFilter = walls.GetComponent<MeshFilter>();
+		meshFilter.mesh = newMesh;
 
 		MeshCollider wallBoxColliser = walls.AddComponent<MeshCollider>();
 
 		return walls;
 	}
 
-	private Vector3[] WallsVertices(BuildingNodeGroup buildingNodeGroup, Vector3 buildingPosition, Triangulation triangulation, float expansionFactor) {
+	private List<Vector3> WallsVertices(BuildingNodeGroup buildingNodeGroup, Vector3 buildingPosition, Triangulation triangulation, float expansionFactor) {
 		List<Vector3> wallVertices = new List<Vector3>();
 
 		BuildingShape buildingShape = triangulation.BuildingShape;
@@ -68,13 +75,13 @@ public class WallsBuilder {
 			wallVertices.Add(new Vector3(shiftedPosX, 0, shiftedPosZ));
 			wallVertices.Add(new Vector3(shiftedPosX, wallHeight, shiftedPosZ));
 		}
-		return wallVertices.ToArray();
+		return wallVertices;
 	}
 
-	private int[] WallsTriangles(NodeGroup nodeGroup, Vector2 buildingCenter, Vector3[] wallVertices) {
+	private List<int> WallsTriangles(NodeGroup nodeGroup, Vector2 buildingCenter, List<Vector3> wallVertices) {
 		List<int> triangles = new List<int>();
-		for (int i = 0; i < wallVertices.Length; i += 2) {
-			int index = i % (wallVertices.Length - 2);
+		for (int i = 0; i < wallVertices.Count; i += 2) {
+			int index = i % (wallVertices.Count - 2);
 
 			triangles.Add(index);
 			triangles.Add(index + 2);
@@ -88,10 +95,10 @@ public class WallsBuilder {
 		if (BuildingsTools.GetInstance().BuildingArea(nodeGroup) < 0)
 			triangles.Reverse();
 
-		return triangles.ToArray();
+		return triangles;
 	}
 
-	private Vector2[] WallsUv(BuildingNodeGroup buildingNodeGroup) {
+	private List<Vector2> WallsUv(BuildingNodeGroup buildingNodeGroup) {
 		float cursorX = 0;
 		List<Vector2> uvVertices = new List<Vector2>();
 		for (int i = 0; i < buildingNodeGroup.NodeCount(); i++) {
@@ -111,6 +118,6 @@ public class WallsBuilder {
 			cursorX += wallLength;
 		}
 
-		return uvVertices.ToArray();
+		return uvVertices;
 	}
 }

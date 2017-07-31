@@ -9,11 +9,16 @@ public class RoofBuilder {
 	public GameObject BuildFlatRoof(GameObject building, BuildingNodeGroup buildingNodeGroup, Triangulation triangulation, float expansionFactor = 0) {
 		// Création, construction et texturing du maillage formant un toit
 		Dictionary<Node, int> nodesAndIndex = new Dictionary<Node, int>();
+
+		List<Vector3> vertices = this.FlatRoofVertices(triangulation, building, nodesAndIndex, expansionFactor);
+		List<int> triangles = this.FlatRoofTriangles(triangulation, vertices.ToArray(), building, nodesAndIndex);
+		List<Vector3> normals = this.FlatRoofNormals(triangulation);
+
 		Mesh mesh = new Mesh() {
-			vertices = this.FlatRoofVertices(triangulation, building, nodesAndIndex, expansionFactor)
+			vertices = vertices.ToArray(),
+			triangles = triangles.ToArray(),
+			normals = normals.ToArray()
 		};
-		mesh.triangles = this.FlatRoofTriangles(triangulation, mesh.vertices, building, nodesAndIndex);
-		mesh.normals = this.FlatRoofNormals(triangulation);
 
 		// Création et paramétrage de l'objet 3D destiné à former un toit
 		GameObject roof = this.BuildRoof(building, buildingNodeGroup, mesh);
@@ -22,18 +27,18 @@ public class RoofBuilder {
 	}
 
 	public GameObject BuildHippedRoof(GameObject building, BuildingNodeGroup buildingNodeGroup, Triangulation triangulation, float expansionFactor) {
-		Vector3[] bottomVertices = new Vector3[0];
-		Vector3[] topVertices = new Vector3[0];
+		List<Vector3> bottomVertices = new List<Vector3>();
+		List<Vector3> topVertices = new List<Vector3>();
 
-		Dictionary<Node, int> topNodesAndIndex = new Dictionary<Node, int>();
+		Dictionary <Node, int> topNodesAndIndex = new Dictionary<Node, int>();
 		Dictionary<Node, int> bottomNodesAndIndex = new Dictionary<Node, int>();
 
-		Vector3[] roofVertices = this.HippedRoofVertices(triangulation, building, out bottomVertices, out topVertices, bottomNodesAndIndex, topNodesAndIndex, expansionFactor);
-		int[] roofTriangles = this.HippedRoofTriangles(triangulation, bottomVertices, topVertices, roofVertices, building, bottomNodesAndIndex, topNodesAndIndex);
+		List<Vector3> vertices = this.HippedRoofVertices(triangulation, building, out bottomVertices, out topVertices, bottomNodesAndIndex, topNodesAndIndex, expansionFactor);
+		List<int> triangles = this.HippedRoofTriangles(triangulation, bottomVertices.ToArray(), topVertices.ToArray(), vertices.ToArray(), building, bottomNodesAndIndex, topNodesAndIndex);
 
 		Mesh mesh = new Mesh() {
-			vertices = roofVertices,
-			triangles = roofTriangles
+			vertices = vertices.ToArray(),
+			triangles = triangles.ToArray()
 		};
 
 		// Création et paramétrage de l'objet 3D destiné à former un toit
@@ -69,12 +74,12 @@ public class RoofBuilder {
 		return roof;
 	}
 
-	private Vector3[] HippedRoofVertices(Triangulation triangulation, GameObject building, out Vector3[] bottomVertices, out Vector3[] topVertices, Dictionary<Node, int> bottomNodesAndIndex, Dictionary<Node, int> topNodesAndIndex, float expansionFactor) {
+	private List<Vector3> HippedRoofVertices(Triangulation triangulation, GameObject building, out List<Vector3> bottomVertices, out List<Vector3> topVertices, Dictionary<Node, int> bottomNodesAndIndex, Dictionary<Node, int> topNodesAndIndex, float expansionFactor) {
 		List<Vector3> allVertices = new List<Vector3>();
 
 		// Création, construction et texturing du maillage formant un toit
 		topVertices = this.FlatRoofVertices(triangulation, building, topNodesAndIndex, expansionFactor);
-		for (int i = 0; i < topVertices.Length; i++) {
+		for (int i = 0; i < topVertices.Count; i++) {
 			Vector3 topVertex = topVertices[i];
 			topVertices[i] = new Vector3(topVertex.x, topVertex.y + Dimensions.ROOF_HEIGHT, topVertex.z);
 		}
@@ -85,7 +90,7 @@ public class RoofBuilder {
 		for (int i = 0; i < 3; i++)
 			allVertices.AddRange(topVertices);
 
-		return allVertices.ToArray();
+		return allVertices;
 	}
 
 	/// <summary>
@@ -96,25 +101,25 @@ public class RoofBuilder {
 	/// <param name="triangulation">Triangulation de Dealauney.</param>
 	/// <param name="posX">Position en X du toit.</param>
 	/// <param name="posZ">Position en Z du toit.</param>
-	private Vector3[] FlatRoofVertices(Triangulation triangulation, GameObject building, Dictionary<Node, int> nodesAndIndex, float expansionFactor) {
+	private List<Vector3> FlatRoofVertices(Triangulation triangulation, GameObject building, Dictionary<Node, int> nodesAndIndex, float expansionFactor) {
 		int nbVertex = triangulation.Triangles.Count * 3;
-		Vector3[] res = new Vector3[nbVertex];
+		Vector3[] roofVertices = new Vector3[nbVertex];
 
 		int index = 0;
 		foreach (Triangle triangle in triangulation.Triangles) {
 			if (!nodesAndIndex.ContainsKey(triangle.NodeA))
-				this.AddTriangleVertices(triangulation, triangle.NodeA, building.transform.position, res, ref index, nodesAndIndex, expansionFactor);
+				this.AddTriangleVertices(triangulation, triangle.NodeA, building.transform.position, roofVertices, ref index, nodesAndIndex, expansionFactor);
 
 			if (!nodesAndIndex.ContainsKey(triangle.NodeB))
-				this.AddTriangleVertices(triangulation, triangle.NodeB, building.transform.position, res, ref index, nodesAndIndex, expansionFactor);
+				this.AddTriangleVertices(triangulation, triangle.NodeB, building.transform.position, roofVertices, ref index, nodesAndIndex, expansionFactor);
 
 			if (!nodesAndIndex.ContainsKey(triangle.NodeC))
-				this.AddTriangleVertices(triangulation, triangle.NodeC, building.transform.position, res, ref index, nodesAndIndex, expansionFactor);
+				this.AddTriangleVertices(triangulation, triangle.NodeC, building.transform.position, roofVertices, ref index, nodesAndIndex, expansionFactor);
 		}
-		return res;
+		return new List<Vector3>(roofVertices);
 	}
 
-	private void AddTriangleVertices(Triangulation triangulation, Node node, Vector3 buildingPosition, Vector3[] res, ref int index, Dictionary<Node, int> nodesAndIndex, float expansionFactor) {
+	private void AddTriangleVertices(Triangulation triangulation, Node node, Vector3 buildingPosition, Vector3[] roofVertices, ref int index, Dictionary<Node, int> nodesAndIndex, float expansionFactor) {
 		const float JITTER = 0F;
 
 		double posX = node.Longitude - buildingPosition.x;
@@ -141,7 +146,7 @@ public class RoofBuilder {
 			shiftedPosZ = (float) (posZ - Math.Cos(bissectrixOrientation) * expansionFactor);
 		}
 
-		res[index] = new Vector3(shiftedPosX, (float)posY, shiftedPosZ);
+		roofVertices[index] = new Vector3(shiftedPosX, (float) posY, shiftedPosZ);
 		nodesAndIndex[node] = index;
 		index++;
 	}
@@ -150,7 +155,7 @@ public class RoofBuilder {
 	/// 	Créé de 2 triangles qui vont former à eux deux une portion de toit.
 	/// </summary>
 	/// <returns>Triangles sur le toit.</returns>
-	private int[] FlatRoofTriangles(Triangulation triangulation, Vector3[] meshVertices, GameObject building, Dictionary<Node, int> nodesAndIndex) {
+	private List<int> FlatRoofTriangles(Triangulation triangulation, Vector3[] meshVertices, GameObject building, Dictionary<Node, int> nodesAndIndex) {
 		Vector2 buildingPosition = new Vector2(building.transform.position.x, building.transform.position.z);
 
 		List<int> verticesIndex = new List<int>();
@@ -164,13 +169,13 @@ public class RoofBuilder {
 			verticesIndex.Add(indexC);
 		}
 
-		return verticesIndex.ToArray();
+		return verticesIndex;
 	}
 
-	private int[] HippedRoofTriangles(Triangulation triangulation, Vector3[] bottomVertices, Vector3[] topVertices, Vector3[] allVertices, GameObject building, Dictionary<Node, int> bottomNodesAndIndex, Dictionary<Node, int> topNodesAndIndex) {
-		int[] bottomTriangles = this.FlatRoofTriangles(triangulation, bottomVertices, building, bottomNodesAndIndex);
-		int[] topTriangles = this.FlatRoofTriangles(triangulation, topVertices, building, topNodesAndIndex);
-		for (int i = 0; i < topTriangles.Length; i++)
+	private List<int> HippedRoofTriangles(Triangulation triangulation, Vector3[] bottomVertices, Vector3[] topVertices, Vector3[] allVertices, GameObject building, Dictionary<Node, int> bottomNodesAndIndex, Dictionary<Node, int> topNodesAndIndex) {
+		List<int> bottomTriangles = this.FlatRoofTriangles(triangulation, bottomVertices, building, bottomNodesAndIndex);
+		List<int> topTriangles = this.FlatRoofTriangles(triangulation, topVertices, building, topNodesAndIndex);
+		for (int i = 0; i < topTriangles.Count; i++)
 			topTriangles[i] += allVertices.Length / 2;
 
 		List<int> middleTriangles = new List<int>();
@@ -205,7 +210,7 @@ public class RoofBuilder {
 		roofTriangles.AddRange(bottomTriangles);
 		roofTriangles.AddRange(middleTriangles);
 
-		return roofTriangles.ToArray();
+		return roofTriangles;
 	}
 
 	/// <summary>
@@ -214,14 +219,14 @@ public class RoofBuilder {
 	/// <returns>Coordonnées pour le mapping.</returns>
 	/// <param name="length">Longueur du toit.</param>
 	/// <param name="width">Largeur du toit.</param>
-	private Vector2[] FlatRoofUV(float length, float width) {
+	private List<Vector2> FlatRoofUV(float length, float width) {
 		Vector2[] res = new Vector2[] {
 			new Vector2 (0, 0),			// (x, y)
 			new Vector2 (length * 20, 0),
 			new Vector2 (length * 20, 1),
 			new Vector2 (0, 1)
 		};
-		return res;
+		return new List<Vector2>(res);
 	}
 
 
@@ -230,13 +235,13 @@ public class RoofBuilder {
 	/// 	trop sombre.
 	/// </summary>
 	/// <returns>Normales de la texture.</returns>
-	private Vector3[] FlatRoofNormals(Triangulation triangulation) {
+	private List<Vector3> FlatRoofNormals(Triangulation triangulation) {
 		int nbVertex = triangulation.Triangles.Count * 3;
 
 		Vector3[] res = new Vector3[nbVertex];
 		for (int i = 0; i < triangulation.Triangles.Count * 3; i++)
 			res[i] = Vector3.up;
 
-		return res;
+		return new List<Vector3>(res);
 	}
 }

@@ -99,8 +99,6 @@ public class UiBuilder {
 		Sprite textureSprite = Resources.Load<Sprite>(materialData.SourceTexturePath);
 		bodyImage.sprite = textureSprite;
 
-		Debug.Log(materialData.SourceTexturePath + "  " + (textureSprite != null));
-
 		Material targetMaterial = Resources.Load(materialData.TargetMaterialPath) as Material;
 		buttonIdToMaterialTable.Add(materialItem.GetInstanceID(), targetMaterial);
 

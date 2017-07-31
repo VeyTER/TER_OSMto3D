@@ -30,6 +30,7 @@ public class WayBuilder {
 			string nameComplement = nodeGroup.GetNode(0).Reference + "-" + nodeGroup.GetNode(nodeGroup.NodeCount() - 1).Reference;
 
 			nodeGroup.Name = wayIdentifier + "_" + nameComplement;
+
 			GameObject way = new GameObject(wayIdentifier + "_" + nameComplement);
 			way.transform.position = new Vector3((float) nodeGroup.GetNode(0).Longitude, Dimensions.WAY_ELEVATION, (float) nodeGroup.GetNode(0).Latitude);
 
@@ -39,22 +40,22 @@ public class WayBuilder {
 			sections.transform.SetParent(way.transform, false);
 			sections.transform.localPosition = Vector3.zero;
 
-			List<Vector3> sectionsVertices = this.WayVertices(nodeGroup, sections.transform.position, width);
-			List<int> sectionsTriangles = this.WayTriangles(sectionsVertices);
-			List<Vector2> sectionsUv = this.WayUv(nodeGroup, sectionsVertices, width);
-			List<Vector3> sectionsNormals = this.WayNormals(sectionsVertices);
+			List<Vector3> vertices = this.WayVertices(nodeGroup, sections.transform.position, width);
+			List<int> triangles = this.WayTriangles(vertices);
+			List<Vector2> uvs = this.WayUv(nodeGroup, vertices, width);
+			List<Vector3> normals = this.WayNormals(vertices);
 
 			// Création, construction et texturing du maillage formant la route
-			Mesh sectionsMesh = new Mesh() {
-				vertices = sectionsVertices.ToArray(),
-				triangles = sectionsTriangles.ToArray(),
-				uv = sectionsUv.ToArray(),
-				normals = sectionsNormals.ToArray()
+			Mesh newMesh = new Mesh() {
+				vertices = vertices.ToArray(),
+				triangles = triangles.ToArray(),
+				uv = uvs.ToArray(),
+				normals = normals.ToArray()
 			};
 
 			// Affectation du maillage à la route pour lui donner la forme voulue
 			MeshFilter meshFilter = sections.GetComponent<MeshFilter>();
-			meshFilter.mesh = sectionsMesh;
+			meshFilter.mesh = newMesh;
 
 			// Affectation du matériau à la route pour lui donner la texture voulue
 			MeshRenderer meshRenderer = sections.GetComponent<MeshRenderer>();
