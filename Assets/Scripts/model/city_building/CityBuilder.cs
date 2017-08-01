@@ -83,6 +83,8 @@ public class CityBuilder {
 	/// summary>
 	private GameObject waterways;
 
+	private GameObject leisures;
+
 	/// <summary>
 	/// 	Object 3D contenant tous les groupes composants les arbres (tronc + feuille), formant chacun un arbre.
 	/// summary>
@@ -92,6 +94,7 @@ public class CityBuilder {
 	/// 	Object 3D contenant toutes les feux tricolores.
 	/// summary>
 	private GameObject trafficSignals;
+
 
 	private CityBuilder() {
 		this.buildingsTools = BuildingsTools.GetInstance();
@@ -181,44 +184,12 @@ public class CityBuilder {
 			break;
 		}
 
-		this.LoadMatchingBuilding(building, buildingNodeGroup);
-
-		return building;
-	}
-
-	public void LoadMatchingBuilding(GameObject building, NodeGroup nodeGroup) {
-		ExternalObject externalObject = this.IsExternalBuildingAtPosition(building.transform.position);
-		if (externalObject != null) {
-			if (externalObject.NeverUsed) {
-				GameObject importedObject = (GameObject) GameObject.Instantiate(Resources.Load(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFileName));
-				importedObject.transform.position = externalObject.Position;
-				importedObject.transform.rotation = Quaternion.Euler(importedObject.transform.rotation.x, (float) externalObject.Orientation, importedObject.transform.rotation.z);
-				importedObject.transform.localScale = new Vector3((float) externalObject.Scale, (float) externalObject.Scale, (float) externalObject.Scale);
-				importedObject.transform.parent = buildings.transform;
-
-				externalObject.NeverUsed = false;
-			}
-
-			building.SetActive(false);
-		}
-
 		if (sensorsEquippedBuildingBase.SensorsEquippedBuildings.ContainsKey(building.name))
 			building.AddComponent<BuildingComponentsController>();
-	}
 
-	private ExternalObject IsExternalBuildingAtPosition(Vector3 position) {
-		const int PRECISION = 2;
+		this.LoadMatchingObject(building, buildings);
 
-		int i = 0;
-		for (; i < externalObjectBase.ObjectsCount()
-		&& !(Math.Round(externalObjectBase.GetObject(i).OsmPosition.x, PRECISION) == Math.Round(position.x, PRECISION)
-		  && Math.Round(externalObjectBase.GetObject(i).OsmPosition.y, PRECISION) == Math.Round(position.y, PRECISION)
-		  && Math.Round(externalObjectBase.GetObject(i).OsmPosition.z, PRECISION) == Math.Round(position.z, PRECISION)); i++) ;
-
-		if (i < externalObjectBase.ObjectsCount())
-			return externalObjectBase.GetObject(i);
-		else
-			return null;
+		return building;
 	}
 
 	public GameObject BuildVirtualLevel(GameObject building, BuildingNodeGroup buildingNodeGroup, Triangulation triangulation, int floorIndex, Material floorMaterial, bool buildRoof) {
@@ -302,6 +273,7 @@ public class CityBuilder {
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
+
 			if (nodeGroup.GetType() == typeof(HighwayNodeGroup) || nodeGroup.GetType() == typeof(WaterwayNodeGroup)) {
 				if (nodeGroup.GetType() == typeof(HighwayNodeGroup)) {
 					HighwayNodeGroup highwayNodeGroup = (HighwayNodeGroup) nodeGroup;
@@ -351,6 +323,31 @@ public class CityBuilder {
 		return roadNodeGroupGo;
 	}
 
+	public void BuildLeisures() {
+		leisures = new GameObject(CityObjectNames.LEISURES);
+		leisures.transform.parent = cityComponents.transform;
+
+		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
+			NodeGroup nodeGroup = nodeGroupEntry.Value;
+
+			if (nodeGroup.GetType() == typeof(LeisureNodeGroup)) {
+				LeisureNodeGroup leisureNodeGroup = (LeisureNodeGroup) nodeGroup;
+
+				if (leisureNodeGroup.IsStadium()) {
+					GameObject stadium = new GameObject() {
+						name = leisureNodeGroup.Name
+					};
+
+					Vector2 stadiumCenter = buildingsTools.BuildingCenter(nodeGroup);
+					stadium.transform.SetParent(leisures.transform, false);
+					stadium.transform.position = new Vector3(stadiumCenter.x, 0, stadiumCenter.y);
+
+					this.LoadMatchingObject(stadium, leisures);
+				}
+			}
+		}
+	}
+
 	/// <summary>
 	/// 	Place les arbres dans la scène.
 	/// </summary>
@@ -363,47 +360,58 @@ public class CityBuilder {
 		float diameterJitter = Dimensions.TRUNC_DIAMTETER * 0.2F;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
-			NodeGroup nodeGroup = nodeGroupEntry.Value;
-
 			float height = Dimensions.TRUNC_HEIGHT + UnityEngine.Random.Range(-heightJitter / 2F, heightJitter / 2F);
 			float diameter = Dimensions.TRUNC_DIAMTETER + UnityEngine.Random.Range(-diameterJitter / 2F, diameterJitter / 2F);
 
-			if (nodeGroup.GetType() == typeof(NaturalNodeGroup)) {
-				// Récupération de la position de l'arbre depuis le groupe de noeuds correspondant
-				double posX = nodeGroup.GetNode(0).Longitude;
-				double posZ = nodeGroup.GetNode(0).Latitude;
+			if (nodeGroupEntry.Value.GetType() == typeof(NaturalNodeGroup)) {
+				NaturalNodeGroup naturalNodeGroup = (NaturalNodeGroup) nodeGroupEntry.Value;
 
-				// Création et paramétrage de l'objet 3D (cylindre) destiné à former un tronc d'arbre 
-				GameObject trunk = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-				trunk.name = "Trunk_" + nodeGroup.Id;
-				trunk.tag = GoTags.TREE_TAG;
-				trunk.transform.position = new Vector3((float) posX, height / 2F, (float) posZ);
-				trunk.transform.localScale = new Vector3(height / 6F, height / 2F, height / 6F);
+				for (int i = 0; i < naturalNodeGroup.NodeCount(); i++) {
 
-				// Création et paramétrage de l'objet 3D (sphere) destiné à former un feuillage 
-				GameObject foliage = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-				foliage.name = "Foliage" + nodeGroup.Id;
-				foliage.tag = GoTags.TREE_TAG;
-				foliage.transform.position = new Vector3((float) posX, height, (float) posZ);
-				foliage.transform.localScale = new Vector3(diameter, diameter, diameter);
+					if (naturalNodeGroup.GetNode(i).GetType() == typeof(NaturalComponentNode)) {
+						NaturalComponentNode naturalComponentNode = (NaturalComponentNode) naturalNodeGroup.GetNode(0);
 
-				// Affectation du matériau au tronc pour lui donner la texture voulue
-				MeshRenderer trunkMeshRenderer = trunk.GetComponent<MeshRenderer>();
-				trunkMeshRenderer.material = Resources.Load(Materials.TREE_TRUNK) as Material;
+						if (naturalComponentNode.IsTree()) {
+							// Récupération de la position de l'arbre depuis le groupe de noeuds correspondant
+							double posX = naturalComponentNode.Longitude;
+							double posZ = naturalComponentNode.Latitude;
 
-				// Affectation du matériau au feuillage pour lui donner la texture voulue
-				MeshRenderer foliageMeshRenderer = foliage.GetComponent<MeshRenderer>();
-				foliageMeshRenderer.material = Resources.Load(Materials.TREE_LEAF) as Material;
+							// Création et paramétrage de l'objet 3D (cylindre) destiné à former un tronc d'arbre 
+							GameObject trunk = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+							trunk.name = "Trunk_" + naturalNodeGroup.Id;
+							trunk.tag = GoTags.TREE_TAG;
+							trunk.transform.position = new Vector3((float) posX, height / 2F, (float) posZ);
+							trunk.transform.localScale = new Vector3(height / 6F, height / 2F, height / 6F);
 
-				GameObject tree = new GameObject("Tree_" + nodeGroup.Id);
-				nodeGroup.Name = tree.name;
+							// Création et paramétrage de l'objet 3D (sphere) destiné à former un feuillage 
+							GameObject foliage = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+							foliage.name = "Foliage" + naturalNodeGroup.Id;
+							foliage.tag = GoTags.TREE_TAG;
+							foliage.transform.position = new Vector3((float) posX, height, (float) posZ);
+							foliage.transform.localScale = new Vector3(diameter, diameter, diameter);
 
-				// Ajout du tronc et du feuillage à l'arbre
-				trunk.transform.parent = tree.transform;
-				foliage.transform.parent = tree.transform;
+							// Affectation du matériau au tronc pour lui donner la texture voulue
+							MeshRenderer trunkMeshRenderer = trunk.GetComponent<MeshRenderer>();
+							trunkMeshRenderer.material = Resources.Load(Materials.TREE_TRUNK) as Material;
 
-				// Ajout de l'arbre au groupe d'arbres
-				tree.transform.parent = trees.transform;
+							// Affectation du matériau au feuillage pour lui donner la texture voulue
+							MeshRenderer foliageMeshRenderer = foliage.GetComponent<MeshRenderer>();
+							foliageMeshRenderer.material = Resources.Load(Materials.TREE_LEAF) as Material;
+
+							GameObject tree = new GameObject("Tree_" + naturalNodeGroup.Id);
+							naturalNodeGroup.Name = tree.name;
+
+							// Ajout du tronc et du feuillage à l'arbre
+							trunk.transform.parent = tree.transform;
+							foliage.transform.parent = tree.transform;
+
+							// Ajout de l'arbre au groupe d'arbres
+							tree.transform.parent = trees.transform;
+
+							this.LoadMatchingObject(tree, Trees);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -429,33 +437,21 @@ public class CityBuilder {
 						HighwayComponentNode highwayComponentNode = (HighwayComponentNode) highwayNodeGroup.GetNode(i);
 
 						if (highwayComponentNode.IsTrafficSignal()) {
-							posZ = (float)highwayComponentNode.Latitude;
 							posX = (float)highwayComponentNode.Longitude;
+							posZ = (float)highwayComponentNode.Latitude;
 
 							GameObject trafficSignal = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.TRAFFIC_SIGNAL));
 							trafficSignal.transform.SetParent(trafficSignals.transform, false);
 							trafficSignal.transform.position = new Vector3(posX, 0, posZ);
 							trafficSignal.transform.localScale = new Vector3(Dimensions.SCALE_FACTOR, Dimensions.SCALE_FACTOR, Dimensions.SCALE_FACTOR);
+
+							this.LoadMatchingObject(trafficSignal, TrafficSignals);
 						}
 					}
 				}
 			}
 		}
 	}
-
-
-	/// <summary>
-	/// 	Place la caméra dans la scène.
-	/// </summary>
-	public void BuildMainCamera() {
-		// On centre la camera 
-		double camLat = (minLat * Dimensions.SCALE_FACTOR + maxLat * Dimensions.SCALE_FACTOR) / 2F;
-		double camLon = (minLon * Dimensions.SCALE_FACTOR + maxLon * Dimensions.SCALE_FACTOR) / 2F;
-
-		// Création de l'objet 3D représenant la caméra
-		GameObject mainCamera = Camera.main.gameObject;
-	}
-
 
 	/// <summary>
 	/// 	Place le sol dans la scène.
@@ -481,8 +477,8 @@ public class CityBuilder {
 			groundMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
 		}
 
-		double lat = (minLat * Dimensions.SCALE_FACTOR + maxLat * Dimensions.SCALE_FACTOR) / 2F;
-		double lon = (minLon * Dimensions.SCALE_FACTOR + maxLon * Dimensions.SCALE_FACTOR) / 2F;
+		double latitude = (minLat * Dimensions.SCALE_FACTOR + maxLat * Dimensions.SCALE_FACTOR) / 2F;
+		double longitude = (minLon * Dimensions.SCALE_FACTOR + maxLon * Dimensions.SCALE_FACTOR) / 2F;
 
 		double length = maxLon * Dimensions.SCALE_FACTOR - minLon * Dimensions.SCALE_FACTOR;
 		double width = maxLat * Dimensions.SCALE_FACTOR - minLat * Dimensions.SCALE_FACTOR;
@@ -499,6 +495,36 @@ public class CityBuilder {
 
 		// Construction de l'objet 3D (cube) destiné à former un sol 
 		groundBuilder.BuildGround((float) length, (float) width, (float) minLat, (float) minLon, groundMaterial, textureExpansion);
+	}
+
+	private void LoadMatchingObject(GameObject generatedObject, GameObject parent) {
+		ExternalObject externalObject = this.MatchingExternalObject(generatedObject.transform.position);
+		if (externalObject != null) {
+			if (externalObject.NeverUsed) {
+				GameObject importedObject = GameObject.Instantiate(Resources.Load<GameObject>(FilePaths.EXTERNAL_OBJECTS_FOLDER_LOCAL + externalObject.ObjectFileName));
+				importedObject.transform.position = externalObject.Position;
+				importedObject.transform.rotation = Quaternion.Euler(importedObject.transform.rotation.x, (float) externalObject.Orientation, importedObject.transform.rotation.z);
+				importedObject.transform.localScale = new Vector3((float) externalObject.Scale, (float) externalObject.Scale, (float) externalObject.Scale);
+				importedObject.transform.parent = parent.transform;
+
+				externalObject.NeverUsed = false;
+			}
+			generatedObject.SetActive(false);
+		}
+	}
+
+	private ExternalObject MatchingExternalObject(Vector3 objectPosition) {
+		const int PRECISION = 2;
+
+		int i = 0;
+		for (; i < externalObjectBase.ObjectsCount()
+		&& !(Math.Round(externalObjectBase.GetObject(i).OsmPosition.x, PRECISION) == Math.Round(objectPosition.x, PRECISION)
+		  && Math.Round(externalObjectBase.GetObject(i).OsmPosition.z, PRECISION) == Math.Round(objectPosition.z, PRECISION)); i++);
+
+		if (i < externalObjectBase.ObjectsCount())
+			return externalObjectBase.GetObject(i);
+		else
+			return null;
 	}
 
 	public NodeGroupBase NodeGroupBase {

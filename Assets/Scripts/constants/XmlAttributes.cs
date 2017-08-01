@@ -123,8 +123,11 @@ public class XmlAttributes {
 
 	public const string CUSTOM_MATERIAL = "custmat";
 	public const string OVERLAY_COLOR = "color";
-	public const string TOPIC = "topic";
 
+	public const string LEISURE_TYPE = "leisuretype";
+
+
+	public const string TOPIC = "topic";
 
 	public const string THRESHOLD_CONDITION = "condition";
 	public const string COMPONENT_PROPERTY_VALUE = "value";

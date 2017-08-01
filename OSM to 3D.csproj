@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.6.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -136,12 +138,15 @@
     <Compile Include="Assets\Scripts\model\components_managing\SensorEquippedBuildingsBase.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\SensorThreshold.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\ThresholdConditions.cs" />
+    <Compile Include="Assets\Scripts\model\nodes_storage\BuildingComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingStepNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\ComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\HighwayComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\HighwayNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\HighwayStepNode.cs" />
+    <Compile Include="Assets\Scripts\model\nodes_storage\LeisureStepNode.cs" />
+    <Compile Include="Assets\Scripts\model\nodes_storage\LeisureNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\NaturalComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\NaturalNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\Node.cs" />
@@ -152,8 +157,6 @@
     <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayStepNode.cs" />
     <Compile Include="Assets\Scripts\model\tools\BuildingsTools.cs" />
     <Compile Include="Assets\Scripts\model\tools\MapLoader.cs" />
-    <Compile Include="Assets\Scripts\model\tools\NodeFactory.cs" />
-    <Compile Include="Assets\Scripts\model\tools\NodeGroupFactory.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\BuildingShape.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\Edge.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\Triangle.cs" />

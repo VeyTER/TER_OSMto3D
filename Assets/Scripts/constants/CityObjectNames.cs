@@ -32,6 +32,8 @@ public class CityObjectNames {
 	/// <summary>Nom des cours d'eau.</summary>
 	public const string WATERWAYS = "Waterways";
 
+	public const string LEISURES = "Leisures";
+
 	/// <summary>Nom des villes.</summary>
 	public const string TREES = "Trees";
 

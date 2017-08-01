@@ -553,7 +553,7 @@ public class BuildingsTools {
 	/// <param name="building">Batiment, de type GameObject, dont on veut calculer le centre.</param>
 	public Vector2 BuildingCenter(NodeGroup nodeGroup) {
 		// Somme des coordonnées des murs de bâtiments
-		if (nodeGroup != null && nodeGroup.GetType() == typeof(BuildingNodeGroup)) {
+		if (nodeGroup != null && (nodeGroup.GetType() == typeof(BuildingNodeGroup) || nodeGroup.GetType() == typeof(LeisureNodeGroup))) {
 			Vector2 positionSum = Vector2.zero;
 			for (int i = 0; i < nodeGroup.NodeCount() - 1; i++)
 				positionSum += nodeGroup.GetNode(i).ToVector();
@@ -782,7 +782,7 @@ public class BuildingsTools {
 	public BuildingNodeGroup NewMinimalNodeGroup(Vector3 centerPosition, Vector2 dimensions, Material material) {
 		string newBuildingId = this.NewIdOrReference(10);
 
-		BuildingNodeGroup buildingNodeGroup = new BuildingNodeGroup(newBuildingId) {
+		BuildingNodeGroup buildingNodeGroup = new BuildingNodeGroup(newBuildingId, null) {
 			Name = "Bâtiment n°" + newBuildingId,
 			NbFloor = 3,
 			CustomMaterial = material

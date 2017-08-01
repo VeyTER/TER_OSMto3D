@@ -15,7 +15,7 @@ using System.IO;
 /// </summary>
 public class Main : MonoBehaviour {
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
-	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAMPUS + ".osm";
+	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.RAMIER + ".osm";
 
 	private MapLoader mapLoader;
 	private CityBuilder cityBuilder;
@@ -38,7 +38,7 @@ public class Main : MonoBehaviour {
 	/// 	Mise en place de l'interface
 	/// </summary>
 	public void InstantiateMainObjects() {
-		GameObject mainCamera = (GameObject) GameObject.Instantiate(Resources.Load(Cameras.CAMPUS_CAMERA));
+		GameObject mainCamera = GameObject.Instantiate(Resources.Load<GameObject>(Cameras.CAMPUS_CAMERA));
 		mainCamera.name = "Camera";
 
 		GameObject.Instantiate(Resources.Load(GameObjects.EDIT_CANVAS));
@@ -65,9 +65,9 @@ public class Main : MonoBehaviour {
 		cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
 		cityBuilder.BuildBuildings();
 		cityBuilder.BuildWays();
+		cityBuilder.BuildLeisures();
 		cityBuilder.BuildTrees();
 		cityBuilder.BuildTrafficSignals();
-		cityBuilder.BuildMainCamera();
 		cityBuilder.BuildGround(/*"CaptitoleBackground"*/);
 	}
 

@@ -1,28 +1,35 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using System.Collections.Generic;
 
 public class HighwayNodeGroup : NodeGroup {
 	private int nbWay;
 	private int maxSpeed;
 
-	public HighwayNodeGroup(string id) : base(id, "highway") {
+	public HighwayNodeGroup(string id, string secondaryType) : base(id, "highway", secondaryType) {
 		this.nbWay = 1;
 		this.maxSpeed = 50;
 	}
 
 	public HighwayNodeGroup(NodeGroup nodeGroup) : base(nodeGroup) {
-		this.type = "highway";
+		mainType = "highway";
 	}
 
-	public HighwayNodeGroup(string id, string name, string country, string region, string town, string district, int nbWay, int maxSpeed) :
-		base(id, "highway", name, country, region, town, district) {
+	public HighwayNodeGroup(string id, string type, string name, string country, string region, string town, string district, int nbWay, int maxSpeed) :
+		base(id, type, name, country, region, town, district) {
 
 		this.nbWay = nbWay;
 		this.maxSpeed = maxSpeed;
 	}
 
+	public override void AddStepNode(string reference, int index, double latitude, double longitude, Dictionary<string, string> tags) {
+		this.AddNode(new HighwayStepNode(reference, index, latitude, longitude) { Tags = tags });
+	}
+
+	public override void AddComponentNode(string reference, int index, double latitude, double longitude, Dictionary<string, string> tags) {
+		this.AddNode(new HighwayComponentNode(reference, index, latitude, longitude) { Tags = tags });
+	}
+
 	public bool IsBusWayLane() {
-		return (tags.ContainsKey("bus") && tags.ContainsValue("yes"));
+		return tags.ContainsKey("bus") && tags.ContainsValue("yes");
 	}
 
 	public bool IsPrimary() {

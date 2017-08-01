@@ -29,7 +29,7 @@ public class XmlTags {
 	public const string NODE = "node";
 
 	/// <summary>
-	/// 	<para>Nom de la balise symbolisant un objet ouvert (type route) de la ville.</para>
+	/// 	<para>Nom de la balise symbolisant un objet composite de la ville.</para>
 	/// 	<para>NE PAS MODIFIER</para>
 	///</summary>
 	public const string WAY = "way";
@@ -68,16 +68,20 @@ public class XmlTags {
 	public const string BUILDING = "building";
 
 	/// <summary>Nom de la balise symbolisant l'arbre courant.</summary>
-	public const string TREE = XmlValues.TREE;
+	public const string TREE = "tree";
 
 	/// <summary>Nom de la balise symbolisant le feux de croisement courant.</summary>
-	public const string TRAFFIC_SIGNALS = XmlValues.TRAFFIC_SIGNALS;
+	public const string TRAFFIC_SIGNALS = "traffic_signals";
 
 	/// <summary>Nom de la balise symbolisant la route courante.</summary>
 	public const string HIGHWAY = "highway";
 
 	/// <summary>Nom de la balise symbolisant la voie maritime courante.</summary>
 	public const string WATERWAY = "waterway";
+
+	public const string LEISURE = "leisure";
+
+	public const string STADIUM = "stadium";
 
 	/// <summary>Nom de la balise symbolisant la voie de bus courante.</summary>
 	public const string BUS_LANE_WAY = "buswaylane";

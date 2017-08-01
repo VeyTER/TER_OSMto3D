@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using UnityEditor;
+using System.Collections.Generic;
+using System;
 
 public class BuildingNodeGroup : NodeGroup {
 	private int nbFloor;
@@ -10,7 +11,7 @@ public class BuildingNodeGroup : NodeGroup {
 	private Material customMaterial;
 	private Color overlayColor;
 
-	public BuildingNodeGroup(string id) : base(id, "building") {
+	public BuildingNodeGroup(string id, string secondaryType) : base(id, "building", secondaryType) {
 		this.nbFloor = 1;
 
 		this.roofShape = "unknown";
@@ -21,7 +22,7 @@ public class BuildingNodeGroup : NodeGroup {
 	}
 
 	public BuildingNodeGroup(NodeGroup nodeGroup) : base(nodeGroup) {
-		type = "building";
+		mainType = "building";
 	}
 
 	public BuildingNodeGroup(string id, string name, string country, string region, string town, string district, string roofShape, int roofAngle, Material customMaterial, Color overlayColor) :
@@ -48,6 +49,14 @@ public class BuildingNodeGroup : NodeGroup {
 			zoningXPath += "/" + XmlTags.DISTRICT + "[@" + XmlAttributes.DESIGNATION + "=\"" + district + "\"]";
 
 		return zoningXPath;
+	}
+
+	public override void AddStepNode(string reference, int index, double latitude, double longitude, Dictionary<string, string> tags) {
+		this.AddNode(new BuildingStepNode(reference, index, latitude, longitude) { Tags = tags });
+	}
+
+	public override void AddComponentNode(string reference, int index, double latitude, double longitude, Dictionary<string, string> tags) {
+		this.AddNode(new BuildingComponentNode(reference, index, latitude, longitude) { Tags = tags });
 	}
 
 	public string ToFullBuildingXPath() {

@@ -28,6 +28,8 @@ public class XmlKeys {
 	///</summary>
 	public const string WATERWAY = "waterway";
 
+	public const string LEISURE = "leisure";
+
 	public const string LANES = "lanes";
 
 	/// <summary>

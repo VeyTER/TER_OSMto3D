@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class NodeGroup {
+public abstract class NodeGroup {
 	protected string id;
 	protected string name;
-	protected string type;
+
+	protected string mainType;
+	protected string secondaryType;
 
 	protected List<Node> nodes;
 
@@ -20,10 +22,12 @@ public class NodeGroup {
 	protected string town;
 	protected string district;
 
-	public NodeGroup(string id, string type) {
+	public NodeGroup(string id, string mainType, string secodnaryType) {
 		this.id = id;
 		this.name = "unknown";
-		this.type = type;
+
+		this.mainType = mainType;
+		this.secondaryType = (secodnaryType == "yes" ? null : secodnaryType);
 
 		this.nodes = new List<Node> ();
 
@@ -40,10 +44,12 @@ public class NodeGroup {
 		this.district = "unknown";
 	}
 
-	public NodeGroup(string id, string type, string name, string country, string region, string town, string district) {
+	public NodeGroup(string id, string mainType, string name, string country, string region, string town, string district) {
 		this.id = id;
 		this.name = name;
-		this.type = type;
+
+		this.mainType = mainType;
+		this.secondaryType = null;
 
 		this.nodes = new List<Node>();
 
@@ -63,7 +69,9 @@ public class NodeGroup {
 	public NodeGroup(NodeGroup nodeGroup) {
 		this.id = nodeGroup.id;
 		this.name = nodeGroup.Name;
-		this.type = nodeGroup.type;
+
+		this.mainType = nodeGroup.mainType;
+		this.secondaryType = nodeGroup.secondaryType;
 
 		this.nodes = nodeGroup.Nodes;
 
@@ -84,6 +92,10 @@ public class NodeGroup {
 		nodes.Add(newNode);
 		return newNode;
 	}
+
+	public abstract void AddStepNode(string reference, int index, double latitude, double longitude, Dictionary<string, string> tags);
+
+	public abstract void AddComponentNode(string reference, int index, double latitude, double longitude, Dictionary<string, string> tags);
 
 	public Node GetNode(int nodeOrder) {
 		return nodes[nodeOrder];
@@ -162,11 +174,16 @@ public class NodeGroup {
 		set { name = value; }
 	}
 
-	public string Type {
-		get { return type; }
-		set { type = value; }
+	public string MainType {
+		get { return mainType; }
+		set { mainType = value; }
 	}
 
+	public string SecondaryType {
+		get { return secondaryType; }
+		set { secondaryType = value; }
+	}
+	
 	public List<Node> Nodes {
 		get { return nodes; }
 	}
