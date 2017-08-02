@@ -28,7 +28,7 @@ public class Main : MonoBehaviour {
 
 		// Si le fichier contennant la carte OSM existe bien, le traitement est effectué
 		if (File.Exists(OSM_FILE_NAME)) {
-			this.LoadMap();
+			mapLoader.LoadMap(OSM_FILE_NAME);
 			this.BuildCity();
 			this.SetupPanels();
 		}
@@ -48,18 +48,9 @@ public class Main : MonoBehaviour {
 		GameObject.Instantiate(Resources.Load("Game objects/Sun"));
 	}
 
-	private void LoadMap() {
-		mapLoader.LoadOsmData(OSM_FILE_NAME);
-		mapLoader.LoadSettingsData();
-		mapLoader.GenerateResumeFile();
-		mapLoader.LoadCustomData();
-		mapLoader.LoadResumedData();
-	}
-
 	private void BuildCity() {
 		// Réglage de l'échelle et des dimensions
 		cityBuilder.NodeGroupBase.ScaleNodes(Dimensions.NODE_SCALE);
-		cityBuilder.SetBounds(mapLoader.Minlat, mapLoader.Minlon, mapLoader.Maxlat, mapLoader.Maxlon, Dimensions.NODE_SCALE);
 
 		// Construction de la ville
 		cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);

@@ -156,7 +156,13 @@
     <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayStepNode.cs" />
     <Compile Include="Assets\Scripts\model\tools\BuildingsTools.cs" />
+    <Compile Include="Assets\Scripts\model\tools\CustomFileManager.cs" />
     <Compile Include="Assets\Scripts\model\tools\MapLoader.cs" />
+    <Compile Include="Assets\Scripts\model\tools\MapFileManager.cs" />
+    <Compile Include="Assets\Scripts\model\tools\OsmFileManager.cs" />
+    <Compile Include="Assets\Scripts\model\tools\OsmTools.cs" />
+    <Compile Include="Assets\Scripts\model\tools\ResumeFileManager.cs" />
+    <Compile Include="Assets\Scripts\model\tools\SettingsFileManager.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\BuildingShape.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\Edge.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\Triangle.cs" />

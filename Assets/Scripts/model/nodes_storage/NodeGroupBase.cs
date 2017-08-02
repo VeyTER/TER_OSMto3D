@@ -10,8 +10,25 @@ public class NodeGroupBase {
 	/// </summary>
 	private Dictionary<string, NodeGroup> nodeGroups;
 
+	/// <summary>Latitude minimale de la ville.</summary>
+	private double minLat;
+
+	/// <summary>Longitude minimale de la ville.</summary>
+	private double minLon;
+
+	/// <summary>Latitude maximale de la ville.</summary>
+	private double maxLat;
+
+	/// <summary>Longitude maximale de la ville.</summary>
+	private double maxLon;
+
 	private NodeGroupBase() {
 		this.nodeGroups = new Dictionary<string, NodeGroup>();
+
+		this.minLat = 0;
+		this.minLon = 0;
+		this.maxLat = 0;
+		this.maxLon = 0;
 	}
 
 	public static NodeGroupBase GetInstance() {
@@ -39,6 +56,11 @@ public class NodeGroupBase {
 	/// </summary>
 	/// <param name="scaleFactor">Facteur d'échelle.</param>
 	public void ScaleNodes(double scaleFactor) {
+		minLat = minLat * Dimensions.SCALE_FACTOR * scaleFactor;
+		minLon = minLon * Dimensions.SCALE_FACTOR * scaleFactor;
+		maxLat = maxLat * Dimensions.SCALE_FACTOR * scaleFactor;
+		maxLon = maxLon * Dimensions.SCALE_FACTOR * scaleFactor;
+
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroups) {
 			foreach (Node node in nodeGroupEntry.Value.Nodes) {
 				node.Latitude = node.Latitude * Dimensions.SCALE_FACTOR * scaleFactor;
@@ -47,7 +69,39 @@ public class NodeGroupBase {
 		}
 	}
 
+	public void SetBounds(double minLat, double minLon, double maxLat, double maxLon) {
+		this.minLat = minLat;
+		this.minLon = minLon;
+		this.maxLat = maxLat;
+		this.maxLon = maxLon;
+	}
+
+	public double[] GetBounds() {
+		return new double[] {
+			minLat,
+			minLon,
+			maxLat,
+			maxLon
+		};
+	}
+
 	public Dictionary<string, NodeGroup> NodeGroups {
 		get { return nodeGroups; }
+	}
+
+	public double MinLat {
+		get { return minLat; }
+	}
+
+	public double MinLon {
+		get { return minLon; }
+	}
+
+	public double MaxLat {
+		get { return maxLat; }
+	}
+
+	public double MaxLon {
+		get { return maxLon; }
 	}
 }

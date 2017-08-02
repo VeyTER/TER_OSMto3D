@@ -20,18 +20,6 @@ public class CityBuilder {
 	private BuildingsTools buildingsTools;
 	private NodeGroupBase nodeGroupBase;
 
-	/// <summary>Latitude minimale de la ville.</summary>
-	private double minLat;
-
-	/// <summary>Longitude minimale de la ville.</summary>
-	private double minLon;
-
-	/// <summary>Latitude maximale de la ville.</summary>
-	private double maxLat;
-
-	/// <summary>Longitude maximale de la ville.</summary>
-	private double maxLon;
-
 	private ExternalObjectBase externalObjectBase;
 	private MapBackgroundBase mapBackgroundsBase;
 	private SensorEquippedBuildingBase sensorsEquippedBuildingBase;
@@ -115,21 +103,6 @@ public class CityBuilder {
 		if (instance == null)
 			instance = new CityBuilder();
 		return instance;
-	}
-
-
-	/// <summary>
-	/// 	Récupération les coordonnées minimales et maximales.
-	/// </summary>
-	/// <param name="minlat">Latitude minimale de la ville.</param>
-	/// <param name="minlon">Longitude minimale de la ville.</param>
-	/// <param name="maxlat">Latitude maximale de la ville.</param>
-	/// <param name="maxlon">Longitude maximale de la ville.</param>
-	public void SetBounds(double minlat, double minLon, double maxLat, double maxLon, float scale = 1) {
-		this.minLat = minlat * scale;
-		this.minLon = minLon * scale;
-		this.maxLat = maxLat * scale;
-		this.maxLon = maxLon * scale;
 	}
 
 
@@ -466,35 +439,29 @@ public class CityBuilder {
 			groundMaterial.mainTexture = backgroundTexture;
 
 			MapBackground mapBackground = mapBackgroundsBase.GetMapBackground(backgroundName);
-
-			minLat = mapBackground.MinLat;
-			minLon = mapBackground.MinLon;
-
-			maxLat = mapBackground.MaxLat;
-			maxLon = mapBackground.MaxLon;
 		} else {
 			groundMaterial = Resources.Load(Materials.GROUND) as Material;
 			groundMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
 		}
 
-		double latitude = (minLat * Dimensions.SCALE_FACTOR + maxLat * Dimensions.SCALE_FACTOR) / 2F;
-		double longitude = (minLon * Dimensions.SCALE_FACTOR + maxLon * Dimensions.SCALE_FACTOR) / 2F;
+		double latitude = (nodeGroupBase.MinLat + nodeGroupBase.MaxLat) / 2F;
+		double longitude = (nodeGroupBase.MinLon + nodeGroupBase.MaxLon) / 2F;
 
-		double length = maxLon * Dimensions.SCALE_FACTOR - minLon * Dimensions.SCALE_FACTOR;
-		double width = maxLat * Dimensions.SCALE_FACTOR - minLat * Dimensions.SCALE_FACTOR;
+		double length = nodeGroupBase.MaxLon - nodeGroupBase.MinLon;
+		double width = nodeGroupBase.MaxLat - nodeGroupBase.MinLat;
 
 		Vector2 textureExpansion = Vector2.one;
 		if (backgroundName == null)
 			textureExpansion = new Vector2((float) length * 40F, (float) width * 40F);
 
 		// Calcul des coordonnées du milieu du vecteur formé par les 2 noeuds des extrémités
-		Vector3 node1 = new Vector3((float) maxLon, 0, (float) maxLat);
-		Vector3 node2 = new Vector3((float) minLon, 0, (float) minLat);
+		Vector3 node1 = new Vector3((float) nodeGroupBase.MaxLon, 0, (float) nodeGroupBase.MaxLat);
+		Vector3 node2 = new Vector3((float) nodeGroupBase.MinLon, 0, (float) nodeGroupBase.MinLat);
 
 		Vector3 diff = node2 - node1;
 
 		// Construction de l'objet 3D (cube) destiné à former un sol 
-		groundBuilder.BuildGround((float) length, (float) width, (float) minLat, (float) minLon, groundMaterial, textureExpansion);
+		groundBuilder.BuildGround((float) length, (float) width, (float) nodeGroupBase.MinLat, (float) nodeGroupBase.MinLon, groundMaterial, textureExpansion);
 	}
 
 	private void LoadMatchingObject(GameObject generatedObject, GameObject parent) {
