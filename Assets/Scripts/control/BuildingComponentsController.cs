@@ -138,6 +138,8 @@ public class BuildingComponentsController : MonoBehaviour {
 	}
 
 	public void ProcessReceivedData(IAsyncResult asynchronousResult) {
+		Debug.Log(asynchronousResult.IsCompleted);
+
 		while (!asynchronousResult.IsCompleted);
 
 		SensorDataLoader.RequestState requestState = (SensorDataLoader.RequestState) asynchronousResult.AsyncState;
@@ -150,8 +152,6 @@ public class BuildingComponentsController : MonoBehaviour {
 		XmlNode rootNode = sensorsDataDocument.CreateElement("root");
 		rootNode.InnerXml = requestResult;
 		sensorsDataDocument.InnerXml = rootNode.InnerText;
-
-		//Debug.Log(sensorsDataDocument.InnerXml);
 
 		this.ExtractSensorsData(sensorsDataDocument);
 

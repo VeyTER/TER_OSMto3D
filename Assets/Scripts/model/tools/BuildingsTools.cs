@@ -24,6 +24,7 @@ public class BuildingsTools {
 	/// <summary>Document XML représentant les bâtiments personnalisés la carte OSM.</summary>
 	private XmlDocument mapCustomDocument;
 
+	private OsmTools osmTools;
 
 	/// <summary>
 	/// 	Table faisant la correspondance entre les de bâtiments 3D et les groupes de noeuds correspondant.
@@ -49,6 +50,8 @@ public class BuildingsTools {
 
 		this.customFilePath = FilePaths.MAPS_CUSTOM_FOLDER + "map_custom.osm";
 		this.mapCustomDocument = new XmlDocument ();
+
+		this.osmTools = OsmTools.GetInstance();
 
 		this.buildingToNodeGroupTable = new Dictionary<GameObject, string> ();
 		this.nodeGroupToBuildingTable = new Dictionary<string, GameObject> ();
@@ -316,12 +319,12 @@ public class BuildingsTools {
 
 			string materialName = newMaterial.name.Replace(" (Instance)", "");
 			if (resumeInfoNode.Attributes[XmlAttributes.CUSTOM_MATERIAL] == null)
-				this.AppendNodeGroupAttribute(mapResumeDocument, resumeInfoNode, XmlAttributes.CUSTOM_MATERIAL, materialName);
+				osmTools.AppendAttribute(mapResumeDocument, resumeInfoNode, XmlAttributes.CUSTOM_MATERIAL, materialName);
 			else
 				resumeInfoNode.Attributes[XmlAttributes.CUSTOM_MATERIAL].Value = materialName;
 
 			if (customInfoNode.Attributes[XmlAttributes.CUSTOM_MATERIAL] == null)
-				this.AppendNodeGroupAttribute(mapCustomDocument, customInfoNode, XmlAttributes.CUSTOM_MATERIAL, materialName);
+				osmTools.AppendAttribute(mapCustomDocument, customInfoNode, XmlAttributes.CUSTOM_MATERIAL, materialName);
 			else
 				customInfoNode.Attributes[XmlAttributes.CUSTOM_MATERIAL].Value = materialName;
 
@@ -349,12 +352,12 @@ public class BuildingsTools {
 
 			String colorName = newColor.r + ";" + newColor.g + ";" + newColor.b;
 			if (resumeInfoNode.Attributes[XmlAttributes.OVERLAY_COLOR] == null)
-				this.AppendNodeGroupAttribute(mapResumeDocument, resumeInfoNode, XmlAttributes.OVERLAY_COLOR, colorName);
+				osmTools.AppendAttribute(mapResumeDocument, resumeInfoNode, XmlAttributes.OVERLAY_COLOR, colorName);
 			else
 				resumeInfoNode.Attributes[XmlAttributes.OVERLAY_COLOR].Value = colorName;
 
 			if (customInfoNode.Attributes[XmlAttributes.OVERLAY_COLOR] == null)
-				this.AppendNodeGroupAttribute(mapCustomDocument, customInfoNode, XmlAttributes.OVERLAY_COLOR, colorName);
+				osmTools.AppendAttribute(mapCustomDocument, customInfoNode, XmlAttributes.OVERLAY_COLOR, colorName);
 			else
 				customInfoNode.Attributes[XmlAttributes.OVERLAY_COLOR].Value = colorName;
 
@@ -378,18 +381,15 @@ public class BuildingsTools {
 			containerNode.AppendChild(buildingNode);
 			buildingNode.AppendChild(buildingInfoNode);
 
-			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ID, buildingNodeGroup.Id);
-			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.NAME, buildingNodeGroup.Name);
-			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, buildingNodeGroup.NbFloor.ToString());
-			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, buildingNodeGroup.RoofAngle.ToString());
-			this.AppendNodeGroupAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ROOF_SHAPE, buildingNodeGroup.RoofShape);
+			osmTools.AppendAttribute(mapResumeDocument, buildingInfoNode, XmlAttributes.ID, buildingNodeGroup.Id);
+			osmTools.AddBuildingNodeAttribute(mapResumeDocument, buildingNodeGroup, buildingInfoNode);
 
 			foreach (Node node in buildingNodeGroup.Nodes) {
 				XmlNode newNd = mapResumeDocument.CreateElement(XmlTags.ND);
-				this.AppendNodeGroupAttribute(mapResumeDocument, newNd, XmlAttributes.REFERENCE, node.Reference);
-				this.AppendNodeGroupAttribute(mapResumeDocument, newNd, XmlAttributes.INDEX, node.Index.ToString());
-				this.AppendNodeGroupAttribute(mapResumeDocument, newNd, XmlAttributes.LATITUDE, node.Latitude.ToString());
-				this.AppendNodeGroupAttribute(mapResumeDocument, newNd, XmlAttributes.LONGIUDE, node.Longitude.ToString());
+				osmTools.AppendAttribute(mapResumeDocument, newNd, XmlAttributes.REFERENCE, node.Reference);
+				osmTools.AppendAttribute(mapResumeDocument, newNd, XmlAttributes.INDEX, node.Index.ToString());
+				osmTools.AppendAttribute(mapResumeDocument, newNd, XmlAttributes.LATITUDE, node.Latitude.ToString());
+				osmTools.AppendAttribute(mapResumeDocument, newNd, XmlAttributes.LONGIUDE, node.Longitude.ToString());
 				buildingNode.AppendChild(newNd);
 			}
 
@@ -423,11 +423,8 @@ public class BuildingsTools {
 			buildingNode.AppendChild(buildingInfoNode);
 
 			// Ajout des attributs et de la valeurs dans le noeud XML d'information
-			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ID, buildingNodeGroup.Id);
-			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.NAME, buildingNodeGroup.Name);
-			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.NB_FLOOR, buildingNodeGroup.NbFloor.ToString());
-			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_ANGLE, buildingNodeGroup.RoofAngle.ToString());
-			this.AppendNodeGroupAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ROOF_SHAPE, buildingNodeGroup.RoofShape);
+			osmTools.AppendAttribute(mapCustomDocument, buildingInfoNode, XmlAttributes.ID, buildingNodeGroup.Id);
+			osmTools.AddBuildingNodeAttribute(mapCustomDocument, buildingNodeGroup, buildingInfoNode);
 
 			mapCustomDocument.Save(customFilePath);
 		}
@@ -449,20 +446,6 @@ public class BuildingsTools {
 		}
 	}
 
-
-	/// <summary>
-	/// 	Ajoute un attribut en rapport avec un groupe de noeuds dans un noeud XML. L'attribut aura le nom et la
-	/// 	valeur spécifiés en entrée.
-	/// </summary>
-	/// <param name="boundingDocument">Document dans lequel ajouter l'attribut.</param>
-	/// <param name="containerNode">Noeud XML dans laquelle ajouter l'attribut.</param>
-	/// <param name="attributeName">Nom à donner au nouvel attribut.</param>
-	/// <param name="attributeValue">Valeur à donner au nouvel attribut.</param>
-	private void AppendNodeGroupAttribute(XmlDocument boundingDocument, XmlNode containerNode, string attributeName, string attributeValue) {
-		XmlAttribute attribute = boundingDocument.CreateAttribute(attributeName);
-		attribute.Value = attributeValue;
-		containerNode.Attributes.Append(attribute);
-	}
 
 	private XmlNode GetResumeInfoNode(NodeGroup nodeGroup) {
 		if (nodeGroup.GetType() == typeof(BuildingNodeGroup)) {
@@ -670,6 +653,62 @@ public class BuildingsTools {
 			return float.NaN;
 	}
 
+	public bool IsInfoAttributeValueUsed(string attributeName, string value) {
+		if (File.Exists(resumeFilePath) && File.Exists(customFilePath)) {
+			mapResumeDocument.Load(resumeFilePath);
+			mapCustomDocument.Load(customFilePath);
+
+			string xPath = "//" + XmlTags.INFO + "[@" + attributeName + "=\"" + value + "\"]";
+
+			XmlNode resumeInfoNode = mapResumeDocument.SelectSingleNode(xPath);
+			XmlNode customInfoNode = mapCustomDocument.SelectSingleNode(xPath);
+
+			return resumeInfoNode != null || customInfoNode != null;
+		} else {
+			return false;
+		}
+	}
+
+	public BuildingNodeGroup NewMinimalNodeGroup(Vector3 centerPosition, Vector2 dimensions, Material material) {
+		string newBuildingId = this.NewIdOrReference(10);
+
+		BuildingNodeGroup buildingNodeGroup = new BuildingNodeGroup(newBuildingId, null) {
+			Name = "Bâtiment n°" + newBuildingId,
+			NbFloor = 3,
+			CustomMaterial = material
+		};
+
+		float halfLength = dimensions.x / 2F;
+		float halfWidth = dimensions.y / 2F;
+
+		Node topLeftWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfLength, -halfWidth));
+		Node topRightWallNode = this.NewWallNode(1, centerPosition, new Vector2(halfLength, -halfWidth));
+		Node bottomRightWallNode = this.NewWallNode(2, centerPosition, new Vector2(halfLength, halfWidth));
+		Node bottomLeftWallNode = this.NewWallNode(3, centerPosition, new Vector2(-halfLength, halfWidth));
+		Node topLeftDupliWallNode = this.NewWallNode(4, centerPosition, new Vector2(-halfLength, -halfWidth));
+
+		buildingNodeGroup.AddNode(topLeftWallNode);
+		buildingNodeGroup.AddNode(topRightWallNode);
+		buildingNodeGroup.AddNode(bottomRightWallNode);
+		buildingNodeGroup.AddNode(bottomLeftWallNode);
+		buildingNodeGroup.AddNode(topLeftDupliWallNode);
+
+		return buildingNodeGroup;
+	}
+
+	private Node NewWallNode(int index, Vector3 buildingCenter, Vector2 localPosition) {
+		string newNodeReference = this.NewIdOrReference(10);
+		return new BuildingStepNode(newNodeReference, index, buildingCenter.z + localPosition.x, buildingCenter.x + localPosition.y);
+	}
+
+	private string NewIdOrReference(int nbDigits) {
+		string res = "+";
+		System.Random randomGenerator = new System.Random();
+		for (int i = 0; i < nbDigits; i++)
+			res += Math.Floor((double) randomGenerator.Next(0, 10));
+		return res;
+	}
+
 	/// <summary>
 	/// 	Ajout une entrée dans la table de correspondance entre les bâtiments 3D et leurs groupes de noeuds
 	/// 	correspondant.
@@ -758,64 +797,8 @@ public class BuildingsTools {
 	/// <returns>Objet 3D correspondant au groupe de noeuds 3D.</returns>
 	/// <param name="building">Bâtiment 3D dont on veut récupérer le groupe de noeuds 3D corresondant.</param>
 	public GameObject BuildingToBuildingNodeGroup(GameObject building) {
-		BuildingNodeGroup buildingNodeGroup = this.BuildingToNodeGroup (building);
+		BuildingNodeGroup buildingNodeGroup = this.BuildingToNodeGroup(building);
 		GameObject buildingNodeGroupGo = building.transform.GetChild(CityBuilder.BUILDING_NODES_INDEX).gameObject;
 		return buildingNodeGroupGo;
-	}
-
-	public bool IsInfoAttributeValueUsed(string attributeName, string value) {
-		if (File.Exists(resumeFilePath) && File.Exists(customFilePath)) {
-			mapResumeDocument.Load(resumeFilePath);
-			mapCustomDocument.Load(customFilePath);
-
-			string xPath = "//" + XmlTags.INFO + "[@" + attributeName + "=\"" + value + "\"]";
-
-			XmlNode resumeInfoNode = mapResumeDocument.SelectSingleNode(xPath);
-			XmlNode customInfoNode = mapCustomDocument.SelectSingleNode(xPath);
-
-			return resumeInfoNode != null || customInfoNode != null;
-		} else {
-			return false;
-		}
-	}
-
-	public BuildingNodeGroup NewMinimalNodeGroup(Vector3 centerPosition, Vector2 dimensions, Material material) {
-		string newBuildingId = this.NewIdOrReference(10);
-
-		BuildingNodeGroup buildingNodeGroup = new BuildingNodeGroup(newBuildingId, null) {
-			Name = "Bâtiment n°" + newBuildingId,
-			NbFloor = 3,
-			CustomMaterial = material
-		};
-
-		float halfLength = dimensions.x / 2F;
-		float halfWidth = dimensions.y / 2F;
-
-		Node topLeftWallNode = this.NewWallNode(0, centerPosition, new Vector2(-halfLength, -halfWidth));
-		Node topRightWallNode = this.NewWallNode(1, centerPosition, new Vector2(halfLength, -halfWidth));
-		Node bottomRightWallNode = this.NewWallNode(2, centerPosition, new Vector2(halfLength, halfWidth));
-		Node bottomLeftWallNode = this.NewWallNode(3, centerPosition, new Vector2(-halfLength, halfWidth));
-		Node topLeftDupliWallNode = this.NewWallNode(4, centerPosition, new Vector2(-halfLength, -halfWidth));
-
-		buildingNodeGroup.AddNode(topLeftWallNode);
-		buildingNodeGroup.AddNode(topRightWallNode);
-		buildingNodeGroup.AddNode(bottomRightWallNode);
-		buildingNodeGroup.AddNode(bottomLeftWallNode);
-		buildingNodeGroup.AddNode(topLeftDupliWallNode);
-
-		return buildingNodeGroup;
-	}
-
-	private Node NewWallNode(int index, Vector3 buildingCenter, Vector2 localPosition) {
-		string newNodeReference = this.NewIdOrReference(10);
-		return new BuildingStepNode(newNodeReference, index, buildingCenter.z + localPosition.x, buildingCenter.x + localPosition.y);
-	}
-
-	private string NewIdOrReference(int nbDigits) {
-		string res = "+";
-		System.Random randomGenerator = new System.Random();
-		for (int i = 0; i < nbDigits; i++)
-			res += Math.Floor((double) randomGenerator.Next(0, 10));
-		return res;
 	}
 }
