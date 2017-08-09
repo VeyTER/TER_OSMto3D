@@ -126,18 +126,26 @@
     <Compile Include="Assets\Scripts\model\city_building\MapBackgroundsBase.cs" />
     <Compile Include="Assets\Scripts\model\city_building\MaterialData.cs" />
     <Compile Include="Assets\Scripts\model\city_building\RoofBuilder.cs" />
-    <Compile Include="Assets\Scripts\model\city_building\UiBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\DataAxis.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\communication\ActuatorTrigger.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\CommandModule.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\DualRangeGradient.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\Gradient.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\GradientCell.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\PropertyAi.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\SingleRangeGradient.cs" />
+    <Compile Include="Assets\Scripts\model\tools\UiBuilder.cs" />
     <Compile Include="Assets\Scripts\model\city_building\WallsBuilder.cs" />
     <Compile Include="Assets\Scripts\model\city_building\WayBuilder.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\ActuatorController.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\BuildingRoom.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\ComponentPropertiesLoader.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\RoomComponent.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\SensorData.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\SensorDataLoader.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\SensorEquippedBuildingsBase.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\SensorThreshold.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\ThresholdConditions.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\storage\ActuatorController.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\storage\BuildingRoom.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\communication\ComponentPropertiesLoader.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\storage\RoomComponent.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\storage\SensorData.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\communication\SensorDataLoader.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\storage\SensorEquippedBuildingsBase.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\storage\SensorThreshold.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\storage\ThresholdConditions.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingStepNode.cs" />
@@ -178,6 +186,7 @@
     <None Include="Assets\Scripts data\sensors_equipped_buildings.txt" />
     <None Include="Assets\Shaders\Standard.shader" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
 </Project>

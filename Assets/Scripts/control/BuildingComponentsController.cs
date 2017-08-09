@@ -138,8 +138,6 @@ public class BuildingComponentsController : MonoBehaviour {
 	}
 
 	public void ProcessReceivedData(IAsyncResult asynchronousResult) {
-		Debug.Log(asynchronousResult.IsCompleted);
-
 		while (!asynchronousResult.IsCompleted);
 
 		SensorDataLoader.RequestState requestState = (SensorDataLoader.RequestState) asynchronousResult.AsyncState;

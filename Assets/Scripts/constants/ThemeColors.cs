@@ -11,6 +11,7 @@ public class ThemeColors {
 	public static Color BLUE_DARK = new Color(64 / 255F, 124 / 255F, 190 / 255F);
 
 	public static Color GREEN = new Color(41 / 255F, 219 / 255F, 113 / 255F);
+	public static Color GREEN_BRIGHT = new Color(156 / 255F, 244 / 255F, 191 / 255F);
 	public static Color GREEN_DARK = new Color(55 / 255F, 163 / 255F, 99 / 255F);
 
 	public static Color RED = new Color(255 / 255F, 93 / 255F, 93 / 255F);

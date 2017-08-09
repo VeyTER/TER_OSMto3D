@@ -55,4 +55,7 @@ public class FilePaths {
 	public const string EXTERNAL_OBJECTS_FILE = METADATA_FOLDER + "objects_properties.txt";
 	public const string MATERIAL_DETAILS_FILE = METADATA_FOLDER + "materials_details.txt";
 	public const string MAP_BACKGROUNDS_FILE = METADATA_FOLDER + "maps_background_details.txt";
+
+	public const string AI_DATA_FOLDER = ASSETS_FOLDER + "Ai data/";
+	public const string GRADIENTS_FOLDER = AI_DATA_FOLDER + "gradients/";
 }
