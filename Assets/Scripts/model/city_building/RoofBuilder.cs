@@ -23,6 +23,10 @@ public class RoofBuilder {
 		// Création et paramétrage de l'objet 3D destiné à former un toit
 		GameObject roof = this.BuildRoof(building, buildingNodeGroup, mesh);
 
+		// Affectation du matériau à la route pour lui donner la texture voulue
+		MeshRenderer meshRenderer = roof.GetComponent<MeshRenderer>();
+		meshRenderer.material = Resources.Load(Materials.FLAT_ROOF) as Material;
+
 		return roof;
 	}
 
@@ -48,6 +52,10 @@ public class RoofBuilder {
 		roofMeshFilter.mesh.RecalculateNormals();
 		roofMeshFilter.mesh.RecalculateBounds();
 
+		// Affectation du matériau à la route pour lui donner la texture voulue
+		MeshRenderer meshRenderer = roof.GetComponent<MeshRenderer>();
+		meshRenderer.material = Resources.Load(Materials.HIPPED_ROOF) as Material;
+
 		return roof;
 	}
 
@@ -63,10 +71,6 @@ public class RoofBuilder {
 
 		MeshFilter roofMeshFilter = roof.GetComponent<MeshFilter>();
 		roofMeshFilter.mesh = mesh;
-
-		// Affectation du matériau à la route pour lui donner la texture voulue
-		MeshRenderer meshRenderer = roof.GetComponent<MeshRenderer>();
-		meshRenderer.material = Resources.Load(Materials.ROOF) as Material;
 
 		MeshCollider meshCollider = roof.AddComponent<MeshCollider>();
 		meshCollider.sharedMesh = roofMeshFilter.mesh;

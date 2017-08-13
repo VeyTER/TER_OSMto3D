@@ -13,7 +13,7 @@ public class GroundBuilder {
 	/// <param name="angle">Orientation du sol sur l'axe Y.</param>
 	/// <param name="minlat">Latitude maximale du sol.</param>
 	/// <param name="minlon">Longitude minimale du sol.</param>
-	public void BuildGround(float length, float width, float minLat, float minLon, Material material, Vector2 textureExpansion) {
+	public GameObject BuildGround(float length, float width, float minLat, float minLon, Material material, Vector2 textureExpansion) {
 		// Création de l'objet 3D destiné à former le sol
 		GameObject ground = new GameObject ("Ground", typeof(MeshFilter), typeof(MeshRenderer));
 
@@ -42,6 +42,8 @@ public class GroundBuilder {
 		// Affectation du matériau au sol pour lui donner la texture voulue
 		MeshRenderer meshRenderer = ground.GetComponent<MeshRenderer> ();
 		meshRenderer.material = material;
+
+		return ground;
 	}
 
 

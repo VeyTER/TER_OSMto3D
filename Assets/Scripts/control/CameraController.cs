@@ -28,8 +28,8 @@ public class CameraController : MonoBehaviour {
 	public enum CameraStates { FREE, FLYING, FIXED, CIRCULARY_CONSTRAINED, TURNING_AROUND }
 
 	/// <summary> Etat courant dans lequel se trouve la caméra. </summary>
-	private CameraStates cameraState;
-	private CameraStates stateBeforeTuringAround;
+	private CameraStates previousState;
+	private CameraStates currentState;
 
 	public enum ControlModes { GLOBAL, SEMI_LOCAL, FULL_LOCAL }
 	private ControlModes controlMode;
@@ -50,10 +50,11 @@ public class CameraController : MonoBehaviour {
 	private Quaternion initRotation;
 
 	private GameObject targetObject;
+	private GameObject pivotPoint;
 
 	public void Start() {
-		this.cameraState = CameraStates.FREE;
-		this.stateBeforeTuringAround = CameraStates.CIRCULARY_CONSTRAINED;
+		this.previousState = CameraStates.FREE;
+		this.currentState = CameraStates.FREE;
 
 		this.controlMode = ControlModes.SEMI_LOCAL;
 
@@ -71,6 +72,7 @@ public class CameraController : MonoBehaviour {
 		this.initRotation.eulerAngles = Vector3.zero;
 
 		this.targetObject = null;
+		this.pivotPoint = null;
 	}
 
 
@@ -93,7 +95,7 @@ public class CameraController : MonoBehaviour {
 		float sinVecticalOffset = 0.1F * sinVecticalFactor;
 
 		// Contrôle de la caméra avec le touches du clavier
-		if (cameraState == CameraStates.FREE) {
+		if (currentState == CameraStates.FREE) {
 
 			// Rotation de la caméra
 			if (Input.GetKey(KeyCode.LeftControl)) {
@@ -152,21 +154,14 @@ public class CameraController : MonoBehaviour {
 					break;
 				}
 			}
-		} else if (cameraState == CameraStates.CIRCULARY_CONSTRAINED) {
-			if (targetObject != null) {
-				Vector3 buildingPosition = targetObject.transform.position;
-
-				float horizontalOrientation = this.RelativeOrientation(targetObject);
-				float distance = Vector2.Distance(new Vector2(buildingPosition.x, buildingPosition.z), new Vector2(localPosition.x, localPosition.z));
+		} else if (currentState == CameraStates.CIRCULARY_CONSTRAINED) {
+			if (targetObject != null && pivotPoint != null) {
+				Quaternion pivotRotation = pivotPoint.transform.rotation;
 
 				if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
-					horizontalOrientation += 5F * Mathf.Deg2Rad;
-
-				if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
-					horizontalOrientation -= 5F * Mathf.Deg2Rad;
-
-				transform.localPosition = this.RelativePosition(targetObject, horizontalOrientation, localRoation.eulerAngles.x);
-				transform.localRotation = Quaternion.Euler(localRoation.eulerAngles.x, localRoation.y - horizontalOrientation * Mathf.Rad2Deg + 90, localRoation.eulerAngles.z);
+					pivotPoint.transform.rotation = Quaternion.Euler(pivotRotation.eulerAngles.x, pivotRotation.eulerAngles.y - 3, pivotRotation.eulerAngles.z);
+				else if (Input.GetKey("left") || Input.GetKey(KeyCode.Q))
+					pivotPoint.transform.rotation = Quaternion.Euler(pivotRotation.eulerAngles.x, pivotRotation.eulerAngles.y + 3, pivotRotation.eulerAngles.z);
 			}
 		}
 	}
@@ -181,7 +176,7 @@ public class CameraController : MonoBehaviour {
 	/// <param name="targetRotation">Orientation à atteindre pour la caméra.</param>
 	/// <param name="finalAction">Action finale à effectuer à la fin du déplacement.</param>
 	public IEnumerator MoveToSituation(Vector3 targetPosition, Quaternion targetRotation, Action finalAction) {
-		cameraState = CameraStates.FLYING;
+		this.ChangeState(CameraStates.FLYING);
 
 		// Enregistrement de la situation initale de la caméra
 		Vector3 initPosition = transform.position;
@@ -207,7 +202,7 @@ public class CameraController : MonoBehaviour {
 
 		targetObject = null;
 
-		cameraState = CameraStates.FREE;
+		this.ChangeState(CameraStates.FREE);
 
 		// Appel de la tâche finale s'il y en a une
 		if(finalAction != null)
@@ -222,26 +217,26 @@ public class CameraController : MonoBehaviour {
 	/// <param name="targetBuilding">Bâtiment au-dessus duquel se positionner.</param>
 	/// <param name="finalAction">Action finale à effectuer à la fin du déplacement.</param>
 	public IEnumerator MoveToBuilding(GameObject targetBuilding, bool champTo, Action finalAction, float orientation = 90) {
-		cameraState = CameraStates.FLYING;
+		this.ChangeState(CameraStates.FLYING);
 
 		Vector3 startPosition = transform.position;
 		Quaternion startRotation = transform.rotation;
 
 		Vector3 targetPosition = this.RelativePosition(targetBuilding, 0, orientation);
-		Quaternion targetRotation = Quaternion.Euler (new Vector3 (orientation, 90, 0));
+		Quaternion targetRotation = Quaternion.Euler(new Vector3(orientation, 90, 0));
 
 		// Génération de l'animation
 		for (double i = 0; i <= 1; i += 0.1) {
-			float cursor = (float) Math.Sin (i * (Math.PI) / 2F);
+			float cursor = (float) Math.Sin(i * (Math.PI) / 2F);
 
 			// Calcul de la situation courante
-			Vector3 cameraCurrentPosition = Vector3.Lerp (startPosition, new Vector3(targetPosition.x, targetPosition.y, targetPosition.z), cursor);
-			Quaternion cameraCurrentRotation = Quaternion.Lerp (startRotation, targetRotation, cursor);
+			Vector3 cameraCurrentPosition = Vector3.Lerp(startPosition, new Vector3(targetPosition.x, targetPosition.y, targetPosition.z), cursor);
+			Quaternion cameraCurrentRotation = Quaternion.Lerp(startRotation, targetRotation, cursor);
 
 			transform.position = cameraCurrentPosition;
 			transform.rotation = cameraCurrentRotation;
 
-			yield return new WaitForSeconds (0.01F);
+			yield return new WaitForSeconds(0.01F);
 		}
 
 		// Affectation de la situation finale pour éviter les imprécisions
@@ -251,32 +246,37 @@ public class CameraController : MonoBehaviour {
 		targetObject = targetBuilding;
 
 		if (champTo)
-			cameraState = CameraStates.CIRCULARY_CONSTRAINED;
+			this.ChangeState(CameraStates.CIRCULARY_CONSTRAINED, targetBuilding);
 		else
-			cameraState = CameraStates.FIXED;
+			this.ChangeState(CameraStates.FIXED);
 
 		// Appel de la tâche finale s'il y en a une
-		if(finalAction != null)
-			finalAction ();
+		if (finalAction != null)
+			finalAction();
 	}
 
 	public void TeleportToBuilding(GameObject targetBuilding, bool champTo, float horizontalOrientation, float verticalOrientation = 90) {
+		if (currentState == CameraStates.CIRCULARY_CONSTRAINED)
+			this.DisableCircularConstraintMode();
+
 		transform.position = this.RelativePosition(targetBuilding, horizontalOrientation, verticalOrientation);
 		transform.rotation = Quaternion.Euler(new Vector3(verticalOrientation, transform.rotation.eulerAngles.y, 0));
 
 		if (champTo)
-			cameraState = CameraStates.CIRCULARY_CONSTRAINED;
+			ChangeState(CameraStates.CIRCULARY_CONSTRAINED, targetBuilding);
 		else
-			cameraState = CameraStates.FIXED;
+			ChangeState(CameraStates.FIXED);
 	}
 
 	public IEnumerator TurnAroundBuilding(GameObject targetBuilding, float verticalOrientation) {
-		stateBeforeTuringAround = cameraState;
-		cameraState = CameraStates.TURNING_AROUND;
+		this.ChangeState(CameraStates.TURNING_AROUND);
 
-		float horizontalOrientation = this.RelativeOrientation(targetBuilding);
-		while (cameraState == CameraStates.TURNING_AROUND) {
-			horizontalOrientation += 1 * Mathf.Deg2Rad;
+		const float MAX_SPEED = 0.35F;
+		float rotationSpeed = MAX_SPEED / 1024F;
+
+		float horizontalOrientation = (float) this.RelativeOrientation(targetBuilding);
+		while (currentState == CameraStates.TURNING_AROUND) {
+			horizontalOrientation += rotationSpeed * Mathf.Deg2Rad;
 
 			Vector3 cameraCurrentPosition = this.RelativePosition(targetBuilding, horizontalOrientation, verticalOrientation);
 			Quaternion cameraCurrentRotation = Quaternion.Euler(new Vector3(verticalOrientation, -horizontalOrientation * Mathf.Rad2Deg + 90, 0));
@@ -284,44 +284,83 @@ public class CameraController : MonoBehaviour {
 			transform.position = cameraCurrentPosition;
 			transform.rotation = cameraCurrentRotation;
 
+			if (rotationSpeed < MAX_SPEED)
+				rotationSpeed *= 2F;
+
 			yield return new WaitForSeconds(0.01F);
 		}
 	}
 
 	private Vector3 RelativePosition(GameObject building, float horizontalOrientation, float verticalOrientation) {
-		Vector3 res = Vector3.zero;
-
 		// Un peu de trigo pour pouvoir être à la bonne hauteur par rapport au à la taille du bâtiment
 		float cameraFOV = Camera.main.fieldOfView;
 		float buildingHeight = buildingsTools.BuildingHeight(building);
-		float buildingRadius = (float)buildingsTools.BuildingRadius(building);
-		float targetPosZ = (float)(buildingHeight + (buildingRadius / Math.Tan(cameraFOV)));
+		float buildingRadius = (float) buildingsTools.BuildingRadius(building);
+		float targetPosZ = (float) (buildingHeight + (buildingRadius / Math.Tan(cameraFOV)));
+
+		const float MIN_HORIZONTAL_OFFSET = 0.5F;
 
 		// Calcul de la position à adopter par rapport à l'orientation de la caméra
-		float horizontalOffset = (float)((targetPosZ - buildingHeight) * Math.Cos(verticalOrientation * Mathf.Deg2Rad));
-		float verticalOffset = (float)((targetPosZ - buildingHeight) * Math.Sin(verticalOrientation * Mathf.Deg2Rad));
+		float horizontalOffset = (float) ((targetPosZ - buildingHeight + MIN_HORIZONTAL_OFFSET) * Math.Cos(verticalOrientation * Mathf.Deg2Rad));
+		float verticalOffset = (float) ((targetPosZ - buildingHeight) * Math.Sin(verticalOrientation * Mathf.Deg2Rad));
 
 		Vector3 buildingPosition = building.transform.position;
 		Vector3 localPosition = transform.position;
 
-		float cosOffset = (float)(Math.Cos(horizontalOrientation) * horizontalOffset);
-		float sinOffset = (float)(Math.Sin(horizontalOrientation) * horizontalOffset);
+		float cosOffset = (float) (Math.Cos(horizontalOrientation) * horizontalOffset);
+		float sinOffset = (float) (Math.Sin(horizontalOrientation) * horizontalOffset);
 
 		// Enregistrement de la situation à atteindre
 		Vector3 buildingCenterPosition = buildingsTools.BuildingCenter(building);
-		res = new Vector3(buildingCenterPosition.x - cosOffset, buildingHeight + verticalOffset, buildingCenterPosition.z - sinOffset);
-
-		return res;
+		return new Vector3(buildingCenterPosition.x - cosOffset, buildingHeight + verticalOffset + Camera.main.nearClipPlane, buildingCenterPosition.z - sinOffset);
 	}
 
-	public float RelativeOrientation(GameObject building) {
-		Vector3 localPosition = transform.localPosition;
+	public double RelativeOrientation(GameObject building) {
+		Vector3 position = transform.position;
 		Vector3 buildingPosition = building.transform.position;
-		return (float) (Math.Round(Math.Atan2(buildingPosition.z - localPosition.z, buildingPosition.x - localPosition.x), 3));
+		return Math.Atan2(buildingPosition.z - position.z, buildingPosition.x - position.x);
 	}
 
-	public void StopTurningAround() {
-		cameraState = stateBeforeTuringAround;
+	private void EnableCircularConstraintMode(GameObject target) {
+		GameObject.Destroy(pivotPoint);
+		pivotPoint = new GameObject("Camera Pivot");
+
+		pivotPoint.transform.position = target.transform.position;
+		transform.SetParent(pivotPoint.transform, true);
+	}
+
+	private void DisableCircularConstraintMode() {
+		Vector3 parentedPosition = transform.position;
+		Quaternion parentedRotation = transform.rotation;
+
+		transform.SetParent(null, false);
+
+		transform.position = parentedPosition;
+		transform.rotation = parentedRotation;
+
+		GameObject.Destroy(pivotPoint);
+		pivotPoint = null;
+	}
+
+	public bool RestaurePreviousState() {
+		if (currentState == CameraStates.CIRCULARY_CONSTRAINED)
+			this.DisableCircularConstraintMode();
+
+		bool noEffect = currentState == previousState;
+		currentState = previousState;
+
+		return !noEffect;
+	}
+
+	private void ChangeState(CameraStates nextState, GameObject target = null) {
+		if (currentState == CameraStates.CIRCULARY_CONSTRAINED && pivotPoint != null)
+			this.DisableCircularConstraintMode();
+
+		if (nextState == CameraStates.CIRCULARY_CONSTRAINED)
+			this.EnableCircularConstraintMode(target);
+
+		previousState = currentState;
+		currentState = nextState;
 	}
 
 	public void SwitchToGlobalMode() {
@@ -337,8 +376,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public CameraStates CameraState {
-		get { return cameraState; }
-		set { cameraState = value; }
+		get { return currentState; }
 	}
 
 	public Vector3 InitPosition {

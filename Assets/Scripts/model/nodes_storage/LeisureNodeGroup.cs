@@ -5,7 +5,7 @@ public class LeisureNodeGroup : NodeGroup {
 	public LeisureNodeGroup(string id, string secondaryType) : base(id, "leisure", secondaryType) { }
 
 	public LeisureNodeGroup(NodeGroup nodeGroup) : base(nodeGroup) {
-		this.mainType = "leisure";
+		this.primaryType = "leisure";
 	}
 
 	public LeisureNodeGroup(string id, string name, string country, string region, string town, string district) :
@@ -16,7 +16,7 @@ public class LeisureNodeGroup : NodeGroup {
 	}
 
 	public override void AddComponentNode(string reference, int index, double latitude, double longitude, Dictionary<string, string> tags) {
-		throw new NotImplementedException("Tentative d'insertion d'un noeud composant dans un groupe de noeud non prévu pour en accueillir.\n" + reference + "/" + index);
+		this.AddNode(new LeisureComponentNode(reference, index, latitude, longitude) { Tags = tags });
 	}
 
 	public bool IsStadium() {

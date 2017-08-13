@@ -10,7 +10,7 @@ public class HighwayNodeGroup : NodeGroup {
 	}
 
 	public HighwayNodeGroup(NodeGroup nodeGroup) : base(nodeGroup) {
-		mainType = "highway";
+		primaryType = "highway";
 	}
 
 	public HighwayNodeGroup(string id, string type, string name, string country, string region, string town, string district, int nbWay, int maxSpeed) :

@@ -63,7 +63,7 @@ public class HeightChangingEditor : ObjectEditor {
 		buildingsTools.ChangeBuildingHeight(selectedBuilding, buildingNodeGroup.NbFloor + 1);
 		buildingNodeGroup.NbFloor++;
 
-		this.ShiftVirtualFloors(1, buildingNodeGroup);
+		this.ShiftVirtualLevels(1, buildingNodeGroup);
 		this.UpdateBuildingWallsTexture(buildingNodeGroup);
 		this.UpdateCameraPosition();
 	}
@@ -73,12 +73,12 @@ public class HeightChangingEditor : ObjectEditor {
 		buildingsTools.ChangeBuildingHeight(selectedBuilding, buildingNodeGroup.NbFloor - 1);
 		buildingNodeGroup.NbFloor--;
 
-		this.ShiftVirtualFloors(-1, buildingNodeGroup);
+		this.ShiftVirtualLevels(-1, buildingNodeGroup);
 		this.UpdateBuildingWallsTexture(buildingNodeGroup);
 		this.UpdateCameraPosition();
 	}
 
-	private void ShiftVirtualFloors(int direction, BuildingNodeGroup buildingNodeGroup) {
+	private void ShiftVirtualLevels(int direction, BuildingNodeGroup buildingNodeGroup) {
 		int expansionDirection = direction > 0 ? 1 : -1;
 
 		Vector3 topFloorPosition = topFloor.transform.position;
@@ -103,7 +103,7 @@ public class HeightChangingEditor : ObjectEditor {
 
 	private void UpdateCameraPosition() {
 		CameraController cameraController = Camera.main.GetComponent<CameraController>();
-		float cameraOrientation = cameraController.RelativeOrientation(selectedBuilding);
+		float cameraOrientation = (float) cameraController.RelativeOrientation(selectedBuilding);
 		cameraController.TeleportToBuilding(selectedBuilding, true, cameraOrientation, 15);
 	}
 
@@ -117,6 +117,7 @@ public class HeightChangingEditor : ObjectEditor {
 
 		BuildingNodeGroup buildingNodeGroup = buildingsTools.BuildingToNodeGroup(selectedBuilding);
 		buildingNodeGroup.NbFloor = selectedBuildingStartHeight;
+		this.UpdateBuildingWallsTexture(buildingNodeGroup);
 	}
 
 	public int SelectedBuildingStartHeight {

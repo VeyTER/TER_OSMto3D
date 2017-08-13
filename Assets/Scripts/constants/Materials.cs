@@ -7,7 +7,10 @@ public class Materials {
 	public const string WALL_DEFAULT = FilePaths.MATERIALS_FOLDER_LOCAL + "OfficeGlasses";
 
 	///<summary>Chemin vers le matériau des toits.</summary>
-	public const string ROOF = FilePaths.MATERIALS_FOLDER_LOCAL + "Roof";
+	public const string FLAT_ROOF = FilePaths.MATERIALS_FOLDER_LOCAL + "FlatRoof";
+
+	///<summary>Chemin vers le matériau des toits.</summary>
+	public const string HIPPED_ROOF = FilePaths.MATERIALS_FOLDER_LOCAL + "HippedRoof";
 
 	///<summary>Chemin vers le matériau des routes.</summary>
 	public const string ROAD = FilePaths.MATERIALS_FOLDER_LOCAL + "Road";

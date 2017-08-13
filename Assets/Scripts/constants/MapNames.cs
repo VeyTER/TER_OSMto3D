@@ -6,6 +6,8 @@ public class MapNames {
 
 	public static string CAMPUS_ETENDU = "campus_etendu";
 
+	public static string CAMPUS_ETENDU_2 = "campus_etendu_2";
+
 	public static string CANA_MIDI = "canal_midi";
 
 	public static string CAPITOLE = "capitole";

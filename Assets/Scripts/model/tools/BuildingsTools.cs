@@ -165,6 +165,9 @@ public class BuildingsTools {
 			Vector2 uvVertexPosition = wallMeshFilter.mesh.uv[i];
 			wallMeshFilter.mesh.uv[i] = new Vector2(uvVertexPosition.x, nbFloor);
 		}
+
+		MeshCollider wallsMeshCollider = walls.GetComponent<MeshCollider>();
+		wallsMeshCollider.sharedMesh = wallMeshFilter.sharedMesh;
 	}
 
 	/// <summary>

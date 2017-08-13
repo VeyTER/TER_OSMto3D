@@ -51,7 +51,7 @@ public class ResumeFileManager : OsmFileManager {
 					if (locationNode != null) {
 						// Construction du chemin xPath vers le noeud XML correspondant à la zone la plus locale au groupe
 						// de noeuds et récupération de de noeud
-						string customObjectXPath = zoningXPath + "/" + XmlTags.BUILDING + "/" + nodeGroup.MainType + "[@" + XmlAttributes.NAME + "=\"" + nodeGroup.Name + "\"]";
+						string customObjectXPath = zoningXPath + "/" + XmlTags.BUILDING + "/" + nodeGroup.PrimaryType + "[@" + XmlAttributes.NAME + "=\"" + nodeGroup.Name + "\"]";
 						XmlNode customObjectNode = mapResumedDocument.SelectSingleNode(customObjectXPath);
 
 						XmlNode objectNode = null;
@@ -61,7 +61,7 @@ public class ResumeFileManager : OsmFileManager {
 						// récupérant à partir du noeud XML correspondant à l'objet, soit en le créant si ce sernier
 						// n'existe pas
 						if (customObjectNode == null) {
-							objectNode = mapResumedDocument.CreateElement(nodeGroup.MainType);
+							objectNode = mapResumedDocument.CreateElement(nodeGroup.PrimaryType);
 							objectInfoNode = mapResumedDocument.CreateElement(XmlTags.INFO);
 							objectNode.AppendChild(objectInfoNode);
 						} else {

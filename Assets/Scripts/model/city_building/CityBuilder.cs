@@ -83,6 +83,7 @@ public class CityBuilder {
 	/// summary>
 	private GameObject trafficSignals;
 
+	private GameObject ground;
 
 	private CityBuilder() {
 		this.buildingsTools = BuildingsTools.GetInstance();
@@ -171,9 +172,14 @@ public class CityBuilder {
 		GameObject buildingWalls = building.transform.GetChild(WALLS_INDEX).gameObject;
 		GameObject buildingRoof = building.transform.GetChild(ROOF_INDEX).gameObject;
 
+		Quaternion buildingRotation = building.transform.localRotation;
+
 		GameObject virtualLevel = wallsBuilder.BuildWalls(building, buildingNodeGroup, triangulation, EXPANSION_FACTOR);
+		Quaternion virtualLevelRotation = virtualLevel.transform.localRotation;
+
 		virtualLevel.name = building.name + "virtual_stage_" + floorIndex;
 		virtualLevel.transform.localPosition = new Vector3(0, (floorIndex - 1) * Dimensions.FLOOR_HEIGHT, 0);
+		virtualLevel.transform.localRotation = Quaternion.Euler(virtualLevelRotation.eulerAngles.x, -buildingRotation.eulerAngles.y, virtualLevelRotation.eulerAngles.z);
 
 		buildingsTools.ChangeWallsHeight(virtualLevel, 1);
 
@@ -187,7 +193,6 @@ public class CityBuilder {
 
 		if (buildRoof) {
 			GameObject virtualRoof = roofBuilder.BuildFlatRoof(building, buildingNodeGroup, triangulation, EXPANSION_FACTOR);
-
 			virtualRoof.transform.SetParent(virtualLevel.transform, false);
 			virtualRoof.transform.localPosition = new Vector3(0, Dimensions.FLOOR_HEIGHT, 0);
 
@@ -461,7 +466,7 @@ public class CityBuilder {
 		Vector3 diff = node2 - node1;
 
 		// Construction de l'objet 3D (cube) destiné à former un sol 
-		groundBuilder.BuildGround((float) length, (float) width, (float) nodeGroupBase.MinLat, (float) nodeGroupBase.MinLon, groundMaterial, textureExpansion);
+		ground = groundBuilder.BuildGround((float) length, (float) width, (float) nodeGroupBase.MinLat, (float) nodeGroupBase.MinLon, groundMaterial, textureExpansion);
 	}
 
 	private void LoadMatchingObject(GameObject generatedObject, GameObject parent) {
@@ -499,6 +504,7 @@ public class CityBuilder {
 	}
 
 	public GameObject CityComponents {
+		get { return cityComponents; }
 		set { cityComponents = value; }
 	}
 
@@ -528,6 +534,10 @@ public class CityBuilder {
 
 	public GameObject Trees {
 		get { return trees; }
+	}
+
+	public GameObject Ground {
+		get { return ground; }
 	}
 
 	public GameObject TrafficSignals {

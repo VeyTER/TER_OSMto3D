@@ -126,35 +126,43 @@
     <Compile Include="Assets\Scripts\model\city_building\MapBackgroundsBase.cs" />
     <Compile Include="Assets\Scripts\model\city_building\MaterialData.cs" />
     <Compile Include="Assets\Scripts\model\city_building\RoofBuilder.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\DataAxis.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\communication\ActuatorTrigger.cs" />
+    <Compile Include="Assets\Scripts\model\city_building\WallsBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\city_building\WayBuilder.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\CommandModule.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\DataAxis.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\DualRangeGradient.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\Gradient.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\GradientCell.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\PropertyAi.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\autonomous_control\SingleRangeGradient.cs" />
-    <Compile Include="Assets\Scripts\model\tools\UiBuilder.cs" />
-    <Compile Include="Assets\Scripts\model\city_building\WallsBuilder.cs" />
-    <Compile Include="Assets\Scripts\model\city_building\WayBuilder.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\communication\ActuatorTrigger.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\communication\ComponentPropertiesLoader.cs" />
+    <Compile Include="Assets\Scripts\model\components_managing\communication\SensorDataLoader.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\storage\ActuatorController.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\storage\BuildingRoom.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\communication\ComponentPropertiesLoader.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\storage\RoomComponent.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\storage\SensorData.cs" />
-    <Compile Include="Assets\Scripts\model\components_managing\communication\SensorDataLoader.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\storage\SensorEquippedBuildingsBase.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\storage\SensorThreshold.cs" />
     <Compile Include="Assets\Scripts\model\components_managing\storage\ThresholdConditions.cs" />
+    <Compile Include="Assets\Scripts\model\map_loading\CustomFileManager.cs" />
+    <Compile Include="Assets\Scripts\model\map_loading\MapFileManager.cs" />
+    <Compile Include="Assets\Scripts\model\map_loading\MapLoader.cs" />
+    <Compile Include="Assets\Scripts\model\map_loading\OsmFileManager.cs" />
+    <Compile Include="Assets\Scripts\model\map_loading\ResumeFileManager.cs" />
+    <Compile Include="Assets\Scripts\model\map_loading\SettingsFileManager.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\BuildingStepNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\ComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\HighwayComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\HighwayNodeGroup.cs" />
+    <Compile Include="Assets\Scripts\model\nodes_storage\NaturalStepNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\HighwayStepNode.cs" />
-    <Compile Include="Assets\Scripts\model\nodes_storage\LeisureStepNode.cs" />
+    <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\LeisureNodeGroup.cs" />
+    <Compile Include="Assets\Scripts\model\nodes_storage\LeisureStepNode.cs" />
+    <Compile Include="Assets\Scripts\model\nodes_storage\LeisureComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\NaturalComponentNode.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\NaturalNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\Node.cs" />
@@ -164,20 +172,14 @@
     <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayNodeGroup.cs" />
     <Compile Include="Assets\Scripts\model\nodes_storage\WaterwayStepNode.cs" />
     <Compile Include="Assets\Scripts\model\tools\BuildingsTools.cs" />
-    <Compile Include="Assets\Scripts\model\map_loading\CustomFileManager.cs" />
-    <Compile Include="Assets\Scripts\model\map_loading\MapLoader.cs" />
-    <Compile Include="Assets\Scripts\model\map_loading\MapFileManager.cs" />
-    <Compile Include="Assets\Scripts\model\map_loading\OsmFileManager.cs" />
     <Compile Include="Assets\Scripts\model\tools\OsmTools.cs" />
-    <Compile Include="Assets\Scripts\model\map_loading\ResumeFileManager.cs" />
-    <Compile Include="Assets\Scripts\model\map_loading\SettingsFileManager.cs" />
+    <Compile Include="Assets\Scripts\model\tools\UiBuilder.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\BuildingShape.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\Edge.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\Triangle.cs" />
     <Compile Include="Assets\Scripts\model\triangulation_computing\Triangulation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\OSM data\Maps resumed\testXML.xml" />
     <None Include="Assets\Resources\Meta data\maps_background_details.txt" />
     <None Include="Assets\Resources\Meta data\materials_details.txt" />
     <None Include="Assets\Resources\Meta data\objects_properties.txt" />
@@ -186,7 +188,6 @@
     <None Include="Assets\Scripts data\sensors_equipped_buildings.txt" />
     <None Include="Assets\Shaders\Standard.shader" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
 </Project>

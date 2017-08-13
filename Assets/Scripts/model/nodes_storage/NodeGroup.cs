@@ -5,7 +5,7 @@ public abstract class NodeGroup {
 	protected string id;
 	protected string name;
 
-	protected string mainType;
+	protected string primaryType;
 	protected string secondaryType;
 
 	protected List<Node> nodes;
@@ -22,11 +22,11 @@ public abstract class NodeGroup {
 	protected string town;
 	protected string district;
 
-	public NodeGroup(string id, string mainType, string secodnaryType) {
+	public NodeGroup(string id, string primaryType, string secodnaryType) {
 		this.id = id;
 		this.name = "unknown";
 
-		this.mainType = mainType;
+		this.primaryType = primaryType;
 		this.secondaryType = (secodnaryType == "yes" ? null : secodnaryType);
 
 		this.nodes = new List<Node> ();
@@ -44,11 +44,11 @@ public abstract class NodeGroup {
 		this.district = "unknown";
 	}
 
-	public NodeGroup(string id, string mainType, string name, string country, string region, string town, string district) {
+	public NodeGroup(string id, string primaryType, string name, string country, string region, string town, string district) {
 		this.id = id;
 		this.name = name;
 
-		this.mainType = mainType;
+		this.primaryType = primaryType;
 		this.secondaryType = null;
 
 		this.nodes = new List<Node>();
@@ -70,7 +70,7 @@ public abstract class NodeGroup {
 		this.id = nodeGroup.id;
 		this.name = nodeGroup.Name;
 
-		this.mainType = nodeGroup.mainType;
+		this.primaryType = nodeGroup.primaryType;
 		this.secondaryType = nodeGroup.secondaryType;
 
 		this.nodes = nodeGroup.Nodes;
@@ -97,8 +97,8 @@ public abstract class NodeGroup {
 
 	public abstract void AddComponentNode(string reference, int index, double latitude, double longitude, Dictionary<string, string> tags);
 
-	public Node GetNode(int nodeOrder) {
-		return nodes[nodeOrder];
+	public Node GetNode(int nodeIndex) {
+		return nodes[nodeIndex];
 	}
 
 	public Node GetNode(string nodeId) {
@@ -164,6 +164,15 @@ public abstract class NodeGroup {
 		}
 	}
 
+	public string DefaultName() {
+		if (secondaryType != null)
+			return secondaryType + " n°" + id;
+		else if (primaryType != null)
+			return primaryType + " n°" + id;
+		else
+			return "Unkown object";
+	}
+
 	public string Id {
 		get { return id; }
 		set { id = value; }
@@ -174,9 +183,9 @@ public abstract class NodeGroup {
 		set { name = value; }
 	}
 
-	public string MainType {
-		get { return mainType; }
-		set { mainType = value; }
+	public string PrimaryType {
+		get { return primaryType; }
+		set { primaryType = value; }
 	}
 
 	public string SecondaryType {

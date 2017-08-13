@@ -261,8 +261,12 @@ public class EditController : MonoBehaviour {
 		if (!renamedBuildings.ContainsKey(building))
 			renamedBuildings.Add(building, building.name);
 
+
 		// Changement du nom du GameObject et du NodeGroupe correspondant au bâtiment
 		NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup (building);
+		if (newName.Equals(String.Empty))
+			newName = nodeGroup.DefaultName();
+
 		nodeGroup.Name = newName;
 		building.name = newName;
 
@@ -366,7 +370,7 @@ public class EditController : MonoBehaviour {
 			buildingsTools.ColorAsSelected(selectedBuilding);
 
 			// Fermeture du panneau latéral et désactivation de ce dernier lorsqu'il est fermé
-			cameraController.StopTurningAround();
+			cameraController.RestaurePreviousState();
 			skinChangingEditor.SkinPanelController.ClosePanel(() => {
 				skinChangingEditor.SkinPanel.SetActive(false);
 			});
@@ -463,8 +467,12 @@ public class EditController : MonoBehaviour {
 
 	private void ValidateRenaming() {
 		foreach (KeyValuePair<GameObject, string> buildingEntry in renamedBuildings) {
-			GameObject renamedBuilding = (GameObject) buildingEntry.Key;
+			GameObject renamedBuilding = buildingEntry.Key;
 			string oldName = buildingEntry.Value;
+
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(renamedBuilding);
+			if (oldName.Equals(String.Empty))
+				renamedBuilding.name = nodeGroup.DefaultName();
 
 			if (!renamedBuilding.name.Equals(oldName))
 				buildingsTools.UpdateName(renamedBuilding);
@@ -541,6 +549,10 @@ public class EditController : MonoBehaviour {
 		foreach (KeyValuePair<GameObject, string> buildingEntry in renamedBuildings) {
 			GameObject renamedBuilding = (GameObject) buildingEntry.Key;
 			string oldName = buildingEntry.Value;
+
+			NodeGroup nodeGroup = buildingsTools.BuildingToNodeGroup(renamedBuilding);
+			if (oldName.Equals(String.Empty))
+				renamedBuilding.name = nodeGroup.DefaultName();
 
 			renamedBuilding.name = oldName;
 			foreach (Transform buildingPartTransform in renamedBuilding.transform) {

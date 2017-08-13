@@ -5,7 +5,7 @@ public class WaterwayNodeGroup : NodeGroup {
 	public WaterwayNodeGroup(string id, string secondaryType) : base(id, "waterway", secondaryType) { }
 
 	public WaterwayNodeGroup(NodeGroup nodeGroup) : base(nodeGroup) {
-		this.mainType = "waterway";
+		this.primaryType = "waterway";
 	}
 
 	public WaterwayNodeGroup(string id, string name, string country, string region, string town, string district) :
@@ -16,6 +16,6 @@ public class WaterwayNodeGroup : NodeGroup {
 	}
 
 	public override void AddComponentNode(string reference, int index, double latitude, double longitude, Dictionary<string, string> tags) {
-		throw new NotImplementedException("Tentative d'insertion d'un noeud composant dans un groupe de noeud non prévu pour en accueillir.\n" + reference + "/" + index);
+		this.AddNode(new WaterwayComponentNode(reference, index, latitude, longitude) { Tags = tags });
 	}
 }

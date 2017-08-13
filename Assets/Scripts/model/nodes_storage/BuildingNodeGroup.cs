@@ -22,7 +22,7 @@ public class BuildingNodeGroup : NodeGroup {
 	}
 
 	public BuildingNodeGroup(NodeGroup nodeGroup) : base(nodeGroup) {
-		mainType = "building";
+		primaryType = "building";
 	}
 
 	public BuildingNodeGroup(string id, string name, string country, string region, string town, string district, string roofShape, int roofAngle, Material customMaterial, Color overlayColor) :
