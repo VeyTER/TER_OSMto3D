@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
 
-public class PropertyAi {
+public class DevicesAi {
 	private List<CommandModule> commandModules;
 
-	public PropertyAi() {
+	public DevicesAi() {
 		this.commandModules = new List<CommandModule>();
 	}
 

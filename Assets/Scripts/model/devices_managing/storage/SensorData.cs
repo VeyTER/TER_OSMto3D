@@ -1,4 +1,4 @@
-﻿public class SensorData : RoomComponent {
+﻿public class SensorData : RoomDevice {
 	private string sensorName;
 	private string iconPath;
 

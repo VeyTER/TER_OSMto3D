@@ -4,16 +4,16 @@ using System.IO;
 using System.Collections.Generic;
 using System;
 
-public class ComponentPropertiesLoader {
-	private static ComponentPropertiesLoader instance;
+public class DevicePropertiesLoader {
+	private static DevicePropertiesLoader instance;
 
-	public static ComponentPropertiesLoader GetInstance() {
+	public static DevicePropertiesLoader GetInstance() {
 		if (instance == null)
-			instance = new ComponentPropertiesLoader();
+			instance = new DevicePropertiesLoader();
 		return instance;
 	}
 
-	public void LoadComponentsProperties(Dictionary<string, BuildingRoom> buildingRooms, string buildingName, ref bool alertDetected) {
+	public void LoadDevicesProperties(Dictionary<string, BuildingRoom> buildingRooms, string buildingName, ref bool alertDetected) {
 		XmlDocument thresholdDocument = new XmlDocument();
 
 		if (File.Exists(FilePaths.COMPONENTS_PROPERTIES_FILE)) {
@@ -22,9 +22,9 @@ public class ComponentPropertiesLoader {
 			foreach (KeyValuePair<string, BuildingRoom> buildingRoomEntry in buildingRooms) {
 				BuildingRoom buildingRoom = buildingRoomEntry.Value;
 
-				foreach (KeyValuePair<SensorData, ActuatorController> componentPair in buildingRoomEntry.Value.ComponentPairs) {
-					SensorData singleSensorData = componentPair.Key;
-					ActuatorController matchingActuatorController = buildingRoom.ComponentPairs[singleSensorData];
+				foreach (KeyValuePair<SensorData, ActuatorController> devicePair in buildingRoomEntry.Value.DevicePairs) {
+					SensorData singleSensorData = devicePair.Key;
+					ActuatorController matchingActuatorController = buildingRoom.DevicePairs[singleSensorData];
 
 					string sensorXPath = XmlTags.THRESHOLDS + "/";
 					sensorXPath += XmlTags.BUILDING_COMPONENTS_GROUP + "[@" + XmlAttributes.NAME + "=\"" + buildingName + "\"]" + "/";

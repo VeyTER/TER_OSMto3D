@@ -149,12 +149,12 @@ public class SkinChangingEditor : ObjectEditor {
 			lightButtonRect.sizeDelta = new Vector2(lightButtonRect.sizeDelta.x, 30);
 			darkButtonRect.sizeDelta = new Vector2(darkButtonRect.sizeDelta.x, 25);
 
-			Button lightButtonComponent = buttonToLight.GetComponent<Button>();
-			Button shadowButtonComponent = buttonToDark.GetComponent<Button>();
+			Button lightButtonDevice = buttonToLight.GetComponent<Button>();
+			Button shadowButtonDevice = buttonToDark.GetComponent<Button>();
 
-			lightButtonComponent.interactable = false;
-			shadowButtonComponent.interactable = true;
-			shadowButtonComponent.OnPointerExit(null);
+			lightButtonDevice.interactable = false;
+			shadowButtonDevice.interactable = true;
+			shadowButtonDevice.OnPointerExit(null);
 		}
 	}
 

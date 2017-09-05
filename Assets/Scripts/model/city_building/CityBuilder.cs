@@ -39,7 +39,7 @@ public class CityBuilder {
 	/// <summary>
 	/// 	Object 3D représentant la ville, contient tous les objects de la ville sous forme de sous-groupes.
 	/// </summary>
-	private GameObject cityComponents;
+	private GameObject cityDevices;
 
 	/// <summary>
 	/// 	Object 3D contenant tous les groupes de murs, vus par l'application comme des bâtiments.
@@ -113,7 +113,7 @@ public class CityBuilder {
 	public void BuildBuildings() {
 		// Récupération de l'objet contenant les groupes de murs (bâtiments) et ajout de celui-ci à la ville
 		buildings = new GameObject(CityObjectNames.WALLS);
-		buildings.transform.parent = cityComponents.transform;
+		buildings.transform.parent = cityDevices.transform;
 
 		// Ajout d'un gestionnaire d'interface au groupe de bâtiments et affectaton du controlleur de modification,
 		// contenu dans ce groupe, à ce gestionnaire
@@ -159,7 +159,7 @@ public class CityBuilder {
 		}
 
 		if (sensorsEquippedBuildingBase.SensorsEquippedBuildings.ContainsKey(building.name))
-			building.AddComponent<BuildingComponentsController>();
+			building.AddComponent<BuildingDevicesController>();
 
 		this.LoadMatchingObject(building, buildings);
 
@@ -231,23 +231,23 @@ public class CityBuilder {
 	public void BuildWays() {
 		// Récupération de l'objet contenant les routes classiques et ajout de celui-ci à la ville
 		roads = new GameObject(CityObjectNames.ROADS);
-		roads.transform.parent = cityComponents.transform;
+		roads.transform.parent = cityDevices.transform;
 
 		// Récupération de l'objet contenant les pistes cyclables et ajout de celui-ci à la ville
 		cycleways = new GameObject(CityObjectNames.CYCLEWAYS);
-		cycleways.transform.parent = cityComponents.transform;
+		cycleways.transform.parent = cityDevices.transform;
 
 		// Récupération de l'objet contenant les chemins piétons et ajout de celui-ci à la ville
 		footways = new GameObject(CityObjectNames.FOOTWAYS);
-		footways.transform.parent = cityComponents.transform;
+		footways.transform.parent = cityDevices.transform;
 
 		// Récupération de l'objet contenant les chemins piétons et ajout de celui-ci à la ville
 		busLanes = new GameObject(CityObjectNames.BUS_LANES);
-		busLanes.transform.parent = cityComponents.transform;
+		busLanes.transform.parent = cityDevices.transform;
 
 		// Récupération de l'objet contenant les chemins piétons et ajout de celui-ci à la ville
 		waterways = new GameObject(CityObjectNames.WATERWAYS);
-		waterways.transform.parent = cityComponents.transform;
+		waterways.transform.parent = cityDevices.transform;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
@@ -303,7 +303,7 @@ public class CityBuilder {
 
 	public void BuildLeisures() {
 		leisures = new GameObject(CityObjectNames.LEISURES);
-		leisures.transform.parent = cityComponents.transform;
+		leisures.transform.parent = cityDevices.transform;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			NodeGroup nodeGroup = nodeGroupEntry.Value;
@@ -332,7 +332,7 @@ public class CityBuilder {
 	public void BuildTrees() {
 		// Récupération de l'objet contenant les arbres et ajout de celui-ci à la ville
 		trees = new GameObject(CityObjectNames.TREES);
-		trees.transform.parent = cityComponents.transform;
+		trees.transform.parent = cityDevices.transform;
 
 		float heightJitter = Dimensions.TRUNC_HEIGHT * 0.4F;
 		float diameterJitter = Dimensions.TRUNC_DIAMTETER * 0.2F;
@@ -404,7 +404,7 @@ public class CityBuilder {
 
 		// Récupération de l'objet contenant les feux de signalisation et ajout de celui-ci à la ville
 		trafficSignals = new GameObject(CityObjectNames.TRAFFIC_SIGNALS);
-		trafficSignals.transform.parent = cityComponents.transform;
+		trafficSignals.transform.parent = cityDevices.transform;
 
 		foreach (KeyValuePair<string, NodeGroup> nodeGroupEntry in nodeGroupBase.NodeGroups) {
 			if (nodeGroupEntry.Value.GetType() == typeof(HighwayNodeGroup)) {
@@ -420,7 +420,7 @@ public class CityBuilder {
 
 							GameObject trafficSignal = GameObject.Instantiate(Resources.Load<GameObject>(GameObjects.TRAFFIC_SIGNAL));
 							trafficSignal.transform.SetParent(trafficSignals.transform, false);
-							trafficSignal.transform.position = new Vector3(posX, 0, posZ);
+							trafficSignal.transform.position = new Vector3(posX, Dimensions.ROAD_ELEVATION, posZ);
 							trafficSignal.transform.localScale = new Vector3(Dimensions.SCALE_FACTOR, Dimensions.SCALE_FACTOR, Dimensions.SCALE_FACTOR);
 
 							this.LoadMatchingObject(trafficSignal, TrafficSignals);
@@ -449,15 +449,12 @@ public class CityBuilder {
 			groundMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
 		}
 
-		double latitude = (nodeGroupBase.MinLat + nodeGroupBase.MaxLat) / 2F;
-		double longitude = (nodeGroupBase.MinLon + nodeGroupBase.MaxLon) / 2F;
-
-		double length = nodeGroupBase.MaxLon - nodeGroupBase.MinLon;
-		double width = nodeGroupBase.MaxLat - nodeGroupBase.MinLat;
+		float length = (float) (nodeGroupBase.MaxLon - nodeGroupBase.MinLon);
+		float width = (float) (nodeGroupBase.MaxLat - nodeGroupBase.MinLat);
 
 		Vector2 textureExpansion = Vector2.one;
 		if (backgroundName == null)
-			textureExpansion = new Vector2((float) length * 40F, (float) width * 40F);
+			textureExpansion = new Vector2(length * 40F, width * 40F);
 
 		// Calcul des coordonnées du milieu du vecteur formé par les 2 noeuds des extrémités
 		Vector3 node1 = new Vector3((float) nodeGroupBase.MaxLon, 0, (float) nodeGroupBase.MaxLat);
@@ -466,7 +463,7 @@ public class CityBuilder {
 		Vector3 diff = node2 - node1;
 
 		// Construction de l'objet 3D (cube) destiné à former un sol 
-		ground = groundBuilder.BuildGround((float) length, (float) width, (float) nodeGroupBase.MinLat, (float) nodeGroupBase.MinLon, groundMaterial, textureExpansion);
+		ground = groundBuilder.BuildGround(length, width, (float) nodeGroupBase.MinLat, (float) nodeGroupBase.MinLon, groundMaterial, textureExpansion);
 	}
 
 	private void LoadMatchingObject(GameObject generatedObject, GameObject parent) {
@@ -503,9 +500,9 @@ public class CityBuilder {
 		get { return nodeGroupBase; }
 	}
 
-	public GameObject CityComponents {
-		get { return cityComponents; }
-		set { cityComponents = value; }
+	public GameObject CityDevices {
+		get { return cityDevices; }
+		set { cityDevices = value; }
 	}
 
 	public GameObject Buildings {

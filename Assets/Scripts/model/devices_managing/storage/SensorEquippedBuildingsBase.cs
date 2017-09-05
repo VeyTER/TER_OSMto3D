@@ -17,9 +17,9 @@ public class SensorEquippedBuildingBase {
 			string[] linesArray = lines.Split('\n');
 
 			foreach (string line in linesArray) {
-				string[] lineComponents = line.Split('\t');
-				string buildingName = lineComponents[0];
-				string buildingIdentifier = lineComponents[1].Replace("\r", "");
+				string[] lineDevices = line.Split('\t');
+				string buildingName = lineDevices[0];
+				string buildingIdentifier = lineDevices[1].Replace("\r", "");
 				sensorsEquippedBuildings[buildingName] = buildingIdentifier;
 			}
 

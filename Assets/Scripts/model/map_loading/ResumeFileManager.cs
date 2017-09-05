@@ -367,8 +367,8 @@ public class ResumeFileManager : OsmFileManager {
 		}
 
 		if (areaBuildingInfo[4] != null) {
-			String[] colorComponents = areaBuildingInfo[4].Split(';');
-			Color overlayColor = new Color(float.Parse(colorComponents[0]), float.Parse(colorComponents[1]), float.Parse(colorComponents[2]));
+			String[] colorDevices = areaBuildingInfo[4].Split(';');
+			Color overlayColor = new Color(float.Parse(colorDevices[0]), float.Parse(colorDevices[1]), float.Parse(colorDevices[2]));
 			buildingNodeGroup.OverlayColor = overlayColor;
 		} else {
 			buildingNodeGroup.OverlayColor = new Color(1, 1, 1);

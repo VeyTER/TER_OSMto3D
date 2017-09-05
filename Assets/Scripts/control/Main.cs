@@ -15,7 +15,7 @@ using System.IO;
 /// </summary>
 public class Main : MonoBehaviour {
 	/// <summary>Chemin vers le fichier OSM contenant les données de la ville.</summary>
-	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAMPUS + ".osm";
+	private static string OSM_FILE_NAME = FilePaths.MAPS_FOLDER + MapNames.CAMPUS_ETENDU_2 + ".osm";
 
 	private MapLoader mapLoader;
 	private CityBuilder cityBuilder;
@@ -32,11 +32,6 @@ public class Main : MonoBehaviour {
 			this.BuildCity();
 			this.SetupPanels();
 		}
-
-		// **** TODO : À SUPPRIMER **** //
-		//cityBuilder.CityComponents.transform.position = new Vector3(cityBuilder.CityComponents.transform.position.x - 1466.877F, 0, cityBuilder.CityComponents.transform.position.z - 43562.59F);
-		//cityBuilder.Ground.transform.position = new Vector3(cityBuilder.Ground.transform.position.x - 1466.877F, 0, cityBuilder.Ground.transform.position.z - 43562.59F);
-		//Camera.main.transform.position = new Vector3(Camera.main.transform.position.x - 1466.877F, 0, Camera.main.transform.position.z - 43562.59F);
 	}
 
 	/// <summary>
@@ -58,7 +53,7 @@ public class Main : MonoBehaviour {
 		cityBuilder.NodeGroupBase.ScaleNodes(Dimensions.NODE_SCALE);
 
 		// Construction de la ville
-		cityBuilder.CityComponents = new GameObject(CityObjectNames.CITY);
+		cityBuilder.CityDevices = new GameObject(CityObjectNames.CITY);
 		cityBuilder.BuildBuildings();
 		cityBuilder.BuildWays();
 		cityBuilder.BuildLeisures();

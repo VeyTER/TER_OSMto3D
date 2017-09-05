@@ -1,4 +1,4 @@
-﻿public class RoomComponent {
+﻿public class RoomDevice {
 	protected uint index;
 
 	protected string buildingName;
@@ -8,7 +8,7 @@
 	protected string value;
 	protected string unit;
 
-	public RoomComponent(uint index, string buildingName, string roomName, string xmlIdentifier, string value, string unit) {
+	public RoomDevice(uint index, string buildingName, string roomName, string xmlIdentifier, string value, string unit) {
 		this.index = index;
 
 		this.buildingName = buildingName;

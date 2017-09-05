@@ -10,6 +10,7 @@ public class Dimensions {
 	public const float ROOF_HEIGHT = FLOOR_HEIGHT * 0.65F;
 
 	public const float WAY_ELEVATION = 0.002F * SCALE_FACTOR;
+	public const float ROAD_ELEVATION = WAY_ELEVATION + 0.001F * SCALE_FACTOR;
 
 	public const float ROAD_WIDTH = 0.06F * SCALE_FACTOR;
 	public const float BUS_LANE_WIDTH = ROAD_WIDTH;

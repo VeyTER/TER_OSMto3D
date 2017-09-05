@@ -57,9 +57,9 @@ public class UiBuilder {
 	}
 
 	private GameObject BuildBuildingDataBoxContent(GameObject dataBox, BuildingRoom buildingRoom) {
-		foreach (KeyValuePair<SensorData, ActuatorController> componentPair in buildingRoom.ComponentPairs) {
-			SensorData sensorData = componentPair.Key;
-			ActuatorController actuatorController = componentPair.Value;
+		foreach (KeyValuePair<SensorData, ActuatorController> devicePair in buildingRoom.DevicePairs) {
+			SensorData sensorData = devicePair.Key;
+			ActuatorController actuatorController = devicePair.Value;
 
 			GameObject sensorIndicator = this.BuildBuildingSensorIndicator(dataBox, sensorData.Index);
 			if (actuatorController != null)

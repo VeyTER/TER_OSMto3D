@@ -131,7 +131,7 @@ public class XmlTags {
 	public const string VALUE_UNITS = "value_units";
 
 
-	public const string COMPONENTS = "components";
+	public const string COMPONENTS = "devices";
 
 	public const string THRESHOLDS = "thresholds";
 	public const string BUILDING_COMPONENTS_GROUP = "building";

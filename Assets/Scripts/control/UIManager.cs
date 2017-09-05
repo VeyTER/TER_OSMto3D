@@ -134,8 +134,8 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 
 			if (dataDisplay != null && dataDisplay.tag.Equals(GoTags.DATA_CANVAS)) {
 				GameObject attachedBuilding = BuildingsTools.GetInstance().DataDisplayToBuilding(dataDisplay);
-				BuildingComponentsController componentsController = attachedBuilding.GetComponent<BuildingComponentsController>();
-				componentsController.FixActuatorValue(originInputFiled.gameObject);
+				BuildingDevicesController devicesController = attachedBuilding.GetComponent<BuildingDevicesController>();
+				devicesController.FixActuatorValue(originInputFiled.gameObject);
 			}
 			break;
 		}
@@ -316,7 +316,7 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 		if (controlPanelManager.AllPanelsClosed() && editController.IsInactive()) {
 			this.OnPointerUpControlPanel();
 			this.OnPointerUpEditControler();
-			this.OnPointerUpBuildingComponentsController();
+			this.OnPointerUpBuildingDevicesController();
 		} else {
 			if (!controlPanelManager.AllPanelsClosed()) {
 				this.OnPointerUpControlPanel();
@@ -325,7 +325,7 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 			if (!editController.IsInactive()) {
 				this.OnPointerUpEditControler();
 			} else {
-				this.OnPointerUpBuildingComponentsController();
+				this.OnPointerUpBuildingDevicesController();
 			}
 		}
 	}
@@ -597,25 +597,25 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 		}
 	}
 
-	private void OnPointerUpBuildingComponentsController() {
+	private void OnPointerUpBuildingDevicesController() {
 		GameObject dataDisplay = gameObject;
 		for (; !dataDisplay.tag.Equals(GoTags.DATA_CANVAS) && dataDisplay.transform.parent != null; dataDisplay = dataDisplay.transform.parent.gameObject) ;
 
 		if (dataDisplay != null && dataDisplay.tag.Equals(GoTags.DATA_CANVAS)) {
 			GameObject attachedBuilding = BuildingsTools.GetInstance().DataDisplayToBuilding(dataDisplay);
-			BuildingComponentsController componentsController = attachedBuilding.GetComponent<BuildingComponentsController>();
+			BuildingDevicesController devicesController = attachedBuilding.GetComponent<BuildingDevicesController>();
 
 			switch (name.Split('_')[0]) {
 			case UiNames.BUILDING_DATA_ICON_BUTTON:
-				componentsController.ToggleHeightState();
+				devicesController.ToggleHeightState();
 				break;
 			case UiNames.ACTUATOR_DECREASE_BUTTON:
 				GameObject decreaseActuatorInput = transform.parent.Find(UiNames.ACTUATOR_VALUE_INPUT).gameObject;
-				componentsController.ShiftActuatorValue(decreaseActuatorInput, -1);
+				devicesController.ShiftActuatorValue(decreaseActuatorInput, -1);
 				break;
 			case UiNames.ACTUATOR_INCREASE_BUTTON:
 				GameObject increaseActuatorInput = transform.parent.Find(UiNames.ACTUATOR_VALUE_INPUT).gameObject;
-				componentsController.ShiftActuatorValue(increaseActuatorInput, 1);
+				devicesController.ShiftActuatorValue(increaseActuatorInput, 1);
 				break;
 			}
 		}
@@ -624,22 +624,22 @@ public class UiManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
 	public void ActivateWallRangeButton() {
 		GameObject buildingRangeButton = GameObject.Find (UiNames.BUILDING_RANGE_BUTTON);
 
-		Button wallButtonComponent = GetComponent<Button> ();
-		Button buildingButtonComponent = buildingRangeButton.GetComponent<Button> ();
+		Button wallButtonDevice = GetComponent<Button> ();
+		Button buildingButtonDevice = buildingRangeButton.GetComponent<Button> ();
 
 		// Verrouillage du bouton des murs et déverrouillage du boutons des bâtiments
-		wallButtonComponent.interactable = false;
-		buildingButtonComponent.interactable = true;
+		wallButtonDevice.interactable = false;
+		buildingButtonDevice.interactable = true;
 	}
 
 	public void ActivateBuildingRangeButton() {
 		GameObject wallRangeButton = GameObject.Find (UiNames.WALL_RANGE_BUTTON);
 
-		Button wallButtonComponent = wallRangeButton.GetComponent<Button> ();
-		Button buildingButtonComponent = GetComponent<Button> ();
+		Button wallButtonDevice = wallRangeButton.GetComponent<Button> ();
+		Button buildingButtonDevice = GetComponent<Button> ();
 
 		// Verrouillage du bouton des bâtiments et déverrouillage du boutons des murs
-		wallButtonComponent.interactable = true;
-		buildingButtonComponent.interactable = false;
+		wallButtonDevice.interactable = true;
+		buildingButtonDevice.interactable = false;
 	}
 }

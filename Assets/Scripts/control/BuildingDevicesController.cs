@@ -10,8 +10,11 @@ using System.Text.RegularExpressions;
 ///		Contrôle les composants présents sur les bâtiments, c'est à dire les capteurs et les actionneurs. Cette
 ///		classe lance la récupération des données et actualise l'affichage dès que les données sont récupérées.
 /// </summary>
-public class BuildingComponentsController : MonoBehaviour {
+public class BuildingDevicesController : MonoBehaviour {
 	private static int RELOADING_PERIOD = 20;
+
+	private enum OperatigModes { REAL, SIMULATION }
+	private OperatigModes operatingMode;
 
 	private enum DisplayState { ICON_ONLY, ICON_ONLY_TO_FULL_DISPLAY, FULL_DISPLAY, FULL_DISPLAY_TO_ICON_ONLY }
 	private DisplayState displayState;
@@ -34,6 +37,8 @@ public class BuildingComponentsController : MonoBehaviour {
 	private readonly object synchronisationLock = new object();
 
 	public void Start() {
+		this.operatingMode = OperatigModes.REAL;
+
 		this.displayState = DisplayState.ICON_ONLY;
 		this.receptionStatus = ReceptionStatus.INACTIVE;
 
@@ -48,17 +53,40 @@ public class BuildingComponentsController : MonoBehaviour {
 
 		this.isUnderAlert = false;
 
-		this.ReloadData();
+		if(operatingMode == OperatigModes.REAL)
+			this.ReloadData();
 	}
 
 	public void Update() {
-		if (Time.time - timeFlag >= RELOADING_PERIOD)
-			this.ReloadData();
+		if (receptionStatus == ReceptionStatus.INACTIVE) {
+			if (this.TimeToReloadData()) {
+				receptionStatus = ReceptionStatus.LOADING;
+				this.ReloadData();
+			}
+		}
+
+		if (receptionStatus == ReceptionStatus.LOADING) {
+			if(operatingMode == OperatigModes.SIMULATION)
+				buildingRooms = DevicesSimulationBuilder.GetInstance().BuildSimulation(Input.GetKey(KeyCode.A));
+
+			if (this.TimeToUpdateDisplay())
+				receptionStatus = ReceptionStatus.TERMINATED;
+		}
 
 		if (receptionStatus == ReceptionStatus.TERMINATED)
 			this.UpdateDataDisplay();
 
 		this.SetOrientationToCamera();
+	}
+
+	private bool TimeToReloadData() {
+		return (Input.GetKey(KeyCode.E) && operatingMode == OperatigModes.SIMULATION)
+			|| (Time.time - timeFlag >= RELOADING_PERIOD && operatingMode == OperatigModes.SIMULATION);
+	}
+
+	private bool TimeToUpdateDisplay() {
+		return (Input.GetKey(KeyCode.R) && operatingMode == OperatigModes.SIMULATION)
+			|| (receptionStatus == ReceptionStatus.LOADING && operatingMode == OperatigModes.SIMULATION);
 	}
 
 	private void ReloadData() {
@@ -82,11 +110,15 @@ public class BuildingComponentsController : MonoBehaviour {
 	private void UpdateDataDisplay() {
 		this.receptionStatus = ReceptionStatus.INACTIVE;
 
-		isUnderAlert = false;
+
+		bool alertDetected = false;
 		lock (synchronisationLock) {
-			ComponentPropertiesLoader propertiesLoader = ComponentPropertiesLoader.GetInstance();
-			propertiesLoader.LoadComponentsProperties(buildingRooms, name, ref isUnderAlert);
+			DevicePropertiesLoader propertiesLoader = DevicePropertiesLoader.GetInstance();
+			propertiesLoader.LoadDevicesProperties(buildingRooms, name, ref alertDetected);
 		}
+		isUnderAlert = alertDetected;
+
+		Debug.Log(isUnderAlert);
 
 		this.StopDataBuildingIconAnimation();
 		this.StartCoroutine(this.ScaleDataBuildingIcon(-1));
@@ -313,11 +345,11 @@ public class BuildingComponentsController : MonoBehaviour {
 				for (int i = 1; i < lastAddedDataBox.transform.childCount; i++) {
 					GameObject indicator = lastAddedDataBox.transform.GetChild(i).gameObject;
 
-					string[] titleComponents = indicator.name.Split('_');
-					int indicatorIndex = int.Parse(titleComponents[2]);
+					string[] titleDevices = indicator.name.Split('_');
+					int indicatorIndex = int.Parse(titleDevices[2]);
 
 					SensorData sensorData = buildingRoom.GetSensorData(indicatorIndex);
-					ActuatorController actuatorController = buildingRoom.ComponentPairs[sensorData];
+					ActuatorController actuatorController = buildingRoom.DevicePairs[sensorData];
 
 					this.UpdateIndicatorValues(indicator, sensorData);
 
@@ -524,7 +556,7 @@ public class BuildingComponentsController : MonoBehaviour {
 
 	private IEnumerator FlipDataBoxItems(Action middleTimeAction, Action finalAction) {
 		float initOrientation = 0;
-		float initOpacity = 1;
+		float initOpacity = (displayState == DisplayState.ICON_ONLY || displayState == DisplayState.ICON_ONLY_TO_FULL_DISPLAY) ? 0 : 1;
 
 		float midEndOrientation = 90;
 		float midStartOrientation = -90;

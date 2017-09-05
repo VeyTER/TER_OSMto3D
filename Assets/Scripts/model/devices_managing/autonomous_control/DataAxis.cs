@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-public class DataAxis {
+﻿public class DataAxis {
 	private float minValue;
 	private float maxValue;
 

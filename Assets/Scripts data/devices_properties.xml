@@ -2,7 +2,7 @@
 <thresholds>
 	<building name="U4">
 		<room name="302">
-			<components name="luminosity">
+			<devices name="luminosity">
 				<sensor condition="in">
 					<min value="-7"/>
 					<max value="1"/>
@@ -12,8 +12,8 @@
 					<max value="40"/>
 					<step value="0.5"/>
 				</actuator>
-			</components>
-			<components name="luminosity">
+			</devices>
+			<devices name="luminosity">
 				<sensor condition="in">
 					<min value="0"/>
 					<max value="500"/>
@@ -23,21 +23,21 @@
 					<max value="100"/>
 					<step value="1"/>
 				</actuator>
-			</components>
+			</devices>
 		</room>
 		<room name="campusfab">
-			<components name="temperature">
+			<devices name="temperature">
 				<sensor condition="in">
 					<min value="-7"/>
-					<max value="35"/>
+					<max value="25"/>
 				</sensor>
 				<actuator name="heaters">
 					<min value="8"/>
 					<max value="40"/>
 					<step value="0.5"/>
 				</actuator>
-			</components>
-			<components name="luminosity">
+			</devices>
+			<devices name="luminosity">
 				<sensor condition="in">
 					<min value="0"/>
 					<max value="500"/>
@@ -47,7 +47,7 @@
 					<max value="100"/>
 					<step value="1"/>
 				</actuator>
-			</components>
+			</devices>
 		</room>
 	</building>
 </thresholds>

@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-public abstract class Gradient {
+﻿public abstract class Gradient {
 	public enum GradientsTypes { STATIC, TEMPORAL }
 	protected GradientsTypes gradientType;
 

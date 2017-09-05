@@ -1,4 +1,4 @@
-﻿public class ActuatorController : RoomComponent {
+﻿public class ActuatorController : RoomDevice {
 	private double minValue;
 	private double maxValue;
 

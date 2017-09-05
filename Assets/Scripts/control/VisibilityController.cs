@@ -42,47 +42,47 @@ public class VisibilityController {
 
 	public void HideBuildingNodes() {
 		buildingNodesVisibility = false;
-		this.ChangeBuildingComponentVisibility(false, CityBuilder.BUILDING_NODES_INDEX);
+		this.ChangeBuildingDeviceVisibility(false, CityBuilder.BUILDING_NODES_INDEX);
 	}
 	public void ShowBuildingNodes() {
 		buildingNodesVisibility = true;
-		this.ChangeBuildingComponentVisibility(true, CityBuilder.BUILDING_NODES_INDEX);
+		this.ChangeBuildingDeviceVisibility(true, CityBuilder.BUILDING_NODES_INDEX);
 	}
 
 	public void HideRoadsNodes() {
 		roadsNodesVisibility = false;
-		this.ChangeRoadComponentVisibility(false, CityBuilder.ROAD_NODES_INDEX);
+		this.ChangeRoadDeviceVisibility(false, CityBuilder.ROAD_NODES_INDEX);
 	}
 	public void ShowRoadsNodes() {
 		roadsNodesVisibility = true;
-		this.ChangeRoadComponentVisibility(true, CityBuilder.ROAD_NODES_INDEX);
+		this.ChangeRoadDeviceVisibility(true, CityBuilder.ROAD_NODES_INDEX);
 	}
 
 	public void HideWalls() {
 		wallsVisibility = false;
-		this.ChangeBuildingComponentVisibility(false, CityBuilder.WALLS_INDEX);
+		this.ChangeBuildingDeviceVisibility(false, CityBuilder.WALLS_INDEX);
 	}
 	public void ShowWalls() {
 		wallsVisibility = true;
-		this.ChangeBuildingComponentVisibility(true, CityBuilder.WALLS_INDEX);
+		this.ChangeBuildingDeviceVisibility(true, CityBuilder.WALLS_INDEX);
 	}
 
 	public void HideRoofs() {
 		roofsVisibility = false;
-		this.ChangeBuildingComponentVisibility(false, CityBuilder.ROOF_INDEX);
+		this.ChangeBuildingDeviceVisibility(false, CityBuilder.ROOF_INDEX);
 	}
 	public void ShowRoofs() {
 		roofsVisibility = true;
-		this.ChangeBuildingComponentVisibility(true, CityBuilder.ROOF_INDEX);
+		this.ChangeBuildingDeviceVisibility(true, CityBuilder.ROOF_INDEX);
 	}
 
 	public void HideRoads() {
 		roadsVisibility = false;
-		this.ChangeRoadComponentVisibility(false, CityBuilder.ROAD_SECTIONS_INDEX);
+		this.ChangeRoadDeviceVisibility(false, CityBuilder.ROAD_SECTIONS_INDEX);
 	}
 	public void ShowRoads() {
 		roadsVisibility = true;
-		this.ChangeRoadComponentVisibility(true, CityBuilder.ROAD_SECTIONS_INDEX);
+		this.ChangeRoadDeviceVisibility(true, CityBuilder.ROAD_SECTIONS_INDEX);
 	}
 
 	public void HideFootways() {
@@ -112,14 +112,14 @@ public class VisibilityController {
 		cityBuilder.Trees.SetActive(true);
 	}
 
-	private void ChangeBuildingComponentVisibility(bool visibility, int componentIndex) {
+	private void ChangeBuildingDeviceVisibility(bool visibility, int deviceIndex) {
 		foreach (Transform buildingTransform in cityBuilder.Buildings.transform)
-			buildingTransform.GetChild(componentIndex).gameObject.SetActive(visibility);
+			buildingTransform.GetChild(deviceIndex).gameObject.SetActive(visibility);
 	}
 
-	private void ChangeRoadComponentVisibility(bool visibility, int componentIndex) {
+	private void ChangeRoadDeviceVisibility(bool visibility, int deviceIndex) {
 		foreach (Transform buildingTransform in cityBuilder.Roads.transform)
-			buildingTransform.GetChild(componentIndex).gameObject.SetActive(visibility);
+			buildingTransform.GetChild(deviceIndex).gameObject.SetActive(visibility);
 	}
 
 	public bool BuildingNodesVisibility {

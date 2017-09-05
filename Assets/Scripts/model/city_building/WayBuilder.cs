@@ -7,7 +7,12 @@ using UnityEngine;
 /// </summary>
 public class WayBuilder {
 	public GameObject BuildRoad(HighwayNodeGroup highwayNodeGroup) {
-		return this.BuildWay(highwayNodeGroup, "Road", GoTags.ROAD_TAG, Materials.ROAD, Dimensions.ROAD_WIDTH);
+		GameObject road = this.BuildWay(highwayNodeGroup, "Road", GoTags.ROAD_TAG, Materials.ROAD, Dimensions.ROAD_WIDTH);
+
+		Vector3 roadPosition = road.transform.position;
+		road.transform.position = new Vector3(roadPosition.x, Dimensions.ROAD_ELEVATION, roadPosition.z);
+
+		return road;
 	}
 	public GameObject BuildCycleway(HighwayNodeGroup highwayNodeGroup) {
 		return this.BuildWay(highwayNodeGroup, "Cycleway", GoTags.CYCLEWAY_TAG, Materials.CYCLEWAY, Dimensions.CYCLEWAYS_WIDTH);

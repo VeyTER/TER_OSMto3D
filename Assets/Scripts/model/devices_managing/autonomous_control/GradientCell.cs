@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-public class GradientCell {
+﻿public class GradientCell {
 	private int rowNumber;
 	private int lineNumber;
 

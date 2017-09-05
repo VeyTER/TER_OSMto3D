@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
-using System;
 using System.IO;
 
 public class DualRangeGradient : Gradient {

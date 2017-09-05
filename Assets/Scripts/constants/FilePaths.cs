@@ -30,7 +30,7 @@ public class FilePaths {
 
 
 	public const string SCRIPT_DATA_FOLDER = ASSETS_FOLDER + "Scripts data/";
-	public const string COMPONENTS_PROPERTIES_FILE = SCRIPT_DATA_FOLDER + "components_properties.xml";
+	public const string COMPONENTS_PROPERTIES_FILE = SCRIPT_DATA_FOLDER + "devices_properties.xml";
 	public const string API_LOGIN_FILE = SCRIPT_DATA_FOLDER + "api_login.txt";
 	public const string SENSOR_EQUIPPED_BUILDINGS_FILE = SCRIPT_DATA_FOLDER + "sensors_equipped_buildings.txt";
 
