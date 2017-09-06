@@ -27,7 +27,7 @@ public class WayBuilder {
 	}
 
 	public GameObject BuildWaterway(WaterwayNodeGroup waterwayNodeGroup) {
-		return this.BuildWay(waterwayNodeGroup, "Waterway", GoTags.WALLS_TAG, Materials.WATERWAY, Dimensions.WTERWAY_WIDTH);
+		return this.BuildWay(waterwayNodeGroup, "Waterway", GoTags.WALLS_TAG, Materials.WATERWAY, Dimensions.WATERWAY_WIDTH);
 	}
 
 	private GameObject BuildWay(NodeGroup nodeGroup, string wayIdentifier, string tag, string materialName, float width) {

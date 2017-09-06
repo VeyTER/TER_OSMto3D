@@ -1,6 +1,6 @@
 ﻿/// <summary>
 /// 	Contient le nom des objects d'une ville.
-///</summary>
+/// </summary>
 public class CityObjectNames {
 	/// <summary>Nom de la ville.</summary>
 	public const string CITY = "City";

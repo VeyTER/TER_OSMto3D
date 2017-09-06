@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <earth>
   <building>
-    <info id="23905163" name="Institut de recherche informatique" nbfloor="5" roofangle="0" rooftype="flat" custmat="OfficeGlasses" />
+    <info id="23905163" name="Institut de recherche informatique" nbfloor="5" roofangle="0" rooftype="flat" material="OfficeGlasses" />
     <nd ref="259096615" index="0" lat="43.563953125" lon="1.46737854003906" />
     <nd ref="363895238" index="1" lat="43.56389453125" lon="1.46726867675781" />
     <nd ref="363895228" index="3" lat="43.56387109375" lon="1.46729321289063" />
@@ -56,7 +56,7 @@
     <info id="26650675" name="1 CN - Emile Durand" nbfloor="6" roofangle="0" rooftype="flat" />
   </building>
   <building>
-    <info id="+3176337030" name="Bâtiment n°+3176337030" nbfloor="3" roofangle="0" rooftype="unknown" custmat="OfficeGlasses" color="1;1;1" />
+    <info id="+3176337030" name="Bâtiment n°+3176337030" nbfloor="3" roofangle="0" rooftype="unknown" material="OfficeGlasses" color="1;1;1" />
     <nd ref="+3176337030" index="0" lat="43.5641484375" lon="1.46657055664063" />
     <nd ref="+3176337030" index="1" lat="43.5645" lon="1.46717944335938" />
     <nd ref="+3176337030" index="2" lat="43.5640703125" lon="1.46742944335938" />
@@ -64,7 +64,7 @@
     <nd ref="+3176337030" index="4" lat="43.5641484375" lon="1.46657055664063" />
   </building>
   <building>
-    <info id="23149591" name="123" nbfloor="9" roofangle="0" rooftype="flat" custmat="ConcreteMonochromatic" color="1;0.5;0.75" />
+    <info id="23149591" name="123" nbfloor="9" roofangle="0" rooftype="flat" material="ConcreteMonochromatic" color="1;0.5;0.75" />
     <nd ref="250076058" index="0" lat="43.559484375" lon="1.46555627441406" />
     <nd ref="250076063" index="1" lat="43.559578125" lon="1.46512817382813" />
     <nd ref="614640616" index="2" lat="43.55980859375" lon="1.46524951171875" />
@@ -82,11 +82,14 @@
     <nd ref="250076058" index="14" lat="43.559484375" lon="1.46555627441406" />
   </building>
   <building>
-    <info id="+2633857230" name="Bâtiment n°+2633857230" nbfloor="3" roofangle="0" rooftype="unknown" custmat="OfficeGlasses" color="1;1;1" />
+    <info id="+2633857230" name="Bâtiment n°+2633857230" nbfloor="3" roofangle="0" rooftype="unknown" material="OfficeGlasses" color="1;1;1" />
     <nd ref="+2633857230" index="0" lat="43.56203515625" lon="1.46077770996094" />
     <nd ref="+2633857230" index="1" lat="43.562390625" lon="1.46113122558594" />
     <nd ref="+2633857230" index="2" lat="43.56168359375" lon="1.46183825683594" />
     <nd ref="+2633857230" index="3" lat="43.561328125" lon="1.46148474121094" />
     <nd ref="+2633857230" index="4" lat="43.56203515625" lon="1.46077770996094" />
+  </building>
+  <building>
+    <info id="18752346" name="RU 2" nbfloor="4" roofangle="0" rooftype="flat" material="BricksOrange" color="1;1;1" />
   </building>
 </earth>

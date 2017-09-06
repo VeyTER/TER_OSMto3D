@@ -26,10 +26,10 @@ public class DevicePropertiesLoader {
 					SensorData singleSensorData = devicePair.Key;
 					ActuatorController matchingActuatorController = buildingRoom.DevicePairs[singleSensorData];
 
-					string sensorXPath = XmlTags.THRESHOLDS + "/";
-					sensorXPath += XmlTags.BUILDING_COMPONENTS_GROUP + "[@" + XmlAttributes.NAME + "=\"" + buildingName + "\"]" + "/";
-					sensorXPath += XmlTags.ROOM_COMPONENTS_GROUP + "[@" + XmlAttributes.NAME + "=\"" + buildingRoom.Name + "\"]" + "/";
-					sensorXPath += XmlTags.COMPONENTS + "[@" + XmlAttributes.NAME + "=\"" + singleSensorData.XmlIdentifier + "\"]" + "/";
+					string sensorXPath = XmlTags.DEVICES_PROPERTIES + "/";
+					sensorXPath += XmlTags.BUILDING_DEVICES_GROUP + "[@" + XmlAttributes.NAME + "=\"" + buildingName + "\"]" + "/";
+					sensorXPath += XmlTags.ROOM_DEVICES_GROUP + "[@" + XmlAttributes.NAME + "=\"" + buildingRoom.Name + "\"]" + "/";
+					sensorXPath += XmlTags.DEVICES + "[@" + XmlAttributes.NAME + "=\"" + singleSensorData.XmlIdentifier + "\"]" + "/";
 
 					string actuatorXPath = sensorXPath;
 

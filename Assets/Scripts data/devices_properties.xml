@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<thresholds>
+<properties>
 	<building name="U4">
 		<room name="302">
 			<devices name="luminosity">
@@ -50,4 +50,4 @@
 			</devices>
 		</room>
 	</building>
-</thresholds>
+</properties>

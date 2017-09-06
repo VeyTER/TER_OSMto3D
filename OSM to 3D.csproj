@@ -91,7 +91,7 @@
     <Compile Include="Assets\Scripts\constants\MapNames.cs" />
     <Compile Include="Assets\Scripts\constants\Materials.cs" />
     <Compile Include="Assets\Scripts\constants\RoofShapes.cs" />
-    <Compile Include="Assets\Scripts\constants\Sensors.cs" />
+    <Compile Include="Assets\Scripts\constants\Devices.cs" />
     <Compile Include="Assets\Scripts\constants\ThemeColors.cs" />
     <Compile Include="Assets\Scripts\constants\UiNames.cs" />
     <Compile Include="Assets\Scripts\constants\XmlAttributes.cs" />

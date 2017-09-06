@@ -223,7 +223,7 @@ public class BuildingDevicesController : MonoBehaviour {
 			string sensorValue = valueNode.InnerText;
 
 			switch (xmlIdentifier) {
-			case Sensors.TEMPERATURE:
+			case Devices.TEMPERATURE:
 				SensorData temperatureSensor = buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "Température", sensorValue, "°", IconsTexturesSprites.TEMPERATURE_ICON);
 
 				// À changer par l'identifiant du chauffage (changer aussi dans le fichiers XML des propriétés)
@@ -231,10 +231,10 @@ public class BuildingDevicesController : MonoBehaviour {
 
 				ActuatorController heatersController = buildingRoom.AddActuatorController(temperatureSensor, buildingRoom.Name, heatersIdentifier, "0", "°", IconsTexturesSprites.HEATERS_CONTROL_ICON);
 				break;
-			case Sensors.HUMIDITY:
+			case Devices.HUMIDITY:
 				buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "Humidité", sensorValue, "%", IconsTexturesSprites.HUMIDITY_ICON);
 				break;
-			case Sensors.LUMINOSITY:
+			case Devices.LUMINOSITY:
 				SensorData luminositySensor = buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "Luminosité", sensorValue, "lux", IconsTexturesSprites.LUMINOSITY_ICON);
 
 				// À changer par l'identifiant des volets (changer aussi dans le fichiers XML des propriétés)
@@ -242,10 +242,10 @@ public class BuildingDevicesController : MonoBehaviour {
 
 				buildingRoom.AddActuatorController(luminositySensor, buildingRoom.Name, shuttersIdentifier, "0", "%", IconsTexturesSprites.SHUTTERS_CONTROL_ICON);
 				break;
-			case Sensors.CO2:
+			case Devices.CO2:
 				buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "CO2", sensorValue, "ppm", IconsTexturesSprites.CO2_ICON);
 				break;
-			case Sensors.PRESENCE:
+			case Devices.PRESENCE:
 				buildingRoom.AddSensorData(buildingRoom.Name, xmlIdentifier, "Présence", (sensorValue == "0" ? "Non" : "Oui"), "", IconsTexturesSprites.PRESENCE_ICON);
 				break;
 			default:

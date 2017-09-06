@@ -110,7 +110,7 @@ public class SkinChangingEditor : ObjectEditor {
 
 			string selectedMaterialName = buttonIdToMaterialTable[materialItem.GetInstanceID()].name;
 
-			string textureName = itemBody.GetComponent<Image>().material.name;
+			string materialName = itemBody.GetComponent<Image>().material.name;
 			string itemMaterialName = buildingNodeGroup.CustomMaterial.name.Replace(" (Instance)", "");
 
 			if (selectedMaterialName.Equals(itemMaterialName)) {
